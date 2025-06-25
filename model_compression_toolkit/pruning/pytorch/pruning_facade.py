@@ -127,13 +127,10 @@ if FOUND_TORCH:
         attach2pytorch = AttachTpcToPytorch()
         framework_platform_capabilities = attach2pytorch.attach(target_platform_capabilities)
 
-        PytorchGraphBuilder()
-
         # Convert the original Pytorch model to an internal graph representation.
-        float_graph = read_model_to_graph(model,
-                                          representative_data_gen,
-                                          framework_platform_capabilities,
-                                          fw_impl)
+        float_graph = PytorchGraphBuilder().convert_model_to_graph(model, representative_data_gen)
+        float_graph.set_fqc(framework_platform_capabilities)
+
 
         # Apply quantization configuration to the graph. This step is necessary even when not quantizing,
         # as it prepares the graph for the pruning process.
