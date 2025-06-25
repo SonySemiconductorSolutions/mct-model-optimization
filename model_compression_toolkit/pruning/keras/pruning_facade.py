@@ -17,6 +17,7 @@ from typing import Callable, Tuple, Union
 
 from model_compression_toolkit import get_target_platform_capabilities
 from model_compression_toolkit.constants import TENSORFLOW
+from model_compression_toolkit.graph_builder.keras.keras_graph_builder import KerasGraphBuilder
 from model_compression_toolkit.target_platform_capabilities.schema.mct_current_schema import TargetPlatformCapabilities
 from model_compression_toolkit.target_platform_capabilities.tpc_io_handler import load_target_platform_capabilities
 from model_compression_toolkit.verify_packages import FOUND_TF
@@ -118,13 +119,12 @@ if FOUND_TF:
         target_platform_capabilities = load_target_platform_capabilities(target_platform_capabilities)
         # Attach tpc model to framework
         attach2keras = AttachTpcToKeras()
-        target_platform_capabilities = attach2keras.attach(target_platform_capabilities)
+        framework_platform_capabilities = attach2keras.attach(target_platform_capabilities)
 
         # Convert the original Keras model to an internal graph representation.
-        float_graph = read_model_to_graph(model,
-                                          representative_data_gen,
-                                          target_platform_capabilities,
-                                          fw_impl)
+        float_graph = KerasGraphBuilder().convert_model_to_graph(model)
+        float_graph.set_fqc(framework_platform_capabilities)
+
 
         # Apply quantization configuration to the graph. This step is necessary even when not quantizing,
         # as it prepares the graph for the pruning process.
