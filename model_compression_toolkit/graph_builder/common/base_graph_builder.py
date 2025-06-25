@@ -9,12 +9,12 @@ class BaseGraphBuilder(ABC):
     def build_graph(self,
                     model,
                     representative_dataset=None,
-                    fqc = None,
-                    tensorboard_writer = None,
+                    fqc=None,
+                    tensorboard_writer=None,
                     linear_collapsing: bool = True,
                     residual_collapsing: bool = True,
                     relu_bound_to_power_of_2: bool = False):
-        graph = self._convert_model_to_graph(model, representative_dataset)
+        graph = self.convert_model_to_graph(model, representative_dataset)
         if tensorboard_writer is not None:
             tensorboard_writer.add_graph(graph, 'initial_graph')
 
@@ -23,23 +23,23 @@ class BaseGraphBuilder(ABC):
         if fqc:
             graph.set_fqc(fqc)
 
-        transformed_graph = self._transform_graph(graph,
-                                                  linear_collapsing,
-                                                  residual_collapsing,
-                                                  relu_bound_to_power_of_2)
+        transformed_graph = self.transform_graph(graph,
+                                                 linear_collapsing,
+                                                 residual_collapsing,
+                                                 relu_bound_to_power_of_2)
         if tensorboard_writer is not None:
             tensorboard_writer.add_graph(transformed_graph, 'after_graph_preparation')
 
         return transformed_graph
 
     @abstractmethod
-    def _convert_model_to_graph(self, model: Any, representative_dataset: Any = None) -> Graph:
+    def convert_model_to_graph(self, model: Any, representative_dataset: Any = None) -> Graph:
         raise Exception
 
     @abstractmethod
-    def _transform_graph(self,
-                         graph: Graph,
-                         linear_collapsing: bool = True,
-                         residual_collapsing: bool = True,
-                         relu_bound_to_power_of_2: bool = False) -> Graph:
+    def transform_graph(self,
+                        graph: Graph,
+                        linear_collapsing: bool = True,
+                        residual_collapsing: bool = True,
+                        relu_bound_to_power_of_2: bool = False) -> Graph:
         raise Exception

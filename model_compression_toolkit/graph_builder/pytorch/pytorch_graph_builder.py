@@ -7,17 +7,17 @@ from model_compression_toolkit.graph_builder.pytorch.transform_pytorch_graph imp
 
 
 class PytorchGraphBuilder(BaseGraphBuilder):
-    def _convert_model_to_graph(self, model: Any, representative_dataset: Any = None) -> Graph:
+    def convert_model_to_graph(self, model: Any, representative_dataset: Any = None) -> Graph:
         if representative_dataset is None:
             raise ValueError("PyTorch requires a representative_dataset to convert the model.")
         return convert_pytorch_model_to_graph(model, representative_dataset)
 
-    def _transform_graph(self,
-                         graph: Graph,
-                         linear_collapsing: bool = True,
-                         residual_collapsing: bool = True,
-                         relu_bound_to_power_of_2: bool = False
-                         ) -> Graph:
+    def transform_graph(self,
+                        graph: Graph,
+                        linear_collapsing: bool = True,
+                        residual_collapsing: bool = True,
+                        relu_bound_to_power_of_2: bool = False
+                        ) -> Graph:
         return transform_pytorch_graph(graph,
                                        linear_collapsing,
                                        residual_collapsing,

@@ -16,6 +16,7 @@
 from typing import Callable, Tuple, Union
 from model_compression_toolkit import get_target_platform_capabilities
 from model_compression_toolkit.constants import PYTORCH
+from model_compression_toolkit.graph_builder.pytorch.pytorch_graph_builder import PytorchGraphBuilder
 from model_compression_toolkit.target_platform_capabilities.schema.mct_current_schema import TargetPlatformCapabilities
 from model_compression_toolkit.target_platform_capabilities.tpc_io_handler import load_target_platform_capabilities
 from model_compression_toolkit.verify_packages import FOUND_TORCH
@@ -125,6 +126,8 @@ if FOUND_TORCH:
         # Attach TPC to framework
         attach2pytorch = AttachTpcToPytorch()
         framework_platform_capabilities = attach2pytorch.attach(target_platform_capabilities)
+
+        PytorchGraphBuilder()
 
         # Convert the original Pytorch model to an internal graph representation.
         float_graph = read_model_to_graph(model,
