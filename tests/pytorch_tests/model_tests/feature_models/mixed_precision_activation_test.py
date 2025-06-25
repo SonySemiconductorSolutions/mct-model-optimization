@@ -20,7 +20,7 @@ from torch.nn import Softmax, Sigmoid
 from model_compression_toolkit.core import MixedPrecisionQuantizationConfig, ResourceUtilization, CoreConfig, \
     QuantizationConfig
 from model_compression_toolkit.core.common.user_info import UserInformation
-from model_compression_toolkit.core.pytorch.reader.node_holders import DummyPlaceHolder
+from model_compression_toolkit.graph_builder.pytorch.reader.node_holders import DummyPlaceHolder
 from model_compression_toolkit.core.common.quantization.quantization_config import CustomOpsetLayers
 from model_compression_toolkit.target_platform_capabilities.tpc_models.imx500_tpc.latest import get_op_quantization_configs
 from tests.common_tests.helpers.generate_test_tpc import generate_tpc_with_activation_mp

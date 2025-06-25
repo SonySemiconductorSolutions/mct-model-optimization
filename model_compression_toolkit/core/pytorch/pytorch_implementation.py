@@ -26,50 +26,20 @@ from torch.nn import Module, Sigmoid, Softmax
 
 import model_compression_toolkit.core.pytorch.constants as pytorch_constants
 from model_compression_toolkit.constants import HESSIAN_NUM_ITERATIONS
-from model_compression_toolkit.core import QuantizationConfig, FrameworkInfo, CoreConfig
+from model_compression_toolkit.core import QuantizationConfig, CoreConfig
 from model_compression_toolkit.core import common
 from model_compression_toolkit.core.common import Graph, BaseNode
 from model_compression_toolkit.core.common.framework_implementation import FrameworkImplementation
 from model_compression_toolkit.core.common.graph.functional_node import FunctionalNode
 from model_compression_toolkit.core.common.hessian import HessianScoresRequest, HessianMode
 from model_compression_toolkit.core.common.model_builder_mode import ModelBuilderMode
-from model_compression_toolkit.core.common.node_prior_info import NodePriorInfo
 from model_compression_toolkit.core.common.similarity_analyzer import compute_mse, compute_kl_divergence, compute_cs
 from model_compression_toolkit.core.pytorch.back2framework import get_pytorch_model_builder
 from model_compression_toolkit.core.pytorch.data_util import data_gen_to_dataloader
-from model_compression_toolkit.core.pytorch.graph_substitutions.substitutions.batchnorm_folding import \
-    pytorch_batchnorm_folding, pytorch_batchnorm_forward_folding
 from model_compression_toolkit.core.pytorch.graph_substitutions.substitutions.batchnorm_reconstruction import \
     pytorch_batchnorm_reconstruction
 from model_compression_toolkit.core.pytorch.graph_substitutions.substitutions.batchnorm_refusing import \
     pytorch_batchnorm_refusing
-from model_compression_toolkit.core.pytorch.graph_substitutions.substitutions.functional_batch_norm import \
-    FunctionalBatchNorm
-from model_compression_toolkit.core.pytorch.graph_substitutions.substitutions.functional_layer_norm import \
-    FunctionalLayerNorm
-from model_compression_toolkit.core.pytorch.graph_substitutions.substitutions.functional_linear import \
-    FunctionalLinear
-from model_compression_toolkit.core.pytorch.graph_substitutions.substitutions.matmul_decomposition import \
-    MatMulDecomposition
-from model_compression_toolkit.core.pytorch.graph_substitutions.substitutions.linear_collapsing import \
-    pytorch_linear_collapsing
-from model_compression_toolkit.core.pytorch.graph_substitutions.substitutions.multi_head_attention_decomposition \
-    import MultiHeadAttentionDecomposition
-from model_compression_toolkit.core.pytorch.graph_substitutions.substitutions.scaled_dot_product_attention import \
-    ScaledDotProductDecomposition
-from model_compression_toolkit.core.pytorch.graph_substitutions.substitutions.transform_function_call_method import \
-    TransformFunctionCallMethod
-from model_compression_toolkit.core.pytorch.graph_substitutions.substitutions.convtranspose_dynamic_padding import \
-    ConvtransposeDynamicPadding
-from model_compression_toolkit.core.pytorch.graph_substitutions.substitutions.const_holder_conv import \
-    FunctionalConvSubstitution
-from model_compression_toolkit.core.pytorch.graph_substitutions.substitutions.relu_bound_to_power_of_2 import \
-    ReLUBoundToPowerOfTwo
-from model_compression_toolkit.core.pytorch.graph_substitutions.substitutions.remove_identity import RemoveIdentity
-from model_compression_toolkit.core.pytorch.graph_substitutions.substitutions.reshape_with_static_shapes import \
-    ReshapeWithStaticShapes
-from model_compression_toolkit.core.pytorch.graph_substitutions.substitutions.residual_collapsing import \
-    pytorch_residual_collapsing
 from model_compression_toolkit.core.pytorch.graph_substitutions.substitutions.scale_equalization import \
     ScaleEqualization, \
     ScaleEqualizationWithPad
@@ -91,8 +61,6 @@ from model_compression_toolkit.core.pytorch.mixed_precision.configurable_activat
     ConfigurableActivationQuantizer
 from model_compression_toolkit.core.pytorch.mixed_precision.configurable_weights_quantizer import \
     ConfigurableWeightsQuantizer
-from model_compression_toolkit.core.pytorch.pytorch_node_prior_info import create_node_prior_info
-from model_compression_toolkit.core.pytorch.reader.reader import model_reader
 from model_compression_toolkit.core.pytorch.statistics_correction.apply_second_moment_correction import \
     pytorch_apply_second_moment_correction
 from model_compression_toolkit.core.pytorch.statistics_correction.pytorch_compute_activation_bias_correction_of_graph import \
@@ -157,21 +125,6 @@ class PytorchImplementation(FrameworkImplementation):
             if not isinstance(item, torch.Tensor):
                 return False
         return True
-
-    def model_reader(self,
-                     module: Module,
-                     representative_data_gen: Callable) -> Graph:
-        """
-        Convert a framework's module into a graph.
-        Args:
-            module: Framework's module.
-            representative_data_gen (Callable): Dataset used for calibration.
-        Returns:
-            Graph representing the input module.
-        """
-        _module = deepcopy(module)
-        _module.eval()
-        return model_reader(_module, representative_data_gen, self.to_numpy, self.to_tensor)
 
     def model_builder(self,
                       graph: Graph,

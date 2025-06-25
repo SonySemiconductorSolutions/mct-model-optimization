@@ -1,11 +1,10 @@
 import copy
-from typing import Iterable, TYPE_CHECKING, Callable
+from typing import TYPE_CHECKING, Callable
 
 from model_compression_toolkit.core.pytorch.utils import torch_tensor_to_numpy, to_torch_tensor
 
-from model_compression_toolkit.core.pytorch.reader.reader import model_reader
-
 from model_compression_toolkit.core.common import Graph
+from model_compression_toolkit.graph_builder.pytorch.reader.reader import model_reader
 
 if TYPE_CHECKING:
     import torch

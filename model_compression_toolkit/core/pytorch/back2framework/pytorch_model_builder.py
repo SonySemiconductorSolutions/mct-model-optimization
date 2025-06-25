@@ -21,7 +21,6 @@ import torch
 import numpy as np
 from networkx import topological_sort
 
-from model_compression_toolkit.core import FrameworkInfo
 from model_compression_toolkit.core import common
 from model_compression_toolkit.logger import Logger
 from model_compression_toolkit.core.common import BaseNode, Graph
@@ -30,7 +29,7 @@ from model_compression_toolkit.core.common.graph.edge import EDGE_SINK_INDEX
 from model_compression_toolkit.core.common.graph.functional_node import FunctionalNode
 from model_compression_toolkit.core.common.user_info import UserInformation
 from model_compression_toolkit.core.pytorch.back2framework.instance_builder import node_builder
-from model_compression_toolkit.core.pytorch.reader.node_holders import DummyPlaceHolder
+from model_compression_toolkit.graph_builder.pytorch.reader.node_holders import DummyPlaceHolder
 from model_compression_toolkit.core.pytorch.utils import to_torch_tensor
 from mct_quantizers.common.constants import ACTIVATION_HOLDER_QUANTIZER
 from mct_quantizers import PytorchQuantizationWrapper, PytorchActivationQuantizationHolder, PytorchPreservingActivationQuantizationHolder

@@ -17,11 +17,11 @@ import torch
 import logging
 from typing import Callable, Dict, Union, Any
 from torch.fx.passes.shape_prop import ShapeProp
-from torch.fx import Tracer, GraphModule, symbolic_trace
+from torch.fx import Tracer, GraphModule
 
 from model_compression_toolkit.logger import Logger
 from model_compression_toolkit.core.common import Graph
-from model_compression_toolkit.core.pytorch.reader.graph_builders import edges_builder, nodes_builder
+from model_compression_toolkit.graph_builder.pytorch.reader.graph_builders import edges_builder, nodes_builder
 from model_compression_toolkit.core.pytorch.utils import set_model
 from edgemdt_cl.pytorch import CustomLayer
 

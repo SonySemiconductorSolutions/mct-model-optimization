@@ -28,9 +28,8 @@ from mct_quantizers import PytorchActivationQuantizationHolder, QuantizationTarg
 from mct_quantizers.common.base_inferable_quantizer import QuantizerID
 from mct_quantizers.common.get_all_subclasses import get_all_subclasses
 from mct_quantizers.pytorch.quantizers import BasePyTorchInferableQuantizer
-from model_compression_toolkit.core import CoreConfig, QuantizationConfig
 from model_compression_toolkit.core.pytorch.pytorch_device_config import get_working_device
-from model_compression_toolkit.core.pytorch.reader.node_holders import DummyPlaceHolder
+from model_compression_toolkit.graph_builder.pytorch.reader.node_holders import DummyPlaceHolder
 from model_compression_toolkit.core.pytorch.utils import to_torch_tensor
 from model_compression_toolkit.qat.pytorch.quantizer.base_pytorch_qat_weight_quantizer import \
     BasePytorchQATWeightTrainableQuantizer
