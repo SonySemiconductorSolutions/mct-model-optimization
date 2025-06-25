@@ -23,6 +23,7 @@ from model_compression_toolkit.core.graph_prep_runner import read_model_to_graph
 
 import keras
 
+from model_compression_toolkit.graph_builder.keras.keras_graph_builder import KerasGraphBuilder
 from model_compression_toolkit.target_platform_capabilities.targetplatform2framework.attach2keras import \
     AttachTpcToKeras
 
@@ -54,10 +55,8 @@ class TestParameterCounter(unittest.TestCase):
         tpc = AttachTpcToKeras().attach(tpc)
 
         # Convert the original Keras model to an internal graph representation.
-        float_graph = read_model_to_graph(model,
-                                          self.representative_dataset,
-                                          tpc,
-                                          fw_impl)
+        float_graph = KerasGraphBuilder().convert_model_to_graph(model)
+        float_graph.set_fqc(tpc)
 
         # Apply quantization configuration to the graph. This step is necessary even when not quantizing,
         # as it prepares the graph for the pruning process.
