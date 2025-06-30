@@ -99,26 +99,3 @@ def get_finalized_graph(graph: Graph,
     return transformed_graph
 
 
-# todo: remove read model and move the reader and the corresponding substitutions to the new module
-def read_model_to_graph(in_model: Any,
-                        representative_data_gen: Callable,
-                        fqc: FrameworkQuantizationCapabilities,
-                        fw_impl: FrameworkImplementation = None) -> Graph:
-
-    """
-    Read a model into a graph object.
-
-    Args:
-        in_model: Model to optimize and prepare for quantization.
-        representative_data_gen: Dataset used for calibration.
-        fqc: FrameworkQuantizationCapabilities object that models the inference target platform and
-                      the attached framework operator's information.
-        fw_impl: FrameworkImplementation object with a specific framework methods implementation.
-
-    Returns:
-        Graph object that represents the model.
-    """
-    graph = fw_impl.model_reader(in_model,
-                                 representative_data_gen)
-    graph.set_fqc(fqc)
-    return graph
