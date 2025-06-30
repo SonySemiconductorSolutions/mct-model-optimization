@@ -161,7 +161,7 @@ class TestExporter:
 
     def representative_dataset(self, num_inputs):
         def rep_dataset():
-            yield [np.random.randn(512, self.in_channels) for _ in range(num_inputs)]
+            yield [np.random.uniform(-3.5*num_inputs, 2.5*num_inputs, (512, self.in_channels)) for _ in range(num_inputs)]
         return rep_dataset
 
     def _run_mct(self, float_model, rep_dataset, abits, a_qmethod, w_qmethod=mctq.QuantizationMethod.POWER_OF_TWO):
@@ -240,25 +240,34 @@ class TestExporter:
         if quantized_model.x_activation_holder_quantizer.activation_holder_quantizer.num_bits == 8:
             if a_qmethod == mctq.QuantizationMethod.UNIFORM:
                 assert np.isclose(quantized_model.x_activation_holder_quantizer.activation_holder_quantizer.min_range,
-                                  onnx_model_dict[f'/x_activation_holder_quantizer/QuantizeLinear']['attributes']['min_range'])
+                                  onnx_model_dict['/x_activation_holder_quantizer/QuantizeLinear']['attributes']['min_range'])
                 assert np.isclose(quantized_model.x_activation_holder_quantizer.activation_holder_quantizer.max_range,
-                                  onnx_model_dict[f'/x_activation_holder_quantizer/QuantizeLinear']['attributes']['max_range'])
+                                  onnx_model_dict['/x_activation_holder_quantizer/QuantizeLinear']['attributes']['max_range'])
             else:
                 assert np.isclose(quantized_model.x_activation_holder_quantizer.activation_holder_quantizer.threshold_np,
-                                  onnx_model_dict[f'/x_activation_holder_quantizer/QuantizeLinear']['attributes']['threshold'] *
+                                  onnx_model_dict['/x_activation_holder_quantizer/QuantizeLinear']['attributes']['threshold'] *
                                   256 / (1+quantized_model.x_activation_holder_quantizer.activation_holder_quantizer.signed))
+        else:
+            # For 16 bit activations, verify no quantizer in model
+            assert '/x_activation_holder_quantizer/QuantizeLinear' not in onnx_model_dict
+
         assert np.all(quantized_model.linear.get_quantized_weights()['weight'].detach().cpu().numpy() ==
                       onnx_model_dict['/linear/layer/Gemm']['attributes']['weight_value'])
+        assert np.all(quantized_model.linear.get_quantized_weights()['bias'].detach().cpu().numpy() ==
+                      onnx_model_dict['/linear/layer/Gemm']['attributes']['bias_value'])
         if quantized_model.linear_activation_holder_quantizer.activation_holder_quantizer.num_bits == 8:
             if a_qmethod == mctq.QuantizationMethod.UNIFORM:
                 assert np.isclose(quantized_model.linear_activation_holder_quantizer.activation_holder_quantizer.min_range,
-                                  onnx_model_dict[f'/linear_activation_holder_quantizer/QuantizeLinear']['attributes']['min_range'])
+                                  onnx_model_dict['/linear_activation_holder_quantizer/QuantizeLinear']['attributes']['min_range'])
                 assert np.isclose(quantized_model.linear_activation_holder_quantizer.activation_holder_quantizer.max_range,
-                                  onnx_model_dict[f'/linear_activation_holder_quantizer/QuantizeLinear']['attributes']['max_range'])
+                                  onnx_model_dict['/linear_activation_holder_quantizer/QuantizeLinear']['attributes']['max_range'])
             else:
                 assert np.isclose(quantized_model.linear_activation_holder_quantizer.activation_holder_quantizer.threshold_np,
-                                  onnx_model_dict[f'/linear_activation_holder_quantizer/QuantizeLinear']['attributes']['threshold'] *
+                                  onnx_model_dict['/linear_activation_holder_quantizer/QuantizeLinear']['attributes']['threshold'] *
                                   256 / (1+quantized_model.linear_activation_holder_quantizer.activation_holder_quantizer.signed))
+        else:
+            # For 16 bit activations, verify no quantizer in model
+            assert '/linear_activation_holder_quantizer/QuantizeLinear' not in onnx_model_dict
 
     @pytest.mark.parametrize('w_qmethod', [mctq.QuantizationMethod.POWER_OF_TWO,
                                            mctq.QuantizationMethod.SYMMETRIC,
