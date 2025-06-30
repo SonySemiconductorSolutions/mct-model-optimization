@@ -41,6 +41,7 @@ class ActivationQuantizationMode(Enum):
     NO_QUANT = auto()
     FLN_NO_QUANT = auto()
 
+
 class BaseNodeQuantizationConfig(object):
     """
     Base class for node quantization configuration
@@ -103,7 +104,6 @@ class NodeActivationQuantizationConfig(BaseNodeQuantizationConfig):
         # TODO irena remove along with set_qc. Keeping for eq and hash to work without set_qc being called
         self.min_threshold = None
         self.shift_negative_activation_correction = None
-        self.z_threshold = None
         self.shift_negative_ratio = None
         self.shift_negative_threshold_recalculation = None
 
@@ -112,7 +112,6 @@ class NodeActivationQuantizationConfig(BaseNodeQuantizationConfig):
              Eventually all of them should be removed from here. """
         self.min_threshold = qc.min_threshold
         self.shift_negative_activation_correction = qc.shift_negative_activation_correction
-        self.z_threshold = qc.z_threshold
         self.shift_negative_ratio = qc.shift_negative_ratio
         self.shift_negative_threshold_recalculation = qc.shift_negative_threshold_recalculation
 
@@ -158,7 +157,6 @@ class NodeActivationQuantizationConfig(BaseNodeQuantizationConfig):
                self.quant_mode == other.quant_mode and \
                self.min_threshold == other.min_threshold and \
                self.shift_negative_activation_correction == other.shift_negative_activation_correction and \
-               self.z_threshold == other.z_threshold and \
                self.shift_negative_ratio == other.shift_negative_ratio and \
                self.shift_negative_threshold_recalculation == other.shift_negative_threshold_recalculation
 
@@ -168,7 +166,6 @@ class NodeActivationQuantizationConfig(BaseNodeQuantizationConfig):
                      self.quant_mode,
                      self.min_threshold,
                      self.shift_negative_activation_correction,
-                     self.z_threshold,
                      self.shift_negative_ratio,
                      self.shift_negative_threshold_recalculation))
 

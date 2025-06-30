@@ -46,8 +46,9 @@ def compute_activation_qparams(quant_cfg: QuantizationConfig,
         node_activation_quant_cfg.activation_quantization_method, no_clipping=node_prior_info.is_output_bounded())
 
     # Extract and filter histogram data from the statistics container.
-    bins_values, bins_counts = _get_histogram_data(node_activation_quant_cfg, out_stats_container,
-                                                   activation_error_method=quant_cfg.activation_error_method)
+    bins_values, bins_counts = _get_histogram_data(out_stats_container,
+                                                   activation_error_method=quant_cfg.activation_error_method,
+                                                   z_threshold=quant_cfg.z_threshold)
 
     # Retrieve the minimum and maximum values from the statistics container.
     min_value, max_value = out_stats_container.get_min_max_values()
@@ -69,17 +70,16 @@ def compute_activation_qparams(quant_cfg: QuantizationConfig,
     )
 
 
-def _get_histogram_data(
-        activation_quant_cfg: NodeActivationQuantizationConfig,
-        out_stats_container: BaseStatsCollector,
-        activation_error_method: QuantizationErrorMethod) -> Tuple[Optional[np.ndarray], Optional[np.ndarray]]:
+def _get_histogram_data(out_stats_container: BaseStatsCollector,
+                        activation_error_method: QuantizationErrorMethod,
+                        z_threshold: float) -> Tuple[Optional[np.ndarray], Optional[np.ndarray]]:
     """
     Extract and filter the histogram data from the statistics container.
 
     Args:
-        activation_quant_cfg: Node's activation quantization configuration.
         out_stats_container: Statistics container with histogram data.
         activation_error_method: activation quantization error method.
+        z_threshold: z threshold for z-score filtering.
 
     Returns:
         A tuple containing the filtered bins_values and bins_counts.
@@ -93,7 +93,7 @@ def _get_histogram_data(
         else:
             bins_values, bins_counts = out_stats_container.hc.get_histogram()
         bins_counts = qpg.z_score_filter(
-            activation_quant_cfg.z_threshold,
+            z_threshold,
             bins_values,
             bins_counts
         )
