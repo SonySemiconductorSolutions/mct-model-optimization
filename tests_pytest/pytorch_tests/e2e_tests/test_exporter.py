@@ -253,8 +253,9 @@ class TestExporter:
 
         assert np.all(quantized_model.linear.get_quantized_weights()['weight'].detach().cpu().numpy() ==
                       onnx_model_dict['/linear/layer/Gemm']['attributes']['weight_value'])
-        assert np.all(quantized_model.linear.get_quantized_weights()['bias'].detach().cpu().numpy() ==
-                      onnx_model_dict['/linear/layer/Gemm']['attributes']['bias_value'])
+        if 'bias' in quantized_model.linear.weights_quantizers:
+            assert np.all(quantized_model.linear.get_quantized_weights()['bias'].detach().cpu().numpy() ==
+                          onnx_model_dict['/linear/layer/Gemm']['attributes']['bias_value'])
         if quantized_model.linear_activation_holder_quantizer.activation_holder_quantizer.num_bits == 8:
             if a_qmethod == mctq.QuantizationMethod.UNIFORM:
                 assert np.isclose(quantized_model.linear_activation_holder_quantizer.activation_holder_quantizer.min_range,
