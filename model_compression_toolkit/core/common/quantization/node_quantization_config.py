@@ -101,28 +101,20 @@ class NodeActivationQuantizationConfig(BaseNodeQuantizationConfig):
         self.activation_bias_correction_term = None
 
         # TODO irena remove along with set_qc. Keeping for eq and hash to work without set_qc being called
-        self.relu_bound_to_power_of_2 = None
-        self.activation_channel_equalization = None
-        self.input_scaling = None
         self.min_threshold = None
         self.shift_negative_activation_correction = None
         self.z_threshold = None
         self.shift_negative_ratio = None
         self.shift_negative_threshold_recalculation = None
-        self.concat_threshold_update = None
 
     def set_qc(self, qc: QuantizationConfig):
         """ TODO irena: temporary keep all the attributes as before not to break all code at once.
              Eventually all of them should be removed from here. """
-        self.relu_bound_to_power_of_2 = qc.relu_bound_to_power_of_2
-        self.activation_channel_equalization = qc.activation_channel_equalization
-        self.input_scaling = qc.input_scaling
         self.min_threshold = qc.min_threshold
         self.shift_negative_activation_correction = qc.shift_negative_activation_correction
         self.z_threshold = qc.z_threshold
         self.shift_negative_ratio = qc.shift_negative_ratio
         self.shift_negative_threshold_recalculation = qc.shift_negative_threshold_recalculation
-        self.concat_threshold_update = qc.concat_threshold_update
 
     @property
     def enable_activation_quantization(self):
@@ -164,8 +156,6 @@ class NodeActivationQuantizationConfig(BaseNodeQuantizationConfig):
         return self.activation_quantization_method == other.activation_quantization_method and \
                self.activation_n_bits == other.activation_n_bits and \
                self.quant_mode == other.quant_mode and \
-               self.activation_channel_equalization == other.activation_channel_equalization and \
-               self.input_scaling == other.input_scaling and \
                self.min_threshold == other.min_threshold and \
                self.shift_negative_activation_correction == other.shift_negative_activation_correction and \
                self.z_threshold == other.z_threshold and \
@@ -176,8 +166,6 @@ class NodeActivationQuantizationConfig(BaseNodeQuantizationConfig):
         return hash((self.activation_quantization_method,
                      self.activation_n_bits,
                      self.quant_mode,
-                     self.activation_channel_equalization,
-                     self.input_scaling,
                      self.min_threshold,
                      self.shift_negative_activation_correction,
                      self.z_threshold,
