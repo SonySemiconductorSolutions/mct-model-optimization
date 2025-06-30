@@ -46,10 +46,6 @@ Actions
 
 |
 
-.. autoclass:: model_compression_toolkit.core.network_editor.ChangeQuantizationParamFunction
-
-|
-
 .. autoclass:: model_compression_toolkit.core.network_editor.ChangeFinalWeightsQuantizationMethod
 
 |
