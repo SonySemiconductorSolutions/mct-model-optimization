@@ -29,7 +29,7 @@ from model_compression_toolkit.core.common.quantization.quantization_params_gene
 from model_compression_toolkit.core.common.quantization.quantization_params_generation.lut_kmeans_params import \
     lut_kmeans_histogram
 from model_compression_toolkit.core.common.quantization.quantization_params_generation.qparams_activations_computation import (
-    _get_histogram_data,_determine_signedness, compute_activation_qparams, _get_activation_quantization_params_fn)
+    _get_histogram_data, _determine_signedness, compute_activation_qparams, _get_activation_quantization_params_fn)
 from model_compression_toolkit.core.common.quantization.quantization_params_generation.symmetric_selection import \
     symmetric_selection_histogram
 from model_compression_toolkit.core.common.quantization.quantization_params_generation.uniform_selection import \
@@ -76,17 +76,14 @@ class TestActivationQParams:
         # Test cases:
         # - When activation_error_method is MSE, the normal histogram collector (hc) is called.
         # - When activation_error_method is HMSE, the weighted histogram collector (weighted_hc) is called.
-        activation_quant_cfg = Mock(spec=NodeActivationQuantizationConfig)
         stats = self._create_stats_container(out_channel_axis=1)
-
-        activation_quant_cfg.z_threshold = 1
 
         # Set return values for histogram collectors.
         stats.hc.get_histogram.return_value = ([1, 2, 3, 4], [10, 20, 30])
         stats.weighted_hc.get_histogram.return_value = ([5, 6, 7, 8], [40, 50, 60])
 
         # Test for MSE error method.
-        _get_histogram_data(activation_quant_cfg, stats, QuantizationErrorMethod.MSE)
+        _get_histogram_data(stats, QuantizationErrorMethod.MSE, z_threshold=1)
         stats.hc.get_histogram.assert_called_once()
         stats.weighted_hc.get_histogram.assert_not_called()
 
@@ -95,7 +92,7 @@ class TestActivationQParams:
         stats.weighted_hc.get_histogram.reset_mock()
 
         # Test for HMSE error method.
-        _get_histogram_data(activation_quant_cfg, stats, QuantizationErrorMethod.HMSE)
+        _get_histogram_data(stats, QuantizationErrorMethod.HMSE, z_threshold=1)
         stats.weighted_hc.get_histogram.assert_called_once()
         stats.hc.get_histogram.assert_not_called()
 

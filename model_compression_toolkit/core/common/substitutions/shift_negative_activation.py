@@ -316,7 +316,7 @@ def shift_negative_function(graph: Graph,
     if core_config.quantization_config.shift_negative_params_search:
 
         hist_bins, hist_count = graph.get_out_stats_collector(non_linear_node).hc.get_histogram()
-        hist_count = z_score_filter(non_linear_node_cfg_candidate.z_threshold,
+        hist_count = z_score_filter(core_config.quantization_config.z_threshold,
                                     hist_bins, hist_count)
 
         min_mse, _th, _shift = np.inf, None, None
