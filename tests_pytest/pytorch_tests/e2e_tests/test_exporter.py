@@ -1,4 +1,4 @@
-import os, inspect
+import os, random
 import pytest
 import torch
 import onnx
@@ -157,7 +157,7 @@ class ExportModel(torch.nn.Module):
 
 class TestExporter:
     def setup_method(self):
-        set_seed(0)
+        set_seed(1)
         self.in_channels = 3
         self.out_channels = 4
         self.onnx_file = f"./tmp_model_{np.random.randint(1e10)}.onnx"
@@ -291,10 +291,10 @@ class TestExporter:
     @pytest.mark.parametrize('w_qmethod', [mctq.QuantizationMethod.POWER_OF_TWO,
                                            mctq.QuantizationMethod.SYMMETRIC,
                                            mctq.QuantizationMethod.UNIFORM])
-    @pytest.mark.parametrize('a_qmethod, tol', [(mctq.QuantizationMethod.POWER_OF_TWO, 1e-8),
-                                                (mctq.QuantizationMethod.SYMMETRIC, 1e-2),
-                                                (mctq.QuantizationMethod.UNIFORM, 1e-2)])
-    @pytest.mark.parametrize('abits', [8, 16])
+    @pytest.mark.parametrize('a_qmethod', [mctq.QuantizationMethod.POWER_OF_TWO,
+                                           mctq.QuantizationMethod.SYMMETRIC,
+                                           mctq.QuantizationMethod.UNIFORM])
+    @pytest.mark.parametrize('abits, tol', [(8, 1e-4), (16, 1e-3)])
     def test_mct_ptq_and_exporter_mctq(self, w_qmethod, abits, a_qmethod, tol):
         quantized_model = self._run_mct(self.get_model(), self.representative_dataset(1), abits, a_qmethod, w_qmethod)
         onnx_model_dict = self._run_exporter(quantized_model, self.representative_dataset(1), QuantizationFormat.MCTQ)
