@@ -159,9 +159,6 @@ def get_finalized_graph(initial_graph: Graph,
     #  TODO 2: Also we adjust candidates for single precision, which we shouldn't do here.
     def update(qc):
         qc.weights_quantization_cfg.set_qc(quant_config)
-        for attr_cfg in qc.weights_quantization_cfg.get_all_weight_attrs_configs().values():
-            attr_cfg.weights_error_method = quant_config.weights_error_method
-            attr_cfg.l_p_value = quant_config.l_p_value
     for n in transformed_graph.nodes:
         if not mixed_precision_enable:
             n.quantization_cfg.candidates_quantization_cfg = [n.quantization_cfg.base_quantization_cfg]

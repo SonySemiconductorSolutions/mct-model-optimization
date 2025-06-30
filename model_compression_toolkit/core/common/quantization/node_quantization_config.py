@@ -64,8 +64,7 @@ class BaseNodeQuantizationConfig(object):
         if hasattr(self, config_parameter_name):
             setattr(self, config_parameter_name, config_parameter_value)
         else:
-            Logger.warning(f"Parameter {config_parameter_name} could not be found in the node quantization config and "
-                           f"was not updated!")
+            raise AttributeError(f"Parameter {config_parameter_name} could not be found in the node quantization config")
 
     def __repr__(self) -> str:
         """
@@ -168,15 +167,6 @@ class WeightsAttrQuantizationConfig:
         self.enable_weights_quantization = weights_attr_cfg.enable_weights_quantization
         self.weights_quantization_params = {}
 
-        # TODO irena remove along with set_qc. Keeping for eq and hash to work without set_qc being called
-        self.weights_error_method = None
-        self.l_p_value = None
-
-    def set_qc(self, qc: QuantizationConfig):
-        # TODO irena: temporary keep the fields to not break everything at once.
-        self.weights_error_method = qc.weights_error_method
-        self.l_p_value = qc.l_p_value
-
     def set_weights_quantization_param(self,
                                        weights_params: dict):
         """
@@ -207,18 +197,14 @@ class WeightsAttrQuantizationConfig:
                self.weights_quantization_method == other.weights_quantization_method and \
                self.weights_n_bits == other.weights_n_bits and \
                self.weights_per_channel_threshold == other.weights_per_channel_threshold and \
-               self.enable_weights_quantization == other.enable_weights_quantization and \
-               self.weights_error_method == other.weights_error_method and \
-               self.l_p_value == other.l_p_value
+               self.enable_weights_quantization == other.enable_weights_quantization
 
     def __hash__(self):
         return hash((self.weights_channels_axis,
-                     self.weights_error_method,
                      self.weights_quantization_method,
                      self.weights_n_bits,
                      self.weights_per_channel_threshold,
-                     self.enable_weights_quantization,
-                     self.l_p_value))
+                     self.enable_weights_quantization))
 
 
 class NodeWeightsQuantizationConfig(BaseNodeQuantizationConfig):
