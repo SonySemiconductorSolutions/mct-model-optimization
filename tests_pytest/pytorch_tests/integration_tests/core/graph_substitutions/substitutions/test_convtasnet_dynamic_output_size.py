@@ -13,12 +13,14 @@
 # limitations under the License.
 # ==============================================================================
 import torch
+from model_compression_toolkit.core.graph_prep_runner import get_finalized_graph
 from torch import nn
+
+from model_compression_toolkit.graph_builder.pytorch.pytorch_graph_builder import PytorchGraphBuilder
 from model_compression_toolkit.target_platform_capabilities.targetplatform2framework.attach2pytorch import \
     AttachTpcToPytorch
 
 from model_compression_toolkit.core import QuantizationConfig
-from model_compression_toolkit.core.graph_prep_runner import graph_preparation_runner
 from model_compression_toolkit.core.common.framework_info import set_fw_info
 from model_compression_toolkit.core.pytorch.default_framework_info import PyTorchInfo
 from model_compression_toolkit.core.pytorch.pytorch_implementation import PytorchImplementation
@@ -49,15 +51,24 @@ def test_convtranspose_dynamic_output_size(minimal_tpc):
 
     set_fw_info(PyTorchInfo)
     fw_impl = PytorchImplementation()
+    fw_graph_builder = PytorchGraphBuilder()
     model = Model()
+    fqc = AttachTpcToPytorch().attach(minimal_tpc)
+    quant_config = QuantizationConfig()
 
-    graph = graph_preparation_runner(model,
-                                     data_gen,
-                                     QuantizationConfig(),
-                                     fw_impl=fw_impl,
-                                     fqc=AttachTpcToPytorch().attach(minimal_tpc),
-                                     mixed_precision_enable=False,
-                                     running_gptq=False)
+    graph = fw_graph_builder.build_graph(model=model,
+                                         representative_dataset=data_gen,
+                                         fqc=fqc,
+                                         linear_collapsing=quant_config.linear_collapsing,
+                                         residual_collapsing=quant_config.residual_collapsing,
+                                         relu_bound_to_power_of_2=quant_config.relu_bound_to_power_of_2)
+
+    graph = get_finalized_graph(graph=graph,
+                                fqc=fqc,
+                                quant_config=quant_config,
+                                fw_impl=fw_impl,
+                                mixed_precision_enable=False,
+                                running_gptq=False)
 
     nodes = graph.get_topo_sorted_nodes()
 

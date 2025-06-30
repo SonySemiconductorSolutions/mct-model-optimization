@@ -127,9 +127,11 @@ class TestManualWeightsBitwidthSelection:
         float_model = self.get_float_model()
         fw_info = PyTorchInfo
 
-        fw_impl = PytorchImplementation()
-        graph = fw_impl.model_reader(float_model,
-                                     self.representative_data_gen)
+        # fw_impl = PytorchImplementation()
+        # graph = fw_impl.model_reader(float_model,
+        #                              self.representative_data_gen)
+        from model_compression_toolkit.graph_builder.pytorch.convert_pytorch_model_to_graph import convert_pytorch_model_to_graph
+        graph = convert_pytorch_model_to_graph(float_model, self.representative_data_gen)
 
         tpc = self.get_tpc()
         attach2pytorch = AttachTpcToPytorch()

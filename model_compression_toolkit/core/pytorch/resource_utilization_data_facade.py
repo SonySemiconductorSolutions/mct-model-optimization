@@ -87,7 +87,7 @@ if FOUND_TORCH:
         target_platform_capabilities = load_target_platform_capabilities(target_platform_capabilities)
         # Attach tpc model to framework
         attach2pytorch = AttachTpcToPytorch()
-        target_platform_capabilities = (
+        fqc = (
             attach2pytorch.attach(target_platform_capabilities,
                                   custom_opset2layer=core_config.quantization_config.custom_tpc_opset_to_layer))
 
@@ -95,12 +95,13 @@ if FOUND_TORCH:
                                                   representative_dataset=representative_data_gen,
                                                   linear_collapsing=core_config.quantization_config.linear_collapsing,
                                                   residual_collapsing=core_config.quantization_config.residual_collapsing,
-                                                  relu_bound_to_power_of_2=core_config.quantization_config.relu_bound_to_power_of_2)
+                                                  relu_bound_to_power_of_2=core_config.quantization_config.relu_bound_to_power_of_2,
+                                                  fqc=fqc)
 
 
         return compute_resource_utilization_data(graph,
                                                  core_config,
-                                                 target_platform_capabilities,
+                                                 fqc,
                                                  fw_impl)
 
 else:
