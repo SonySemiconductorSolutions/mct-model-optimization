@@ -14,6 +14,23 @@ from model_compression_toolkit.target_platform_capabilities import AttributeQuan
     QuantizationConfigOptions, OpQuantizationConfig, Signedness, TargetPlatformCapabilities
 
 
+def set_seed(seed: int = 42):
+    # Set seed for Python random
+    random.seed(seed)
+
+    # Set seed for NumPy
+    np.random.seed(seed)
+
+    # Set seed for PyTorch
+    torch.manual_seed(seed)
+    torch.cuda.manual_seed(seed)
+    torch.cuda.manual_seed_all(seed)  # if you are using multi-GPU
+
+    # Ensure deterministic behavior in PyTorch (optional but recommended)
+    torch.backends.cudnn.deterministic = True
+    torch.backends.cudnn.benchmark = False
+
+
 def rmse(x, y):
     return np.sqrt(np.power(x - y, 2).mean())
 
@@ -140,6 +157,7 @@ class ExportModel(torch.nn.Module):
 
 class TestExporter:
     def setup_method(self):
+        set_seed(0)
         self.in_channels = 3
         self.out_channels = 4
         self.onnx_file = f"./tmp_model_{np.random.randint(1e10)}.onnx"
