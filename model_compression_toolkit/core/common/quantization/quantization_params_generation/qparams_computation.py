@@ -18,7 +18,7 @@ from tqdm import tqdm
 from typing import List, Callable, Generator
 
 from model_compression_toolkit.constants import NUM_QPARAM_HESSIAN_SAMPLES
-from model_compression_toolkit.core import QuantizationErrorMethod
+from model_compression_toolkit.core import QuantizationErrorMethod, QuantizationConfig
 from model_compression_toolkit.core.common import Graph, BaseNode
 from model_compression_toolkit.core.common.framework_info import ChannelAxisMapping
 from model_compression_toolkit.core.common.framework_implementation import FrameworkImplementation
@@ -54,6 +54,7 @@ def _collect_nodes_for_hmse(nodes_list: List[BaseNode], graph: Graph) -> List[Ba
 
 
 def calculate_quantization_params(graph: Graph,
+                                  quant_cfg: QuantizationConfig,
                                   fw_impl: FrameworkImplementation,
                                   repr_data_gen_fn: Callable[[], Generator],
                                   nodes: List[BaseNode] = None,
@@ -68,6 +69,7 @@ def calculate_quantization_params(graph: Graph,
 
     Args:
         graph: Graph to compute its nodes' thresholds.
+        quant_cfg: quantization config.
         fw_impl: FrameworkImplementation object.
         repr_data_gen_fn: callable returning representative dataset generator.
         nodes: List of nodes to compute their thresholds instead of computing it for all nodes in the graph.
@@ -130,8 +132,9 @@ def calculate_quantization_params(graph: Graph,
 
             if n.is_activation_quantization_enabled():
                 # If node's activations should be quantized as well, we compute its activation quantization parameters
-                activation_params = compute_activation_qparams(
-                    activation_quant_cfg=candidate_qc.activation_quantization_cfg, node_prior_info=n.prior_info,
-                    out_stats_container=graph.get_out_stats_collector(n))
+                activation_params = compute_activation_qparams(quant_cfg=quant_cfg,
+                                                               node_activation_quant_cfg=candidate_qc.activation_quantization_cfg,
+                                                               node_prior_info=n.prior_info,
+                                                               out_stats_container=graph.get_out_stats_collector(n))
                 # Create a NodeQuantizationConfig containing all quantization params and attach it to the node
                 candidate_qc.activation_quantization_cfg.set_activation_quantization_param(activation_params)

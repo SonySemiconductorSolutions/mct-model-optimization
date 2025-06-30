@@ -13,6 +13,7 @@
 # limitations under the License.
 # ==============================================================================
 import unittest
+from unittest.mock import patch
 
 import numpy as np
 from keras import Input, Model
@@ -23,6 +24,7 @@ from mct_quantizers import QuantizationMethod
 from model_compression_toolkit.core import QuantizationConfig, QuantizationErrorMethod
 from model_compression_toolkit.constants import THRESHOLD
 from model_compression_toolkit.core.keras.constants import KERNEL
+from model_compression_toolkit.core.keras.default_framework_info import KerasInfo
 from model_compression_toolkit.target_platform_capabilities.targetplatform2framework.attach2keras import \
     AttachTpcToKeras
 from model_compression_toolkit.target_platform_capabilities.tpc_models.imx500_tpc.latest import generate_keras_tpc
@@ -101,11 +103,12 @@ class TestSymmetricThresholdSelectionWeights(unittest.TestCase):
         qc = QuantizationConfig(weights_error_method=threshold_method)
 
         in_model = create_network()
-        graph = prepare_graph_with_quantization_parameters(in_model, KerasImplementation(),
-                                                           representative_dataset,
-                                                           lambda name, _tp: get_tpc(per_channel),
-                                                           qc=qc, input_shape=(1, 16, 16, 4),
-                                                           attach2fw=AttachTpcToKeras(), )
+        with patch('model_compression_toolkit.core.common.framework_info._current_framework_info', KerasInfo):
+            graph = prepare_graph_with_quantization_parameters(in_model, KerasImplementation(),
+                                                               representative_dataset,
+                                                               lambda name, _tp: get_tpc(per_channel),
+                                                               qc=qc, input_shape=(1, 16, 16, 4),
+                                                               attach2fw=AttachTpcToKeras(), )
 
         nodes_list = list(graph.nodes)
         conv1_threshold = nodes_list[0].candidates_quantization_cfg[0].weights_quantization_cfg.get_attr_config(KERNEL).weights_quantization_params[THRESHOLD]

@@ -472,9 +472,11 @@ def shift_negative_function(graph: Graph,
                                op2d_node=op2d_node)
 
     if non_linear_node_cfg_candidate.shift_negative_threshold_recalculation:
-        activation_param = compute_activation_qparams(activation_quant_cfg=non_linear_node_cfg_candidate,
+        activation_param = compute_activation_qparams(quant_cfg=core_config.quantization_config,
+                                                      node_activation_quant_cfg=non_linear_node_cfg_candidate,
                                                       node_prior_info=non_linear_node.prior_info,
-                                                      out_stats_container=graph.get_out_stats_collector(non_linear_node))
+                                                      out_stats_container=graph.get_out_stats_collector(
+                                                          non_linear_node))
 
         assert activation_param.get(SIGNED) is False
         for candidate_qc in non_linear_node.candidates_quantization_cfg:

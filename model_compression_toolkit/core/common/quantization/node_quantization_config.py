@@ -101,12 +101,10 @@ class NodeActivationQuantizationConfig(BaseNodeQuantizationConfig):
         self.activation_bias_correction_term = None
 
         # TODO irena remove along with set_qc. Keeping for eq and hash to work without set_qc being called
-        self.activation_error_method = None
         self.relu_bound_to_power_of_2 = None
         self.activation_channel_equalization = None
         self.input_scaling = None
         self.min_threshold = None
-        self.l_p_value = None
         self.shift_negative_activation_correction = None
         self.z_threshold = None
         self.shift_negative_ratio = None
@@ -116,12 +114,10 @@ class NodeActivationQuantizationConfig(BaseNodeQuantizationConfig):
     def set_qc(self, qc: QuantizationConfig):
         """ TODO irena: temporary keep all the attributes as before not to break all code at once.
              Eventually all of them should be removed from here. """
-        self.activation_error_method = qc.activation_error_method
         self.relu_bound_to_power_of_2 = qc.relu_bound_to_power_of_2
         self.activation_channel_equalization = qc.activation_channel_equalization
         self.input_scaling = qc.input_scaling
         self.min_threshold = qc.min_threshold
-        self.l_p_value = qc.l_p_value
         self.shift_negative_activation_correction = qc.shift_negative_activation_correction
         self.z_threshold = qc.z_threshold
         self.shift_negative_ratio = qc.shift_negative_ratio
@@ -165,28 +161,24 @@ class NodeActivationQuantizationConfig(BaseNodeQuantizationConfig):
         if not isinstance(other, NodeActivationQuantizationConfig):
             return False  # pragma: no cover
 
-        return self.activation_error_method == other.activation_error_method and \
-               self.activation_quantization_method == other.activation_quantization_method and \
+        return self.activation_quantization_method == other.activation_quantization_method and \
                self.activation_n_bits == other.activation_n_bits and \
                self.quant_mode == other.quant_mode and \
                self.activation_channel_equalization == other.activation_channel_equalization and \
                self.input_scaling == other.input_scaling and \
                self.min_threshold == other.min_threshold and \
-               self.l_p_value == other.l_p_value and \
                self.shift_negative_activation_correction == other.shift_negative_activation_correction and \
                self.z_threshold == other.z_threshold and \
                self.shift_negative_ratio == other.shift_negative_ratio and \
                self.shift_negative_threshold_recalculation == other.shift_negative_threshold_recalculation
 
     def __hash__(self):
-        return hash((self.activation_error_method,
-                     self.activation_quantization_method,
+        return hash((self.activation_quantization_method,
                      self.activation_n_bits,
                      self.quant_mode,
                      self.activation_channel_equalization,
                      self.input_scaling,
                      self.min_threshold,
-                     self.l_p_value,
                      self.shift_negative_activation_correction,
                      self.z_threshold,
                      self.shift_negative_ratio,
