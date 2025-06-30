@@ -463,7 +463,7 @@ def shift_negative_function(graph: Graph,
         c.activation_quantization_cfg.set_activation_quantization_param({THRESHOLD: activation_threshold,
                                                                          SIGNED: False})
 
-    add_node.quantization_cfg.update_all(update)
+    add_node.quantization_cfg.update_all(update, remove_duplicates=True)
 
     # Add the new padding node to a fused op with the op2d.
     if pad_node:

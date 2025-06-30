@@ -46,17 +46,20 @@ class NodeQuantizationConfig:
 
     validate: InitVar[bool] = True
 
-    def update_all(self, update_fn: Callable[[CandidateNodeQuantizationConfig], None]):
+    def update_all(self, update_fn: Callable[[CandidateNodeQuantizationConfig], None], remove_duplicates: bool = True):
         """
         Apply update function on the base config and all candidates configs.
 
         Args:
             update_fn: function to apply.
+            remove_duplicates: remove duplicate candidates.
         """
         if self.base_quantization_cfg:
             update_fn(self.base_quantization_cfg)
         for cfg in self.candidates_quantization_cfg:
             update_fn(cfg)
+        if remove_duplicates:
+            self.remove_duplicates()
 
     def update_activation_quantization_mode(self, mode: ActivationQuantizationMode):
         """
