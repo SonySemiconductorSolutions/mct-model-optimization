@@ -363,7 +363,7 @@ class ValueSecondMomentTest(BaseSecondMomentTest):
                                                   fw_impl=fw_impl,
                                                   fqc=framework_quantization_capabilities,
                                                   tb_w=tb_w,
-                                                  fw_graph_builder=PytorchGraphBuilder)
+                                                  fw_graph_builder=PytorchGraphBuilder())
         graph_to_apply_second_moment = copy.deepcopy(tg)
         semi_quantized_model = quantized_model_builder_for_second_moment_correction(graph_to_apply_second_moment,
                                                                                     fw_impl)

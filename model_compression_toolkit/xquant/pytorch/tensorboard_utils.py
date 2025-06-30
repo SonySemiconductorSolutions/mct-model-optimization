@@ -19,7 +19,7 @@ from typing import Dict, Any, Callable, List
 import torch
 
 from model_compression_toolkit.core.common.framework_implementation import FrameworkImplementation
-from model_compression_toolkit.graph_builder.pytorch.reader import model_reader
+from model_compression_toolkit.graph_builder import convert_pytorch_model_to_graph
 from model_compression_toolkit.xquant.common.constants import XQUANT_REPR, INTERMEDIATE_SIMILARITY_METRICS_REPR, XQUANT_VAL, INTERMEDIATE_SIMILARITY_METRICS_VAL
 from model_compression_toolkit.xquant.common.tensorboard_utils import TensorboardUtils
 
@@ -69,10 +69,8 @@ class PytorchTensorboardUtils(TensorboardUtils):
             The updated quantized model graph with similarity metrics embedded.
         """
         # Read the model and generate a graph representation
-        quant_graph = model_reader(quantized_model,
-                                   representative_data_gen=repr_dataset,
-                                   to_tensor=self.fw_impl.to_tensor,
-                                   to_numpy=self.fw_impl.to_numpy)
+        quant_graph = convert_pytorch_model_to_graph(quantized_model,
+                                                     repr_dataset)
 
         if 'scheduling_info' in quantized_model_metadata:
             insert_cut_info_into_graph(quant_graph, quantized_model_metadata, quantized_model)
