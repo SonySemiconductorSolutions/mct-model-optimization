@@ -103,17 +103,11 @@ class NodeActivationQuantizationConfig(BaseNodeQuantizationConfig):
 
         # TODO irena remove along with set_qc. Keeping for eq and hash to work without set_qc being called
         self.min_threshold = None
-        self.shift_negative_activation_correction = None
-        self.shift_negative_ratio = None
-        self.shift_negative_threshold_recalculation = None
 
     def set_qc(self, qc: QuantizationConfig):
         """ TODO irena: temporary keep all the attributes as before not to break all code at once.
              Eventually all of them should be removed from here. """
         self.min_threshold = qc.min_threshold
-        self.shift_negative_activation_correction = qc.shift_negative_activation_correction
-        self.shift_negative_ratio = qc.shift_negative_ratio
-        self.shift_negative_threshold_recalculation = qc.shift_negative_threshold_recalculation
 
     @property
     def enable_activation_quantization(self):
@@ -155,19 +149,13 @@ class NodeActivationQuantizationConfig(BaseNodeQuantizationConfig):
         return self.activation_quantization_method == other.activation_quantization_method and \
                self.activation_n_bits == other.activation_n_bits and \
                self.quant_mode == other.quant_mode and \
-               self.min_threshold == other.min_threshold and \
-               self.shift_negative_activation_correction == other.shift_negative_activation_correction and \
-               self.shift_negative_ratio == other.shift_negative_ratio and \
-               self.shift_negative_threshold_recalculation == other.shift_negative_threshold_recalculation
+               self.min_threshold == other.min_threshold
 
     def __hash__(self):
         return hash((self.activation_quantization_method,
                      self.activation_n_bits,
                      self.quant_mode,
-                     self.min_threshold,
-                     self.shift_negative_activation_correction,
-                     self.shift_negative_ratio,
-                     self.shift_negative_threshold_recalculation))
+                     self.min_threshold))
 
 
 class WeightsAttrQuantizationConfig:

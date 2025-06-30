@@ -298,7 +298,7 @@ def shift_negative_function(graph: Graph,
 
     negative_rate = np.abs(min_to_correct) / activation_threshold
 
-    enable_sub = negative_rate <= non_linear_node_cfg_candidate.shift_negative_ratio
+    enable_sub = negative_rate <= core_config.quantization_config.shift_negative_ratio
     if min_to_correct >= 0 or not enable_sub:
         return graph
 
@@ -471,7 +471,7 @@ def shift_negative_function(graph: Graph,
                                pad_node=pad_node,
                                op2d_node=op2d_node)
 
-    if non_linear_node_cfg_candidate.shift_negative_threshold_recalculation:
+    if core_config.quantization_config.shift_negative_threshold_recalculation:
         activation_param = compute_activation_qparams(quant_cfg=core_config.quantization_config,
                                                       node_activation_quant_cfg=non_linear_node_cfg_candidate,
                                                       node_prior_info=non_linear_node.prior_info,
