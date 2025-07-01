@@ -18,7 +18,7 @@ from typing import Dict, Any, Tuple, Callable, TYPE_CHECKING
 import numpy as np
 from mct_quantizers import QuantizationMethod
 
-from model_compression_toolkit.constants import NUM_QPARAM_HESSIAN_SAMPLES
+from model_compression_toolkit.constants import NUM_QPARAM_HESSIAN_SAMPLES, MIN_THRESHOLD
 from model_compression_toolkit.core import QuantizationErrorMethod
 from model_compression_toolkit.core.common.hessian import HessianInfoService
 from model_compression_toolkit.core.common.quantization.quantization_params_generation import \
@@ -34,7 +34,7 @@ def compute_weights_qparams(weights_attr_data: np.ndarray,
                             weights_error_method: QuantizationErrorMethod,
                             l_p_value: int,
                             output_channels_axis: int,
-                            min_threshold: float,
+                            min_threshold: float = MIN_THRESHOLD,
                             node=None,
                             hessian_info_service: HessianInfoService = None,
                             num_hessian_samples: int = NUM_QPARAM_HESSIAN_SAMPLES) -> Tuple[Dict[Any, Any], int]:

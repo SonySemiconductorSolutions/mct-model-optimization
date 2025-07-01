@@ -273,13 +273,11 @@ class NodeWeightsQuantizationConfig(BaseNodeQuantizationConfig):
                 self.attributes_config_mapping[attr] = WeightsAttrQuantizationConfig(weights_attr_cfg=attr_cfg,
                                                                                      weights_channels_axis=weights_channels_axis)
         # TODO irena remove along with set_qc. Keeping for eq and hash to work without set_qc being called
-        self.min_threshold = None
         self.weights_second_moment_correction = None
         self.weights_bias_correction = None
 
     def set_qc(self, qc: QuantizationConfig):
         # TODO irena: temporary keep the fields to not break everything at once.
-        self.min_threshold = qc.min_threshold
         self.weights_second_moment_correction = qc.weights_second_moment_correction
         self.weights_bias_correction = qc.weights_bias_correction
 
@@ -436,8 +434,7 @@ class NodeWeightsQuantizationConfig(BaseNodeQuantizationConfig):
         if not isinstance(other, NodeWeightsQuantizationConfig):
             return False  # pragma: no cover
 
-        return self.min_threshold == other.min_threshold and \
-            self.simd_size == other.simd_size and \
+        return self.simd_size == other.simd_size and \
             self.weights_second_moment_correction == other.weights_second_moment_correction and \
             self.weights_bias_correction == other.weights_bias_correction and \
             self.attributes_config_mapping.keys() == other.attributes_config_mapping.keys() and \
@@ -448,8 +445,7 @@ class NodeWeightsQuantizationConfig(BaseNodeQuantizationConfig):
                  for k in self.pos_attributes_config_mapping.keys()])
 
     def __hash__(self):
-        return hash((self.min_threshold,
-                     self.simd_size,
+        return hash((self.simd_size,
                      self.weights_second_moment_correction,
                      self.weights_bias_correction,
                      frozenset(self.attributes_config_mapping),

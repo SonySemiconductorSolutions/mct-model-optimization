@@ -111,8 +111,7 @@ class BaseInputScaling(common.BaseSubstitution):
                                                       attr_quant_config=attr_cfg,
                                                       weights_error_method=self.quant_cfg.weights_error_method,
                                                       l_p_value=self.quant_cfg.l_p_value,
-                                                      output_channels_axis=attr_cfg.weights_channels_axis.output,
-                                                      min_threshold=nqc.weights_quantization_cfg.min_threshold)
+                                                      output_channels_axis=attr_cfg.weights_channels_axis.output)
                 attr_cfg.set_weights_quantization_param(w_params)
 
         return graph
