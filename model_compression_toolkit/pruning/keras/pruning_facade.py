@@ -17,6 +17,7 @@ from typing import Callable, Tuple, Union
 
 from model_compression_toolkit import get_target_platform_capabilities
 from model_compression_toolkit.constants import TENSORFLOW
+from model_compression_toolkit.quantization_preparation.load_fqc import load_fqc_configuration
 from model_compression_toolkit.target_platform_capabilities.schema.mct_current_schema import TargetPlatformCapabilities
 from model_compression_toolkit.target_platform_capabilities.tpc_io_handler import load_target_platform_capabilities
 from model_compression_toolkit.verify_packages import FOUND_TF
@@ -24,9 +25,7 @@ from model_compression_toolkit.core.common.mixed_precision.resource_utilization_
 from model_compression_toolkit.core.common.pruning.pruner import Pruner
 from model_compression_toolkit.core.common.pruning.pruning_config import PruningConfig
 from model_compression_toolkit.core.common.pruning.pruning_info import PruningInfo
-from model_compression_toolkit.core.common.quantization.set_node_quantization_config import set_quantization_configuration_to_graph
 from model_compression_toolkit.logger import Logger
-from model_compression_toolkit.core.common.quantization.quantization_config import DEFAULTCONFIG
 from model_compression_toolkit.target_platform_capabilities.constants import DEFAULT_TP_MODEL
 
 if FOUND_TF:
@@ -124,12 +123,9 @@ if FOUND_TF:
         float_graph = KerasGraphBuilder().convert_model_to_graph(model)
         float_graph.set_fqc(framework_platform_capabilities)
 
-
         # Apply quantization configuration to the graph. This step is necessary even when not quantizing,
         # as it prepares the graph for the pruning process.
-        float_graph_with_compression_config = set_quantization_configuration_to_graph(float_graph,
-                                                                                      quant_config=DEFAULTCONFIG,
-                                                                                      mixed_precision_enable=False)
+        float_graph_with_compression_config = load_fqc_configuration(float_graph, framework_platform_capabilities)
 
         # Create a Pruner object with the graph and configuration.
         pruner = Pruner(float_graph_with_compression_config,
@@ -137,7 +133,7 @@ if FOUND_TF:
                         target_resource_utilization,
                         representative_data_gen,
                         pruning_config,
-                        target_platform_capabilities)
+                        framework_platform_capabilities)
 
         # Apply the pruning process.
         pruned_graph = pruner.prune_graph()

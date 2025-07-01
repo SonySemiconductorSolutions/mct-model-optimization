@@ -13,6 +13,7 @@
 # limitations under the License.
 # ==============================================================================
 import copy
+from unittest.mock import patch
 
 import keras
 import unittest
@@ -20,11 +21,10 @@ import unittest
 from packaging import version
 import tensorflow as tf
 
-from model_compression_toolkit.core.common.framework_info import set_fw_info
 from model_compression_toolkit.core.keras.default_framework_info import KerasInfo
-from model_compression_toolkit.core.common.fusion.fusing_info import FusingInfoGenerator
 from model_compression_toolkit.core.common.quantization.quantization_config import CustomOpsetLayers
 from model_compression_toolkit.graph_builder.keras.keras_graph_builder import KerasGraphBuilder
+from model_compression_toolkit.quantization_preparation.load_fqc import load_fqc_configuration
 from model_compression_toolkit.target_platform_capabilities.targetplatform2framework.attach2keras import \
     AttachTpcToKeras
 from tests.common_tests.helpers.generate_test_tpc import generate_test_op_qc, generate_test_attr_configs
@@ -38,8 +38,6 @@ import numpy as np
 from model_compression_toolkit.core.common.graph.virtual_activation_weights_node import VirtualSplitActivationNode, \
     VirtualActivationWeightsNode, VirtualSplitWeightsNode
 from model_compression_toolkit.core.common.quantization.filter_nodes_candidates import filter_nodes_candidates
-from model_compression_toolkit.core.common.quantization.set_node_quantization_config import \
-    set_quantization_configuration_to_graph
 from model_compression_toolkit.core.keras.graph_substitutions.substitutions.virtual_activation_weights_composition import \
     VirtualActivationWeightsComposition
 from model_compression_toolkit.core.keras.graph_substitutions.substitutions.weights_activation_split import \
@@ -101,7 +99,6 @@ def representative_dataset():
 def prepare_graph(in_model, keras_impl, mixed_precision_candidates_list, base_config, default_config):
     qc = mct.core.QuantizationConfig(custom_tpc_opset_to_layer={"Input": CustomOpsetLayers([InputLayer])})
 
-
     tpc = get_tpc_with_activation_mp_keras(base_config=base_config,
                                            default_config=default_config,
                                            mp_bitwidth_candidates_list=mixed_precision_candidates_list,
@@ -109,39 +106,18 @@ def prepare_graph(in_model, keras_impl, mixed_precision_candidates_list, base_co
 
     attach2keras = AttachTpcToKeras()
     fqc = attach2keras.attach(tpc, qc.custom_tpc_opset_to_layer)
-
     graph = KerasGraphBuilder().build_graph(model=in_model,
                                             fqc=fqc,
                                             linear_collapsing=qc.linear_collapsing,
                                             residual_collapsing=qc.residual_collapsing,
                                             relu_bound_to_power_of_2=qc.relu_bound_to_power_of_2)
 
-    # graph = convert_keras_model_to_graph(in_model)
-    # graph.set_fqc(fqc)
-    #
-    # # Standard graph substitutions
-    # graph = substitute(graph, keras_impl.get_substitutions_prepare_graph())
-    # for node in graph.nodes:
-    #     node.prior_info = keras_impl.get_node_prior_info(node=node, graph=graph)
-    # graph = substitute(graph, keras_impl.get_substitutions_pre_statistics_collection(qc))
-    #
-    graph = set_quantization_configuration_to_graph(graph=graph,
-                                                    quant_config=qc,
-                                                    mixed_precision_enable=True)
-
-    fusing_info = FusingInfoGenerator(fqc.get_fusing_patterns()).generate_fusing_info(graph)
-    graph.fusing_info = fusing_info
-    graph.disable_fused_nodes_activation_quantization()
-
+    graph = load_fqc_configuration(graph, fqc)
     graph = filter_nodes_candidates(graph)
-
     return graph
 
 
 class TestActivationWeightsComposition(unittest.TestCase):
-    def setUp(self):
-        set_fw_info(KerasInfo)
-
     def _verify_two_conv_with_split_test(self, graph, v_graph, num_weights_candidates, num_activation_candidates):
         self.assertTrue(len(v_graph.nodes) == len(graph.nodes),
                         "Both convolutions should be split and then composed with their predecessor activation node."
@@ -162,12 +138,13 @@ class TestActivationWeightsComposition(unittest.TestCase):
         keras_impl = KerasImplementation()
 
         base_config, _, default_config = get_op_quantization_configs()
-        graph = prepare_graph(in_model, keras_impl,
-                              mixed_precision_candidates_list=_get_base_mp_nbits_candidates(), base_config=base_config,
-                              default_config=default_config)
+        with patch('model_compression_toolkit.core.common.framework_info._current_framework_info', KerasInfo):
+            graph = prepare_graph(in_model, keras_impl,
+                                  mixed_precision_candidates_list=_get_base_mp_nbits_candidates(), base_config=base_config,
+                                  default_config=default_config)
 
-        with self.assertRaises(TypeError) as e:
-            substitute(copy.deepcopy(graph), [VirtualActivationWeightsComposition()])
+            with self.assertRaises(TypeError) as e:
+                substitute(copy.deepcopy(graph), [VirtualActivationWeightsComposition()])
         self.assertTrue('expected to be of type VirtualSplitWeightsNode' in str(e.exception))
 
     def test_two_conv_net_compose_after_split(self):
@@ -175,18 +152,19 @@ class TestActivationWeightsComposition(unittest.TestCase):
         keras_impl = KerasImplementation()
 
         base_config, _, default_config = get_op_quantization_configs()
-        graph = prepare_graph(in_model, keras_impl,
-                              mixed_precision_candidates_list=_get_base_mp_nbits_candidates(), base_config=base_config,
-                              default_config=default_config)
+        with patch('model_compression_toolkit.core.common.framework_info._current_framework_info', KerasInfo):
+            graph = prepare_graph(in_model, keras_impl,
+                                  mixed_precision_candidates_list=_get_base_mp_nbits_candidates(), base_config=base_config,
+                                  default_config=default_config)
 
-        # Validation is skipped because fusing information is not relevant for the virtual graph.
-        # Therefore, validation checks are disabled before the virtual graph substitution and
-        # re-enabled once it completes.
-        graph.skip_validation_check = True
+            # Validation is skipped because fusing information is not relevant for the virtual graph.
+            # Therefore, validation checks are disabled before the virtual graph substitution and
+            # re-enabled once it completes.
+            graph.skip_validation_check = True
 
-        # Nodes split and composition substitution
-        split_graph = substitute(copy.deepcopy(graph), [WeightsActivationSplit()])
-        v_graph = substitute(copy.deepcopy(split_graph), [VirtualActivationWeightsComposition()])
+            # Nodes split and composition substitution
+            split_graph = substitute(copy.deepcopy(graph), [WeightsActivationSplit()])
+            v_graph = substitute(copy.deepcopy(split_graph), [VirtualActivationWeightsComposition()])
 
         graph.skip_validation_check = False
 
@@ -198,18 +176,19 @@ class TestActivationWeightsComposition(unittest.TestCase):
 
         base_config, _, default_config = get_op_quantization_configs()
         base_config = base_config.clone_and_edit(enable_activation_quantization=False)
-        graph = prepare_graph(in_model, keras_impl,
-                              mixed_precision_candidates_list=_get_base_mp_nbits_candidates(), base_config=base_config,
-                              default_config=default_config)
+        with patch('model_compression_toolkit.core.common.framework_info._current_framework_info', KerasInfo):
+            graph = prepare_graph(in_model, keras_impl,
+                                  mixed_precision_candidates_list=_get_base_mp_nbits_candidates(), base_config=base_config,
+                                  default_config=default_config)
 
-        # Validation is skipped because fusing information is not relevant for the virtual graph.
-        # Therefore, validation checks are disabled before the virtual graph substitution and
-        # re-enabled once it completes.
-        graph.skip_validation_check = True
+            # Validation is skipped because fusing information is not relevant for the virtual graph.
+            # Therefore, validation checks are disabled before the virtual graph substitution and
+            # re-enabled once it completes.
+            graph.skip_validation_check = True
 
-        # Nodes split and composition substitution
-        split_graph = substitute(copy.deepcopy(graph), [WeightsActivationSplit()])
-        v_graph = substitute(copy.deepcopy(split_graph), [VirtualActivationWeightsComposition()])
+            # Nodes split and composition substitution
+            split_graph = substitute(copy.deepcopy(graph), [WeightsActivationSplit()])
+            v_graph = substitute(copy.deepcopy(split_graph), [VirtualActivationWeightsComposition()])
 
         graph.skip_validation_check = False
 
@@ -221,42 +200,43 @@ class TestActivationWeightsComposition(unittest.TestCase):
 
         base_config = generate_test_op_qc(**generate_test_attr_configs(enable_kernel_weights_quantization=False))
         default_config = base_config.clone_and_edit(attr_weights_configs_mapping={})
+        with patch('model_compression_toolkit.core.common.framework_info._current_framework_info', KerasInfo):
+            graph = prepare_graph(in_model, keras_impl,
+                                  mixed_precision_candidates_list=_get_base_mp_nbits_candidates(), base_config=base_config,
+                                  default_config=default_config)
 
-        graph = prepare_graph(in_model, keras_impl,
-                              mixed_precision_candidates_list=_get_base_mp_nbits_candidates(), base_config=base_config,
-                              default_config=default_config)
+            # Validation is skipped because fusing information is not relevant for the virtual graph.
+            # Therefore, validation checks are disabled before the virtual graph substitution and
+            # re-enabled once it completes.
+            graph.skip_validation_check = True
 
-        # Validation is skipped because fusing information is not relevant for the virtual graph.
-        # Therefore, validation checks are disabled before the virtual graph substitution and
-        # re-enabled once it completes.
-        graph.skip_validation_check = True
-
-        # Nodes split and composition substitution
-        split_graph = substitute(copy.deepcopy(graph), [WeightsActivationSplit()])
-        v_graph = substitute(copy.deepcopy(split_graph), [VirtualActivationWeightsComposition()])
+            # Nodes split and composition substitution
+            split_graph = substitute(copy.deepcopy(graph), [WeightsActivationSplit()])
+            v_graph = substitute(copy.deepcopy(split_graph), [VirtualActivationWeightsComposition()])
 
         graph.skip_validation_check = False
 
-        self._verify_two_conv_with_split_test(graph, v_graph, 3, 3)
+        self._verify_two_conv_with_split_test(graph, v_graph, 9, 3)
 
     def test_all_weights_layers_composition(self):
         in_model = multiple_weights_nodes_model()
         keras_impl = KerasImplementation()
 
         base_config, _, default_config = get_op_quantization_configs()
-        graph = prepare_graph(in_model, keras_impl,
-                              mixed_precision_candidates_list=_get_base_mp_nbits_candidates(),
-                              base_config=base_config,
-                              default_config=default_config)
+        with patch('model_compression_toolkit.core.common.framework_info._current_framework_info', KerasInfo):
+            graph = prepare_graph(in_model, keras_impl,
+                                  mixed_precision_candidates_list=_get_base_mp_nbits_candidates(),
+                                  base_config=base_config,
+                                  default_config=default_config)
 
-        # Validation is skipped because fusing information is not relevant for the virtual graph.
-        # Therefore, validation checks are disabled before the virtual graph substitution and
-        # re-enabled once it completes.
-        graph.skip_validation_check = True
+            # Validation is skipped because fusing information is not relevant for the virtual graph.
+            # Therefore, validation checks are disabled before the virtual graph substitution and
+            # re-enabled once it completes.
+            graph.skip_validation_check = True
 
-        # Nodes split and composition substitution
-        split_graph = substitute(copy.deepcopy(graph), [WeightsActivationSplit()])
-        v_graph = substitute(copy.deepcopy(split_graph), [VirtualActivationWeightsComposition()])
+            # Nodes split and composition substitution
+            split_graph = substitute(copy.deepcopy(graph), [WeightsActivationSplit()])
+            v_graph = substitute(copy.deepcopy(split_graph), [VirtualActivationWeightsComposition()])
 
         graph.skip_validation_check = False
 
@@ -290,17 +270,18 @@ class TestActivationWeightsComposition(unittest.TestCase):
         keras_impl = KerasImplementation()
 
         base_config, _, default_config = get_op_quantization_configs()
-        graph = prepare_graph(in_model, keras_impl,
-                              mixed_precision_candidates_list=_get_base_mp_nbits_candidates(), base_config=base_config,
-                              default_config=default_config)
+        with patch('model_compression_toolkit.core.common.framework_info._current_framework_info', KerasInfo):
+            graph = prepare_graph(in_model, keras_impl,
+                                  mixed_precision_candidates_list=_get_base_mp_nbits_candidates(), base_config=base_config,
+                                  default_config=default_config)
 
-        # Validation is skipped because fusing information is not relevant for the virtual graph.
-        # Therefore, validation checks are disabled before the virtual graph substitution and
-        # re-enabled once it completes.
-        graph.skip_validation_check = True
+            # Validation is skipped because fusing information is not relevant for the virtual graph.
+            # Therefore, validation checks are disabled before the virtual graph substitution and
+            # re-enabled once it completes.
+            graph.skip_validation_check = True
 
-        split_graph = substitute(copy.deepcopy(graph), [WeightsActivationSplit()])
-        v_graph = substitute(copy.deepcopy(split_graph), [VirtualActivationWeightsComposition()])
+            split_graph = substitute(copy.deepcopy(graph), [WeightsActivationSplit()])
+            v_graph = substitute(copy.deepcopy(split_graph), [VirtualActivationWeightsComposition()])
 
         graph.skip_validation_check = False
 
@@ -326,12 +307,13 @@ class TestActivationWeightsComposition(unittest.TestCase):
         keras_impl = KerasImplementation()
 
         base_config, _, default_config = get_op_quantization_configs()
-        graph = prepare_graph(model, keras_impl,
-                              mixed_precision_candidates_list=_get_base_mp_nbits_candidates(), base_config=base_config,
-                              default_config=default_config)
+        with patch('model_compression_toolkit.core.common.framework_info._current_framework_info', KerasInfo):
+            graph = prepare_graph(model, keras_impl,
+                                  mixed_precision_candidates_list=_get_base_mp_nbits_candidates(), base_config=base_config,
+                                  default_config=default_config)
 
-        split_graph = substitute(copy.deepcopy(graph), [WeightsActivationSplit()])
-        v_graph = substitute(copy.deepcopy(split_graph), [VirtualActivationWeightsComposition()])
+            split_graph = substitute(copy.deepcopy(graph), [WeightsActivationSplit()])
+            v_graph = substitute(copy.deepcopy(split_graph), [VirtualActivationWeightsComposition()])
 
         nodes = v_graph.get_topo_sorted_nodes()
         self.assertTrue(len(nodes) == 3)

@@ -24,6 +24,7 @@ import model_compression_toolkit.target_platform_capabilities.schema.mct_current
 from model_compression_toolkit.defaultdict import DefaultDict
 from model_compression_toolkit.core.common import BaseNode
 from model_compression_toolkit.graph_builder.keras.convert_keras_model_to_graph import convert_keras_model_to_graph
+from model_compression_toolkit.quantization_preparation.load_fqc import fetch_qc_options_for_node
 from model_compression_toolkit.target_platform_capabilities.targetplatform2framework import LayerFilterParams
 from model_compression_toolkit.target_platform_capabilities.targetplatform2framework.attribute_filter import Greater, \
     Smaller, GreaterEq, Eq, SmallerEq, Contains
@@ -41,10 +42,9 @@ else:
     from keras import Input
 
 import model_compression_toolkit as mct
-from model_compression_toolkit.constants import TENSORFLOW, FUSED_LAYER_PATTERN, FUSED_OP_QUANT_CONFIG
+from model_compression_toolkit.constants import TENSORFLOW, FUSED_LAYER_PATTERN
 from model_compression_toolkit.target_platform_capabilities.constants import DEFAULT_TP_MODEL, IMX500_TP_MODEL, \
     QNNPACK_TP_MODEL, TFLITE_TP_MODEL, KERNEL_ATTR, BIAS_ATTR, KERAS_KERNEL, BIAS, WEIGHTS_N_BITS
-from model_compression_toolkit.core.keras.keras_implementation import KerasImplementation
 from model_compression_toolkit.core.common.framework_info import set_fw_info
 from model_compression_toolkit.core.keras.default_framework_info import KerasInfo
 
@@ -215,9 +215,9 @@ class TestKerasTPModel(unittest.TestCase):
         tanh_node = get_node(tf.nn.tanh)
         relu_node = get_node(Activation('relu'))
 
-        conv_qco = conv_node.get_qco(tpc_keras)
-        tanh_qco = tanh_node.get_qco(tpc_keras)
-        relu_qco = relu_node.get_qco(tpc_keras)
+        conv_qco = fetch_qc_options_for_node(conv_node, tpc_keras)
+        tanh_qco = fetch_qc_options_for_node(tanh_node, tpc_keras)
+        relu_qco = fetch_qc_options_for_node(relu_node, tpc_keras)
 
         self.assertEqual(len(conv_qco.quantization_configurations),
                          len(mixed_precision_configuration_options.quantization_configurations))

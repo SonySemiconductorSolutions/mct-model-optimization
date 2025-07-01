@@ -18,6 +18,7 @@ from torch import nn
 import pytest
 from model_compression_toolkit.graph_builder.pytorch.pytorch_graph_builder import PytorchGraphBuilder
 
+
 def data_gen():
     yield [torch.rand(1, 10, 28, 32)]
 
@@ -36,13 +37,7 @@ class Model(nn.Module):
 
 def test_assert_to_operation(minimal_tpc):
     Model()(next(data_gen())[0])
-
     model = Model()
-
     with pytest.raises(Exception, match=f"The call method \"to\" is not supported. Please consider moving \"torch.Tensor.to\" operations to init code."):
         _ = PytorchGraphBuilder().convert_model_to_graph(model, data_gen)
-
-
-
-
 
