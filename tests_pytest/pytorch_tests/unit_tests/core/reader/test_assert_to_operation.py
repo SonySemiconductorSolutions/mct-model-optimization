@@ -16,9 +16,7 @@ import torch
 from torch import nn
 
 import pytest
-from model_compression_toolkit.core.graph_prep_runner import read_model_to_graph
 from model_compression_toolkit.graph_builder.pytorch.pytorch_graph_builder import PytorchGraphBuilder
-from tests_pytest.pytorch_tests.torch_test_util.torch_test_mixin import TorchFwMixin
 
 def data_gen():
     yield [torch.rand(1, 10, 28, 32)]
