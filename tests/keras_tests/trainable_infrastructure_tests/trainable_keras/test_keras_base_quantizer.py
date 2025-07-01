@@ -27,9 +27,6 @@ from tests.keras_tests.trainable_infrastructure_tests.base_keras_trainable_infra
 
 class TestKerasBaseWeightsQuantizer(BaseKerasTrainableInfrastructureTest):
 
-    def __init__(self, unit_test):
-        super().__init__(unit_test)
-
     def get_weights_quantization_config(self):
         return TrainableQuantizerWeightsConfig(weights_quantization_method=QuantizationMethod.UNIFORM,
                                                weights_n_bits=8,
@@ -68,8 +65,7 @@ class TestKerasBaseActivationsQuantizer(BaseKerasTrainableInfrastructureTest):
         return TrainableQuantizerActivationConfig(activation_quantization_method=QuantizationMethod.UNIFORM,
                                                   activation_n_bits=8,
                                                   activation_quantization_params={},
-                                                  enable_activation_quantization=True,
-                                                  min_threshold=0)
+                                                  enable_activation_quantization=True)
 
     def run_test(self):
         with self.unit_test.assertRaises(Exception) as e:

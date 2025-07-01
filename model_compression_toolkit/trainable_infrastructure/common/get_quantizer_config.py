@@ -76,7 +76,6 @@ def get_trainable_quantizer_activation_config(
                                               final_cfg.activation_n_bits,
                                               final_cfg.activation_quantization_params,
                                               final_cfg.enable_activation_quantization,
-                                              final_cfg.min_threshold,
                                               activation_quantization_candidates)
 
 

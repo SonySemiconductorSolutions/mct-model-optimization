@@ -123,5 +123,4 @@ class BaseKerasTrainableInfrastructureTest:
         return TrainableQuantizerActivationConfig(activation_quantization_method=QuantizationMethod.POWER_OF_TWO,
                                                   activation_n_bits=8,
                                                   activation_quantization_params={},
-                                                  enable_activation_quantization=True,
-                                                  min_threshold=0)
+                                                  enable_activation_quantization=True)

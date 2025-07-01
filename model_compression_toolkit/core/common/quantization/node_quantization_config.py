@@ -101,14 +101,6 @@ class NodeActivationQuantizationConfig(BaseNodeQuantizationConfig):
         # TODO irena: computed by compute_activation_bias_correction. shouldnt really be here
         self.activation_bias_correction_term = None
 
-        # TODO irena remove along with set_qc. Keeping for eq and hash to work without set_qc being called
-        self.min_threshold = None
-
-    def set_qc(self, qc: QuantizationConfig):
-        """ TODO irena: temporary keep all the attributes as before not to break all code at once.
-             Eventually all of them should be removed from here. """
-        self.min_threshold = qc.min_threshold
-
     @property
     def enable_activation_quantization(self):
         return self.quant_mode == ActivationQuantizationMode.QUANT
@@ -148,14 +140,12 @@ class NodeActivationQuantizationConfig(BaseNodeQuantizationConfig):
 
         return self.activation_quantization_method == other.activation_quantization_method and \
                self.activation_n_bits == other.activation_n_bits and \
-               self.quant_mode == other.quant_mode and \
-               self.min_threshold == other.min_threshold
+               self.quant_mode == other.quant_mode
 
     def __hash__(self):
         return hash((self.activation_quantization_method,
                      self.activation_n_bits,
-                     self.quant_mode,
-                     self.min_threshold))
+                     self.quant_mode))
 
 
 class WeightsAttrQuantizationConfig:
