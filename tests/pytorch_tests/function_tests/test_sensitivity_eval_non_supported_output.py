@@ -85,6 +85,6 @@ class TestSensitivityEvalWithArgmaxNode(TestSensitivityEvalWithNonSupportedOutpu
 
     def run_test(self, seed=0, **kwargs):
         model = argmax_output_model()
-        # with self.unit_test.assertRaises(Exception) as e:
-        self.verify_test_for_model(model)
+        with self.unit_test.assertRaises(Exception) as e:
+            self.verify_test_for_model(model)
         self.unit_test.assertTrue("All graph outputs must support Hessian score computation" in str(e.exception))

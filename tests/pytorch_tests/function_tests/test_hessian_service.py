@@ -164,7 +164,8 @@ class FetchHessianNotEnoughSamplesThrowTest(BaseHessianServiceTest):
                                                 self.pytorch_impl,
                                                 representative_dataset,
                                                 generate_pytorch_tpc,
-                                                attach2fw=self.attach2fw)
+                                                attach2fw=self.attach2fw,
+                                                fw_graph_builder=PytorchGraphBuilder())
         data_loader = data_gen_to_dataloader(representative_dataset, batch_size=2)
         self.request = HessianScoresRequest(mode=HessianMode.ACTIVATION,
                                             granularity=HessianScoresGranularity.PER_TENSOR,
@@ -191,7 +192,8 @@ class FetchHessianNotEnoughSamplesSmallBatchThrowTest(BaseHessianServiceTest):
                                                 self.pytorch_impl,
                                                 representative_dataset,
                                                 generate_pytorch_tpc,
-                                                attach2fw=self.attach2fw)
+                                                attach2fw=self.attach2fw,
+                                                fw_graph_builder=PytorchGraphBuilder())
 
         data_loader = data_gen_to_dataloader(representative_dataset, batch_size=1)
         self.request = HessianScoresRequest(mode=HessianMode.ACTIVATION,
@@ -220,7 +222,8 @@ class FetchComputeBatchLargerThanReprBatchTest(BaseHessianServiceTest):
                                                 self.pytorch_impl,
                                                 representative_dataset,
                                                 generate_pytorch_tpc,
-                                                attach2fw=self.attach2fw)
+                                                attach2fw=self.attach2fw,
+                                                fw_graph_builder=PytorchGraphBuilder())
 
         data_loader = data_gen_to_dataloader(representative_dataset, batch_size=3)
         self.request = HessianScoresRequest(mode=HessianMode.ACTIVATION,
@@ -246,7 +249,8 @@ class FetchHessianRequiredZeroTest(BaseHessianServiceTest):
                                                 self.pytorch_impl,
                                                 representative_dataset,
                                                 generate_pytorch_tpc,
-                                                attach2fw=AttachTpcToPytorch())
+                                                attach2fw=AttachTpcToPytorch(),
+                                                fw_graph_builder=PytorchGraphBuilder())
         data_loader = data_gen_to_dataloader(representative_dataset, batch_size=1)
         self.request = HessianScoresRequest(mode=HessianMode.ACTIVATION,
                                             granularity=HessianScoresGranularity.PER_TENSOR,
@@ -269,7 +273,8 @@ class FetchHessianMultipleNodesTest(BaseHessianServiceTest):
                                                 self.pytorch_impl,
                                                 representative_dataset,
                                                 generate_pytorch_tpc,
-                                                attach2fw=self.attach2fw)
+                                                attach2fw=self.attach2fw,
+                                                fw_graph_builder=PytorchGraphBuilder())
 
         nodes = list(self.graph.get_topo_sorted_nodes())
         data_loader = data_gen_to_dataloader(representative_dataset, batch_size=1)
@@ -293,7 +298,8 @@ class DoubleFetchHessianTest(BaseHessianServiceTest):
                                                 self.pytorch_impl,
                                                 representative_dataset,
                                                 generate_pytorch_tpc,
-                                                attach2fw=self.attach2fw)
+                                                attach2fw=self.attach2fw,
+                                                fw_graph_builder=PytorchGraphBuilder())
 
         target_node = list(self.graph.get_topo_sorted_nodes())[0]
         data_loader = data_gen_to_dataloader(representative_dataset, batch_size=1)
