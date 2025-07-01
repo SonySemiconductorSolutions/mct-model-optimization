@@ -12,15 +12,10 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 # ==============================================================================
-import copy
-from model_compression_toolkit.core import QuantizationErrorMethod
+
 from typing import Callable, Union
-
-from model_compression_toolkit.core.graph_prep_runner import get_finalized_graph
-
 from model_compression_toolkit.core import MixedPrecisionQuantizationConfig, CoreConfig
 from model_compression_toolkit.core.common.mixed_precision.resource_utilization_tools.resource_utilization import ResourceUtilization
-from model_compression_toolkit.graph_builder.keras.keras_graph_builder import KerasGraphBuilder
 from model_compression_toolkit.logger import Logger
 from model_compression_toolkit.constants import TENSORFLOW
 from model_compression_toolkit.target_platform_capabilities.schema.mct_current_schema import TargetPlatformCapabilities
@@ -35,7 +30,7 @@ if FOUND_TF:
     from model_compression_toolkit.core.keras.keras_implementation import KerasImplementation
     from model_compression_toolkit.core.keras.default_framework_info import set_keras_info
     from tensorflow.keras.models import Model
-
+    from model_compression_toolkit.graph_builder.keras.keras_graph_builder import KerasGraphBuilder
     from model_compression_toolkit import get_target_platform_capabilities
 
     KERAS_DEFAULT_TPC = get_target_platform_capabilities(TENSORFLOW, DEFAULT_TP_MODEL)
