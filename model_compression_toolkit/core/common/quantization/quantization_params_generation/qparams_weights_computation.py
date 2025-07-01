@@ -19,7 +19,7 @@ import numpy as np
 from mct_quantizers import QuantizationMethod
 
 from model_compression_toolkit.constants import NUM_QPARAM_HESSIAN_SAMPLES
-from model_compression_toolkit.core import QuantizationConfig, QuantizationErrorMethod
+from model_compression_toolkit.core import QuantizationErrorMethod
 from model_compression_toolkit.core.common.hessian import HessianInfoService
 from model_compression_toolkit.core.common.quantization.quantization_params_generation import \
     power_of_two_selection_tensor, lut_kmeans_tensor, symmetric_selection_tensor, uniform_selection_tensor
@@ -44,8 +44,9 @@ def compute_weights_qparams(weights_attr_data: np.ndarray,
 
     Args:
         weights_attr_data: Weights attribute parameter to compute the quantization thresholds for.
-        quant_cfg: quantization config.
         attr_quant_config: A specific weights attribute quantization configuration to get its params.
+        weights_error_method: quantization error method.
+        l_p_value: p-norm to use for the Lp-norm distance.
         output_channels_axis: Index of the kernel output channels dimension.
         min_threshold: Minimal threshold to use if threshold is too small.
         node: The node for which the quantization error is computed (used only with HMSE error method).
