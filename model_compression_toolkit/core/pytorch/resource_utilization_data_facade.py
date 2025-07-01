@@ -15,7 +15,6 @@
 
 from typing import Callable, Union
 
-from model_compression_toolkit.graph_builder.pytorch.pytorch_graph_builder import PytorchGraphBuilder
 from model_compression_toolkit.logger import Logger
 from model_compression_toolkit.constants import PYTORCH
 from model_compression_toolkit.target_platform_capabilities.schema.mct_current_schema import TargetPlatformCapabilities
@@ -31,9 +30,8 @@ if FOUND_TORCH:
     from model_compression_toolkit.core.pytorch.default_framework_info import set_pytorch_info
     from model_compression_toolkit.core.pytorch.pytorch_implementation import PytorchImplementation
     from torch.nn import Module
-    from model_compression_toolkit.target_platform_capabilities.targetplatform2framework.attach2pytorch import \
-        AttachTpcToPytorch
-
+    from model_compression_toolkit.target_platform_capabilities.targetplatform2framework.attach2pytorch import AttachTpcToPytorch
+    from model_compression_toolkit.graph_builder.pytorch.pytorch_graph_builder import PytorchGraphBuilder
     from model_compression_toolkit import get_target_platform_capabilities
 
     PYTORCH_DEFAULT_TPC = get_target_platform_capabilities(PYTORCH, DEFAULT_TP_MODEL)
