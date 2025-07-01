@@ -20,6 +20,7 @@ from model_compression_toolkit.core.common.mixed_precision.configurable_quantize
     verify_candidates_descending_order, init_activation_quantizers
 from model_compression_toolkit.core.common.quantization.candidate_node_quantization_config import \
     CandidateNodeQuantizationConfig
+from model_compression_toolkit.core.pytorch.quantization.activation_quantization_fn_factory import get_activation_quantization_fn_factory
 from model_compression_toolkit.logger import Logger
 from mct_quantizers import QuantizationMethod
 from mct_quantizers import QuantizationTarget
@@ -67,7 +68,7 @@ class ConfigurableActivationQuantizer(BasePyTorchInferableQuantizer):
                 Logger.critical("Unsupported configuration: Mixing candidates with differing activation quantization states (enabled/disabled).")  # pragma: no cover
 
         # Setting layer's activation
-        self.activation_quantizers = init_activation_quantizers(self.node_q_cfg)
+        self.activation_quantizers = init_activation_quantizers(self.node_q_cfg, get_activation_quantization_fn_factory)
         self.active_quantization_config_index = max_candidate_idx  # initialize with first config as default
 
     def set_active_activation_quantizer(self, index: Optional[int]):

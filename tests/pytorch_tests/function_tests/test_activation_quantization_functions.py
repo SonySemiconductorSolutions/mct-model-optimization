@@ -21,7 +21,7 @@ import torch
 
 from model_compression_toolkit.constants import THRESHOLD, SIGNED, RANGE_MIN, RANGE_MAX
 
-from model_compression_toolkit.core.pytorch.quantizer.fake_quant_builder import symmetric_quantization, \
+from model_compression_toolkit.core.pytorch.quantization.fake_quant_builder import symmetric_quantization, \
     uniform_quantization
 
 

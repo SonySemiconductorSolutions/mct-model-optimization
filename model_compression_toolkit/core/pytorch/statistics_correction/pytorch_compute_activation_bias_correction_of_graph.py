@@ -18,7 +18,7 @@ from torch.nn import Conv2d, Linear, ConvTranspose2d
 from model_compression_toolkit.core import QuantizationConfig
 from model_compression_toolkit.core.common import Graph
 from model_compression_toolkit.core.common.framework_implementation import FrameworkImplementation
-from model_compression_toolkit.core.common.framework_info import FrameworkInfo
+from model_compression_toolkit.core.pytorch.quantization.activation_quantization_fn_factory import get_activation_quantization_fn_factory
 from model_compression_toolkit.core.common.graph.graph_matchers import NodeOperationMatcher
 from model_compression_toolkit.core.common.statistics_correction.compute_activation_bias_correction_of_graph import \
     compute_activation_bias_correction_of_graph
@@ -50,5 +50,6 @@ def pytorch_compute_activation_bias_correction_of_graph(graph: Graph,
                                                         fw_impl=fw_impl,
                                                         activation_bias_correction_node_matchers=
                                                         activation_bias_correction_node_matchers,
-                                                        kernel_size=KERNEL_SIZE)
+                                                        kernel_size=KERNEL_SIZE,
+                                                        get_activation_quantization_fn_factory=get_activation_quantization_fn_factory)
     return graph
