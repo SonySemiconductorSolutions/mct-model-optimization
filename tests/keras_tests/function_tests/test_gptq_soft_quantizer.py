@@ -46,8 +46,7 @@ def wrap_test_model(model, per_channel=False, param_learning=False):
                                            weights_quantization_params={THRESHOLD: 2.0},
                                            enable_weights_quantization=True,
                                            weights_channels_axis=3,
-                                           weights_per_channel_threshold=per_channel,
-                                           min_threshold=MIN_THRESHOLD)
+                                           weights_per_channel_threshold=per_channel)
 
     sq = SymmetricSoftRoundingGPTQ(quantization_config=tqwc,
                                    quantization_parameter_learning=param_learning)
