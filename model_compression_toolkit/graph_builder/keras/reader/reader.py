@@ -13,10 +13,8 @@
 # limitations under the License.
 # ==============================================================================
 
-
 from copy import copy
 
-import logging
 import tensorflow as tf
 from tensorflow.keras import Model
 from tensorflow.python.util.object_identity import Reference as TFReference
@@ -25,9 +23,9 @@ from typing import List
 from model_compression_toolkit.core.common.graph.base_graph import Graph
 from model_compression_toolkit.core.common.graph.edge import Edge
 from model_compression_toolkit.core.common.graph.base_node import BaseNode
-from model_compression_toolkit.core.keras.reader.common import is_node_a_model, is_node_an_input_layer
-from model_compression_toolkit.core.keras.reader.connectivity_handler import ConnectivityHandler
-from model_compression_toolkit.core.keras.reader.nested_model.nested_model_handler import merge_graphs
+from model_compression_toolkit.graph_builder.keras.reader.common import is_node_an_input_layer, is_node_a_model
+from model_compression_toolkit.graph_builder.keras.reader.connectivity_handler import ConnectivityHandler
+from model_compression_toolkit.graph_builder.keras.reader.nested_model.nested_model_handler import merge_graphs
 
 keras = tf.keras
 layers = keras.layers
@@ -117,31 +115,6 @@ def build_graph(model: Model,
     return Graph(model.name, nodes, inputs, outputs, edges)
 
 
-def parse_model(model: Model) -> Graph:
-    """
-    Parse a Keras model into a Graph.
-    In case of a nested model, it recursively unrolls inner models.
-
-    Args:
-        model: Keras model to build its graph.
-
-    Returns:
-        Networkx MultiDiGraph representing the Keras model including: nodes, edges, inputs, and outputs.
-    """
-    connectivity_handler = build_connectivity_handler(model)
-    model_graph = build_graph(model, connectivity_handler)
-
-    # Go over all nodes in the graph, and if one of them is a model by itself, unroll it recursively by
-    # merging the inner model's graph into the outer model's graph.
-    nodes = copy(model_graph.nodes)
-    for node in nodes:
-        if is_node_a_model(node):  # if the node represents a Keras model - flat it recursively
-            model_graph = flatten_nested_model(model_graph,
-                                               node,
-                                               model)
-    return model_graph
-
-
 def flatten_nested_model(outer_graph: Graph,
                          inner_model_node: BaseNode,
                          outer_keras_model: Model):
@@ -169,15 +142,26 @@ def flatten_nested_model(outer_graph: Graph,
     return outer_flatten_graph
 
 
-def model_reader(keras_model: Model) -> Graph:
+def parse_model(model: Model) -> Graph:
     """
-    Reads a Keras model and builds a base graph representing the model.
+    Parse a Keras model into a Graph.
+    In case of a nested model, it recursively unrolls inner models.
+
     Args:
-        keras_model: Keras model to build its graph representation.
+        model: Keras model to build its graph.
 
     Returns:
-        Base graph of the Keras model.
+        Networkx MultiDiGraph representing the Keras model including: nodes, edges, inputs, and outputs.
     """
-    logging.info("Start Model Reading...")
-    graph = parse_model(keras_model)
-    return graph
+    connectivity_handler = build_connectivity_handler(model)
+    model_graph = build_graph(model, connectivity_handler)
+
+    # Go over all nodes in the graph, and if one of them is a model by itself, unroll it recursively by
+    # merging the inner model's graph into the outer model's graph.
+    nodes = copy(model_graph.nodes)
+    for node in nodes:
+        if is_node_a_model(node):  # if the node represents a Keras model - flat it recursively
+            model_graph = flatten_nested_model(model_graph,
+                                               node,
+                                               model)
+    return model_graph

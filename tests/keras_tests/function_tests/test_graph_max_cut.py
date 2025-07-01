@@ -18,14 +18,12 @@ import unittest
 
 from keras.applications.mobilenet_v2 import MobileNetV2
 from keras.layers import Activation, Add
-from tensorflow.keras.layers import Conv2D, BatchNormalization, ReLU, Input, SeparableConv2D, Reshape
+from tensorflow.keras.layers import Conv2D, BatchNormalization, ReLU, Input
 import tensorflow as tf
 
 from model_compression_toolkit.core.common.graph.memory_graph.compute_graph_max_cut import compute_graph_max_cut
 from model_compression_toolkit.core.common.graph.memory_graph.memory_graph import MemoryGraph
-from model_compression_toolkit.core.keras.reader.reader import model_reader
-
-import model_compression_toolkit as mct
+from model_compression_toolkit.graph_builder import convert_keras_model_to_graph
 
 
 def simple_model(input_shape):
@@ -83,7 +81,7 @@ class TestGraphMaxCut(unittest.TestCase):
     def test_graph_max_cut_plain_graph_simple(self):
         input_shape = (8, 8, 3)
         model = simple_model(input_shape)
-        graph = model_reader(model)
+        graph = convert_keras_model_to_graph(model)
         memory_graph = MemoryGraph(graph)
 
         schedule, max_cut_size, cuts = compute_graph_max_cut(memory_graph)
@@ -96,7 +94,7 @@ class TestGraphMaxCut(unittest.TestCase):
     def test_graph_max_cut_residual_graph(self):
         input_shape = (8, 8, 3)
         model = residual_model(input_shape)
-        graph = model_reader(model)
+        graph = convert_keras_model_to_graph(model)
         memory_graph = MemoryGraph(graph)
 
         schedule, max_cut_size, cuts = compute_graph_max_cut(memory_graph)
@@ -108,7 +106,7 @@ class TestGraphMaxCut(unittest.TestCase):
     def test_graph_max_cut_plain_graph_complex(self):
         input_shape = (8, 8, 3)
         model = complex_model(input_shape)
-        graph = model_reader(model)
+        graph = convert_keras_model_to_graph(model)
         memory_graph = MemoryGraph(graph)
 
         schedule, max_cut_size, cuts = compute_graph_max_cut(memory_graph)
@@ -120,7 +118,7 @@ class TestGraphMaxCut(unittest.TestCase):
     def test_graph_max_cut_plain_graph_expanding(self):
         input_shape = (8, 8, 3)
         model = expanding_model(input_shape)
-        graph = model_reader(model)
+        graph = convert_keras_model_to_graph(model)
         memory_graph = MemoryGraph(graph)
 
         schedule, max_cut_size, cuts = compute_graph_max_cut(memory_graph)
@@ -131,7 +129,7 @@ class TestGraphMaxCut(unittest.TestCase):
 
     def test_graph_max_cut_plain_graph_real_model(self):
         model = MobileNetV2()
-        graph = model_reader(model)
+        graph = convert_keras_model_to_graph(model)
         memory_graph = MemoryGraph(graph)
 
         schedule, max_cut_size, cuts = compute_graph_max_cut(memory_graph, n_iter=50, astar_n_iter=500)
@@ -143,7 +141,7 @@ class TestGraphMaxCut(unittest.TestCase):
     def test_graph_max_cut_deterministic_order(self):
         input_shape = (8, 8, 3)
         model = complex_model(input_shape)
-        graph = model_reader(model)
+        graph = convert_keras_model_to_graph(model)
 
         solutions = [compute_graph_max_cut(MemoryGraph(graph)) for _ in range(10)]
 

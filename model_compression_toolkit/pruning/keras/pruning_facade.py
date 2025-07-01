@@ -26,7 +26,6 @@ from model_compression_toolkit.core.common.pruning.pruner import Pruner
 from model_compression_toolkit.core.common.pruning.pruning_config import PruningConfig
 from model_compression_toolkit.core.common.pruning.pruning_info import PruningInfo
 from model_compression_toolkit.core.common.quantization.set_node_quantization_config import set_quantization_configuration_to_graph
-from model_compression_toolkit.core.graph_prep_runner import read_model_to_graph
 from model_compression_toolkit.logger import Logger
 from model_compression_toolkit.core.common.quantization.quantization_config import DEFAULTCONFIG
 from model_compression_toolkit.target_platform_capabilities.constants import DEFAULT_TP_MODEL

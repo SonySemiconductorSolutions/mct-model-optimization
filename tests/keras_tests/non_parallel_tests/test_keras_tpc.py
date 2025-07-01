@@ -25,6 +25,7 @@ from tensorflow.keras.applications.mobilenet_v2 import MobileNetV2
 import model_compression_toolkit.target_platform_capabilities.schema.mct_current_schema as schema
 from model_compression_toolkit.defaultdict import DefaultDict
 from model_compression_toolkit.core.common import BaseNode
+from model_compression_toolkit.graph_builder import convert_keras_model_to_graph
 from model_compression_toolkit.target_platform_capabilities.targetplatform2framework import LayerFilterParams
 from model_compression_toolkit.target_platform_capabilities.targetplatform2framework.attribute_filter import Greater, \
     Smaller, GreaterEq, Eq, SmallerEq, Contains
@@ -58,7 +59,7 @@ def get_node(layer) -> BaseNode:
     i = Input(shape=(3, 16, 16))
     x = layer(i)
     model = tf.keras.Model(i, x)
-    graph = KerasImplementation().model_reader(model, None)
+    graph = convert_keras_model_to_graph(model)
     return graph.get_topo_sorted_nodes()[1]
 
 

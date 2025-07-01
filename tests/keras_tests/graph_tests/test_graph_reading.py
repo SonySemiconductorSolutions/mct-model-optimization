@@ -21,9 +21,9 @@ from tensorflow.keras.applications.efficientnet import EfficientNetB0
 from tensorflow.keras.applications.nasnet import NASNetMobile
 from tensorflow.keras.applications.resnet import ResNet50
 from tensorflow.keras.applications.xception import Xception
-from model_compression_toolkit.core.keras.reader.reader import model_reader
 from model_compression_toolkit.core.common.framework_info import set_fw_info
 from model_compression_toolkit.core.keras.default_framework_info import KerasInfo
+from model_compression_toolkit.graph_builder import convert_keras_model_to_graph
 
 
 class TestGraphReading(unittest.TestCase):
@@ -32,7 +32,7 @@ class TestGraphReading(unittest.TestCase):
 
     def _base_test(self, model_class):
         model = model_class()
-        graph = model_reader(model)
+        graph = convert_keras_model_to_graph(model)
         self.assertEqual(len(graph.nodes()), len(model.layers))
 
     def test_graph_reading(self):

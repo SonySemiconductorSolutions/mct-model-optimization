@@ -32,6 +32,7 @@ from model_compression_toolkit.core.common.model_collector import ModelCollector
 from model_compression_toolkit.core.common.quantization.quantization_params_generation.qparams_computation import \
     calculate_quantization_params
 from model_compression_toolkit.core.keras.constants import KERNEL, GAMMA
+from model_compression_toolkit.graph_builder.keras.keras_graph_builder import KerasGraphBuilder
 from model_compression_toolkit.target_platform_capabilities.constants import KERNEL_ATTR, BIAS_ATTR, KERAS_KERNEL, BIAS
 from model_compression_toolkit.target_platform_capabilities.schema.mct_current_schema import AttributeQuantizationConfig
 from model_compression_toolkit.core.common.quantization.quantization_config import CustomOpsetLayers
@@ -102,10 +103,11 @@ class TestParamSelectionWithHMSE(unittest.TestCase):
                                                 lambda name, _tp: tpc_fn(quant_method, per_channel),
                                                 qc=self.qc,
                                                 running_gptq=running_gptq,
-                                                attach2fw=AttachTpcToKeras()
-                                                # to enable HMSE in params calculation if needed
+                                                attach2fw=AttachTpcToKeras(),
+                                                fw_graph_builder=KerasGraphBuilder()
                                                 )
 
+        # to enable HMSE in params calculation if needed
         self.his = HessianInfoService(graph=self.graph, fw_impl=self.keras_impl)
 
         mi = ModelCollector(self.graph,

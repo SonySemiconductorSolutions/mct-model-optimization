@@ -9,10 +9,6 @@ from model_compression_toolkit.core.pytorch.pytorch_node_prior_info import creat
 from model_compression_toolkit.core.common import Graph
 from model_compression_toolkit.core.pytorch.graph_substitutions.substitutions.batchnorm_folding import \
     pytorch_batchnorm_folding, pytorch_batchnorm_forward_folding
-from model_compression_toolkit.core.pytorch.graph_substitutions.substitutions.batchnorm_reconstruction import \
-    pytorch_batchnorm_reconstruction
-from model_compression_toolkit.core.pytorch.graph_substitutions.substitutions.batchnorm_refusing import \
-    pytorch_batchnorm_refusing
 from model_compression_toolkit.core.pytorch.graph_substitutions.substitutions.functional_batch_norm import \
     FunctionalBatchNorm
 from model_compression_toolkit.core.pytorch.graph_substitutions.substitutions.functional_layer_norm import \
@@ -97,7 +93,5 @@ def transform_pytorch_graph(graph: Graph,
 
     if residual_collapsing:
         graph = substitute(graph, [pytorch_residual_collapsing()])
-
-
 
     return graph

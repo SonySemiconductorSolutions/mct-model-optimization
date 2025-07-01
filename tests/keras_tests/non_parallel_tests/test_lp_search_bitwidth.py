@@ -33,6 +33,7 @@ from model_compression_toolkit.core.common.quantization.set_node_quantization_co
     set_quantization_configuration_to_graph
 from model_compression_toolkit.core.common.similarity_analyzer import compute_mse
 from model_compression_toolkit.core.keras.keras_implementation import KerasImplementation
+from model_compression_toolkit.graph_builder import convert_keras_model_to_graph
 from model_compression_toolkit.target_platform_capabilities.constants import KERNEL_ATTR
 from model_compression_toolkit.target_platform_capabilities.targetplatform2framework.attach2keras import \
     AttachTpcToKeras
@@ -63,10 +64,7 @@ class TestSearchBitwidthConfiguration(unittest.TestCase):
         in_model = keras.Model(inputs=input_tensor, outputs=relu)
         keras_impl = KerasImplementation()
 
-        def dummy_representative_dataset():
-            return None
-
-        graph = keras_impl.model_reader(in_model, dummy_representative_dataset)  # model reading
+        graph = convert_keras_model_to_graph(in_model)
 
         fqc = AttachTpcToKeras().attach(tpc)
 

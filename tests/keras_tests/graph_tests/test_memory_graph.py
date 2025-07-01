@@ -21,9 +21,9 @@ from keras.layers import Conv2D, BatchNormalization, ReLU, Activation, Add
 import tensorflow as tf
 
 from model_compression_toolkit.core.common.graph.memory_graph.memory_graph import MemoryGraph
-from model_compression_toolkit.core.keras.reader.reader import model_reader
 from model_compression_toolkit.core.common.framework_info import set_fw_info
 from model_compression_toolkit.core.keras.default_framework_info import KerasInfo
+from model_compression_toolkit.graph_builder import convert_keras_model_to_graph
 
 
 def basic_model(input_shape):
@@ -82,7 +82,7 @@ class TestMemoryGraph(unittest.TestCase):
     def test_memory_graph_build(self):
         model = basic_model((8, 8, 3))
 
-        graph = model_reader(model)
+        graph = convert_keras_model_to_graph(model)
 
         memory_graph = MemoryGraph(graph)
 
@@ -97,7 +97,7 @@ class TestMemoryGraph(unittest.TestCase):
     def test_memory_graph_node_with_multiple_outputs(self):
         model = node_multiple_outputs_model((8, 8, 3))
 
-        graph = model_reader(model)
+        graph = convert_keras_model_to_graph(model)
 
         memory_graph = MemoryGraph(graph)
 
@@ -115,7 +115,7 @@ class TestMemoryGraph(unittest.TestCase):
     def test_memory_graph_with_residual(self):
         model = residual_model((8, 8, 3))
 
-        graph = model_reader(model)
+        graph = convert_keras_model_to_graph(model)
 
         memory_graph = MemoryGraph(graph)
 

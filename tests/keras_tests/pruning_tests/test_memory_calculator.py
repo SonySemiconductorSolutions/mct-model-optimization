@@ -19,7 +19,6 @@ import unittest
 import model_compression_toolkit as mct
 from model_compression_toolkit.core.common.pruning.memory_calculator import MemoryCalculator
 from model_compression_toolkit.core.keras.pruning.pruning_keras_implementation import PruningKerasImplementation
-from model_compression_toolkit.core.graph_prep_runner import read_model_to_graph
 
 import keras
 

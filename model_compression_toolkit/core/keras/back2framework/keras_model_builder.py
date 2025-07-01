@@ -16,6 +16,7 @@ from copy import copy
 
 import tensorflow as tf
 from keras.models import Model
+from model_compression_toolkit.core.common.graph.base_graph import OutTensor
 from packaging import version
 
 from model_compression_toolkit.core.common.back2framework.base_model_builder import BaseModelBuilder
@@ -24,12 +25,10 @@ from model_compression_toolkit.logger import Logger
 
 if version.parse(tf.__version__) >= version.parse("2.13"):
     from keras import Input
-    from keras.src.layers.core import TFOpLambda
-    from keras.src.engine.base_layer import TensorFlowOpLayer, Layer
+    from keras.src.engine.base_layer import Layer
 else:
     from keras import Input   # pragma: no cover
-    from keras.layers.core import TFOpLambda   # pragma: no cover
-    from keras.engine.base_layer import TensorFlowOpLayer, Layer   # pragma: no cover
+    from keras.engine.base_layer import Layer   # pragma: no cover
 
 from typing import Any, Dict, List, Tuple, Callable
 from tensorflow.python.util.object_identity import Reference as TFReference
@@ -38,7 +37,6 @@ from model_compression_toolkit.core import common
 from model_compression_toolkit.core.common import BaseNode
 from model_compression_toolkit.core.common.graph.edge import EDGE_SINK_INDEX
 from model_compression_toolkit.core.keras.back2framework.instance_builder import OperationHandler
-from model_compression_toolkit.core.keras.reader.connectivity_handler import OutTensor
 from mct_quantizers import KerasQuantizationWrapper
 
 # In tf2.3 fake quant node is implemented as TensorFlowOpLayer, while in tf2.4 as TFOpLambda.

@@ -18,6 +18,7 @@ import keras
 import unittest
 
 from model_compression_toolkit.core.common.quantization.quantization_config import CustomOpsetLayers
+from model_compression_toolkit.graph_builder.keras.keras_graph_builder import KerasGraphBuilder
 from model_compression_toolkit.target_platform_capabilities.targetplatform2framework.attach2keras import \
     AttachTpcToKeras
 
@@ -88,7 +89,8 @@ def setup_test(in_model, keras_impl, mixed_precision_candidates_list):
                                        lambda name, _tp: get_tpc(mixed_precision_candidates_list),
                                        mixed_precision_enabled=True,
                                        attach2fw=AttachTpcToKeras(),
-                                       qc=QuantizationConfig(custom_tpc_opset_to_layer={"Input": CustomOpsetLayers([InputLayer])}))
+                                       qc=QuantizationConfig(custom_tpc_opset_to_layer={"Input": CustomOpsetLayers([InputLayer])}),
+                                       fw_graph_builder=KerasGraphBuilder())
 
     # Validation is skipped because fusing information is not relevant for the virtual graph.
     # Therefore, validation checks are disabled before the virtual graph substitution and

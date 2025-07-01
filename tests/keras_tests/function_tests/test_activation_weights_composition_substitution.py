@@ -24,6 +24,8 @@ from model_compression_toolkit.core.common.framework_info import set_fw_info
 from model_compression_toolkit.core.keras.default_framework_info import KerasInfo
 from model_compression_toolkit.core.common.fusion.fusing_info import FusingInfoGenerator
 from model_compression_toolkit.core.common.quantization.quantization_config import CustomOpsetLayers
+from model_compression_toolkit.graph_builder import convert_keras_model_to_graph
+from model_compression_toolkit.graph_builder.keras.keras_graph_builder import KerasGraphBuilder
 from model_compression_toolkit.target_platform_capabilities.targetplatform2framework.attach2keras import \
     AttachTpcToKeras
 from tests.common_tests.helpers.generate_test_tpc import generate_test_op_qc, generate_test_attr_configs
@@ -100,7 +102,6 @@ def representative_dataset():
 def prepare_graph(in_model, keras_impl, mixed_precision_candidates_list, base_config, default_config):
     qc = mct.core.QuantizationConfig(custom_tpc_opset_to_layer={"Input": CustomOpsetLayers([InputLayer])})
 
-    graph = keras_impl.model_reader(in_model, representative_dataset)  # model reading
 
     tpc = get_tpc_with_activation_mp_keras(base_config=base_config,
                                            default_config=default_config,
@@ -110,14 +111,21 @@ def prepare_graph(in_model, keras_impl, mixed_precision_candidates_list, base_co
     attach2keras = AttachTpcToKeras()
     fqc = attach2keras.attach(tpc, qc.custom_tpc_opset_to_layer)
 
-    graph.set_fqc(fqc)
+    graph = KerasGraphBuilder().build_graph(model=in_model,
+                                            fqc=fqc,
+                                            linear_collapsing=qc.linear_collapsing,
+                                            residual_collapsing=qc.residual_collapsing,
+                                            relu_bound_to_power_of_2=qc.relu_bound_to_power_of_2)
 
-    # Standard graph substitutions
-    graph = substitute(graph, keras_impl.get_substitutions_prepare_graph())
-    for node in graph.nodes:
-        node.prior_info = keras_impl.get_node_prior_info(node=node, graph=graph)
-    graph = substitute(graph, keras_impl.get_substitutions_pre_statistics_collection(qc))
-
+    # graph = convert_keras_model_to_graph(in_model)
+    # graph.set_fqc(fqc)
+    #
+    # # Standard graph substitutions
+    # graph = substitute(graph, keras_impl.get_substitutions_prepare_graph())
+    # for node in graph.nodes:
+    #     node.prior_info = keras_impl.get_node_prior_info(node=node, graph=graph)
+    # graph = substitute(graph, keras_impl.get_substitutions_pre_statistics_collection(qc))
+    #
     graph = set_quantization_configuration_to_graph(graph=graph,
                                                     quant_config=qc,
                                                     mixed_precision_enable=True)

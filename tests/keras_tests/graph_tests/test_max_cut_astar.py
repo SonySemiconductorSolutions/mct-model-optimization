@@ -24,9 +24,9 @@ from model_compression_toolkit.core.common.graph.memory_graph.cut import Cut
 from model_compression_toolkit.core.common.graph.memory_graph.max_cut_astar import MaxCutAstar
 from model_compression_toolkit.core.common.graph.memory_graph.memory_element import MemoryElements
 from model_compression_toolkit.core.common.graph.memory_graph.memory_graph import MemoryGraph
-from model_compression_toolkit.core.keras.reader.reader import model_reader
 from model_compression_toolkit.core.common.framework_info import set_fw_info
 from model_compression_toolkit.core.keras.default_framework_info import KerasInfo
+from model_compression_toolkit.graph_builder import convert_keras_model_to_graph
 
 
 def simple_model(input_shape):
@@ -80,7 +80,7 @@ class BaseTest(unittest.TestCase):
 class TestMaxCutAstarInit(BaseTest):
 
     def _run_max_cut_astar_initialization_test(self, model):
-        graph = model_reader(model)
+        graph = convert_keras_model_to_graph(model)
         memory_graph = MemoryGraph(graph)
 
         mc_astar = MaxCutAstar(memory_graph)
@@ -109,7 +109,7 @@ class TestMaxCutAstarInit(BaseTest):
 class TestMaxCutAstarCleanMemory(BaseTest):
     def test_max_cut_astar_clean_memory_simple(self):
         model = simple_model((8, 8, 3))
-        graph = model_reader(model)
+        graph = convert_keras_model_to_graph(model)
         memory_graph = MemoryGraph(graph)
 
         mc_astar = MaxCutAstar(memory_graph)
@@ -136,7 +136,7 @@ class TestMaxCutAstarCleanMemory(BaseTest):
 
     def test_max_cut_astar_clean_memory_complex(self):
         model = complex_model((8, 8, 3))
-        graph = model_reader(model)
+        graph = convert_keras_model_to_graph(model)
         memory_graph = MemoryGraph(graph)
 
         mc_astar = MaxCutAstar(memory_graph)
@@ -167,7 +167,7 @@ class TestMaxCutAstarCanExpand(BaseTest):
 
     def test_max_cut_astar_can_expand_simple(self):
         model = simple_model((8, 8, 3))
-        graph = model_reader(model)
+        graph = convert_keras_model_to_graph(model)
         memory_graph = MemoryGraph(graph)
 
         mc_astar = MaxCutAstar(memory_graph)
@@ -197,7 +197,7 @@ class TestMaxCutAstarCanExpand(BaseTest):
 
     def test_max_cut_astar_can_expand_complex(self):
         model = complex_model((8, 8, 3))
-        graph = model_reader(model)
+        graph = convert_keras_model_to_graph(model)
         memory_graph = MemoryGraph(graph)
 
         mc_astar = MaxCutAstar(memory_graph)
@@ -243,7 +243,7 @@ class TestMaxCutAstarIsPivot(BaseTest):
 
     def test_max_cut_astar_is_pivot(self):
         model = simple_model((8, 8, 3))
-        graph = model_reader(model)
+        graph = convert_keras_model_to_graph(model)
         memory_graph = MemoryGraph(graph)
 
         mc_astar = MaxCutAstar(memory_graph)
@@ -269,7 +269,7 @@ class TestMaxCutAstarExpand(BaseTest):
 
     def test_max_cut_astar_expand_simple(self):
         model = simple_model((8, 8, 3))
-        graph = model_reader(model)
+        graph = convert_keras_model_to_graph(model)
         memory_graph = MemoryGraph(graph)
 
         mc_astar = MaxCutAstar(memory_graph)
@@ -294,7 +294,7 @@ class TestMaxCutAstarExpand(BaseTest):
 
     def test_max_cut_astar_expand_complex(self):
         model = complex_model((8, 8, 3))
-        graph = model_reader(model)
+        graph = convert_keras_model_to_graph(model)
         memory_graph = MemoryGraph(graph)
 
         mc_astar = MaxCutAstar(memory_graph)
@@ -346,7 +346,7 @@ class TestMaxCutAstarSolve(BaseTest):
 
     def test_max_cut_astar_solve_simple(self):
         model = simple_model((8, 8, 3))
-        graph = model_reader(model)
+        graph = convert_keras_model_to_graph(model)
         memory_graph = MemoryGraph(graph)
 
         l_bound = memory_graph.memory_lbound_single_op
@@ -365,7 +365,7 @@ class TestMaxCutAstarSolve(BaseTest):
 
     def test_max_cut_astar_solve_complex(self):
         model = complex_model((8, 8, 3))
-        graph = model_reader(model)
+        graph = convert_keras_model_to_graph(model)
         memory_graph = MemoryGraph(graph)
 
         l_bound = memory_graph.memory_lbound_single_op
@@ -387,7 +387,7 @@ class TestMaxCutAstarSolve(BaseTest):
 
     def test_max_cut_astar_solve_expand(self):
         model = expanding_model((8, 8, 3))
-        graph = model_reader(model)
+        graph = convert_keras_model_to_graph(model)
         memory_graph = MemoryGraph(graph)
 
         l_bound = memory_graph.memory_lbound_single_op

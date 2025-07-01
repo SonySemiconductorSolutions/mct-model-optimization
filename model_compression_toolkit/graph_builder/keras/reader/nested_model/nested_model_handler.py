@@ -16,9 +16,9 @@
 
 from model_compression_toolkit.core.common.graph.base_graph import Graph
 from model_compression_toolkit.core.common.graph.base_node import BaseNode
-from model_compression_toolkit.core.keras.reader.nested_model.edges_merger import merge_models_edges
-from model_compression_toolkit.core.keras.reader.nested_model.nodes_merger import merge_models_nodes
-from model_compression_toolkit.core.keras.reader.nested_model.outputs_merger import merge_models_outputs
+from model_compression_toolkit.graph_builder.keras.reader.nested_model.edges_merger import merge_models_edges
+from model_compression_toolkit.graph_builder.keras.reader.nested_model.nodes_merger import merge_models_nodes
+from model_compression_toolkit.graph_builder.keras.reader.nested_model.outputs_merger import merge_models_outputs
 
 
 def merge_graphs(inner_model_node: BaseNode,

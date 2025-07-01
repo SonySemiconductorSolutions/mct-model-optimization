@@ -18,6 +18,7 @@ from functools import partial
 
 from model_compression_toolkit.core import CoreConfig
 from model_compression_toolkit.core.common.visualization.tensorboard_writer import init_tensorboard_writer
+from model_compression_toolkit.graph_builder.keras.keras_graph_builder import KerasGraphBuilder
 from model_compression_toolkit.logger import Logger
 from model_compression_toolkit.target_platform_capabilities.schema.mct_current_schema import TargetPlatformCapabilities
 from model_compression_toolkit.target_platform_capabilities.targetplatform2framework.attach2keras import \
@@ -200,7 +201,8 @@ if FOUND_TF:
                                                   fw_impl=fw_impl,
                                                   fqc=target_platform_capabilities,
                                                   target_resource_utilization=target_resource_utilization,
-                                                  tb_w=tb_w)
+                                                  tb_w=tb_w,
+                                                  fw_graph_builder=KerasGraphBuilder())
 
         tg = ptq_runner(tg, representative_data_gen, core_config, fw_impl, tb_w)
 

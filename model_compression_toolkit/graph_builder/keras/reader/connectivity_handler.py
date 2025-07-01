@@ -28,8 +28,8 @@ from typing import List, Tuple
 
 from model_compression_toolkit.core.common.graph.base_graph import OutTensor
 from model_compression_toolkit.core.common.graph.base_node import BaseNode
-from model_compression_toolkit.core.keras.reader.common import is_node_an_input_layer
-from model_compression_toolkit.core.keras.reader.node_builder import build_node
+from model_compression_toolkit.graph_builder.keras.reader.common import is_node_an_input_layer
+from model_compression_toolkit.graph_builder.keras.reader.node_builder import build_node
 
 keras = tf.keras
 layers = keras.layers

@@ -25,7 +25,6 @@ from model_compression_toolkit.core.common.pruning.pruner import Pruner
 from model_compression_toolkit.core.common.pruning.pruning_config import PruningConfig
 from model_compression_toolkit.core.common.pruning.pruning_info import PruningInfo
 from model_compression_toolkit.core.common.quantization.set_node_quantization_config import set_quantization_configuration_to_graph
-from model_compression_toolkit.core.graph_prep_runner import read_model_to_graph
 from model_compression_toolkit.logger import Logger
 from model_compression_toolkit.core.common.quantization.quantization_config import DEFAULTCONFIG
 from model_compression_toolkit.target_platform_capabilities.constants import DEFAULT_TP_MODEL
@@ -35,8 +34,7 @@ from model_compression_toolkit.target_platform_capabilities.constants import DEF
 if FOUND_TORCH:
     # Import PyTorch-specific modules from the model compression toolkit.
     from model_compression_toolkit.core.pytorch.back2framework.float_model_builder import FloatPyTorchModelBuilder
-    from model_compression_toolkit.core.pytorch.pruning.pruning_pytorch_implementation import \
-        PruningPytorchImplementation
+    from model_compression_toolkit.core.pytorch.pruning.pruning_pytorch_implementation import PruningPytorchImplementation
     from model_compression_toolkit.core.pytorch.default_framework_info import set_pytorch_info
     from torch.nn import Module
     from model_compression_toolkit.target_platform_capabilities.targetplatform2framework.attach2pytorch import \

@@ -23,7 +23,6 @@ from model_compression_toolkit.core.common.quantization.quantization_params_gene
     calculate_quantization_params
 from model_compression_toolkit.core.common.visualization.tensorboard_writer import init_tensorboard_writer
 from model_compression_toolkit.core.quantization_prep_runner import quantization_preparation_runner
-from model_compression_toolkit.graph_builder.pytorch.pytorch_graph_builder import PytorchGraphBuilder
 
 from model_compression_toolkit.target_platform_capabilities.tpc_models.imx500_tpc.latest import generate_tpc, \
     get_op_quantization_configs
@@ -36,7 +35,8 @@ def prepare_graph_with_configs(in_model,
                                attach2fw,
                                qc=DEFAULTCONFIG,
                                mixed_precision_enabled=False,
-                               running_gptq=False):
+                               running_gptq=False,
+                               fw_graph_builder=None):
     # TPC
     base_config, op_cfg_list, default_config = get_op_quantization_configs()
 
@@ -47,12 +47,12 @@ def prepare_graph_with_configs(in_model,
 
     fqc = attach2fw.attach(tpc, qc.custom_tpc_opset_to_layer)
 
-    graph = PytorchGraphBuilder().build_graph(model=in_model,
-                                              representative_dataset=representative_dataset,
-                                              fqc=fqc,
-                                              linear_collapsing=qc.linear_collapsing,
-                                              residual_collapsing=qc.residual_collapsing,
-                                              relu_bound_to_power_of_2=qc.relu_bound_to_power_of_2)
+    graph = fw_graph_builder.build_graph(model=in_model,
+                                         representative_dataset=representative_dataset,
+                                         fqc=fqc,
+                                         linear_collapsing=qc.linear_collapsing,
+                                         residual_collapsing=qc.residual_collapsing,
+                                         relu_bound_to_power_of_2=qc.relu_bound_to_power_of_2)
 
     graph = get_finalized_graph(graph,
                                 fqc,
@@ -73,7 +73,8 @@ def prepare_graph_with_quantization_parameters(in_model,
                                                input_shape,
                                                attach2fw,
                                                qc=DEFAULTCONFIG,
-                                               mixed_precision_enabled=False):
+                                               mixed_precision_enabled=False,
+                                               fw_graph_builder=None):
 
     graph = prepare_graph_with_configs(in_model,
                                        fw_impl,
@@ -81,7 +82,8 @@ def prepare_graph_with_quantization_parameters(in_model,
                                        get_tpc_func,
                                        attach2fw,
                                        qc,
-                                       mixed_precision_enabled)
+                                       mixed_precision_enabled,
+                                       fw_graph_builder=fw_graph_builder)
 
 
     mi = ModelCollector(graph,
@@ -105,7 +107,8 @@ def prepare_graph_set_bit_widths(in_model,
                                  network_editor,
                                  analyze_similarity,
                                  fqc,
-                                 mp_cfg):
+                                 mp_cfg,
+                                 fw_graph_builder):
 
     # Config
     core_config = CoreConfig(quantization_config=quant_config,
@@ -123,13 +126,27 @@ def prepare_graph_set_bit_widths(in_model,
         for _ in range(n_iter):
             yield representative_data_gen()
 
-    graph = graph_preparation_runner(in_model,
-                                     representative_data_gen=_representative_data_gen,
-                                     quantization_config=quant_config,
-                                     fw_impl=fw_impl,
-                                     fqc=fqc,
-                                     bit_width_config=core_config.bit_width_config,
-                                     mixed_precision_enable=core_config.is_mixed_precision_enabled)
+    # graph = graph_preparation_runner(in_model,
+    #                                  representative_data_gen=_representative_data_gen,
+    #                                  quantization_config=quant_config,
+    #                                  fw_impl=fw_impl,
+    #                                  fqc=fqc,
+    #                                  bit_width_config=core_config.bit_width_config,
+    #                                  mixed_precision_enable=core_config.is_mixed_precision_enabled)
+    graph = fw_graph_builder.build_graph(model=in_model,
+                                         representative_dataset=_representative_data_gen,
+                                         fqc=fqc,
+                                         linear_collapsing=core_config.quantization_config.linear_collapsing,
+                                         residual_collapsing=core_config.quantization_config.residual_collapsing,
+                                         relu_bound_to_power_of_2=core_config.quantization_config.relu_bound_to_power_of_2)
+
+    graph = get_finalized_graph(graph,
+                                fqc,
+                                core_config.quantization_config,
+                                bit_width_config=core_config.bit_width_config,
+                                tb_w=None,
+                                fw_impl=fw_impl,
+                                mixed_precision_enable=core_config.is_mixed_precision_enabled)
 
     tg = quantization_preparation_runner(graph,
                                          _representative_data_gen,
