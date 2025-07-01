@@ -40,8 +40,7 @@ class TestPytorchBaseWeightsQuantizer(BasePytorchInfrastructureTest):
                                                weights_quantization_params={},
                                                enable_weights_quantization=True,
                                                weights_channels_axis=0,
-                                               weights_per_channel_threshold=True,
-                                               min_threshold=0)
+                                               weights_per_channel_threshold=True)
 
     def run_test(self):
 

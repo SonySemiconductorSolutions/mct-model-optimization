@@ -18,7 +18,6 @@ from enum import Enum, auto
 from model_compression_toolkit.core.common.framework_info import ChannelAxisMapping
 from model_compression_toolkit.logger import Logger
 
-from model_compression_toolkit.core.common.quantization.quantization_config import QuantizationConfig
 from model_compression_toolkit.target_platform_capabilities.constants import POSITIONAL_ATTR
 from model_compression_toolkit.target_platform_capabilities.schema.mct_current_schema import \
     AttributeQuantizationConfig, OpQuantizationConfig
@@ -60,12 +59,11 @@ class BaseNodeQuantizationConfig(object):
             kwargs: A dictionary with additional key arguments.
 
         """
-
         if hasattr(self, config_parameter_name):
             setattr(self, config_parameter_name, config_parameter_value)
         else:
-            Logger.warning(f"Parameter {config_parameter_name} could not be found in the node quantization config and "
-                           f"was not updated!")
+            raise AttributeError(
+                f"Parameter {config_parameter_name} could not be found in the node quantization config.")
 
     def __repr__(self) -> str:
         """
@@ -98,7 +96,7 @@ class NodeActivationQuantizationConfig(BaseNodeQuantizationConfig):
         self.signedness = op_cfg.signedness
 
         self.activation_quantization_params = {}
-        # TODO irena: computed by compute_activation_bias_correction. shouldnt really be here
+        # TODO: computed by compute_activation_bias_correction. Probably shouldnt be here.
         self.activation_bias_correction_term = None
 
     @property
@@ -140,12 +138,14 @@ class NodeActivationQuantizationConfig(BaseNodeQuantizationConfig):
 
         return self.activation_quantization_method == other.activation_quantization_method and \
                self.activation_n_bits == other.activation_n_bits and \
-               self.quant_mode == other.quant_mode
+               self.quant_mode == other.quant_mode and \
+               self.signedness == other.signedness
 
     def __hash__(self):
         return hash((self.activation_quantization_method,
                      self.activation_n_bits,
-                     self.quant_mode))
+                     self.quant_mode,
+                     self.signedness))
 
 
 class WeightsAttrQuantizationConfig:
@@ -166,6 +166,7 @@ class WeightsAttrQuantizationConfig:
         self.weights_n_bits = weights_attr_cfg.weights_n_bits
         self.weights_per_channel_threshold = weights_attr_cfg.weights_per_channel_threshold
         self.enable_weights_quantization = weights_attr_cfg.enable_weights_quantization
+
         self.weights_quantization_params = {}
 
     def set_weights_quantization_param(self,
@@ -272,14 +273,14 @@ class NodeWeightsQuantizationConfig(BaseNodeQuantizationConfig):
 
                 self.attributes_config_mapping[attr] = WeightsAttrQuantizationConfig(weights_attr_cfg=attr_cfg,
                                                                                      weights_channels_axis=weights_channels_axis)
-        # TODO irena remove along with set_qc. Keeping for eq and hash to work without set_qc being called
+        # TODO this is set by batch norm reconstruction substitution when folded batch norms are added back, to mark
+        #  the nodes that the correction should be applied to (for some nodes it gets disabled) and BNs removed.
+        #  The actual correction is only computed when it's applied in ptq, so it seems that both substitutions could
+        #  be unified, and no info need to pass between.
         self.weights_second_moment_correction = None
-        self.weights_bias_correction = None
-
-    def set_qc(self, qc: QuantizationConfig):
-        # TODO irena: temporary keep the fields to not break everything at once.
-        self.weights_second_moment_correction = qc.weights_second_moment_correction
-        self.weights_bias_correction = qc.weights_bias_correction
+        # TODO: computed corrected bias is injected to the node config. Probably shouldn't be here. Also it can be
+        #  computed on the final config, instead of all candidates and then there is no need to save it at all.
+        self.bias_corrected = None
 
     def get_attr_config(self, attr_name: 'WeightAttrT') -> WeightsAttrQuantizationConfig:
         """
@@ -416,8 +417,8 @@ class NodeWeightsQuantizationConfig(BaseNodeQuantizationConfig):
                 if hasattr(attr_cfg, config_parameter_name):
                     setattr(attr_cfg, config_parameter_name, config_parameter_value)
                 else:
-                    Logger.warning(f"Parameter {config_parameter_name} could not be found in the node quantization config of "
-                                   f"weights attribute {attr_name} and was not updated!")
+                    raise AttributeError(f"Parameter {config_parameter_name} could not be found in the node quantization config of "
+                                         f"weights attribute {attr_name}.")
             else:  # pragma: no cover
                 Logger.critical(f"Weights attribute {attr_name} could not be found to set parameter {config_parameter_name}.")
 
@@ -435,8 +436,6 @@ class NodeWeightsQuantizationConfig(BaseNodeQuantizationConfig):
             return False  # pragma: no cover
 
         return self.simd_size == other.simd_size and \
-            self.weights_second_moment_correction == other.weights_second_moment_correction and \
-            self.weights_bias_correction == other.weights_bias_correction and \
             self.attributes_config_mapping.keys() == other.attributes_config_mapping.keys() and \
             all([self.attributes_config_mapping[k] == other.attributes_config_mapping[k]
                  for k in self.attributes_config_mapping.keys()]) and \
@@ -446,7 +445,5 @@ class NodeWeightsQuantizationConfig(BaseNodeQuantizationConfig):
 
     def __hash__(self):
         return hash((self.simd_size,
-                     self.weights_second_moment_correction,
-                     self.weights_bias_correction,
                      frozenset(self.attributes_config_mapping),
                      frozenset(self.pos_attributes_config_mapping)))

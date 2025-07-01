@@ -102,8 +102,7 @@ class BasePytorchInfrastructureTest:
                                                weights_quantization_params={},
                                                enable_weights_quantization=True,
                                                weights_channels_axis=0,
-                                               weights_per_channel_threshold=True,
-                                               min_threshold=0)
+                                               weights_per_channel_threshold=True)
 
     def get_activation_quantization_config(self, quant_method=QuantizationMethod.POWER_OF_TWO,
                                            activation_quant_params=None):

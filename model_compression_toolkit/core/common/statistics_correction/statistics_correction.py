@@ -56,8 +56,9 @@ def statistics_correction_runner(transformed_graph: Graph,
     ########################################################
     # Compute bias correction to nodes' config candidates
     ########################################################
-    tg_with_bias = compute_bias_correction_of_graph(tg_with_bias,
-                                                    fw_impl)
+    if core_config.quantization_config.weights_bias_correction:
+        tg_with_bias = compute_bias_correction_of_graph(tg_with_bias,
+                                                        fw_impl)
 
     if tb_w is not None:
         tb_w.add_graph(tg_with_bias, 'statistics_computation')
@@ -96,7 +97,6 @@ def apply_statistics_correction(transformed_graph: Graph,
     #############################################
     if core_config.quantization_config.weights_bias_correction:
         transformed_graph = apply_bias_correction_to_graph(transformed_graph,
-                                                           core_config,
                                                            fw_impl=fw_impl)
     if tb_w is not None:
         tb_w.add_graph(transformed_graph, 'after_statistics_correction')

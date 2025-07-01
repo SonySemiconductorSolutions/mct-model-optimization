@@ -38,12 +38,10 @@ class TestNodeQuantizationConfigurations(unittest.TestCase):
                                                     "new activation_n_bits should be 4.")
         self.assertFalse(nac == og_nac)
 
-        update_nac = copy.deepcopy(nac)
-
-        nac.set_quant_config_attr("activation_M_bits", 8)
-        self.assertFalse(nac.activation_n_bits == 8, "Expects set_quant_config_attr to not update, "
-                                                     "activation_n_bits should be 4.")
-        self.assertTrue(nac == update_nac)
+        with self.assertRaises(AttributeError) as e:
+            nac.set_quant_config_attr("activation_M_bits", 8)
+        self.assertEqual(str(e.exception),
+                         "Parameter activation_M_bits could not be found in the node quantization config.")
 
     def test_weights_set_quant_config_attribute(self):
         op_cfg, _, _ = get_op_quantization_configs()
@@ -52,15 +50,6 @@ class TestNodeQuantizationConfigurations(unittest.TestCase):
                                             weights_channels_axis=ChannelAxisMapping(1, -1),
                                             node_attrs_list=[KERNEL, 0])
         og_nwc = copy.deepcopy(nwc)
-
-        # Updating a config parameter, not weights attribute parameter (no attr_name passed)
-        # TODO irena: weights_bias_correction should be removed
-        # self.assertTrue(nwc.weights_bias_correction)
-        nwc.set_quant_config_attr("weights_bias_correction", False)
-        self.assertFalse(nwc.weights_bias_correction)
-        self.assertFalse(nwc == og_nwc)
-
-        nwc = copy.deepcopy(og_nwc)
 
         # Updating an attribute parameter
         self.assertTrue(nwc.get_attr_config(KERNEL).weights_n_bits, 8)
@@ -76,12 +65,10 @@ class TestNodeQuantizationConfigurations(unittest.TestCase):
                          f"Expects set_quant_config_attr to update positional attribute weights_n_bits to 4.")
         self.assertFalse(nwc == og_nwc)
 
-        # Updating an non-existing attribute parameter, no update expected
-        nwc = copy.deepcopy(og_nwc)
-        nwc.set_quant_config_attr("weights_M_bits", 4, attr_name=KERNEL)
-        self.assertTrue(nwc.get_attr_config(KERNEL).weights_n_bits == 8,
-                         f"Expects set_quant_config_attr to not update {KERNEL} attribute weights_n_bits to 4.")
-        self.assertTrue(nwc == og_nwc)
+        with self.assertRaises(AttributeError) as e:
+            nwc.set_quant_config_attr("weights_M_bits", 4, attr_name=KERNEL)
+        self.assertEqual(str(e.exception), f"Parameter weights_M_bits could not be found in the node quantization "
+                                           f"config of weights attribute {KERNEL}.")
 
     def test_get_weights_attr_config(self):
         op_cfg, _, _ = get_op_quantization_configs()
