@@ -17,6 +17,7 @@ from unittest.mock import patch
 
 import tensorflow as tf
 import keras
+import unittest
 
 from model_compression_toolkit.core.common.quantization.quantization_config import CustomOpsetLayers
 from model_compression_toolkit.graph_builder.keras.keras_graph_builder import KerasGraphBuilder
