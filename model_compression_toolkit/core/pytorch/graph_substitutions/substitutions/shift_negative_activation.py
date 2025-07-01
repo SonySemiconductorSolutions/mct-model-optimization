@@ -29,6 +29,7 @@ from model_compression_toolkit.core.common import BaseNode, Graph
 from model_compression_toolkit.core.common.graph.graph_matchers import EdgeMatcher
 from model_compression_toolkit.core.common.graph.graph_matchers import NodeOperationMatcher
 from model_compression_toolkit.core.common.substitutions.shift_negative_activation import apply_shift_negative_correction
+from model_compression_toolkit.core.pytorch.quantization.activation_quantization_fn_factory import get_activation_quantization_fn_factory
 from model_compression_toolkit.core.pytorch.constants import PAD, VALUE, PADDING, BIAS, USE_BIAS
 from model_compression_toolkit.core.pytorch.utils import to_torch_tensor
 
@@ -239,4 +240,5 @@ def pytorch_apply_shift_negative_correction(graph: Graph,
                                            PADDING,
                                            BIAS,
                                            USE_BIAS,
+                                           get_activation_quantization_fn_factory,
                                            params_search_quantization_fn=params_search_quantization_fn)

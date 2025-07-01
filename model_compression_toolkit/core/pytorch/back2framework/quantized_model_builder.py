@@ -20,6 +20,7 @@ import torch
 from model_compression_toolkit.core import common
 from model_compression_toolkit.core.common import BaseNode
 from model_compression_toolkit.core.common.quantization.quantization_fn_selection import get_activation_quantization_fn
+from model_compression_toolkit.core.pytorch.quantization.activation_quantization_fn_factory import get_activation_quantization_fn_factory
 from model_compression_toolkit.core.common.user_info import UserInformation
 from model_compression_toolkit.core.pytorch.back2framework.pytorch_model_builder import PyTorchModelBuilder, \
     PytorchModel
@@ -60,7 +61,8 @@ class QuantizedPyTorchModel(PytorchModel):
         if node.is_activation_quantization_enabled():
             if isinstance(input_tensors, list):
                 input_tensors = torch.cat(input_tensors, dim=0)
-            activation_quantizer = get_activation_quantization_fn(node.final_activation_quantization_cfg)
+            activation_quantizer = get_activation_quantization_fn(node.final_activation_quantization_cfg,
+                                                                  get_activation_quantization_fn_factory)
             return activation_quantizer(input_tensors)
         return input_tensors
 

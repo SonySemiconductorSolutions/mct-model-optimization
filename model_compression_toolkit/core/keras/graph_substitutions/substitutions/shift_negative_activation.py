@@ -34,6 +34,7 @@ from model_compression_toolkit.core.common.graph.graph_matchers import NodeOpera
     NodeFrameworkAttrMatcher
 from model_compression_toolkit.core.common.substitutions.shift_negative_activation import \
     apply_shift_negative_correction
+from model_compression_toolkit.core.keras.quantization.activation_quantization_fn_factory import get_activation_quantization_fn_factory
 from model_compression_toolkit.core.keras.constants import KERNEL_SIZE, STRIDES, ACTIVATION, SWISH, \
     SELU, GELU, FUNCTION, ADD, PAD
 from model_compression_toolkit.core.keras.constants import NEGATIVE_SLOPE, PADDING, PAD_SAME, PAD_VALID, BIAS, USE_BIAS
@@ -252,5 +253,6 @@ def keras_apply_shift_negative_correction(graph: Graph,
                                            is_padding_node_and_node_has_padding,
                                            PADDING,
                                            BIAS,
-                                           USE_BIAS
+                                           USE_BIAS,
+                                           get_activation_quantization_fn_factory
                                            )

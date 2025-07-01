@@ -19,7 +19,7 @@ import numpy as np
 
 from model_compression_toolkit.constants import THRESHOLD, SIGNED, RANGE_MIN, RANGE_MAX
 
-from model_compression_toolkit.core.keras.quantizer.fake_quant_builder import symmetric_quantization, \
+from model_compression_toolkit.core.keras.quantization.fake_quant_builder import symmetric_quantization, \
     uniform_quantization
 
 

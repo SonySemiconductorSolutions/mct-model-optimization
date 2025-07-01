@@ -92,7 +92,8 @@ def init_quantized_weights(node_q_cfg: List[CandidateNodeQuantizationConfig],
     return quantized_weights
 
 
-def init_activation_quantizers(node_q_cfg: List[CandidateNodeQuantizationConfig]) -> List:
+def init_activation_quantizers(node_q_cfg: List[CandidateNodeQuantizationConfig],
+                               get_activation_quantization_fn_factory: Callable) -> List:
     """
     Builds a list of quantizers for each of the bitwidth candidates for activation quantization,
     to be stored and used during MP search.
@@ -100,6 +101,7 @@ def init_activation_quantizers(node_q_cfg: List[CandidateNodeQuantizationConfig]
     Args:
         node_q_cfg: Quantization configuration candidates of the node that generated the layer that will
                     use this quantizer.
+        get_activation_quantization_fn_factory: activation quantization functions factory.
 
     Returns: a list of activation quantizers - for each bitwidth and layer's attribute to be quantized.
     """
@@ -107,7 +109,7 @@ def init_activation_quantizers(node_q_cfg: List[CandidateNodeQuantizationConfig]
     activation_quantizers = []
     for index, qc in enumerate(node_q_cfg):
         q_activation = node_q_cfg[index].activation_quantization_cfg
-        quantizer = get_activation_quantization_fn(q_activation)
+        quantizer = get_activation_quantization_fn(q_activation, get_activation_quantization_fn_factory)
         activation_quantizers.append(quantizer)
 
     return activation_quantizers

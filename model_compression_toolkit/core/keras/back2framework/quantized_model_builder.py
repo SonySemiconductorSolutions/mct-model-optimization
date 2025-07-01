@@ -14,10 +14,10 @@
 # ==============================================================================
 from typing import List
 
-from model_compression_toolkit.core import FrameworkInfo
 from model_compression_toolkit.core import common
 from model_compression_toolkit.core.common import BaseNode
 from model_compression_toolkit.core.common.quantization.quantization_fn_selection import get_activation_quantization_fn
+from model_compression_toolkit.core.keras.quantization.activation_quantization_fn_factory import get_activation_quantization_fn_factory
 from model_compression_toolkit.core.keras.back2framework.keras_model_builder import KerasModelBuilder
 from tensorflow.python.util.object_identity import Reference as TFReference
 
@@ -57,5 +57,6 @@ class QuantizedKerasModelBuilder(KerasModelBuilder):
             Output of the node.
 
         """
-        activation_quantizer = get_activation_quantization_fn(node.final_activation_quantization_cfg)
+        activation_quantizer = get_activation_quantization_fn(node.final_activation_quantization_cfg,
+                                                              get_activation_quantization_fn_factory)
         return activation_quantizer(input_tensors)

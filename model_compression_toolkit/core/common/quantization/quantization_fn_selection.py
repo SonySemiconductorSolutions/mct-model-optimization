@@ -17,7 +17,6 @@ from collections.abc import Callable
 
 from mct_quantizers import QuantizationMethod
 
-from model_compression_toolkit.core.common.framework_info import get_fw_info
 from model_compression_toolkit.core.common.quantization.node_quantization_config import NodeActivationQuantizationConfig
 from model_compression_toolkit.logger import Logger
 from model_compression_toolkit.core.common.quantization.quantizers.lut_kmeans_quantizer import lut_kmeans_quantizer
@@ -25,25 +24,14 @@ from model_compression_toolkit.core.common.quantization.quantizers.uniform_quant
     symmetric_quantizer, uniform_quantizer
 
 
-def get_activation_quantization_fn_factory(quantization_method: QuantizationMethod) -> Callable[[int, dict], Callable]:
-    """
-    Get factory for activation quantizer.
-
-    Args:
-        quantization_method: quantization method for activation.
-
-    Returns:
-        Factory that accepts activation bitwidth and a dict of quantization params, and returns the quantizer.
-    """
-    return get_fw_info().activation_quantizer_factory_mapping[quantization_method]
-
-
-def get_activation_quantization_fn(activation_quantization_cfg: NodeActivationQuantizationConfig) -> Callable:
+def get_activation_quantization_fn(activation_quantization_cfg: NodeActivationQuantizationConfig,
+                                   get_activation_quantization_fn_factory: Callable) -> Callable:
     """
     Get activation quantizer based on activation quantization configuration.
 
     Args:
         activation_quantization_cfg: activation quantization configuration.
+        get_activation_quantization_fn_factory: activation quantization functions factory.
 
     Returns:
         Activation quantizer that accepts a tensor and returns a quantized tensor.

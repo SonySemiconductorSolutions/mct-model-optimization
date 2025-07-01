@@ -18,8 +18,6 @@ from typing import List, Tuple, Any, Callable
 
 from model_compression_toolkit.core.common.quantization.node_quantization_config import WeightsAttrQuantizationConfig, \
     ActivationQuantizationMode
-from model_compression_toolkit.core.common.quantization.quantization_fn_selection import \
-    get_activation_quantization_fn_factory
 from model_compression_toolkit.logger import Logger
 from model_compression_toolkit.core.common import Graph, BaseNode
 from model_compression_toolkit.constants import THRESHOLD, SIGNED, SHIFT_NEGATIVE_NON_LINEAR_NUM_BITS
@@ -253,6 +251,7 @@ def shift_negative_function(graph: Graph,
                             padding_str: str,
                             bias_str: str,
                             bias_flag_str: str,
+                            get_activation_quantization_fn_factory: Callable,
                             zero_padding_node: BaseNode = None,
                             bypass_nodes: List = None,
                             params_search_quantization_fn: Callable = None
@@ -278,6 +277,7 @@ def shift_negative_function(graph: Graph,
         padding_str: The framework specific attribute name of the padding.
         bias_str: The framework specific attribute name of the bias.
         bias_flag_str: The framework specific attribute name of the bias flag.
+        get_activation_quantization_fn_factory: activation quantization functions factory.
         zero_padding_node: ZeroPadding2D node that may be in the graph before the linear layer.
         params_search_quantization_fn: Function to quantize np tensor using a framework (tf/torch) quantization method. Needed for better param_search estimating the expected loss.
 
@@ -335,7 +335,7 @@ def shift_negative_function(graph: Graph,
                 the histogram (which is a numpy object) is quantized using the non-linear node activation
                 quantization function (to estimate the expected mse comparing to the original histogram).
                 The quantization function is a framework function, which makes it fail since it
-                expects a fw tensor. The commmon part of SNC receives an argument which is a callable 
+                expects a fw tensor. The common part of SNC receives an argument which is a callable 
                 that receives two argument and returns one: it gets the fw activation quantization function
                 and the bins to quantize. The function (of each fw) responsible for doing (if needed) a preprocessing and postprocessing
                 to the bins which is a numpy object.
@@ -569,6 +569,7 @@ def apply_shift_negative_correction(graph: Graph,
                                     padding_str: str,
                                     bias_str: str,
                                     bias_flag_str: str,
+                                    get_activation_quantization_fn_factory: Callable,
                                     params_search_quantization_fn: Callable=None) -> Graph:
     """
     Apply the substitution even if the linear node is not immediately after
@@ -590,6 +591,9 @@ def apply_shift_negative_correction(graph: Graph,
         padding_str: The framework specific attribute name of the padding.
         bias_str: The framework specific attribute name of the bias.
         bias_flag_str: The framework specific attribute name of the bias flag.
+        get_activation_quantization_fn_factory: activation quantization functions factory.
+        params_search_quantization_fn: Function to quantize np tensor using a framework (tf/torch) quantization method. Needed for better param_search estimating the expected loss.
+
     Returns:
         Graph after applying shift negative on selected activations.
     """
@@ -620,6 +624,7 @@ def apply_shift_negative_correction(graph: Graph,
                                                 padding_str,
                                                 bias_str,
                                                 bias_flag_str,
+                                                get_activation_quantization_fn_factory,
                                                 zero_padding_node=pad_node,
                                                 bypass_nodes=bypass_nodes,
                                                 params_search_quantization_fn=params_search_quantization_fn)
