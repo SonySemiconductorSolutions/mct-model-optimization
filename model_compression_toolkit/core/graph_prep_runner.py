@@ -158,7 +158,6 @@ def get_finalized_graph(initial_graph: Graph,
     #  not to break all the code at once. Eventually we need to handle quant_config directly, without injecting into candidates.
     #  TODO 2: Also we adjust candidates for single precision, which we shouldn't do here.
     def update(qc):
-        qc.activation_quantization_cfg.set_qc(quant_config)
         qc.weights_quantization_cfg.set_qc(quant_config)
         for attr_cfg in qc.weights_quantization_cfg.get_all_weight_attrs_configs().values():
             attr_cfg.weights_error_method = quant_config.weights_error_method
