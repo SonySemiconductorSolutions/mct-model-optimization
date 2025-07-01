@@ -49,7 +49,7 @@ class FakelyQuantTorchScriptPyTorchExporter(BasePyTorchExporter):
                          save_model_path,
                          repr_dataset)
 
-    def export(self) -> None:
+    def export(self, output_names=None) -> None:
         """
         Convert an exportable (fully-quantized) PyTorch model to a fakely-quant model
         (namely, weights that are in fake-quant format) and fake-quant layers for the activations.
