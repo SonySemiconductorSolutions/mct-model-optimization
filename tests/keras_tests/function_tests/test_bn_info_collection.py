@@ -20,10 +20,6 @@ import numpy as np
 
 from model_compression_toolkit.core.common.framework_info import set_fw_info
 from model_compression_toolkit.core.keras.default_framework_info import KerasInfo
-from model_compression_toolkit.core import DEFAULTCONFIG
-from model_compression_toolkit.core.keras.keras_implementation import KerasImplementation
-from model_compression_toolkit.core.common.substitutions.apply_substitutions import substitute
-from model_compression_toolkit.graph_builder import convert_keras_model_to_graph
 from model_compression_toolkit.graph_builder.keras.keras_graph_builder import KerasGraphBuilder
 
 

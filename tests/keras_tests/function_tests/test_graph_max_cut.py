@@ -23,7 +23,7 @@ import tensorflow as tf
 
 from model_compression_toolkit.core.common.graph.memory_graph.compute_graph_max_cut import compute_graph_max_cut
 from model_compression_toolkit.core.common.graph.memory_graph.memory_graph import MemoryGraph
-from model_compression_toolkit.graph_builder import convert_keras_model_to_graph
+from model_compression_toolkit.graph_builder.keras.convert_keras_model_to_graph import convert_keras_model_to_graph
 
 
 def simple_model(input_shape):

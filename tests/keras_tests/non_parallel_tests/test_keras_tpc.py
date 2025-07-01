@@ -20,12 +20,10 @@ import numpy as np
 import tensorflow as tf
 from packaging import version
 
-from tensorflow.keras.applications.mobilenet_v2 import MobileNetV2
-
 import model_compression_toolkit.target_platform_capabilities.schema.mct_current_schema as schema
 from model_compression_toolkit.defaultdict import DefaultDict
 from model_compression_toolkit.core.common import BaseNode
-from model_compression_toolkit.graph_builder import convert_keras_model_to_graph
+from model_compression_toolkit.graph_builder.keras.convert_keras_model_to_graph import convert_keras_model_to_graph
 from model_compression_toolkit.target_platform_capabilities.targetplatform2framework import LayerFilterParams
 from model_compression_toolkit.target_platform_capabilities.targetplatform2framework.attribute_filter import Greater, \
     Smaller, GreaterEq, Eq, SmallerEq, Contains

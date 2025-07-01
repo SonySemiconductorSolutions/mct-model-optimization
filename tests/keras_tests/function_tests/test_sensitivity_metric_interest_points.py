@@ -20,7 +20,7 @@ from keras.applications.mobilenet_v2 import MobileNetV2
 
 from model_compression_toolkit.core.common.mixed_precision.sensitivity_eval.metric_calculators import \
     DistanceMetricCalculator
-from model_compression_toolkit.graph_builder import convert_keras_model_to_graph
+from model_compression_toolkit.graph_builder.keras.convert_keras_model_to_graph import convert_keras_model_to_graph
 from model_compression_toolkit.target_platform_capabilities.targetplatform2framework.attach2keras import \
     AttachTpcToKeras
 

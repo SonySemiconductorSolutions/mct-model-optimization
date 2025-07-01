@@ -24,7 +24,6 @@ from model_compression_toolkit.core.common.framework_info import set_fw_info
 from model_compression_toolkit.core.keras.default_framework_info import KerasInfo
 from model_compression_toolkit.core.common.fusion.fusing_info import FusingInfoGenerator
 from model_compression_toolkit.core.common.quantization.quantization_config import CustomOpsetLayers
-from model_compression_toolkit.graph_builder import convert_keras_model_to_graph
 from model_compression_toolkit.graph_builder.keras.keras_graph_builder import KerasGraphBuilder
 from model_compression_toolkit.target_platform_capabilities.targetplatform2framework.attach2keras import \
     AttachTpcToKeras

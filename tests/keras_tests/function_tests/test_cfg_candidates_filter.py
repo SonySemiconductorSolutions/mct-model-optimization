@@ -27,10 +27,8 @@ from model_compression_toolkit.core.common.quantization.set_node_quantization_co
 from model_compression_toolkit.core.keras.constants import KERNEL
 from model_compression_toolkit.core.common.framework_info import set_fw_info
 from model_compression_toolkit.core.keras.default_framework_info import KerasInfo
-from model_compression_toolkit.core.keras.keras_implementation import KerasImplementation
-from model_compression_toolkit.graph_builder import convert_keras_model_to_graph
-from model_compression_toolkit.target_platform_capabilities.targetplatform2framework.attach2keras import \
-    AttachTpcToKeras
+from model_compression_toolkit.graph_builder.keras.convert_keras_model_to_graph import convert_keras_model_to_graph
+from model_compression_toolkit.target_platform_capabilities.targetplatform2framework.attach2keras import AttachTpcToKeras
 from tests.common_tests.helpers.generate_test_tpc import generate_test_attr_configs, generate_test_op_qc
 from tests.keras_tests.tpc_keras import get_tpc_with_activation_mp_keras
 
