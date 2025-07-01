@@ -167,7 +167,7 @@ if FOUND_TF:
 
              >>> quantized_model = tf.keras.models.load_model(model_file, custom_objects=custom_objects)
 
-             For more configuration options, please take a look at our `API documentation <https://sony.github.io/model_optimization/api/api_docs/modules/mixed_precision_quantization_config.html>`_.
+             For more configuration options, please take a look at our `API documentation <https://sonysemiconductorsolutions.github.io/mct-model-optimization/api/api_docs/modules/mixed_precision_quantization_config.html>`_.
 
          """
 
