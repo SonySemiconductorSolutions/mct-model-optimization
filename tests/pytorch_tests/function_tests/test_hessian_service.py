@@ -20,6 +20,7 @@ from model_compression_toolkit.core.common.hessian import HessianInfoService, He
     HessianScoresGranularity
 from model_compression_toolkit.core.pytorch.data_util import data_gen_to_dataloader
 from model_compression_toolkit.core.pytorch.pytorch_implementation import PytorchImplementation
+from model_compression_toolkit.graph_builder.pytorch.pytorch_graph_builder import PytorchGraphBuilder
 from model_compression_toolkit.target_platform_capabilities.targetplatform2framework.attach2pytorch import \
     AttachTpcToPytorch
 from model_compression_toolkit.target_platform_capabilities.tpc_models.imx500_tpc.latest import generate_pytorch_tpc
@@ -115,7 +116,8 @@ class FetchActivationHessianTest(BaseHessianServiceTest):
                                                 self.pytorch_impl,
                                                 representative_dataset,
                                                 generate_pytorch_tpc,
-                                                attach2fw=self.attach2fw)
+                                                attach2fw=self.attach2fw,
+                                                fw_graph_builder=PytorchGraphBuilder())
         dataloader = data_gen_to_dataloader(representative_dataset, batch_size=1)
         self.request = HessianScoresRequest(mode=HessianMode.ACTIVATION,
                                             granularity=HessianScoresGranularity.PER_TENSOR,
@@ -138,7 +140,8 @@ class FetchWeightsHessianTest(BaseHessianServiceTest):
                                                 self.pytorch_impl,
                                                 representative_dataset,
                                                 generate_pytorch_tpc,
-                                                attach2fw=self.attach2fw)
+                                                attach2fw=self.attach2fw,
+                                                fw_graph_builder=PytorchGraphBuilder())
 
         self.request = HessianScoresRequest(mode=HessianMode.WEIGHTS,
                                             granularity=HessianScoresGranularity.PER_OUTPUT_CHANNEL,
