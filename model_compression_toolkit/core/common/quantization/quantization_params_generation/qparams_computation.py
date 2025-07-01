@@ -94,13 +94,12 @@ def calculate_quantization_params(graph: Graph,
                                            f"'{attr}' in node '{n.name}' with the default MSE error method instead.")
                             weights_error_method = QuantizationErrorMethod.MSE
 
-                    min_threshold = candidate_qc.weights_quantization_cfg.min_threshold
                     weights_params, output_channels_axis = compute_weights_qparams(n.get_weights_by_keys(attr),
                                                                                    attr_cfg,
                                                                                    weights_error_method,
                                                                                    quant_cfg.l_p_value,
                                                                                    output_channels_axis,
-                                                                                   min_threshold=min_threshold, node=n,
+                                                                                   node=n,
                                                                                    hessian_info_service=hessian_info_service,
                                                                                    num_hessian_samples=num_hessian_samples)
                     attr_cfg.weights_channels_axis = ChannelAxisMapping(output_channels_axis, attr_cfg.weights_channels_axis.input)

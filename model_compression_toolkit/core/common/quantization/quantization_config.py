@@ -90,7 +90,6 @@ class QuantizationConfig:
     shift_negative_activation_correction: bool = True
     activation_channel_equalization: bool = False
     z_threshold: float = math.inf
-    min_threshold: float = MIN_THRESHOLD
     l_p_value: int = 2
     linear_collapsing: bool = True
     residual_collapsing: bool = True

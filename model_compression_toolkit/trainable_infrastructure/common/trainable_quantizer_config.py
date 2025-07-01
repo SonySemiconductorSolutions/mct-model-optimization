@@ -70,7 +70,6 @@ class TrainableQuantizerWeightsConfig:
                  enable_weights_quantization: bool,
                  weights_channels_axis: int,
                  weights_per_channel_threshold: bool,
-                 min_threshold: float,
                  weights_quantization_candidates: List[TrainableQuantizerCandidateConfig] = None,
                  ):
         """
@@ -83,7 +82,6 @@ class TrainableQuantizerWeightsConfig:
             enable_weights_quantization (bool): Whether to quantize the layer's weights or not.
             weights_channels_axis (int): Axis to quantize a node's kernel when quantizing per-channel.
             weights_per_channel_threshold (bool): Whether to quantize the weights per-channel or not (per-tensor).
-            min_threshold (float): Minimum threshold to use during thresholds selection.
         """
         self.weights_quantization_method = weights_quantization_method
         self.weights_n_bits = weights_n_bits
@@ -91,5 +89,4 @@ class TrainableQuantizerWeightsConfig:
         self.enable_weights_quantization = enable_weights_quantization
         self.weights_channels_axis = weights_channels_axis
         self.weights_per_channel_threshold = weights_per_channel_threshold
-        self.min_threshold = min_threshold
         self.weights_bits_candidates = weights_quantization_candidates

@@ -18,6 +18,7 @@ from typing import Dict, Union, Optional, Tuple, Callable
 from mct_quantizers import QuantizationMethod
 
 import model_compression_toolkit.core.common.quantization.quantization_params_generation as qpg
+from model_compression_toolkit.constants import MIN_THRESHOLD
 from model_compression_toolkit.target_platform_capabilities.schema.mct_current_schema import Signedness
 from model_compression_toolkit.core.common.collectors.statistics_collector import BaseStatsCollector
 from model_compression_toolkit.core.common.node_prior_info import NodePriorInfo
@@ -64,7 +65,7 @@ def compute_activation_qparams(quant_cfg: QuantizationConfig,
         node_activation_quant_cfg.activation_n_bits,
         min_value,
         max_value,
-        min_threshold=quant_cfg.min_threshold,
+        min_threshold=MIN_THRESHOLD,
         quant_error_method=quant_cfg.activation_error_method,
         is_signed=signed
     )
