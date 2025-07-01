@@ -18,7 +18,6 @@ from functools import partial
 
 from model_compression_toolkit.core import CoreConfig
 from model_compression_toolkit.core.common.visualization.tensorboard_writer import init_tensorboard_writer
-from model_compression_toolkit.graph_builder.keras.keras_graph_builder import KerasGraphBuilder
 from model_compression_toolkit.logger import Logger
 from model_compression_toolkit.target_platform_capabilities.schema.mct_current_schema import TargetPlatformCapabilities
 from model_compression_toolkit.target_platform_capabilities.targetplatform2framework.attach2keras import \
@@ -36,13 +35,12 @@ if FOUND_TF:
     import tensorflow as tf
     from tensorflow.keras.layers import Layer
     from tensorflow.keras.models import Model
-
+    from model_compression_toolkit.graph_builder.keras.keras_graph_builder import KerasGraphBuilder
     from model_compression_toolkit.trainable_infrastructure import KerasTrainableQuantizationWrapper
     from model_compression_toolkit.core.keras.keras_implementation import KerasImplementation
     from model_compression_toolkit.core.keras.keras_model_validation import KerasModelValidation
     from model_compression_toolkit.target_platform_capabilities.constants import DEFAULT_TP_MODEL
     from model_compression_toolkit.core.keras.default_framework_info import set_keras_info
-
     from model_compression_toolkit.core.keras.back2framework.keras_model_builder import KerasModelBuilder
 
     from model_compression_toolkit import get_target_platform_capabilities

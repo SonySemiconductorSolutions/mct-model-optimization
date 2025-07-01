@@ -18,7 +18,6 @@ from typing import Callable, Union, Tuple, Optional
 
 from model_compression_toolkit.core.common.user_info import UserInformation
 from model_compression_toolkit.core.common.visualization.tensorboard_writer import init_tensorboard_writer
-from model_compression_toolkit.graph_builder.pytorch.pytorch_graph_builder import PytorchGraphBuilder
 from model_compression_toolkit.logger import Logger
 from model_compression_toolkit.constants import PYTORCH
 from model_compression_toolkit.target_platform_capabilities.schema.mct_current_schema import TargetPlatformCapabilities
@@ -42,8 +41,8 @@ if FOUND_TORCH:
     from model_compression_toolkit.exporter.model_wrapper.pytorch.builder.fully_quantized_model_builder import get_exportable_pytorch_model
     from model_compression_toolkit import get_target_platform_capabilities
     from mct_quantizers.pytorch.metadata import add_metadata
-    from model_compression_toolkit.target_platform_capabilities.targetplatform2framework.attach2pytorch import \
-        AttachTpcToPytorch
+    from model_compression_toolkit.target_platform_capabilities.targetplatform2framework.attach2pytorch import AttachTpcToPytorch
+    from model_compression_toolkit.graph_builder.pytorch.pytorch_graph_builder import PytorchGraphBuilder
 
     DEFAULT_PYTORCH_TPC = get_target_platform_capabilities(PYTORCH, DEFAULT_TP_MODEL)
 

@@ -16,7 +16,6 @@ from typing import Callable, Union
 from functools import partial
 
 from model_compression_toolkit.constants import PYTORCH
-from model_compression_toolkit.graph_builder.pytorch.pytorch_graph_builder import PytorchGraphBuilder
 from model_compression_toolkit.target_platform_capabilities.schema.mct_current_schema import TargetPlatformCapabilities
 from model_compression_toolkit.target_platform_capabilities.targetplatform2framework.attach2pytorch import \
     AttachTpcToPytorch
@@ -47,6 +46,7 @@ if FOUND_TORCH:
     from model_compression_toolkit.qat.common.qat_config import QATConfig
     from model_compression_toolkit.qat.pytorch.quantizer.quantization_builder import get_activation_quantizer_holder
     from model_compression_toolkit.qat.pytorch.quantizer.quantization_builder import quantization_builder
+    from model_compression_toolkit.graph_builder.pytorch.pytorch_graph_builder import PytorchGraphBuilder
 
     DEFAULT_PYTORCH_TPC = get_target_platform_capabilities(PYTORCH, DEFAULT_TP_MODEL)
 

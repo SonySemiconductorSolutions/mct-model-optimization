@@ -16,7 +16,6 @@
 from typing import Callable, Tuple, Union
 from model_compression_toolkit import get_target_platform_capabilities
 from model_compression_toolkit.constants import PYTORCH
-from model_compression_toolkit.graph_builder.pytorch.pytorch_graph_builder import PytorchGraphBuilder
 from model_compression_toolkit.target_platform_capabilities.schema.mct_current_schema import TargetPlatformCapabilities
 from model_compression_toolkit.target_platform_capabilities.tpc_io_handler import load_target_platform_capabilities
 from model_compression_toolkit.verify_packages import FOUND_TORCH
@@ -39,6 +38,7 @@ if FOUND_TORCH:
     from torch.nn import Module
     from model_compression_toolkit.target_platform_capabilities.targetplatform2framework.attach2pytorch import \
         AttachTpcToPytorch
+    from model_compression_toolkit.graph_builder.pytorch.pytorch_graph_builder import PytorchGraphBuilder
 
     # Set the default Target Platform Capabilities (TPC) for PyTorch.
     DEFAULT_PYOTRCH_TPC = get_target_platform_capabilities(PYTORCH, DEFAULT_TP_MODEL)

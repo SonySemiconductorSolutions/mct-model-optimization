@@ -30,7 +30,6 @@ from model_compression_toolkit.gptq.common.gptq_config import (
 from model_compression_toolkit.gptq.common.gptq_constants import REG_DEFAULT, LR_DEFAULT, LR_REST_DEFAULT, \
     LR_BIAS_DEFAULT, GPTQ_MOMENTUM, REG_DEFAULT_SLA
 from model_compression_toolkit.gptq.runner import gptq_runner
-from model_compression_toolkit.graph_builder.pytorch.pytorch_graph_builder import PytorchGraphBuilder
 from model_compression_toolkit.logger import Logger
 from model_compression_toolkit.metadata import create_model_metadata
 from model_compression_toolkit.target_platform_capabilities.schema.mct_current_schema import TargetPlatformCapabilities
@@ -50,8 +49,8 @@ if FOUND_TORCH:
     from torch.optim import Adam, Optimizer
     from model_compression_toolkit import get_target_platform_capabilities
     from mct_quantizers.pytorch.metadata import add_metadata
-    from model_compression_toolkit.target_platform_capabilities.targetplatform2framework.attach2pytorch import \
-        AttachTpcToPytorch
+    from model_compression_toolkit.target_platform_capabilities.targetplatform2framework.attach2pytorch import AttachTpcToPytorch
+    from model_compression_toolkit.graph_builder.pytorch.pytorch_graph_builder import PytorchGraphBuilder
 
     DEFAULT_PYTORCH_TPC = get_target_platform_capabilities(PYTORCH, DEFAULT_TP_MODEL)
 

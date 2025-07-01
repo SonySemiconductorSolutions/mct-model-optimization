@@ -17,7 +17,6 @@ from typing import Callable, Tuple, Union
 
 from model_compression_toolkit import get_target_platform_capabilities
 from model_compression_toolkit.constants import TENSORFLOW
-from model_compression_toolkit.graph_builder.keras.keras_graph_builder import KerasGraphBuilder
 from model_compression_toolkit.target_platform_capabilities.schema.mct_current_schema import TargetPlatformCapabilities
 from model_compression_toolkit.target_platform_capabilities.tpc_io_handler import load_target_platform_capabilities
 from model_compression_toolkit.verify_packages import FOUND_TF
@@ -37,6 +36,7 @@ if FOUND_TF:
     from model_compression_toolkit.core.keras.pruning.pruning_keras_implementation import PruningKerasImplementation
     from model_compression_toolkit.core.keras.default_framework_info import set_keras_info
     from tensorflow.keras.models import Model
+    from model_compression_toolkit.graph_builder.keras.keras_graph_builder import KerasGraphBuilder
 
     DEFAULT_KERAS_TPC = get_target_platform_capabilities(TENSORFLOW, DEFAULT_TP_MODEL)
 
