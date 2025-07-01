@@ -1,15 +1,11 @@
 import copy
-from typing import TYPE_CHECKING, Callable
-
+from typing import Callable
 from model_compression_toolkit.core.pytorch.utils import torch_tensor_to_numpy, to_torch_tensor
-
 from model_compression_toolkit.core.common import Graph
 from model_compression_toolkit.graph_builder.pytorch.reader.reader import model_reader
+import torch
 
-if TYPE_CHECKING:
-    import torch
-
-def convert_pytorch_model_to_graph(model: "torch.nn.Module",
+def convert_pytorch_model_to_graph(model: torch.nn.Module,
                                    representative_dataset: Callable) -> Graph:
     """
     Converts a PyTorch model into a computational graph using tracing.

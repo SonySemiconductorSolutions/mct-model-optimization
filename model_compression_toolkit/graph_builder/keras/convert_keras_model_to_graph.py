@@ -1,13 +1,10 @@
 from copy import copy
-from typing import TYPE_CHECKING
 from model_compression_toolkit.core.common.graph.base_graph import Graph
 from model_compression_toolkit.graph_builder.keras.reader.common import is_node_a_model
 from model_compression_toolkit.graph_builder.keras.reader.reader import build_connectivity_handler, build_graph, flatten_nested_model
+import tensorflow as tf
 
-if TYPE_CHECKING:
-    import tensorflow as tf
-
-def convert_keras_model_to_graph(model: "tf.keras.Model") -> Graph:
+def convert_keras_model_to_graph(model: tf.keras.Model) -> Graph:
     """
     Converts a Keras model into a computational graph.
 
