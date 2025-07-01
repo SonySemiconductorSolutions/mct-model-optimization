@@ -182,7 +182,8 @@ class FeatureNetworkTest(unittest.TestCase):
         DwConv2dReplacementTest(self).run_test()
 
     def test_change_qc_attr(self):
-        ChangeFinalWeightQCAttrTest(self).run_test()
+        # there are no fields that can be changed in final cfg and have any effect (unless the whole attr cfgs mapping is overridden)
+        # ChangeFinalWeightQCAttrTest(self).run_test()
         ChangeFinalActivationQCAttrTest(self).run_test()
 
     def test_edit_candidate_qc(self):

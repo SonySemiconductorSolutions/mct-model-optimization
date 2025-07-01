@@ -72,13 +72,8 @@ class TestSearchBitwidthConfiguration(unittest.TestCase):
         graph = load_fqc_configuration(graph=graph, fqc=fqc)
 
         for node in graph.nodes:
-            # TODO irena remove set_qc:
-            for c in node.quantization_cfg.candidates_quantization_cfg:
-                c.weights_quantization_cfg.set_qc(core_config.quantization_config)
-
             node.prior_info = keras_impl.get_node_prior_info(node=node,
                                                              graph=graph)
-
         mi = ModelCollector(graph,
                             fw_impl=keras_impl,
                             qc=core_config.quantization_config)

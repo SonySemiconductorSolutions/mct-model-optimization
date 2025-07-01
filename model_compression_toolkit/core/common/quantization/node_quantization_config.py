@@ -18,7 +18,6 @@ from enum import Enum, auto
 from model_compression_toolkit.core.common.framework_info import ChannelAxisMapping
 from model_compression_toolkit.logger import Logger
 
-from model_compression_toolkit.core.common.quantization.quantization_config import QuantizationConfig
 from model_compression_toolkit.target_platform_capabilities.constants import POSITIONAL_ATTR
 from model_compression_toolkit.target_platform_capabilities.schema.mct_current_schema import \
     AttributeQuantizationConfig, OpQuantizationConfig
@@ -64,6 +63,7 @@ class BaseNodeQuantizationConfig(object):
         if hasattr(self, config_parameter_name):
             setattr(self, config_parameter_name, config_parameter_value)
         else:
+            raise AttributeError(config_parameter_name)
             Logger.warning(f"Parameter {config_parameter_name} could not be found in the node quantization config and "
                            f"was not updated!")
 
@@ -272,14 +272,11 @@ class NodeWeightsQuantizationConfig(BaseNodeQuantizationConfig):
 
                 self.attributes_config_mapping[attr] = WeightsAttrQuantizationConfig(weights_attr_cfg=attr_cfg,
                                                                                      weights_channels_axis=weights_channels_axis)
-        # TODO irena remove along with set_qc. Keeping for eq and hash to work without set_qc being called
+        # TODO this is set by batch norm reconstruction substitution when folded batch norms are added back, to mark
+        #  the nodes that the correction should be applied to (for some nodes it gets disabled) and BNs removed.
+        #  The actual correction is only computed when it's applied in ptq, so it seems that both substitutions could
+        #  be unified, and no info need to pass between.
         self.weights_second_moment_correction = None
-        self.weights_bias_correction = None
-
-    def set_qc(self, qc: QuantizationConfig):
-        # TODO irena: temporary keep the fields to not break everything at once.
-        self.weights_second_moment_correction = qc.weights_second_moment_correction
-        self.weights_bias_correction = qc.weights_bias_correction
 
     def get_attr_config(self, attr_name: 'WeightAttrT') -> WeightsAttrQuantizationConfig:
         """
@@ -435,8 +432,6 @@ class NodeWeightsQuantizationConfig(BaseNodeQuantizationConfig):
             return False  # pragma: no cover
 
         return self.simd_size == other.simd_size and \
-            self.weights_second_moment_correction == other.weights_second_moment_correction and \
-            self.weights_bias_correction == other.weights_bias_correction and \
             self.attributes_config_mapping.keys() == other.attributes_config_mapping.keys() and \
             all([self.attributes_config_mapping[k] == other.attributes_config_mapping[k]
                  for k in self.attributes_config_mapping.keys()]) and \
@@ -446,7 +441,5 @@ class NodeWeightsQuantizationConfig(BaseNodeQuantizationConfig):
 
     def __hash__(self):
         return hash((self.simd_size,
-                     self.weights_second_moment_correction,
-                     self.weights_bias_correction,
                      frozenset(self.attributes_config_mapping),
                      frozenset(self.pos_attributes_config_mapping)))
