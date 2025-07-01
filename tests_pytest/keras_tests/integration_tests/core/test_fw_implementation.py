@@ -15,10 +15,11 @@
 import numpy as np
 from keras.layers import Conv2D, Conv2DTranspose, DepthwiseConv2D, Dense, Input, Flatten
 import keras
+from model_compression_toolkit.core.graph_prep_runner import get_finalized_graph
 
 from model_compression_toolkit.core import QuantizationConfig
-from model_compression_toolkit.core.graph_prep_runner import graph_preparation_runner
 from model_compression_toolkit.core.keras.keras_implementation import KerasImplementation
+from model_compression_toolkit.graph_builder.keras.keras_graph_builder import KerasGraphBuilder
 from model_compression_toolkit.target_platform_capabilities.targetplatform2framework.attach2keras import \
     AttachTpcToKeras
 
@@ -48,14 +49,18 @@ def build_model():
 def test_get_mac(minimal_tpc):
     fw_impl = KerasImplementation()
     model = build_model()
+    fqc = AttachTpcToKeras().attach(minimal_tpc)
 
-    graph = graph_preparation_runner(model,
-                                     data_gen,
-                                     QuantizationConfig(linear_collapsing=False),
-                                     fw_impl=fw_impl,
-                                     fqc=AttachTpcToKeras().attach(minimal_tpc),
-                                     mixed_precision_enable=False,
-                                     running_gptq=False)
+    graph = KerasGraphBuilder().build_graph(model=model,
+                                            representative_dataset=data_gen,
+                                            fqc=fqc,
+                                            linear_collapsing=False)
+
+    graph = get_finalized_graph(graph,
+                                fqc,
+                                QuantizationConfig(linear_collapsing=False),
+                                fw_impl=fw_impl,
+                                mixed_precision_enable=False)
 
     nodes = graph.get_topo_sorted_nodes()
     assert len(nodes) == 14, nodes

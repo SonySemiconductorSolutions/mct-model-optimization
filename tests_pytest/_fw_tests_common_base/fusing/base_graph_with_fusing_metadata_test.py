@@ -85,6 +85,7 @@ class BaseGraphWithFusingMetadataTest(abc.ABC):
         assert self._data_gen is not None
         assert self.fw_impl is not None
         assert self.attach_to_fw_func is not None
+        assert self.fw_graph_builder is not None
 
         self.fqc = self.attach_to_fw_func(minimal_tpc_with_fusing)
         quant_config = QuantizationConfig()

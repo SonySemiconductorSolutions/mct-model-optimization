@@ -126,13 +126,6 @@ def prepare_graph_set_bit_widths(in_model,
         for _ in range(n_iter):
             yield representative_data_gen()
 
-    # graph = graph_preparation_runner(in_model,
-    #                                  representative_data_gen=_representative_data_gen,
-    #                                  quantization_config=quant_config,
-    #                                  fw_impl=fw_impl,
-    #                                  fqc=fqc,
-    #                                  bit_width_config=core_config.bit_width_config,
-    #                                  mixed_precision_enable=core_config.is_mixed_precision_enabled)
     graph = fw_graph_builder.build_graph(model=in_model,
                                          representative_dataset=_representative_data_gen,
                                          fqc=fqc,

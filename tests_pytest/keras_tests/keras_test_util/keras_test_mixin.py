@@ -19,6 +19,7 @@ import numpy as np
 from model_compression_toolkit.core.common.framework_info import set_fw_info
 from model_compression_toolkit.core.keras.default_framework_info import KerasInfo
 from model_compression_toolkit.core.keras.keras_implementation import KerasImplementation
+from model_compression_toolkit.graph_builder.keras.keras_graph_builder import KerasGraphBuilder
 from model_compression_toolkit.target_platform_capabilities.targetplatform2framework.attach2keras import \
     AttachTpcToKeras
 
@@ -28,6 +29,7 @@ class KerasFwMixin:
     set_fw_info(KerasInfo)
     fw_impl = KerasImplementation()
     attach_to_fw_func = AttachTpcToKeras().attach
+    fw_graph_builder = KerasGraphBuilder()
 
     def get_basic_data_gen(self, shapes: List[Tuple]):
         """ Generate a basic data generator. """
