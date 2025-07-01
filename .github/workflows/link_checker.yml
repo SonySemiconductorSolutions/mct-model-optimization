@@ -19,6 +19,8 @@ jobs:
   link-checker:
     if: github.repository == 'sonysemiconductorsolutions/mct-model-optimization'
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
     steps:
       - uses: actions/checkout@v4
       - name: Install Python 3
