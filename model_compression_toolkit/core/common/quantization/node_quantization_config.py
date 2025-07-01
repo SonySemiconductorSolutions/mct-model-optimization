@@ -64,7 +64,8 @@ class BaseNodeQuantizationConfig(object):
         if hasattr(self, config_parameter_name):
             setattr(self, config_parameter_name, config_parameter_value)
         else:
-            raise AttributeError(f"Parameter {config_parameter_name} could not be found in the node quantization config")
+            Logger.warning(f"Parameter {config_parameter_name} could not be found in the node quantization config and "
+                           f"was not updated!")
 
     def __repr__(self) -> str:
         """
