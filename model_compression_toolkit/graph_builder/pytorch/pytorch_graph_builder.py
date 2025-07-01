@@ -1,7 +1,7 @@
 from typing import Any
 
 from model_compression_toolkit.core.common import Graph
-from model_compression_toolkit.graph_builder import convert_pytorch_model_to_graph
+from model_compression_toolkit.graph_builder.pytorch.convert_pytorch_model_to_graph import convert_pytorch_model_to_graph
 from model_compression_toolkit.graph_builder.common.base_graph_builder import BaseGraphBuilder
 from model_compression_toolkit.graph_builder.pytorch.transform_pytorch_graph import transform_pytorch_graph
 

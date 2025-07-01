@@ -19,7 +19,7 @@ from typing import Dict, Any, Callable, List
 import torch
 
 from model_compression_toolkit.core.common.framework_implementation import FrameworkImplementation
-from model_compression_toolkit.graph_builder import convert_pytorch_model_to_graph
+from model_compression_toolkit.graph_builder.pytorch.convert_pytorch_model_to_graph import convert_pytorch_model_to_graph
 from model_compression_toolkit.xquant.common.constants import XQUANT_REPR, INTERMEDIATE_SIMILARITY_METRICS_REPR, XQUANT_VAL, INTERMEDIATE_SIMILARITY_METRICS_VAL
 from model_compression_toolkit.xquant.common.tensorboard_utils import TensorboardUtils
 
