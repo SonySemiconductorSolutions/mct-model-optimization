@@ -13,13 +13,9 @@
 # limitations under the License.
 # ==============================================================================
 
-
-from collections.abc import Callable
 from enum import Enum
 from typing import Dict, Any, Tuple, NamedTuple, Optional
 from abc import ABC, abstractmethod
-
-from mct_quantizers import QuantizationMethod
 
 
 class ChannelAxis(Enum):
@@ -56,13 +52,11 @@ class FrameworkInfo(ABC):
         kernel_ops_attribute_mapping (Dict): Dictionary from a framework operator to its weight attribute to quantize.
         out_channel_axis_mapping (Dict): Dictionary of output channels of the model's layers (for computing statistics per-channel).
         _layer_min_max_mapping (Dict[Any, tuple]): Dictionary from a layer to its min/max output values.
-        activation_quantizer_factory_mapping: A mapping from QuantizationMethod to a factory function that accepts activation bitwidth and a dict of quantization params, and returns the corresponding quantization function.
     """
 
     kernel_ops_attribute_mapping: Dict[Any, str]
     kernel_channels_mapping: Dict[Any, ChannelAxisMapping]
     out_channel_axis_mapping: Dict[Any, int]
-    activation_quantizer_factory_mapping: Dict[QuantizationMethod, Callable[[int, dict], Callable]]
 
     _layer_min_max_mapping: Dict[Any, tuple]
     _default_channel_mapping = ChannelAxisMapping(None, None)

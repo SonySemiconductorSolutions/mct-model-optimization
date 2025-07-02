@@ -23,7 +23,6 @@ from tests_pytest._test_util import tpc_util
 
 
 class DummyFrameworkInfo(FrameworkInfo):
-    activation_quantizer_mapping = {}
     kernel_channels_mapping = {}
     _layer_min_max_mapping = {}
     kernel_ops_attribute_mapping = {}

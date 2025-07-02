@@ -18,7 +18,6 @@ import tensorflow as tf
 from typing import Tuple, Any, Dict
 from functools import wraps
 
-from model_compression_toolkit.core.keras.quantizer.lut_fake_quant import activation_lut_kmean_quantizer
 from packaging import version
 
 if version.parse(tf.__version__) >= version.parse("2.13"):
@@ -26,11 +25,9 @@ if version.parse(tf.__version__) >= version.parse("2.13"):
 else:
     from keras.layers import Conv2D, DepthwiseConv2D, Dense, Conv2DTranspose, Softmax, ELU, Activation  # pragma: no cover
 from model_compression_toolkit.core.common.framework_info import FrameworkInfo, set_fw_info, ChannelAxisMapping
-from mct_quantizers import QuantizationMethod
 from model_compression_toolkit.constants import SOFTMAX_THRESHOLD, ACTIVATION
 from model_compression_toolkit.core.keras.constants import SOFTMAX, LINEAR, RELU, SWISH, SIGMOID, IDENTITY, TANH, SELU, \
     KERNEL, DEPTHWISE_KERNEL, GELU
-from model_compression_toolkit.core.keras.quantizer.fake_quant_builder import power_of_two_quantization, symmetric_quantization, uniform_quantization
 
 
 class KerasInfo(FrameworkInfo):
@@ -68,16 +65,6 @@ class KerasInfo(FrameworkInfo):
                                 DepthwiseConv2D: -1,
                                 Dense: -1,
                                 Conv2DTranspose: -1}
-
-    """
-    Mapping from a QuantizationMethod to an activation quantizer function.
-    """
-    activation_quantizer_factory_mapping = {
-        QuantizationMethod.POWER_OF_TWO: power_of_two_quantization,
-        QuantizationMethod.SYMMETRIC: symmetric_quantization,
-        QuantizationMethod.UNIFORM: uniform_quantization,
-        QuantizationMethod.LUT_POT_QUANTIZER: activation_lut_kmean_quantizer
-    }
 
     """
     Map from an activation function name to its min/max output values (if known).

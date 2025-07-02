@@ -22,7 +22,6 @@ from model_compression_toolkit.core.common.graph.base_graph import OutTensor
 
 from model_compression_toolkit.constants import FLOAT_BITWIDTH, FUSED_LAYER_PATTERN, FUSED_OP_QUANT_CONFIG
 from model_compression_toolkit.core import ResourceUtilization
-from model_compression_toolkit.core.common.framework_info import set_fw_info
 from model_compression_toolkit.core.common import Graph
 from model_compression_toolkit.core.common.fusion.fusing_info import FusingInfo
 from model_compression_toolkit.core.common.graph.edge import Edge
@@ -69,9 +68,8 @@ class TestComputeResourceUtilization:
         compute_resource_utilization on a virtual graph is tested in TestBOPSAndVirtualGraph
     """
     @pytest.fixture(autouse=True)
-    def setup(self, graph_mock, fw_impl_mock, fw_info_mock):
-        fw_info_mock.get_kernel_op_attribute = Mock(return_value='foo')    # for bops
-        set_fw_info(fw_info_mock)
+    def setup(self, graph_mock, fw_impl_mock, patch_fw_info):
+        patch_fw_info.get_kernel_op_attribute = Mock(return_value='foo')    # for bops
         fw_impl_mock.get_node_mac_operations = lambda n: 42 if n == n2 else 0    # for bops
         n1 = build_node('n1', qcs=[build_qc()], output_shape=(None, 5, 10))
         n2 = build_node('n2', canonical_weights={'foo': np.zeros((3, 14))}, qcs=[build_qc(w_attr={'foo': (4, True)})],
@@ -226,8 +224,8 @@ class TestComputeResourceUtilization:
 
 class TestActivationUtilizationMethods:
     @pytest.fixture(autouse=True)
-    def setup(self, fw_info_mock):
-        set_fw_info(fw_info_mock)
+    def setup(self, patch_fw_info):
+        pass
 
     """ Tests for non-public activation utilization api. """
     def test_get_a_nbits_configurable(self, graph_mock, fw_impl_mock):
@@ -337,8 +335,8 @@ class TestActivationUtilizationMethods:
 
 class TestComputeActivationTensorsUtilization:
     @pytest.fixture(autouse=True)
-    def setup(self, fw_info_mock):
-        set_fw_info(fw_info_mock)
+    def setup(self, patch_fw_info):
+        pass
 
     """ Tests for activation tensors utilization public apis. """
     def test_compute_node_activation_tensor_utilization(self, graph_mock, fw_impl_mock):
@@ -436,8 +434,8 @@ class TestComputeActivationTensorsUtilization:
 
 class TestActivationMaxCutUtilization:
     @pytest.fixture(autouse=True)
-    def setup(self, fw_info_mock):
-        set_fw_info(fw_info_mock)
+    def setup(self, patch_fw_info):
+        pass
 
     """ Tests for activation max cut utilization. """
     def test_compute_cuts_integration(self, graph_mock, fw_impl_mock, mocker):
@@ -737,8 +735,8 @@ class TestActivationMaxCutUtilization:
 class TestWeightUtilizationMethods:
     """ Tests for weights utilization non-public api. """
     @pytest.fixture(autouse=True)
-    def setup(self, fw_info_mock):
-        set_fw_info(fw_info_mock)
+    def setup(self, patch_fw_info):
+        pass
 
     def test_get_w_nbits(self, graph_mock, fw_impl_mock):
         ru_calc = ResourceUtilizationCalculator(graph_mock, fw_impl_mock)
@@ -850,8 +848,8 @@ class TestWeightUtilizationMethods:
 class TestComputeNodeWeightsUtilization:
     """ Tests for compute_node_weight_utilization public method. """
     @pytest.fixture(autouse=True)
-    def setup(self, fw_info_mock):
-        set_fw_info(fw_info_mock)
+    def setup(self, patch_fw_info):
+        pass
 
     @pytest.fixture
     def setup_node_w_test(self, graph_mock, fw_impl_mock):
@@ -940,8 +938,8 @@ class TestComputeNodeWeightsUtilization:
 class TestComputeWeightUtilization:
     """ Tests for compute_weight_utilization public method. """
     @pytest.fixture(autouse=True)
-    def setup(self, fw_info_mock):
-        set_fw_info(fw_info_mock)
+    def setup(self, patch_fw_info):
+        pass
 
     @pytest.fixture
     def prepare_compute_w_util(self, fw_impl_mock):
@@ -1050,8 +1048,8 @@ class TestComputeWeightUtilization:
 class TestCalculatorMisc:
     """ Calculator tests that don't belong to other test classes """
     @pytest.fixture(autouse=True)
-    def setup(self, fw_info_mock):
-        set_fw_info(fw_info_mock)
+    def setup(self, patch_fw_info):
+        pass
 
     def test_calculator_init(self, fw_impl_mock):
         n1 = build_node('n1', qcs=[build_qc(a_enable=False)], output_shape=(None, 5, 10))
@@ -1089,8 +1087,8 @@ class BOPNode:
 
 class TestBOPSAndVirtualGraph:
     @pytest.fixture(autouse=True)
-    def setup(self, fw_info_mock):
-        set_fw_info(fw_info_mock)
+    def setup(self, patch_fw_info):
+        pass
 
     def test_compute_regular_node_bops(self, fw_impl_mock, fw_info_mock):
         fw_info_mock.get_kernel_op_attribute = lambda node_type: 'foo' if node_type == BOPNode else None
@@ -1177,7 +1175,7 @@ class TestBOPSAndVirtualGraph:
         with pytest.raises(ValueError, match='BOPS computation is supported only for Any, AnyQuantized and AnyQuantizedNonFused targets.'):
             ru_calc.compute_node_bops(Mock(), target_criterion, BM.Float)
 
-    def test_compute_bops(self, fw_impl_mock, fw_info_mock,):
+    def test_compute_bops(self, fw_impl_mock, fw_info_mock):
         class BOPNode2:
             pass
 

@@ -17,7 +17,6 @@ from unittest.mock import Mock, patch
 import numpy as np
 import pytest
 
-from model_compression_toolkit.core.common.framework_info import set_fw_info
 from model_compression_toolkit.core import MixedPrecisionQuantizationConfig, MpDistanceWeighting
 from model_compression_toolkit.core.common.hessian import HessianInfoService
 from model_compression_toolkit.core.common.mixed_precision.sensitivity_eval.metric_calculators import \
@@ -34,8 +33,7 @@ class TestDistanceWeighting:
     out_pts = np.array([[1, 2], [3, 4], [5, 6]])
 
     @pytest.fixture
-    def setup(self, mocker, graph_mock, fw_info_mock, fw_impl_mock):
-        set_fw_info(fw_info_mock)
+    def setup(self, mocker, graph_mock, patch_fw_info, fw_impl_mock):
         mocker.patch.object(DistanceMetricCalculator, 'get_mp_interest_points', return_value=[None, None])
         mocker.patch.object(DistanceMetricCalculator, 'get_output_nodes_for_metric', return_value=[None])
         mocker.patch.object(DistanceMetricCalculator, '_init_metric_points_lists', return_value=(None, None))

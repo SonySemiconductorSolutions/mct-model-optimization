@@ -36,7 +36,7 @@ class TestConfigureQLayer(TorchFwMixin):
 
         def quant_factory(nbits, *args, **kwargs):
             return lambda x: x * nbits
-        mocker.patch('model_compression_toolkit.core.common.quantization.quantization_fn_selection'
+        mocker.patch('model_compression_toolkit.core.pytorch.mixed_precision.configurable_activation_quantizer'
                      '.get_activation_quantization_fn_factory', lambda *args: quant_factory)
 
         abits = [8, 4, 2]

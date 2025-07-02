@@ -20,7 +20,7 @@ import numpy as np
 
 from model_compression_toolkit.constants import LUT_VALUES, THRESHOLD, SIGNED, \
     LUT_VALUES_BITWIDTH
-from model_compression_toolkit.core.pytorch.quantizer.lut_fake_quant import activation_lut_kmean_quantizer
+from model_compression_toolkit.core.pytorch.quantization.lut_fake_quant import activation_lut_kmean_quantizer
 from model_compression_toolkit.core.pytorch.utils import to_torch_tensor
 from tests.pytorch_tests.model_tests.base_pytorch_test import BasePytorchTest
 

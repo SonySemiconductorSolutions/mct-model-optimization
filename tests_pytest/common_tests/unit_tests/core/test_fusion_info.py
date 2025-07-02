@@ -262,7 +262,7 @@ def fusing_info_generator_with_qconfig(fusing_patterns_with_qconfig):
     return FusingInfoGenerator(fusing_patterns_with_qconfig)
 
 @pytest.fixture
-def mock_qconfig_set_nodes():
+def mock_qconfig_set_nodes(patch_fw_info):
     """
     Creates mock nodes representing a simple neural network structure.
     - Nodes: Conv2D, ReLU, Conv2D, Tanh, Linear, Softmax.

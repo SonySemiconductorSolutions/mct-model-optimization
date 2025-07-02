@@ -67,7 +67,8 @@ def compute_activation_bias_correction(graph: Graph,
                                        fw_impl: FrameworkImplementation,
                                        linear_node: BaseNode,
                                        prev_node: BaseNode,
-                                       kernel_size: str) -> Graph:
+                                       kernel_size: str,
+                                       get_activation_quantization_fn_factory: Callable) -> Graph:
     """
     Compute the activation bias correction term, and store it in the final activation
     quantization configuration.
@@ -79,6 +80,7 @@ def compute_activation_bias_correction(graph: Graph,
         linear_node: Node to compute the activation bias correction for.
         prev_node: Node to compute the activation error caused by his activation quantization.
         kernel_size: The framework specific attribute name of the convolution layer's kernel size.
+        get_activation_quantization_fn_factory: activation quantization functions factory.
 
     Returns:
         Graph with activation bias correction term for each node.
@@ -105,7 +107,8 @@ def compute_activation_bias_correction(graph: Graph,
     float_centers = calculate_bin_centers(float_bins)
 
     # Quantize the bin edges and calculate the centers of the quantized bins
-    activation_quantizer = get_activation_quantization_fn(prev_node_act_quant_cfg)
+    activation_quantizer = get_activation_quantization_fn(prev_node_act_quant_cfg,
+                                                          get_activation_quantization_fn_factory)
     quant_bins = activation_quantizer(fw_impl.to_tensor(float_bins))
     quant_bins = fw_impl.to_numpy(quant_bins)
     quant_centers = calculate_bin_centers(quant_bins)
@@ -150,7 +153,8 @@ def compute_activation_bias_correction_of_graph(graph: Graph,
                                                 quant_config: QuantizationConfig,
                                                 fw_impl: FrameworkImplementation,
                                                 activation_bias_correction_node_matchers: Callable,
-                                                kernel_size: str) -> Graph:
+                                                kernel_size: str,
+                                                get_activation_quantization_fn_factory: Callable) -> Graph:
     """
     Compute the activation bias correction term for the graph.
 
@@ -160,7 +164,7 @@ def compute_activation_bias_correction_of_graph(graph: Graph,
         fw_impl: FrameworkImplementation object with a specific framework methods implementation.
         activation_bias_correction_node_matchers: Function to match the layers for activation bias correction.
         kernel_size: The framework specific attribute name of the convolution layer's kernel size.
-
+        get_activation_quantization_fn_factory: activation quantization functions factory.
 
     Returns:
         Graph with activation bias correction term for each relevant node.
@@ -176,5 +180,6 @@ def compute_activation_bias_correction_of_graph(graph: Graph,
                                                            fw_impl=fw_impl,
                                                            linear_node=n,
                                                            prev_node=prev_node,
-                                                           kernel_size=kernel_size)
+                                                           kernel_size=kernel_size,
+                                                           get_activation_quantization_fn_factory=get_activation_quantization_fn_factory)
     return graph

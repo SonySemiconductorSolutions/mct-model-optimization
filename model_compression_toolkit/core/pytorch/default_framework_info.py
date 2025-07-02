@@ -21,12 +21,8 @@ from torch.nn import Conv2d, ConvTranspose2d, Linear
 from torch import sigmoid
 
 from model_compression_toolkit.core.common.framework_info import FrameworkInfo, set_fw_info, ChannelAxisMapping
-from mct_quantizers import QuantizationMethod
 from model_compression_toolkit.constants import SOFTMAX_THRESHOLD
 from model_compression_toolkit.core.pytorch.constants import KERNEL
-from model_compression_toolkit.core.pytorch.quantizer.fake_quant_builder import power_of_two_quantization, \
-    symmetric_quantization, uniform_quantization
-from model_compression_toolkit.core.pytorch.quantizer.lut_fake_quant import activation_lut_kmean_quantizer
 
 
 class PyTorchInfo(FrameworkInfo):
@@ -58,16 +54,6 @@ class PyTorchInfo(FrameworkInfo):
     out_channel_axis_mapping = {Conv2d: 1,
                                 Linear: -1,
                                 ConvTranspose2d: 1}
-
-    """
-    Mapping from a QuantizationMethod to an activation quantizer function.
-    """
-    activation_quantizer_factory_mapping = {
-        QuantizationMethod.POWER_OF_TWO: power_of_two_quantization,
-        QuantizationMethod.SYMMETRIC: symmetric_quantization,
-        QuantizationMethod.UNIFORM: uniform_quantization,
-        QuantizationMethod.LUT_POT_QUANTIZER: activation_lut_kmean_quantizer
-    }
 
     """
     Map from an Pytorch module to its min/max output values (if known).

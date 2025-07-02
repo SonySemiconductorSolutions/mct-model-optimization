@@ -199,14 +199,28 @@ class TestExporter:
         quantized_model = pytorch_quantization_aware_training_finalize_experimental(qat_ready_model)
         return quantized_model
 
-    def _run_exporter(self, quantized_model, rep_dataset, quantization_format):
+    def _run_exporter(self, quantized_model, rep_dataset, quantization_format, output_names=None):
         pytorch_export_model(quantized_model,
                              save_model_path=self.onnx_file,
                              repr_dataset=rep_dataset,
                              serialization_format=PytorchExportSerializationFormat.ONNX,
-                             quantization_format=quantization_format)
+                             quantization_format=quantization_format,
+                             output_names=output_names)
 
-        return onnx_reader(self.onnx_file, quantized_model.linear_activation_holder_quantizer.activation_holder_quantizer)
+        return onnx_reader(self.onnx_file,
+                           quantized_model.linear_activation_holder_quantizer.activation_holder_quantizer)
+
+    def _assert_outputs_names(self, output_names):
+        model = onnx.load(self.onnx_file)
+        exported_output_names = [output.name for output in model.graph.output]
+
+        if output_names is None:
+            if len(exported_output_names) == 1:
+                output_names = ['output']
+            else:
+                output_names = [f"output_{i}" for i in range(len(exported_output_names))]
+        assert all(name in exported_output_names for name in output_names)
+        assert len(output_names) == len(exported_output_names)
 
     def _assert_outputs_match(self, quantized_model, rep_dataset, quantization_format, tol=1e-8):
         pass
@@ -304,6 +318,24 @@ class TestExporter:
         self._assert_quant_params_match(quantized_model, onnx_model_dict, a_qmethod, w_qmethod)
         self._assert_outputs_match(quantized_model, self.representative_dataset(1), QuantizationFormat.MCTQ, tol=tol)
 
+    @pytest.mark.parametrize('abits', [8, 16])
+    @pytest.mark.parametrize('output_names', [None, ['x']])
+    def test_mct_ptq_exporter_mctq_output_names(self, abits, output_names):
+        """
+        Test that a quantized model exported using MCTQ format includes the correct output names in the ONNX file.
+
+        Args:
+            abits (int): Number of bits to use for activation quantization.
+            output_names (Optional[List[str]]): List of expected output node names to validate in the exported ONNX model.
+                If None, the exporter should assign default output names automatically.
+        """
+        quantized_model = self._run_mct(self.get_model(), self.representative_dataset(1), abits,
+                                        a_qmethod=mctq.QuantizationMethod.SYMMETRIC,
+                                        w_qmethod=mctq.QuantizationMethod.POWER_OF_TWO)
+        onnx_model_dict = self._run_exporter(quantized_model, self.representative_dataset(1), QuantizationFormat.MCTQ,
+                                             output_names=output_names)
+        self._assert_outputs_names(output_names=output_names)
+
     @pytest.mark.parametrize('abits, tol', ([8, 1e-4], [16, 1e-2]))
     def test_mct_ptq_and_exporter_fq(self, abits, tol):
         quantized_model = self._run_mct(self.get_model(), self.representative_dataset(1), abits, mctq.QuantizationMethod.POWER_OF_TWO)
@@ -311,6 +343,22 @@ class TestExporter:
 
         self._assert_fq_quant_params_match(quantized_model, onnx_model_dict, mctq.QuantizationMethod.POWER_OF_TWO)
         self._assert_outputs_match(quantized_model, self.representative_dataset(1), QuantizationFormat.FAKELY_QUANT, tol=tol)
+
+    @pytest.mark.parametrize('abits', [8, 16])
+    @pytest.mark.parametrize('output_names', [None, ['x']])
+    def test_mct_ptq_and_exporter_fq_output_names(self, abits, output_names):
+        """
+        Test that a quantized model exported using FAKELY_QUANT format includes the correct output names in the ONNX file.
+
+        Args:
+            abits (int): Number of bits to use for activation quantization.
+            output_names (Optional[List[str]]): List of expected output node names to validate in the exported ONNX model.
+                If None, the exporter should assign default output names automatically.
+        """
+        quantized_model = self._run_mct(self.get_model(), self.representative_dataset(1), abits, mctq.QuantizationMethod.POWER_OF_TWO)
+        onnx_model_dict = self._run_exporter(quantized_model, self.representative_dataset(1),
+                                             QuantizationFormat.FAKELY_QUANT, output_names=output_names)
+        self._assert_outputs_names(output_names=output_names)
 
     @pytest.mark.parametrize('a_qmethod, tol', [(mctq.QuantizationMethod.POWER_OF_TWO, 0.0),
                                                 (mctq.QuantizationMethod.SYMMETRIC, 1e-2),
@@ -362,6 +410,62 @@ class TestExporter:
                                         abits, mctq.QuantizationMethod.POWER_OF_TWO)
         self._run_exporter(quantized_model, self.representative_dataset(1), QuantizationFormat.MCTQ)
         self._assert_outputs_match(quantized_model, self.representative_dataset(1), QuantizationFormat.MCTQ)
+
+    @pytest.mark.parametrize('abits', [8, 16])
+    @pytest.mark.parametrize('output_names', [None, ['x', 'y']])
+    def test_multi_output_names_mct_and_exporter_mctq(self, abits, output_names):
+        """
+        Test that a quantized multi-output model exported using MCTQ format includes the correct output names in
+        the ONNX file.
+
+        Args:
+            abits (int): Number of bits to use for activation quantization.
+            output_names (Optional[List[str]]): List of expected output node names to validate in the exported ONNX model.
+                If None, the exporter should assign default output names automatically.
+        """
+        class MultiOutputModel(torch.nn.Module):
+            def __init__(self, in_channels, out_channels):
+                super().__init__()
+                self.linear = torch.nn.Linear(in_channels, out_channels)
+                self.linear_y = torch.nn.Linear(in_channels, out_channels)
+
+            def forward(self, x):
+                return self.linear(x), self.linear_y(x)
+
+        quantized_model = self._run_mct(MultiOutputModel(self.in_channels, self.out_channels),
+                                        self.representative_dataset(1),
+                                        abits, mctq.QuantizationMethod.POWER_OF_TWO)
+        self._run_exporter(quantized_model, self.representative_dataset(1), QuantizationFormat.MCTQ,
+                           output_names=output_names)
+        self._assert_outputs_names(output_names=output_names)
+
+    @pytest.mark.parametrize('abits', [8, 16])
+    @pytest.mark.parametrize('output_names', [None, ['x', 'y']])
+    def test_multi_output_names_mct_and_exporter_fq(self, abits, output_names):
+        """
+        Test that a quantized multi-output model exported using FAKELY_QUANT format includes the correct output names in
+        the ONNX file.
+
+        Args:
+            abits (int): Number of bits to use for activation quantization.
+            output_names (Optional[List[str]]): List of expected output node names to validate in the exported ONNX model.
+                If None, the exporter should assign default output names automatically.
+        """
+        class MultiOutputModel(torch.nn.Module):
+            def __init__(self, in_channels, out_channels):
+                super().__init__()
+                self.linear = torch.nn.Linear(in_channels, out_channels)
+                self.linear_y = torch.nn.Linear(in_channels, out_channels)
+
+            def forward(self, x):
+                return self.linear(x), self.linear_y(x)
+
+        quantized_model = self._run_mct(MultiOutputModel(self.in_channels, self.out_channels),
+                                        self.representative_dataset(1),
+                                        abits, mctq.QuantizationMethod.POWER_OF_TWO)
+        self._run_exporter(quantized_model, self.representative_dataset(1), QuantizationFormat.FAKELY_QUANT,
+                           output_names=output_names)
+        self._assert_outputs_names(output_names=output_names)
 
     @pytest.mark.parametrize('abits', [8, 16])
     def test_multi_input_output_mct_and_exporter_mctq(self, abits):

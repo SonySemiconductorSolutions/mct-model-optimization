@@ -19,7 +19,7 @@ import numpy as np
 
 from model_compression_toolkit.constants import LUT_VALUES, THRESHOLD, SIGNED, \
     LUT_VALUES_BITWIDTH
-from model_compression_toolkit.core.keras.quantizer.lut_fake_quant import activation_lut_kmean_quantizer
+from model_compression_toolkit.core.keras.quantization.lut_fake_quant import activation_lut_kmean_quantizer
 
 
 class TestLUTQuantizerFakeQuant(unittest.TestCase):

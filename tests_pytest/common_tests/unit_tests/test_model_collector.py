@@ -18,7 +18,6 @@ import numpy as np
 from numpy.testing import assert_array_equal
 
 from model_compression_toolkit.core import QuantizationErrorMethod
-from model_compression_toolkit.core.common.framework_info import set_fw_info
 from model_compression_toolkit.core.common import StatsCollector, NoStatsCollector, DEFAULTCONFIG, Graph, model_collector
 from model_compression_toolkit.core.common.graph.base_graph import OutTensor
 from model_compression_toolkit.core.common.graph.edge import Edge
@@ -39,10 +38,10 @@ def fw_impl_mock():
 
 class TestStatisticsCollectors:
     @pytest.fixture(autouse=True)
-    def setup(self, fw_info_mock):
-        set_fw_info(fw_info_mock)
+    def setup(self, patch_fw_info):
+        pass
 
-    def test_create_stats_collector_for_node_activation_enabled(self, fw_info_mock):
+    def test_create_stats_collector_for_node_activation_enabled(self):
         """
         Verify that for a node with activation quantization enabled,
         create_stats_collector_for_node returns a StatsCollector instance.
@@ -57,7 +56,7 @@ class TestStatisticsCollectors:
         collector = create_stats_collector_for_node(node, False)
         assert isinstance(collector, StatsCollector)
 
-    def test_create_stats_collector_for_node_activation_disabled(self, fw_info_mock):
+    def test_create_stats_collector_for_node_activation_disabled(self):
         """
         Verify that for a node with activation quantization disabled,
         create_stats_collector_for_node returns a NoStatsCollector instance.
@@ -72,7 +71,7 @@ class TestStatisticsCollectors:
         collector = create_stats_collector_for_node(node, False)
         assert isinstance(collector, NoStatsCollector)
 
-    def test_create_stats_collector_for_node_fln_activation_enabled(self, fw_info_mock):
+    def test_create_stats_collector_for_node_fln_activation_enabled(self):
         """
         Verify that for a node with fln quantization enabled,
         create_stats_collector_for_node returns a StatsCollector instance.
@@ -91,7 +90,7 @@ class TestStatisticsCollectors:
         assert collector.mpcc.init_min_value == -8
         assert collector.mpcc.init_max_value == 9
 
-    def test_create_stats_collector_for_node_fln_activation_enabled_no_prior_info(self, fw_info_mock):
+    def test_create_stats_collector_for_node_fln_activation_enabled_no_prior_info(self):
         """
         Verify that for nodes with fln quantization enabled, make sure create_stats_collector_for_node
         returns a StatsCollector instance even if prior_info is None.
@@ -108,7 +107,7 @@ class TestStatisticsCollectors:
         assert collector.mpcc.init_min_value is None
         assert collector.mpcc.init_max_value is None
 
-    def test_create_stats_collector_for_node_fln_activation_enabled_no_prior_info_mock(self, fw_info_mock):
+    def test_create_stats_collector_for_node_fln_activation_enabled_no_prior_info_mock(self):
         """
         Verify that for nodes with fln quantization enabled, make sure create_stats_collector_for_node
         returns a StatsCollector instance even if prior_info is None.
@@ -125,7 +124,7 @@ class TestStatisticsCollectors:
         assert collector.mpcc.init_min_value is None
         assert collector.mpcc.init_max_value is None
 
-    def test_create_tensor2node_assigns_stats_collector(self, fw_info_mock):
+    def test_create_tensor2node_assigns_stats_collector(self):
         """
         Verify that create_tensor2node assigns a new StatsCollector to a node when no valid collector exists.
         """
@@ -148,17 +147,13 @@ class TestStatisticsCollectors:
 
 
 class TestModelCollectorInit:
-    @pytest.fixture(autouse=True)
-    def setup(self, fw_info_mock):
-        set_fw_info(fw_info_mock)
-
-    def test_assigns_stats_collectors_to_nodes(self, fw_impl_mock, fw_info_mock):
+    def test_assigns_stats_collectors_to_nodes(self, fw_impl_mock, patch_fw_info):
         """
         Verify that ModelCollector.__init__ assigns appropriate statistics collectors to nodes in the graph.
         """
         # Simulate kernel attribute retrieval.
-        fw_info_mock.get_kernel_op_attribute = Mock()
-        fw_info_mock.get_kernel_op_attribute.return_value = None
+        patch_fw_info.get_kernel_op_attribute = Mock()
+        patch_fw_info.get_kernel_op_attribute.return_value = None
 
         # Create nodes with different activation quantization settings.
         node1 = build_node('node1', output_shape=(None, 3, 14))
@@ -195,14 +190,14 @@ class TestModelCollectorInit:
         assert mc.model_outputs == [node3]
         assert len(mc.stats_containers_list) == 2
 
-    def test_bias_correction_creates_tensor2node(self, monkeypatch, fw_impl_mock, fw_info_mock):
+    def test_bias_correction_creates_tensor2node(self, monkeypatch, fw_impl_mock, patch_fw_info):
         """
         Verify that when weights bias correction is enabled and a node has kernel weights to quantize,
         create_tensor2node is invoked for each incoming node.
         """
         # Return a kernel attribute to trigger bias correction.
-        fw_info_mock.get_kernel_op_attribute = Mock()
-        fw_info_mock.get_kernel_op_attribute.return_value = 'kernel'
+        patch_fw_info.get_kernel_op_attribute = Mock()
+        patch_fw_info.get_kernel_op_attribute.return_value = 'kernel'
 
         # Set up nodes with quantization configurations for both activations and weights.
         node1 = build_node('node1', qcs=[build_qc(4), build_qc(2)], output_shape=(None, 3, 14))
@@ -242,13 +237,13 @@ class TestModelCollectorInit:
         fw_impl_mock.model_builder.assert_called_once()
         assert len(calls) == 1
 
-    def test_assigns_stats_collectors_to_fln_quantization_nodes(self, fw_impl_mock, fw_info_mock):
+    def test_assigns_stats_collectors_to_fln_quantization_nodes(self, fw_impl_mock, patch_fw_info):
         """
         Verify that ModelCollector.__init__ assigns appropriate statistics collectors to FLN_QUANT nodes in the graph.
         """
         # Simulate kernel attribute retrieval.
-        fw_info_mock.get_kernel_op_attribute = Mock()
-        fw_info_mock.get_kernel_op_attribute.return_value = None
+        patch_fw_info.get_kernel_op_attribute = Mock()
+        patch_fw_info.get_kernel_op_attribute.return_value = None
 
         # Create nodes with different fln quantization settings.
         node1 = build_node('node1', output_shape=(None, 3, 14))
@@ -289,16 +284,15 @@ class TestModelCollectorInit:
 
 class TestModelCollectorInfer:
     @pytest.fixture(autouse=True)
-    def setup(self, fw_impl_mock, fw_info_mock):
+    def setup(self, fw_impl_mock, patch_fw_info):
         """
         Fixture to set up a graph with three nodes, fake model inference outputs,
         and a fake Hessian service for subsequent inference tests.
         """
-        set_fw_info(fw_info_mock)
-        fw_info_mock.get_kernel_op_attribute = Mock()
-        fw_info_mock.get_kernel_op_attribute.return_value = None
-        fw_info_mock.get_out_channel_axis = Mock()
-        fw_info_mock.get_out_channel_axis.return_value = 1
+        patch_fw_info.get_kernel_op_attribute = Mock()
+        patch_fw_info.get_kernel_op_attribute.return_value = None
+        patch_fw_info.get_out_channel_axis = Mock()
+        patch_fw_info.get_out_channel_axis.return_value = 1
 
         input_shape = (1, 3, 14)
         self.node1 = build_node('node1', qcs=[build_qc(4), build_qc(2)], output_shape=input_shape)
@@ -339,7 +333,7 @@ class TestModelCollectorInfer:
         self.qc = DEFAULTCONFIG
         self.infer_input = [np.random.randn(*input_shape)]
 
-    def test_infer_without_hessian(self, fw_impl_mock, fw_info_mock):
+    def test_infer_without_hessian(self, fw_impl_mock):
         """
         Verify that ModelCollector.infer calls run_model_inference without fetching hessian data
         when activation_error_method is not HMSE.
@@ -353,7 +347,7 @@ class TestModelCollectorInfer:
         # Confirm that the Hessian service is not used.
         mc.hessian_service.fetch_hessian.assert_not_called()
 
-    def test_infer_with_hessian(self, fw_impl_mock, fw_info_mock):
+    def test_infer_with_hessian(self, fw_impl_mock):
         """
         Verify that ModelCollector.infer fetches hessian data when activation_error_method is HMSE.
         """
@@ -366,7 +360,7 @@ class TestModelCollectorInfer:
         # Confirm that the Hessian data is fetched.
         mc.hessian_service.fetch_hessian.assert_called_once()
 
-    def test_update_statistics_called(self, fw_impl_mock, fw_info_mock):
+    def test_update_statistics_called(self, fw_impl_mock):
         """
         Verify that update_statistics is called for each statistics container during inference.
         """
@@ -392,15 +386,14 @@ class TestModelCollectorInfer:
 
 class TestFLNModelCollectorInfer:
     @pytest.fixture(autouse=True)
-    def setup(self, fw_impl_mock, fw_info_mock):
+    def setup(self, fw_impl_mock, patch_fw_info):
         """
         Fixture to set up a graph with four nodes, fake model inference outputs,
         and a fake Hessian service for subsequent inference tests.
         node4 is a FLN node, the other nodes are not.
         """
-        set_fw_info(fw_info_mock)
-        fw_info_mock.get_kernel_op_attribute = Mock()
-        fw_info_mock.get_kernel_op_attribute.return_value = None
+        patch_fw_info.get_kernel_op_attribute = Mock()
+        patch_fw_info.get_kernel_op_attribute.return_value = None
 
         input_shape = (1, 3, 14)
         self.node1 = build_node('node1', qcs=[build_qc(4), build_qc(2)], output_shape=input_shape)
