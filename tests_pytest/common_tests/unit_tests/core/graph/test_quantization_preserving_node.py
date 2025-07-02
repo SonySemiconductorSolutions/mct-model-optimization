@@ -16,17 +16,12 @@ import pytest
 
 from model_compression_toolkit.core.common import Graph
 from model_compression_toolkit.core.common.graph.edge import Edge
-from model_compression_toolkit.core.common.framework_info import set_fw_info
 
 from tests_pytest._test_util.graph_builder_utils import build_node, build_nbits_qc
 
 
 class TestQuantizationPreservingNode:
-    @pytest.fixture(autouse=True)
-    def setup(self, fw_info_mock):
-        set_fw_info(fw_info_mock)
-
-    def test_activation_preserving_candidate(self):
+    def test_activation_preserving_candidate(self, patch_fw_info):
         """ Tests that the correct activation quantization candidate is selected. """
         n1 = build_node('qact_node', qcs=[build_nbits_qc()])
         n2 = build_node('qp1a_node', qcs=[build_nbits_qc(a_enable=False, q_preserving=True)])
@@ -42,7 +37,7 @@ class TestQuantizationPreservingNode:
         assert graph.retrieve_preserved_quantization_node(n4) is n4
         assert graph.retrieve_preserved_quantization_node(n5) is n4
 
-    def test_activation_preserving_disable_for_multi_input_node(self):
+    def test_activation_preserving_disable_for_multi_input_node(self, patch_fw_info):
         """ Tests that the retrieve_preserved_quantization_node raises an assertion error if node has more than 1 input. """
         n1 = build_node('qact_node', qcs=[build_nbits_qc()])
         n2 = build_node('qp1a_node', qcs=[build_nbits_qc(a_enable=False, q_preserving=True)])

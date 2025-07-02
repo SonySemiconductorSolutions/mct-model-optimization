@@ -21,7 +21,6 @@ import numpy as np
 
 from model_compression_toolkit.core import ResourceUtilization, MixedPrecisionQuantizationConfig
 from model_compression_toolkit.core.common import Graph
-from model_compression_toolkit.core.common.framework_info import set_fw_info
 from model_compression_toolkit.core.common.graph.edge import Edge
 from model_compression_toolkit.core.common.graph.virtual_activation_weights_node import VirtualActivationWeightsNode, \
     VirtualSplitActivationNode, VirtualSplitWeightsNode
@@ -82,13 +81,9 @@ class TestMixedPrecisionSearchManager:
         TODO: Sensitivity computation is not tested.
               BOPS: only logical flow is tested.
     """
-    @pytest.fixture(autouse=True)
-    def setup(self, fw_info_mock):
-        set_fw_info(fw_info_mock)
-
-    def test_prepare_weights_ru_for_lp(self, fw_info_mock, fw_impl_mock):
+    def test_prepare_weights_ru_for_lp(self, patch_fw_info, fw_impl_mock):
         """ Tests ru related setup and methods for weights target. """
-        g, [n1, n2, n3, n4, n5] = build_graph(fw_info_mock, w_mp=True, a_mp=False)
+        g, [n1, n2, n3, n4, n5] = build_graph(patch_fw_info, w_mp=True, a_mp=False)
         ru = ResourceUtilization(weights_memory=100)
         mgr = MixedPrecisionSearchManager(g, fw_impl=fw_impl_mock,
                                           sensitivity_evaluator=Mock(), target_resource_utilization=ru,
@@ -101,9 +96,9 @@ class TestMixedPrecisionSearchManager:
         rel_constraint = mgr._get_relative_ru_constraint_per_mem_element()
         self._assert_dict_allclose(rel_constraint, {RUTarget.WEIGHTS: np.array([[100 - 81.5]])})
 
-    def test_prepare_activation_ru_for_lp(self, fw_info_mock, fw_impl_mock):
+    def test_prepare_activation_ru_for_lp(self, patch_fw_info, fw_impl_mock):
         """ Tests ru related setup and methods for activation target. """
-        g, [n1, n2, n3, n4, n5] = build_graph(fw_info_mock, w_mp=False, a_mp=True)
+        g, [n1, n2, n3, n4, n5] = build_graph(patch_fw_info, w_mp=False, a_mp=True)
         ru = ResourceUtilization(activation_memory=150)
         mgr = MixedPrecisionSearchManager(g, fw_impl=fw_impl_mock,
                                           sensitivity_evaluator=Mock(), target_resource_utilization=ru,
@@ -128,9 +123,9 @@ class TestMixedPrecisionSearchManager:
                                    {RUTarget.ACTIVATION: 150 - np.array([48, 288, 400, 706, 818, 272])/8},
                                    sort_axis=0)
 
-    def test_prepare_total_ru_for_lp(self, fw_info_mock, fw_impl_mock):
+    def test_prepare_total_ru_for_lp(self, patch_fw_info, fw_impl_mock):
         """ Tests ru related setup and methods for total target.  """
-        g, [n1, n2, n3, n4, n5] = build_graph(fw_info_mock, w_mp=True, a_mp=True)
+        g, [n1, n2, n3, n4, n5] = build_graph(patch_fw_info, w_mp=True, a_mp=True)
         ru = ResourceUtilization(total_memory=200)
         mgr = MixedPrecisionSearchManager(g, fw_impl=fw_impl_mock,
                                           sensitivity_evaluator=Mock(), target_resource_utilization=ru,
@@ -207,9 +202,9 @@ class TestMixedPrecisionSearchManager:
         assert np.array_equal(ru[RUTarget.BOPS], np.array([6, 0, 8, 0, 10]))
         assert np.array_equal(ru[RUTarget.TOTAL], np.array([2, 0, 4, 0, 6]))
 
-    def test_search_weights(self, fw_info_mock, fw_impl_mock):
+    def test_search_weights(self, patch_fw_info, fw_impl_mock):
         """ Tests mp search with weights ru constraint.  """
-        g, [n1, n2, n3, n4, n5] = build_graph(fw_info_mock, w_mp=True, a_mp=False)
+        g, [n1, n2, n3, n4, n5] = build_graph(patch_fw_info, w_mp=True, a_mp=False)
 
         def run(w_mem, sensitivity, exp_cfg):
             self._run_search_test(g, ResourceUtilization(weights_memory=w_mem), sensitivity, exp_cfg, fw_impl_mock)
@@ -226,9 +221,9 @@ class TestMixedPrecisionSearchManager:
         with pytest.raises(ValueError, match='model cannot be quantized to meet the specified resource utilization'):
             run(w_mem=42*2/8+142*4/8-1, sensitivity={n2: [1, 1, 1], n3: [1, 1, 1]}, exp_cfg=None)
 
-    def test_search_activation(self, fw_info_mock, fw_impl_mock):
+    def test_search_activation(self, patch_fw_info, fw_impl_mock):
         """ Tests mp search with activation ru constraint.  """
-        g, [n1, n2, n3, n4, n5] = build_graph(fw_info_mock, w_mp=False, a_mp=True)
+        g, [n1, n2, n3, n4, n5] = build_graph(patch_fw_info, w_mp=False, a_mp=True)
 
         def run(a_mem, sensitivity, exp_cfg):
             return self._run_search_test(g, ResourceUtilization(activation_memory=a_mem), sensitivity, exp_cfg, fw_impl_mock)
@@ -246,9 +241,9 @@ class TestMixedPrecisionSearchManager:
         with pytest.raises(ValueError, match='model cannot be quantized to meet the specified resource utilization'):
             run(a_mem=818/8-1, sensitivity={n2: [1, 1, 1], n3: [1, 1]}, exp_cfg=None)
 
-    def test_search_all_mem(self, fw_info_mock, fw_impl_mock):
+    def test_search_all_mem(self, patch_fw_info, fw_impl_mock):
         """ Tests mp search with weights, activation and total constraints.  """
-        g, [n1, n2, n3, n4, n5] = build_graph(fw_info_mock, w_mp=True, a_mp=True)
+        g, [n1, n2, n3, n4, n5] = build_graph(patch_fw_info, w_mp=True, a_mp=True)
 
         def run(ru, sensitivity, exp_cfg):
             return self._run_search_test(g, ru, sensitivity, exp_cfg, fw_impl_mock)
@@ -277,8 +272,8 @@ class TestMixedPrecisionSearchManager:
         res, mgr = run(ru, sensitivity, exp_cfg={n2: 1, n3: 2, n4: 1})
         assert res == mgr.min_ru_config
 
-    def test_compute_ru_for_replaced_config(self, fw_info_mock, fw_impl_mock):
-        g, [n1, n2, n3, n4, n5] = build_graph(fw_info_mock, w_mp=True, a_mp=True)
+    def test_compute_ru_for_replaced_config(self, patch_fw_info, fw_impl_mock):
+        g, [n1, n2, n3, n4, n5] = build_graph(patch_fw_info, w_mp=True, a_mp=True)
         ru = ResourceUtilization(weights_memory=100, activation_memory=200, total_memory=300)
         mgr = MixedPrecisionSearchManager(g, fw_impl=fw_impl_mock, sensitivity_evaluator=Mock(),
                                           target_resource_utilization=ru, mp_config=Mock())
@@ -296,10 +291,10 @@ class TestMixedPrecisionSearchManager:
         (True, False, ResourceUtilization(bops=1), False),
         (False, True, ResourceUtilization(bops=1), False)
     ])
-    def test_bops_no_bops_high_level_flow(self, fw_info_mock, fw_impl_mock, mocker, w_mp, a_mp, target_ru, exp_virtual):
+    def test_bops_no_bops_high_level_flow(self, patch_fw_info, fw_impl_mock, mocker, w_mp, a_mp, target_ru, exp_virtual):
         """ Tests that mp manager is instantiated correctly w.r.t virtual graph, and search method
             returns config w.r.t to the original graph in both cases. """
-        g, _ = build_graph(fw_info_mock, w_mp=w_mp, a_mp=a_mp)
+        g, _ = build_graph(patch_fw_info, w_mp=w_mp, a_mp=a_mp)
 
         substitute_mock = mocker.patch('model_compression_toolkit.core.common.mixed_precision.'
                                        'mixed_precision_search_manager.substitute')
@@ -346,13 +341,13 @@ class TestMixedPrecisionSearchManager:
             recon_cfg_mock.assert_not_called()
             assert res == prepare_and_run_mock.return_value
 
-    def test_build_sensitivity_mapping(self, fw_info_mock, fw_impl_mock):
+    def test_build_sensitivity_mapping(self, patch_fw_info, fw_impl_mock):
         """ Test build sensitivity metric for regular graph (non-virtual)
             - real graph with real quantization candidates (dummy node types and weights)
             - check correct configurations (from graph) are passed to mock sensitivity evaluator.
             - final sensitivity is built correctly from mocked computed metrics.
         """
-        fw_info_mock.get_kernel_op_attribute = lambda nt: 'foo' if nt is DummyLayer else None
+        patch_fw_info.get_kernel_op_attribute = lambda nt: 'foo' if nt is DummyLayer else None
 
         a_conf = build_node('a_conf', qcs=[build_nbits_qc(nb) for nb in (4, 2)], layer_class=DummyLayer2)
         a_conf_w = build_node('a_conf_w', canonical_weights={'foo': np.ones(10)},
@@ -395,7 +390,7 @@ class TestMixedPrecisionSearchManager:
         assert np.allclose(res[w_conf], np.array([0, 0.1]))
         assert np.allclose(res[aw_conf], np.array([0, 1.1, 2.2, 3.3]))
 
-    def test_build_sensitivity_mapping_virtual_graph(self, graph_mock, fw_impl_mock, mocker):
+    def test_build_sensitivity_mapping_virtual_graph(self, graph_mock, patch_fw_info, fw_impl_mock, mocker):
         """ Test build_sensitivity method for virtual graph. We only test apis integration:
             - mock virtual graph, config reconstructor and sensitivity evaluator.
             - reconstruct_separate_aw_configs is called with correct args
@@ -456,9 +451,9 @@ class TestMixedPrecisionSearchManager:
         (MpMetricNormalization.MINBIT, 0.1, 10, [1.6, 1.6, 1.5, 2], [2 / 3 + .1, 2 / 3, 1]),
         (MpMetricNormalization.MINBIT, 0.1, 2, [.8, .8, .75, 1], [1 / 3 + .05, 1 / 3, .5])
     ])
-    def test_build_sensitivity_mapping_params(self, fw_impl_mock, fw_info_mock, norm, eps, max_thresh, exp1, exp2):
+    def test_build_sensitivity_mapping_params(self, fw_impl_mock, patch_fw_info, norm, eps, max_thresh, exp1, exp2):
         """ Tests sensitivity normalization method, epsilon and threshold. """
-        fw_info_mock.get_kernel_op_attribute = lambda nt: None
+        patch_fw_info.get_kernel_op_attribute = lambda nt: None
 
         ph = build_node('ph', qcs=[build_nbits_qc()])
         n1 = build_node('n1', qcs=[build_nbits_qc(nb) for nb in (4, 2, 16, 8)])
@@ -514,10 +509,9 @@ class TestConfigHelper:
     kernel_attr = 'im_kernel'
 
     @pytest.fixture(autouse=True)
-    def setup(self, fw_info_mock):
-        fw_info_mock.get_kernel_op_attribute = \
+    def setup(self, patch_fw_info):
+        patch_fw_info.get_kernel_op_attribute = \
             lambda nt: self.kernel_attr if nt == self.AWLayer else None
-        set_fw_info(fw_info_mock)
 
     @staticmethod
     def build_aw_node(abits, wbits, name='aw', layer_cls=AWLayer, w_attr=kernel_attr):

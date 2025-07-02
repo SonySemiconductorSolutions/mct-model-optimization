@@ -21,7 +21,6 @@ from unittest.mock import Mock
 
 from model_compression_toolkit.quantization_preparation.load_fqc import set_quantization_configs_to_node
 from tests_pytest._test_util.graph_builder_utils import build_node, DummyLayer
-from model_compression_toolkit.core.common.framework_info import set_fw_info
 from model_compression_toolkit.target_platform_capabilities.schema.mct_current_schema import QuantizationConfigOptions, \
     OpQuantizationConfig, AttributeQuantizationConfig, Signedness
 from mct_quantizers import QuantizationMethod
@@ -36,10 +35,6 @@ class NoActivationQuantNode:
 
 
 class TestSetNodeQuantizationConfig:
-    @pytest.fixture(autouse=True)
-    def setup(self, fw_info_mock):
-        set_fw_info(fw_info_mock)
-
     @staticmethod
     def _get_op_config(activation_n_bits,
                        supported_input_activation_n_bits,
@@ -55,10 +50,9 @@ class TestSetNodeQuantizationConfig:
                                     quantization_preserving=quantization_preserving,
                                     signedness=Signedness.AUTO)
 
-    def test_activation_preserving_with_2_inputs(self, fw_info_mock):
+    def test_activation_preserving_with_2_inputs(self, patch_fw_info):
         """ Tests that . """
-        fw_info_mock.activation_quantizer_mapping = {QuantizationMethod.POWER_OF_TWO: lambda x: 0}
-        fw_info_mock.get_kernel_op_attribute = lambda x: None
+        patch_fw_info.get_kernel_op_attribute = lambda x: None
 
         n1 = build_node('in1_node')
         n2 = build_node('in2_node')
@@ -71,9 +65,9 @@ class TestSetNodeQuantizationConfig:
                                  Edge(n3, n4, 0, 0),
                                  Edge(n1, qp3, 0, 0), Edge(qp3, qp4, 0, 0)])
         q_op_config_kwargs = {"activation_n_bits": 7, "supported_input_activation_n_bits": 7,
-                            "enable_activation_quantization": True, "quantization_preserving": False}
+                              "enable_activation_quantization": True, "quantization_preserving": False}
         qp_op_config_kwargs = {"activation_n_bits": 7, "supported_input_activation_n_bits": 7,
-                            "enable_activation_quantization": False, "quantization_preserving": True}
+                               "enable_activation_quantization": False, "quantization_preserving": True}
         _filters = {DummyLayer: QuantizationConfigOptions(quantization_configurations=[self._get_op_config(**q_op_config_kwargs)]),
                     PreservingNode: QuantizationConfigOptions(quantization_configurations=[self._get_op_config(**qp_op_config_kwargs)])}
         fqc = Mock(filterlayer2qco=_filters, layer2qco=_filters)
@@ -85,12 +79,11 @@ class TestSetNodeQuantizationConfig:
         assert qp3.is_quantization_preserving()
         assert qp4.is_quantization_preserving()
 
-    def test_node_quantization_by_next_nodes(self, fw_info_mock):
+    def test_node_quantization_by_next_nodes(self, patch_fw_info):
         """
         Test that node quantization n_bits is unaffected by preserving next node and not-enabled quantization next node.
         """
-        fw_info_mock.activation_quantizer_mapping = {QuantizationMethod.POWER_OF_TWO: lambda x: 0}
-        fw_info_mock.get_kernel_op_attribute = lambda x: None
+        patch_fw_info.get_kernel_op_attribute = lambda x: None
 
         first_node = build_node('first_node')
         preserving_node = build_node('preserving_node', layer_class=PreservingNode)
@@ -105,14 +98,14 @@ class TestSetNodeQuantizationConfig:
                                     "quantization_preserving": False}
 
         preserving_node_config_kwargs = {"activation_n_bits": 8,
-                                        "supported_input_activation_n_bits": [8, 16],
-                                        "enable_activation_quantization": False,
-                                        "quantization_preserving": True}
+                                         "supported_input_activation_n_bits": [8, 16],
+                                         "enable_activation_quantization": False,
+                                         "quantization_preserving": True}
 
         no_quant_node_config_kwargs = {"activation_n_bits": 8,
-                                        "supported_input_activation_n_bits": [8],
-                                        "enable_activation_quantization": False,
-                                        "quantization_preserving": False}
+                                       "supported_input_activation_n_bits": [8],
+                                       "enable_activation_quantization": False,
+                                       "quantization_preserving": False}
         _filters = {
             DummyLayer: QuantizationConfigOptions(quantization_configurations=[self._get_op_config(**first_node_config_kwargs)]),
             PreservingNode: QuantizationConfigOptions(quantization_configurations=[self._get_op_config(**preserving_node_config_kwargs)]),

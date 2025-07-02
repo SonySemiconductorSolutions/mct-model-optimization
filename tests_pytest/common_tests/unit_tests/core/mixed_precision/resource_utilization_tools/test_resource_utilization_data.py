@@ -26,7 +26,7 @@ from model_compression_toolkit.core.common.mixed_precision.resource_utilization_
 
 class TestResourceUtilizationData:
     @pytest.mark.parametrize('error_method', [QuantizationErrorMethod.MSE, QuantizationErrorMethod.HMSE])
-    def test_resource_utilization_data(self, fw_info_mock, fw_impl_mock, error_method, mocker):
+    def test_resource_utilization_data(self, fw_impl_mock, error_method, mocker):
         core_cfg = CoreConfig()
         core_cfg.quantization_config.weights_error_method = error_method
         core_cfg.bit_width_config = BitWidthConfig([1, 2])
@@ -42,7 +42,6 @@ class TestResourceUtilizationData:
         prep_runner = mocker.patch('model_compression_toolkit.core.common.mixed_precision.resource_utilization_tools.'
                                    'resource_utilization_data.graph_preparation_runner')
 
-        _current_framework_info = fw_info_mock
         compute_resource_utilization_data(model_mock,
                                           data_gen_mock,
                                           core_cfg,

@@ -15,11 +15,9 @@
 import numpy as np
 
 from tests_pytest._test_util.graph_builder_utils import build_node, build_nbits_qc
-from model_compression_toolkit.core.common.framework_info import set_fw_info
 
 
-def test_find_min_max_candidate_index(fw_info_mock):
-    set_fw_info(fw_info_mock)
+def test_find_min_max_candidate_index(patch_fw_info):
     qcs = []
     for ab in [4, 8, 16, 2]:
         for fb in [2, 8, 4]:
