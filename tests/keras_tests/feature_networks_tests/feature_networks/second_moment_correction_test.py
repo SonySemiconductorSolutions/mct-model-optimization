@@ -33,7 +33,6 @@ from model_compression_toolkit.core.common.visualization.tensorboard_writer impo
 from model_compression_toolkit.core.keras.constants import EPSILON_VAL, GAMMA, BETA, MOVING_MEAN, MOVING_VARIANCE
 from model_compression_toolkit.core.keras.default_framework_info import KerasInfo
 from model_compression_toolkit.core.keras.keras_implementation import KerasImplementation
-from model_compression_toolkit.core.keras.keras_model_validation import KerasModelValidation
 from model_compression_toolkit.core.keras.statistics_correction.apply_second_moment_correction import \
     keras_apply_second_moment_correction
 from model_compression_toolkit.core.runner import core_runner
@@ -268,8 +267,6 @@ class ValueSecondMomentTest(BaseSecondMomentTest):
                       analyze_similarity: bool = False,
                       target_platform_capabilities: TargetPlatformCapabilities = DEFAULT_KERAS_TPC) -> \
             Tuple[Graph, Graph]:
-
-        KerasModelValidation(model=in_model).validate()
 
         core_config = CoreConfig(quantization_config=quant_config,
                                  debug_config=DebugConfig(analyze_similarity=analyze_similarity,

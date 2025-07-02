@@ -38,7 +38,6 @@ if FOUND_TF:
         AttachTpcToKeras
     from model_compression_toolkit.core.keras.default_framework_info import set_keras_info
     from model_compression_toolkit.core.keras.keras_implementation import KerasImplementation
-    from model_compression_toolkit.core.keras.keras_model_validation import KerasModelValidation
     from tensorflow.keras.models import Model
     from model_compression_toolkit.target_platform_capabilities.constants import DEFAULT_TP_MODEL
     from model_compression_toolkit.exporter.model_wrapper import get_exportable_keras_model
@@ -128,8 +127,6 @@ if FOUND_TF:
 
         if core_config.debug_config.bypass:
             return in_model, None
-
-        KerasModelValidation(model=in_model).validate()
 
         if core_config.is_mixed_precision_enabled:
             if not isinstance(core_config.mixed_precision_config, MixedPrecisionQuantizationConfig):

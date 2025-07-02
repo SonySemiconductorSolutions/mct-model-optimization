@@ -43,7 +43,6 @@ if FOUND_TF:
     import tensorflow as tf
     from model_compression_toolkit.core.keras.default_framework_info import set_keras_info
     from model_compression_toolkit.gptq.keras.gptq_keras_implementation import GPTQKerasImplemantation
-    from model_compression_toolkit.core.keras.keras_model_validation import KerasModelValidation
     from tensorflow.keras.models import Model
     from model_compression_toolkit.gptq.keras.gptq_loss import GPTQMultipleTensorsLoss, sample_layer_attention_loss
     from model_compression_toolkit.target_platform_capabilities.constants import DEFAULT_TP_MODEL
@@ -234,8 +233,6 @@ if FOUND_TF:
 
         if core_config.debug_config.bypass:
             return in_model, None
-
-        KerasModelValidation(model=in_model).validate()
 
         if core_config.is_mixed_precision_enabled:
             if not isinstance(core_config.mixed_precision_config, MixedPrecisionQuantizationConfig):

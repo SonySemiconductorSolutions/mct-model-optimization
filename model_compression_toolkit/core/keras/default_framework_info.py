@@ -143,7 +143,7 @@ class KerasInfo(FrameworkInfo):
             Node's output channel axis.
 
         """
-        return cls.out_channel_axis_mapping.get(node_type, -1)
+        return cls.out_channel_axis_mapping.get(node_type)
 
 
 def set_keras_info(func):

@@ -87,7 +87,7 @@ class MeanCollector(BaseCollector):
             x: Tensor that goes through the mean collector and needs to be considered in the mean computation.
         """
         self.i += 1  # Update the iteration index
-        axis = (len(x.shape) - 1) if self.axis == LAST_AXIS else self.axis
+        axis = (len(x.shape) - 1) if self.axis == LAST_AXIS or self.axis is None else self.axis
         n = x.shape[axis]
         transpose_index = [axis, *[i for i in range(len(x.shape)) if i != axis]]
         mu = np.mean(np.reshape(np.transpose(x, transpose_index), [n, -1]), axis=-1) # mean per channel for a batch
