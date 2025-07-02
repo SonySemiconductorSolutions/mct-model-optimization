@@ -14,7 +14,6 @@
 # ==============================================================================
 import unittest
 
-import keras
 import numpy as np
 
 import model_compression_toolkit as mct

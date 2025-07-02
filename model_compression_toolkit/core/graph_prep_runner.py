@@ -14,8 +14,6 @@
 # ==============================================================================
 
 
-from typing import Callable, Any
-
 from model_compression_toolkit.core.common.framework_implementation import FrameworkImplementation
 from model_compression_toolkit.core.common.graph.base_graph import Graph
 from model_compression_toolkit.core.common.quantization.bit_width_config import BitWidthConfig
@@ -25,8 +23,6 @@ from model_compression_toolkit.core.common.quantization.quantization_config impo
 from model_compression_toolkit.core.common.quantization.quantization_config import QuantizationConfig
 from model_compression_toolkit.core.common.quantization.set_node_quantization_config import set_manual_bitwidth_config
 from model_compression_toolkit.core.common.substitutions.apply_substitutions import substitute
-from model_compression_toolkit.core.common.substitutions.linear_collapsing_substitution import \
-    linear_collapsing_substitute
 from model_compression_toolkit.core.common.visualization.tensorboard_writer import TensorboardWriter
 from model_compression_toolkit.quantization_preparation.load_fqc import load_fqc_configuration
 from model_compression_toolkit.target_platform_capabilities.targetplatform2framework.framework_quantization_capabilities import \
@@ -46,7 +42,7 @@ def get_finalized_graph(graph: Graph,
     process. All future graph substitutions and operations that change the graph should be added to this method.
 
     Args:
-        initial_graph (Graph): Graph to apply the changes to.
+        graph (Graph): Graph to apply the changes to.
         fqc (FrameworkQuantizationCapabilities): FrameworkQuantizationCapabilities object that describes the desired inference target platform (includes fusing patterns MCT should handle).
         quant_config (QuantizationConfig): QuantizationConfig containing parameters of how the model should be
             quantized.

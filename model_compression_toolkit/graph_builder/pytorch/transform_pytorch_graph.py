@@ -1,3 +1,18 @@
+# Copyright 2025 Sony Semiconductor Israel, Inc. All rights reserved.
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+# ==============================================================================
+
 from model_compression_toolkit.core.pytorch.graph_substitutions.substitutions.residual_collapsing import \
     pytorch_residual_collapsing
 
@@ -42,56 +57,55 @@ def transform_pytorch_graph(graph: Graph,
                             residual_collapsing: bool = True,
                             relu_bound_to_power_of_2: bool = False) -> Graph:
     """
-    Applies a series of structural simplifications to a graph.
-
-    This includes transformations such as batch normalization folding, merging linear layers, etc.
-    These transformations are aimed at simplifying the graph for optimization without altering the model's
-    functionality.
+    Applies PyTorch-specific graph transformations to simplify and optimize the model graph.
 
     Args:
-        graph (Graph): The input graph to transform.
-        linear_collapsing:
-        residual_collapsing:
-        relu_bound_to_power_of_2:
+        graph (Graph): The input computational graph.
+        linear_collapsing (bool): If True, collapses consecutive linear operations (e.g., Linear, Conv2D).
+        residual_collapsing (bool): If True, simplifies residual connections.
+        relu_bound_to_power_of_2 (bool): If True, clips ReLU activation bounds to the nearest upper power-of-2.
 
     Returns:
-        Graph: A refined graph with structural transformations applied.
-
-    Notes:
-        This function does not perform numerical optimizations (e.g., quantization),
-        nor does it alter weights or model accuracy. It is purely structural.
+        Graph: The transformed computational graph.
     """
-    prepare_graph_substitutions = [ReshapeWithStaticShapes(),
-                                   MultiHeadAttentionDecomposition(),
-                                   ScaledDotProductDecomposition(),
-                                   MatMulDecomposition(),
-                                   TransformFunctionCallMethod(),
-                                   FunctionalConvSubstitution(),
-                                   FunctionalBatchNorm(),
-                                   FunctionalLayerNorm(),
-                                   FunctionalLinear(),
-                                   RemoveIdentity(),
-                                   ConvtransposeDynamicPadding()]
-    graph = substitute(graph, prepare_graph_substitutions)
 
-    # **************************************************
+    # Normalize graph structure and convert functional forms
+    normalization_substitutions = [
+        ReshapeWithStaticShapes(),
+        MultiHeadAttentionDecomposition(),
+        ScaledDotProductDecomposition(),
+        MatMulDecomposition(),
+        TransformFunctionCallMethod(),
+        FunctionalConvSubstitution(),
+        FunctionalBatchNorm(),
+        FunctionalLayerNorm(),
+        FunctionalLinear(),
+        RemoveIdentity(),
+        ConvtransposeDynamicPadding(),
+    ]
+    graph = substitute(graph, normalization_substitutions)
 
+    # Annotate nodes with prior information
     for node in graph.nodes:
         node.prior_info = create_node_prior_info(node=node, graph=graph)
 
-    # **************************************************
-    substitutions_list = [pytorch_batchnorm_folding(),
-                          pytorch_batchnorm_forward_folding()]
+    # Apply graph substitutions for folding and quantization prep
+    transformation_substitutions = [
+        pytorch_batchnorm_folding(),
+        pytorch_batchnorm_forward_folding(),
+    ]
     if relu_bound_to_power_of_2:
-        substitutions_list.append(ReLUBoundToPowerOfTwo())
+        transformation_substitutions.append(ReLUBoundToPowerOfTwo())
 
-    graph = substitute(graph, substitutions_list)
-    # **************************************************
+    graph = substitute(graph, transformation_substitutions)
 
+    # Optional linear collapsing
     if linear_collapsing:
         graph = linear_collapsing_substitute(graph, pytorch_linear_collapsing())
 
+    # Optional residual collapsing
     if residual_collapsing:
         graph = substitute(graph, [pytorch_residual_collapsing()])
 
     return graph
+

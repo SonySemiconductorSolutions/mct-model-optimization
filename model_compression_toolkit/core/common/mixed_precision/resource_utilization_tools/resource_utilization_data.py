@@ -13,7 +13,6 @@
 # limitations under the License.
 # ==============================================================================
 import copy
-from typing import Callable
 
 from model_compression_toolkit.core.graph_prep_runner import get_finalized_graph
 
@@ -34,7 +33,7 @@ def compute_resource_utilization_data(graph: Graph,
     This can serve as a basis for defining target Resource Utilization for mixed precision search.
 
     Args:
-        in_model:  Model to build graph from (the model that intended to be quantized).
+        graph:  Graph that represents the model to compute its Resource Utilization data.
         core_config: CoreConfig containing parameters of how the model should be quantized.
         fqc: FrameworkQuantizationCapabilities object that models the inference target platform and
                                               the attached framework operator's information.

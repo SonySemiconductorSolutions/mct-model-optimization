@@ -13,7 +13,6 @@
 # limitations under the License.
 # ==============================================================================
 import operator
-from copy import deepcopy
 from functools import partial
 from typing import List, Any, Tuple, Callable, Generator
 
@@ -229,39 +228,6 @@ class PytorchImplementation(FrameworkImplementation):
                                        ScaleEqualizationWithPad(quant_config)])
         return substitutions_list
 
-    # def get_substitutions_prepare_graph(self) -> List[common.BaseSubstitution]:
-    #     """
-    #
-    #     Returns: A list of the framework substitutions used before we collect the prior information.
-    #
-    #     """
-    #     return [ReshapeWithStaticShapes(),
-    #             MultiHeadAttentionDecomposition(),
-    #             ScaledDotProductDecomposition(),
-    #             MatMulDecomposition(),
-    #             TransformFunctionCallMethod(),
-    #             FunctionalConvSubstitution(),
-    #             FunctionalBatchNorm(),
-    #             FunctionalLayerNorm(),
-    #             FunctionalLinear(),
-    #             RemoveIdentity(),
-    #             ConvtransposeDynamicPadding()]
-
-    # def get_substitutions_pre_statistics_collection(self,
-    #                                                 quant_config: QuantizationConfig
-    #                                                 ) -> List[common.BaseSubstitution]:
-    #     """
-    #     Args:
-    #         quant_config: QuantizationConfig to determine which substitutions to return.
-    #
-    #     Returns: A list of the framework substitutions used before we build a quantized module.
-    #     """
-    #     substitutions_list = [pytorch_batchnorm_folding(),
-    #                           pytorch_batchnorm_forward_folding()]
-    #     if quant_config.relu_bound_to_power_of_2:
-    #         substitutions_list.append(ReLUBoundToPowerOfTwo())
-    #     return substitutions_list
-
     def get_substitutions_statistics_correction(self, quant_config: QuantizationConfig
                                                 ) -> List[common.BaseSubstitution]:
         """
@@ -277,25 +243,6 @@ class PytorchImplementation(FrameworkImplementation):
         if quant_config.weights_second_moment_correction:
             substitutions_list.append(pytorch_batchnorm_reconstruction())
         return substitutions_list
-
-    # def get_residual_collapsing_substitution(self) -> List[common.BaseSubstitution]:
-    #     """
-    #     Returns: A list of the framework substitutions used for residual collapsing
-    #     """
-    #     substitutions_list = [pytorch_residual_collapsing()]
-    #     return substitutions_list
-
-    # def get_linear_collapsing_substitution(self) -> common.BaseSubstitution:
-    #     """
-    #     Returns: linear collapsing substitution
-    #     """
-    #     return pytorch_linear_collapsing()
-
-    # def get_op2d_add_const_collapsing_substitution(self) -> common.BaseSubstitution:
-    #     """
-    #     Returns: None, as Op2d add-const substitution is not supported in torch yet
-    #     """
-    #     return None
 
     def get_substitutions_post_statistics_collection(self,
                                                      quant_config: QuantizationConfig) -> List[common.BaseSubstitution]:
@@ -339,21 +286,6 @@ class PytorchImplementation(FrameworkImplementation):
         if quant_config.weights_second_moment_correction:
             substitutions_list.append(pytorch_batchnorm_refusing())
         return substitutions_list
-
-    # def get_node_prior_info(self,
-    #                         node: BaseNode,
-    #                         graph: Graph) -> NodePriorInfo:
-    #     """
-    #     Get a NodePriorInfo object for a node that represents a Pytorch layer.
-    #     Args:
-    #         node: Node to get its prior info.
-    #         graph: Graph to check the next node type.
-    #     Returns:
-    #         NodePriorInfo with information about the node.
-    #     """
-    #
-    #     return create_node_prior_info(node=node,
-    #                                   graph=graph)
 
     def count_node_for_mixed_precision_interest_points(self, node: BaseNode) -> bool:
         """
