@@ -20,7 +20,6 @@ from typing import Callable
 import numpy as np
 
 from model_compression_toolkit.core.common import Graph
-from model_compression_toolkit.core.common.quantization.quantization_config import QuantizationConfig
 from model_compression_toolkit.core import common
 from model_compression_toolkit.core.common.quantization.node_quantization_config import WeightsAttrQuantizationConfig, \
     ActivationQuantizationMode
@@ -84,14 +83,10 @@ class BatchNormalizationReconstruction(common.BaseSubstitution):
         # If the linear operator is part of a reused group (it is the "base" node, or a reused node),
         # we should skip the substitution.
         if source_node.is_reused():
-            for qc in source_node.candidates_quantization_cfg:
-                qc.weights_quantization_cfg.weights_second_moment_correction = False
             return graph
 
         # We apply only on nodes with folded BatchNormalization.
         if source_node.prior_info.std_output is None or source_node.prior_info.mean_output is None:
-            for qc in source_node.candidates_quantization_cfg:
-                qc.weights_quantization_cfg.weights_second_moment_correction = False
             return graph
 
         # This feature disabled for models with weights quantization method of Power of 2
@@ -103,9 +98,12 @@ class BatchNormalizationReconstruction(common.BaseSubstitution):
                     == QuantizationMethod.POWER_OF_TWO):
                 Logger.warning("Second moment statistics correction feature disabled for models with weights "
                                "quantization method of Power of 2")
-                for qc_inner in source_node.candidates_quantization_cfg:
-                    qc_inner.weights_quantization_cfg.weights_second_moment_correction = False
                 return graph
+
+        # turn on second moment correction flag
+        def set_second_moment_correction(qc):
+            qc.weights_quantization_cfg.weights_second_moment_correction = True
+        source_node.quantization_cfg.update_all(set_second_moment_correction)
 
         eps = self.epsilon_val
 

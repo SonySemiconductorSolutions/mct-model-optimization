@@ -110,5 +110,5 @@ class BasePytorchInfrastructureTest:
         return TrainableQuantizerActivationConfig(activation_quantization_method=quant_method,
                                                   activation_n_bits=8,
                                                   activation_quantization_params=activation_quant_params or {},
-                                                  enable_activation_quantization=True,
-                                                  min_threshold=0)
+                                                  enable_activation_quantization=True)
+

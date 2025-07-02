@@ -92,8 +92,6 @@ from tests.keras_tests.feature_networks_tests.feature_networks.nested_networks.n
 from tests.keras_tests.feature_networks_tests.feature_networks.nested_networks.nested_test import NestedTest
 from tests.keras_tests.feature_networks_tests.feature_networks.network_editor.change_qc_attr_test import \
     ChangeFinalWeightQCAttrTest, ChangeFinalActivationQCAttrTest
-from tests.keras_tests.feature_networks_tests.feature_networks.network_editor.edit_error_method_test import \
-    EditActivationErrorMethod
 from tests.keras_tests.feature_networks_tests.feature_networks.network_editor.edit_qc_test import \
     ChangeCandidatesWeightsQuantConfigAttrTest, ChangeCandidatesActivationQCAttrTest, \
     ChangeFinalsWeightsQuantConfigAttrTest, ChangeFinalsActivationQCAttrTest, \
@@ -183,11 +181,9 @@ class FeatureNetworkTest(unittest.TestCase):
     def test_depthwise_conv2d_replacement(self):
         DwConv2dReplacementTest(self).run_test()
 
-    def test_edit_error_method(self):
-        EditActivationErrorMethod(self).run_test()
-
     def test_change_qc_attr(self):
-        ChangeFinalWeightQCAttrTest(self).run_test()
+        # there are no fields that can be changed in final cfg and have any effect (unless the whole attr cfgs mapping is overridden)
+        # ChangeFinalWeightQCAttrTest(self).run_test()
         ChangeFinalActivationQCAttrTest(self).run_test()
 
     def test_edit_candidate_qc(self):

@@ -52,7 +52,8 @@ def _collect_and_assign_act_threshold(graph: Graph,
 
     for n in graph.nodes:
         if n.is_activation_quantization_enabled():
-            activation_params = compute_activation_qparams(activation_quant_cfg=n.final_activation_quantization_cfg,
+            activation_params = compute_activation_qparams(quant_cfg=core_config.quantization_config,
+                                                           node_activation_quant_cfg=n.final_activation_quantization_cfg,
                                                            node_prior_info=n.prior_info,
                                                            out_stats_container=graph.get_out_stats_collector(n))
             n.final_activation_quantization_cfg.set_activation_quantization_param(activation_params)

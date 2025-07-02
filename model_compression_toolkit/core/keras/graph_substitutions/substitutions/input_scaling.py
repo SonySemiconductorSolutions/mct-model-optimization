@@ -17,7 +17,7 @@
 from tensorflow.keras.layers import InputLayer, Dense, DepthwiseConv2D, Conv2D, Conv2DTranspose, ZeroPadding2D
 from typing import List
 
-from model_compression_toolkit.core import common
+from model_compression_toolkit.core import common, QuantizationConfig
 from model_compression_toolkit.core.common.graph.base_graph import Graph
 from model_compression_toolkit.core.common.graph.graph_matchers import NodeOperationMatcher, WalkMatcher
 from model_compression_toolkit.core.common.graph.base_node import BaseNode
@@ -47,7 +47,8 @@ class BaseInputScaling(common.BaseSubstitution):
     """
 
     def __init__(self,
-                 matcher_instance):
+                 matcher_instance,
+                 quant_cfg: QuantizationConfig):
         """
         Matches: InputLayer -> (optional nodes) -> (Dense,Conv2D,DepthwiseConv2D,Conv2DTranspose)
         note: the optional nodes are nodes that don't affect the scaling (such as ZeroPadding)
@@ -55,10 +56,11 @@ class BaseInputScaling(common.BaseSubstitution):
         Create a substitution using different params which may affect the way this substitution is made.
         The substitution is looking for edges in the graph which are input layers connected to linear layers.
         Args:
-            matcher_instance: matcher instance of type WalkMatcher
-
+            matcher_instance: matcher instance of type WalkMatcher.
+            quant_cfg: quantization config.
         """
         super().__init__(matcher_instance=matcher_instance)
+        self.quant_cfg = quant_cfg
 
     def substitute(self,
                    graph: Graph,
@@ -105,9 +107,11 @@ class BaseInputScaling(common.BaseSubstitution):
             for nqc in linear_layer.candidates_quantization_cfg:
                 attr_cfg = nqc.weights_quantization_cfg.get_attr_config(linear_layer.kernel_attr)
                 assert attr_cfg.enable_weights_quantization
-                w_params, _ = compute_weights_qparams(w1_fixed, attr_quant_config=attr_cfg,
-                                                      output_channels_axis=attr_cfg.weights_channels_axis.output,
-                                                      min_threshold=nqc.weights_quantization_cfg.min_threshold)
+                w_params, _ = compute_weights_qparams(w1_fixed,
+                                                      attr_quant_config=attr_cfg,
+                                                      weights_error_method=self.quant_cfg.weights_error_method,
+                                                      l_p_value=self.quant_cfg.l_p_value,
+                                                      output_channels_axis=attr_cfg.weights_channels_axis.output)
                 attr_cfg.set_weights_quantization_param(w_params)
 
         return graph
@@ -118,12 +122,15 @@ class InputScaling(BaseInputScaling):
     Substitution extends BaseInputScaling to the case of Input-->Linear
     """
 
-    def __init__(self):
+    def __init__(self, quant_cfg: QuantizationConfig):
         """
         Initialize a ScaleEqualization object.
+
+        Args:
+            quant_cfg: quantization config.
         """
 
-        super().__init__(matcher_instance=INPUT_MATCHER)
+        super().__init__(matcher_instance=INPUT_MATCHER, quant_cfg=quant_cfg)
 
 
 class InputScalingWithPad(BaseInputScaling):
@@ -131,9 +138,12 @@ class InputScalingWithPad(BaseInputScaling):
     Substitution extends BaseInputScaling to the case of Input-->ZeroPadding-->Linear
     """
 
-    def __init__(self):
+    def __init__(self, quant_cfg: QuantizationConfig):
         """
         Initialize a ScaleEqualization object.
+
+        Args:
+            quant_cfg: quantization config.
         """
 
-        super().__init__(matcher_instance=INPUT_MATCHER_WITH_PAD)
+        super().__init__(matcher_instance=INPUT_MATCHER_WITH_PAD, quant_cfg=quant_cfg)

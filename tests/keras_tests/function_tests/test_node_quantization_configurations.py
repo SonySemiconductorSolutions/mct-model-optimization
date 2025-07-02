@@ -53,15 +53,6 @@ class TestNodeQuantizationConfigurations(unittest.TestCase):
                                             node_attrs_list=[KERNEL, 0])
         og_nwc = copy.deepcopy(nwc)
 
-        # Updating a config parameter, not weights attribute parameter (no attr_name passed)
-        # TODO irena: weights_bias_correction should be removed
-        # self.assertTrue(nwc.weights_bias_correction)
-        nwc.set_quant_config_attr("weights_bias_correction", False)
-        self.assertFalse(nwc.weights_bias_correction)
-        self.assertFalse(nwc == og_nwc)
-
-        nwc = copy.deepcopy(og_nwc)
-
         # Updating an attribute parameter
         self.assertTrue(nwc.get_attr_config(KERNEL).weights_n_bits, 8)
         nwc.set_quant_config_attr("weights_n_bits", 4, attr_name=KERNEL)

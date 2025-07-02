@@ -104,7 +104,8 @@ def prepare_graph_for_second_network_editor(in_model, representative_data_gen, c
     ######################################
     # Calculate quantization params
     ######################################
-    calculate_quantization_params(transformed_graph, fw_impl=fw_impl, repr_data_gen_fn=representative_data_gen)
+    calculate_quantization_params(transformed_graph, core_config.quantization_config, fw_impl=fw_impl,
+                                  repr_data_gen_fn=representative_data_gen)
 
     if tb_w is not None:
         tb_w.add_graph(transformed_graph, 'thresholds_selection')
@@ -223,7 +224,7 @@ class ChangeCandidatesWeightsQuantConfigAttrTest(BaseChangeQuantConfigAttrTest):
 
     def __init__(self, unit_test):
         edit_filter = NodeTypeFilter(layers.Conv2D)
-        action = ChangeCandidatesWeightsQuantConfigAttr(weights_bias_correction=False)
+        action = ChangeCandidatesWeightsQuantConfigAttr(weights_second_moment_correction=True)
         prepare_graph_func = prepare_graph_for_first_network_editor
         super().__init__(unit_test, edit_filter=edit_filter, action=action, prepare_graph_func=prepare_graph_func)
 
@@ -241,7 +242,7 @@ class ChangeFinalsWeightsQuantConfigAttrTest(BaseChangeQuantConfigAttrTest):
 
     def __init__(self, unit_test):
         edit_filter = NodeTypeFilter(layers.Conv2D)
-        action = ChangeFinalWeightsQuantConfigAttr(weights_bias_correction=False)
+        action = ChangeFinalWeightsQuantConfigAttr(weights_second_moment_correction=True)
         prepare_graph_func = prepare_graph_for_second_network_editor
         super().__init__(unit_test, edit_filter=edit_filter, action=action, prepare_graph_func=prepare_graph_func)
 

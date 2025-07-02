@@ -77,13 +77,11 @@ def config_deserialization(in_config: dict) -> Union[TrainableQuantizerWeightsCo
                                                weights_quantization_params=weights_quantization_params,
                                                enable_weights_quantization=in_config[C.ENABLE_WEIGHTS_QUANTIZATION],
                                                weights_channels_axis=in_config[C.WEIGHTS_CHANNELS_AXIS],
-                                               weights_per_channel_threshold=in_config[C.WEIGHTS_PER_CHANNEL_THRESHOLD],
-                                               min_threshold=in_config[C.MIN_THRESHOLD])
+                                               weights_per_channel_threshold=in_config[C.WEIGHTS_PER_CHANNEL_THRESHOLD])
     elif in_config[C.IS_ACTIVATIONS]:
         return TrainableQuantizerActivationConfig(activation_quantization_method=QuantizationMethod(in_config[C.ACTIVATION_QUANTIZATION_METHOD]),
                                                   activation_n_bits=in_config[C.ACTIVATION_N_BITS],
                                                   activation_quantization_params=in_config[C.ACTIVATION_QUANTIZATION_PARAMS],
-                                                  enable_activation_quantization=in_config[C.ENABLE_ACTIVATION_QUANTIZATION],
-                                                  min_threshold=in_config[C.MIN_THRESHOLD])
+                                                  enable_activation_quantization=in_config[C.ENABLE_ACTIVATION_QUANTIZATION])
     else:
         raise NotImplemented  # pragma: no cover

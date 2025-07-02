@@ -18,21 +18,25 @@ from typing import Dict, Union, Optional, Tuple, Callable
 from mct_quantizers import QuantizationMethod
 
 import model_compression_toolkit.core.common.quantization.quantization_params_generation as qpg
+from model_compression_toolkit.constants import MIN_THRESHOLD
 from model_compression_toolkit.target_platform_capabilities.schema.mct_current_schema import Signedness
 from model_compression_toolkit.core.common.collectors.statistics_collector import BaseStatsCollector
 from model_compression_toolkit.core.common.node_prior_info import NodePriorInfo
 from model_compression_toolkit.core.common.quantization.node_quantization_config import NodeActivationQuantizationConfig
-from model_compression_toolkit.core.common.quantization.quantization_config import QuantizationErrorMethod
+from model_compression_toolkit.core.common.quantization.quantization_config import QuantizationErrorMethod, \
+    QuantizationConfig
 
 
-def compute_activation_qparams(activation_quant_cfg: NodeActivationQuantizationConfig,
+def compute_activation_qparams(quant_cfg: QuantizationConfig,
+                               node_activation_quant_cfg: NodeActivationQuantizationConfig,
                                node_prior_info: NodePriorInfo,
                                out_stats_container: BaseStatsCollector) -> Dict[str, Union[np.ndarray, float, bool]]:
     """
     Compute the activations params for a given node in a graph according to a params function.
 
     Args:
-        activation_quant_cfg: node's activation quantization configuration.
+        quant_cfg: quantization config.
+        node_activation_quant_cfg: node's activation quantization configuration.
         node_prior_info: Prior info collected for the node that is being quantized.
         out_stats_container: Tensor containing output statistics of the node.
 
@@ -40,41 +44,43 @@ def compute_activation_qparams(activation_quant_cfg: NodeActivationQuantizationC
         The computed activation quantization params.
     """
     activation_quantization_params_fn = _get_activation_quantization_params_fn(
-        activation_quant_cfg.activation_quantization_method, no_clipping=node_prior_info.is_output_bounded())
+        node_activation_quant_cfg.activation_quantization_method, no_clipping=node_prior_info.is_output_bounded())
 
     # Extract and filter histogram data from the statistics container.
-    bins_values, bins_counts = _get_histogram_data(activation_quant_cfg, out_stats_container)
+    bins_values, bins_counts = _get_histogram_data(out_stats_container,
+                                                   activation_error_method=quant_cfg.activation_error_method,
+                                                   z_threshold=quant_cfg.z_threshold)
 
     # Retrieve the minimum and maximum values from the statistics container.
     min_value, max_value = out_stats_container.get_min_max_values()
 
     # Determine if the activations should be considered signed.
-    signed = _determine_signedness(activation_quant_cfg, node_prior_info, min_value, bins_values, bins_counts)
+    signed = _determine_signedness(node_activation_quant_cfg, node_prior_info, min_value, bins_values, bins_counts)
 
     # Compute and return the activation quantization parameters.
     return activation_quantization_params_fn(
         bins_values,
         bins_counts,
-        activation_quant_cfg.l_p_value,
-        activation_quant_cfg.activation_n_bits,
+        quant_cfg.l_p_value,
+        node_activation_quant_cfg.activation_n_bits,
         min_value,
         max_value,
-        min_threshold=activation_quant_cfg.min_threshold,
-        quant_error_method=activation_quant_cfg.activation_error_method,
+        min_threshold=MIN_THRESHOLD,
+        quant_error_method=quant_cfg.activation_error_method,
         is_signed=signed
     )
 
 
-def _get_histogram_data(
-    activation_quant_cfg: NodeActivationQuantizationConfig,
-    out_stats_container: BaseStatsCollector
-) -> Tuple[Optional[np.ndarray], Optional[np.ndarray]]:
+def _get_histogram_data(out_stats_container: BaseStatsCollector,
+                        activation_error_method: QuantizationErrorMethod,
+                        z_threshold: float) -> Tuple[Optional[np.ndarray], Optional[np.ndarray]]:
     """
     Extract and filter the histogram data from the statistics container.
 
     Args:
-        activation_quant_cfg: Node's activation quantization configuration.
         out_stats_container: Statistics container with histogram data.
+        activation_error_method: activation quantization error method.
+        z_threshold: z threshold for z-score filtering.
 
     Returns:
         A tuple containing the filtered bins_values and bins_counts.
@@ -83,12 +89,12 @@ def _get_histogram_data(
     # If the statistics container collected the histogram, we start by filtering outliers using z threshold
     # filtering, and then computing the threshold based on the filtered histogram.
     if out_stats_container.require_collection():
-        if activation_quant_cfg.activation_error_method == QuantizationErrorMethod.HMSE:
+        if activation_error_method == QuantizationErrorMethod.HMSE:
             bins_values, bins_counts = out_stats_container.weighted_hc.get_histogram()
         else:
             bins_values, bins_counts = out_stats_container.hc.get_histogram()
         bins_counts = qpg.z_score_filter(
-            activation_quant_cfg.z_threshold,
+            z_threshold,
             bins_values,
             bins_counts
         )

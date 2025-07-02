@@ -74,8 +74,7 @@ def _compute_bias_correction_per_candidate_qc(node: BaseNode,
     """
 
     for candidate_qc in node.candidates_quantization_cfg:
-        if candidate_qc.weights_quantization_cfg.weights_bias_correction and not \
-                candidate_qc.weights_quantization_cfg.weights_second_moment_correction:
+        if not candidate_qc.weights_quantization_cfg.weights_second_moment_correction:
 
             quantized_kernel, io_channels_axes = get_quantized_weights_attr_by_qc(kernel_attr,
                                                                                   node,
