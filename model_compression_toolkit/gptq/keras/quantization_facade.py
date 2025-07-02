@@ -50,6 +50,7 @@ if FOUND_TF:
     from model_compression_toolkit.exporter.model_wrapper import get_exportable_keras_model
     from model_compression_toolkit import get_target_platform_capabilities
     from mct_quantizers.keras.metadata import add_metadata
+    from model_compression_toolkit.graph_builder.keras.keras_graph_builder import KerasGraphBuilder
 
     # As from TF2.9 optimizers package is changed
     if version.parse(tf.__version__) < version.parse("2.9"):
@@ -261,7 +262,8 @@ if FOUND_TF:
                                                                                    fqc=framework_platform_capabilities,
                                                                                    target_resource_utilization=target_resource_utilization,
                                                                                    tb_w=tb_w,
-                                                                                   running_gptq=True)
+                                                                                   running_gptq=True,
+                                                                                   fw_graph_builder=KerasGraphBuilder())
 
         float_graph = copy.deepcopy(tg)
 

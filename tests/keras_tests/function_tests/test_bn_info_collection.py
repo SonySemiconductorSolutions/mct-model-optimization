@@ -20,9 +20,7 @@ import numpy as np
 
 from model_compression_toolkit.core.common.framework_info import set_fw_info
 from model_compression_toolkit.core.keras.default_framework_info import KerasInfo
-from model_compression_toolkit.core import DEFAULTCONFIG
-from model_compression_toolkit.core.keras.keras_implementation import KerasImplementation
-from model_compression_toolkit.core.common.substitutions.apply_substitutions import substitute
+from model_compression_toolkit.graph_builder.keras.keras_graph_builder import KerasGraphBuilder
 
 
 def create_model_1(input_shape):
@@ -125,17 +123,8 @@ def create_model_8(input_shape):
 
 
 def prepare_graph(in_model):
-    keras_impl = KerasImplementation()
-
-    def dummy_representative_dataset():
-        return None
-
-    graph = keras_impl.model_reader(in_model, dummy_representative_dataset)  # model reading
-    graph = substitute(graph, keras_impl.get_substitutions_prepare_graph())
-    for node in graph.nodes:
-        node.prior_info = keras_impl.get_node_prior_info(node=node, graph=graph)
-    transformed_graph = substitute(graph, keras_impl.get_substitutions_pre_statistics_collection(DEFAULTCONFIG))
-    return transformed_graph
+    graph = KerasGraphBuilder().build_graph(model=in_model)
+    return graph
 
 
 class TestBNInfoCollection(unittest.TestCase):

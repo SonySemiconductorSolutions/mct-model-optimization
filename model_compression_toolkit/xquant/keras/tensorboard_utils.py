@@ -20,9 +20,7 @@ from mct_quantizers import KerasActivationQuantizationHolder, KerasQuantizationW
 from model_compression_toolkit.constants import MEM_ELEMENTS, CUTS, OP_ORDER, NODE_NAME, NODE_OUTPUT_INDEX, TOTAL_SIZE, FUSED_NODES_MAPPING
 from model_compression_toolkit.core.common import Graph, BaseNode
 from model_compression_toolkit.core.common.framework_implementation import FrameworkImplementation
-from model_compression_toolkit.core.common.framework_info import FrameworkInfo
-
-from model_compression_toolkit.core.keras.reader.reader import model_reader
+from model_compression_toolkit.graph_builder.keras.convert_keras_model_to_graph import convert_keras_model_to_graph
 
 from model_compression_toolkit.xquant.common.constants import XQUANT_REPR, INTERMEDIATE_SIMILARITY_METRICS_REPR, \
     XQUANT_VAL, INTERMEDIATE_SIMILARITY_METRICS_VAL, CUT_MEMORY_ELEMENTS, CUT_TOTAL_SIZE
@@ -71,7 +69,7 @@ class KerasTensorboardUtils(TensorboardUtils):
             Graph: A graph object representing the quantized model, annotated with similarity metrics.
         """
         # Read the quantized model into a graph structure.
-        quant_graph = model_reader(quantized_model)
+        quant_graph = convert_keras_model_to_graph(quantized_model)
 
         if 'scheduling_info' in quantized_model_metadata:
             insert_cut_info_into_graph(quant_graph, quantized_model_metadata)

@@ -25,7 +25,6 @@ from model_compression_toolkit.core.common.mixed_precision.resource_utilization_
 from model_compression_toolkit.core.common.pruning.pruner import Pruner
 from model_compression_toolkit.core.common.pruning.pruning_config import PruningConfig
 from model_compression_toolkit.core.common.pruning.pruning_info import PruningInfo
-from model_compression_toolkit.core.graph_prep_runner import read_model_to_graph
 from model_compression_toolkit.logger import Logger
 from model_compression_toolkit.target_platform_capabilities.constants import DEFAULT_TP_MODEL
 
@@ -36,6 +35,7 @@ if FOUND_TF:
     from model_compression_toolkit.core.keras.pruning.pruning_keras_implementation import PruningKerasImplementation
     from model_compression_toolkit.core.keras.default_framework_info import set_keras_info
     from tensorflow.keras.models import Model
+    from model_compression_toolkit.graph_builder.keras.keras_graph_builder import KerasGraphBuilder
 
     DEFAULT_KERAS_TPC = get_target_platform_capabilities(TENSORFLOW, DEFAULT_TP_MODEL)
 
@@ -116,13 +116,12 @@ if FOUND_TF:
 
         target_platform_capabilities = load_target_platform_capabilities(target_platform_capabilities)
         # Attach tpc model to framework
-        framework_platform_capabilities = AttachTpcToKeras().attach(target_platform_capabilities)
+        attach2keras = AttachTpcToKeras()
+        framework_platform_capabilities = attach2keras.attach(target_platform_capabilities)
 
         # Convert the original Keras model to an internal graph representation.
-        float_graph = read_model_to_graph(model,
-                                          representative_data_gen,
-                                          framework_platform_capabilities,
-                                          fw_impl)
+        float_graph = KerasGraphBuilder().convert_model_to_graph(model)
+        float_graph.set_fqc(framework_platform_capabilities)
 
         # Apply quantization configuration to the graph. This step is necessary even when not quantizing,
         # as it prepares the graph for the pruning process.

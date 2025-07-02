@@ -27,6 +27,7 @@ import model_compression_toolkit.core.common.hessian as hessian_common
 from model_compression_toolkit.core.keras.constants import KERNEL
 from model_compression_toolkit.core.keras.data_util import data_gen_to_dataloader
 from model_compression_toolkit.core.keras.keras_implementation import KerasImplementation
+from model_compression_toolkit.graph_builder.keras.keras_graph_builder import KerasGraphBuilder
 from model_compression_toolkit.target_platform_capabilities.targetplatform2framework.attach2keras import \
     AttachTpcToKeras
 from model_compression_toolkit.core.common.framework_info import set_fw_info
@@ -112,7 +113,8 @@ class TestHessianInfoCalculatorBase(unittest.TestCase):
                                            keras_impl,
                                            _repr_dataset,
                                            generate_keras_tpc,
-                                           attach2fw=AttachTpcToKeras())
+                                           attach2fw=AttachTpcToKeras(),
+                                           fw_graph_builder=KerasGraphBuilder())
         return graph, _repr_dataset, keras_impl
 
 
@@ -235,7 +237,8 @@ class TestHessianInfoCalculatorWeights(TestHessianInfoCalculatorBase):
                                            keras_impl,
                                            _repr_dataset,
                                            generate_keras_tpc,
-                                           attach2fw=AttachTpcToKeras())
+                                           attach2fw=AttachTpcToKeras(),
+                                           fw_graph_builder=KerasGraphBuilder())
 
         sorted_graph_nodes = graph.get_topo_sorted_nodes()
 
@@ -278,7 +281,8 @@ class TestHessianInfoCalculatorWeights(TestHessianInfoCalculatorBase):
                                            keras_impl,
                                            _repr_dataset,
                                            generate_keras_tpc,
-                                           attach2fw=AttachTpcToKeras())
+                                           attach2fw=AttachTpcToKeras(),
+                                           fw_graph_builder=KerasGraphBuilder())
 
         sorted_graph_nodes = graph.get_topo_sorted_nodes()
 
@@ -411,7 +415,8 @@ class TestHessianInfoCalculatorActivation(TestHessianInfoCalculatorBase):
                                            keras_impl,
                                            _repr_dataset,
                                            generate_keras_tpc,
-                                           attach2fw=AttachTpcToKeras())
+                                           attach2fw=AttachTpcToKeras(),
+                                           fw_graph_builder=KerasGraphBuilder())
 
         sorted_graph_nodes = graph.get_topo_sorted_nodes()
 
@@ -456,7 +461,8 @@ class TestHessianInfoCalculatorActivation(TestHessianInfoCalculatorBase):
                                            keras_impl,
                                            _repr_dataset,
                                            generate_keras_tpc,
-                                           attach2fw=AttachTpcToKeras())
+                                           attach2fw=AttachTpcToKeras(),
+                                           fw_graph_builder=KerasGraphBuilder())
 
         sorted_graph_nodes = graph.get_topo_sorted_nodes()
 

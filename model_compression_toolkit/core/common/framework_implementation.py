@@ -105,22 +105,6 @@ class FrameworkImplementation(ABC):
 
 
     @abstractmethod
-    def model_reader(self,
-                     model: Any,
-                     representative_data_gen: Callable) -> Graph:
-        """
-        Convert a framework's model into a graph.
-        Args:
-            model: Framework's model.
-            representative_data_gen (Callable): Dataset used for calibration.
-
-        Returns:
-            Graph representing the input model.
-        """
-        raise NotImplementedError(f'{self.__class__.__name__} has to implement the '
-                             f'framework\'s model_reader method.')  # pragma: no cover
-
-    @abstractmethod
     def model_builder(self,
                       graph: Graph,
                       mode: ModelBuilderMode,
@@ -214,45 +198,6 @@ class FrameworkImplementation(ABC):
         raise NotImplementedError(f'{self.__class__.__name__} has to implement the '
                                   f'framework\'s get_substitutions_channel_equalization method.')  # pragma: no cover
 
-    @abstractmethod
-    def get_substitutions_prepare_graph(self) -> List[common.BaseSubstitution]:
-        """
-
-        Returns: A list of the framework substitutions used to prepare the graph.
-
-        """
-        raise NotImplementedError(f'{self.__class__.__name__} has to implement the '
-                                  f'framework\'s get_substitutions_prepare_graph method.')  # pragma: no cover
-
-    @abstractmethod
-    def get_substitutions_pre_statistics_collection(self, quant_config: QuantizationConfig) -> \
-            List[common.BaseSubstitution]:
-        """
-
-        Args:
-            quant_config: Quantization configuration.
-
-        Returns: A list of the framework substitutions used before we collect statistics.
-
-        """
-        raise NotImplementedError(f'{self.__class__.__name__} has to implement the '
-                             f'framework\'s get_substitutions_pre_statistics_collection method.')  # pragma: no cover
-
-    @abstractmethod
-    def get_linear_collapsing_substitution(self) -> common.BaseSubstitution:
-        """
-        Returns: linear collapsing substitution
-        """
-        raise NotImplementedError(f'{self.__class__.__name__} has to implement the '
-                             f'framework\'s get_linear_collapsing_substitution method.')  # pragma: no cover
-
-    @abstractmethod
-    def get_op2d_add_const_collapsing_substitution(self) -> common.BaseSubstitution:
-        """
-        Returns: conv2d add const collapsing substitution
-        """
-        raise NotImplementedError(f'{self.__class__.__name__} has to implement the '
-                             f'framework\'s get_op2d_add_const_collapsing_substitution method.')  # pragma: no cover
 
     @abstractmethod
     def get_substitutions_statistics_correction(self, quant_config: QuantizationConfig) -> \
@@ -268,14 +213,6 @@ class FrameworkImplementation(ABC):
         """
         raise NotImplementedError(f'{self.__class__.__name__} has to implement the '
                              f'framework\'s get_substitutions_statistics_correction method.')  # pragma: no cover
-
-    @abstractmethod
-    def get_residual_collapsing_substitution(self) -> List[common.BaseSubstitution]:
-        """
-        Returns: A list of the framework substitutions used for residual collapsing
-        """
-        raise NotImplementedError(f'{self.__class__.__name__} has to implement the '
-                             f'framework\'s get_residual_collapsing_substitution method.')  # pragma: no cover
 
 
     @abstractmethod
@@ -318,22 +255,6 @@ class FrameworkImplementation(ABC):
         raise NotImplementedError(f'{self.__class__.__name__} has to implement the '
                              f'framework\'s get_substitutions_after_second_moment_correction '
                              f'method.')  # pragma: no cover
-
-    def get_node_prior_info(self, node: BaseNode,
-                            graph: Graph) -> NodePriorInfo:
-        """
-        Get a NodePriorInfo object for a node.
-
-        Args:
-            node: Node to get its prior info.
-            graph: Graph to check the next node type.
-
-        Returns:
-            NodePriorInfo with information about the node.
-        """
-
-        raise NotImplementedError(f'{self.__class__.__name__} has to implement the '
-                                  f'framework\'s get_node_prior_info method.')  # pragma: no cover
 
     def count_node_for_mixed_precision_interest_points(self, node: BaseNode) -> bool:
         """

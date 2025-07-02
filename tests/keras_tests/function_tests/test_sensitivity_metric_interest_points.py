@@ -20,9 +20,9 @@ from keras.applications.mobilenet_v2 import MobileNetV2
 
 from model_compression_toolkit.core.common.mixed_precision.sensitivity_eval.metric_calculators import \
     DistanceMetricCalculator
+from model_compression_toolkit.graph_builder.keras.convert_keras_model_to_graph import convert_keras_model_to_graph
 from model_compression_toolkit.quantization_preparation.load_fqc import load_fqc_configuration
-from model_compression_toolkit.target_platform_capabilities.targetplatform2framework.attach2keras import \
-    AttachTpcToKeras
+from model_compression_toolkit.target_platform_capabilities.targetplatform2framework.attach2keras import AttachTpcToKeras
 
 if tf.__version__ >= "2.13":
     from keras.src.engine.input_layer import InputLayer
@@ -53,7 +53,7 @@ def build_ip_list_for_test(in_model, num_interest_points_factor):
     def dummy_representative_dataset():
         return None
 
-    graph = keras_impl.model_reader(in_model, dummy_representative_dataset)  # model reading
+    graph = convert_keras_model_to_graph(in_model)
 
     base_config, mixed_precision_cfg_list, default_config = get_op_quantization_configs()
     base_config = base_config.clone_and_edit(enable_activation_quantization=False)

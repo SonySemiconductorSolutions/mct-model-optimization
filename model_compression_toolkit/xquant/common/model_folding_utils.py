@@ -12,19 +12,18 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 #  ==============================================================================
+from model_compression_toolkit.core.graph_prep_runner import get_finalized_graph
+
 from model_compression_toolkit.core.common.framework_implementation import FrameworkImplementation
-from model_compression_toolkit.core.common.framework_info import FrameworkInfo
 
 from model_compression_toolkit.core.common.model_builder_mode import ModelBuilderMode
-from model_compression_toolkit.core.common.quantization.bit_width_config import BitWidthConfig
 from model_compression_toolkit.core.common.quantization.quantization_config import DEFAULTCONFIG
 
-from model_compression_toolkit.core.graph_prep_runner import graph_preparation_runner
 from typing import Any, Callable
 
 from model_compression_toolkit.core.common import Graph
-from model_compression_toolkit.target_platform_capabilities.targetplatform2framework import \
-    FrameworkQuantizationCapabilities
+from model_compression_toolkit.graph_builder.common.base_graph_builder import BaseGraphBuilder
+from model_compression_toolkit.target_platform_capabilities.targetplatform2framework import FrameworkQuantizationCapabilities
 
 
 class ModelFoldingUtils:
@@ -35,7 +34,8 @@ class ModelFoldingUtils:
 
     def __init__(self,
                  fw_impl: FrameworkImplementation,
-                 fw_default_fqc: FrameworkQuantizationCapabilities):
+                 fw_default_fqc: FrameworkQuantizationCapabilities,
+                 fw_graph_builder: BaseGraphBuilder):
         """
         Initialize the ModelFoldingUtils class with framework-specific information, implementation details,
         and default FQC.
@@ -46,6 +46,7 @@ class ModelFoldingUtils:
         """
         self.fw_impl = fw_impl
         self.fw_default_fqc = fw_default_fqc
+        self.fw_graph_builder = fw_graph_builder
 
     def create_float_folded_model(self, float_model: Any, representative_dataset: Any = None) -> Any:
         """
@@ -93,9 +94,23 @@ class ModelFoldingUtils:
         # Future Considerations:
         # - Remove quantization config parts related to graph optimizations.
         # - Update back2fw to handle float models without needing quantization info.
-        graph = graph_preparation_runner(in_model=model,
-                                         representative_data_gen=repr_dataset,
-                                         fw_impl=self.fw_impl,
-                                         quantization_config=DEFAULTCONFIG,
-                                         fqc=self.fw_default_fqc)
+        graph = self.fw_graph_builder.build_graph(model=model,
+                                                  representative_dataset=repr_dataset,
+                                                  fqc=self.fw_default_fqc,
+                                                  linear_collapsing=DEFAULTCONFIG.linear_collapsing,
+                                                  residual_collapsing=DEFAULTCONFIG.residual_collapsing,
+                                                  relu_bound_to_power_of_2=DEFAULTCONFIG.relu_bound_to_power_of_2)
+
+        # During stats collection, we use the nodes candidates to check for the nodes status and whether we should
+        # collect stats for them. thus, we need to use  get_finalized_graph even though we need the float model only
+        # for XQuant purposes.
+        graph = get_finalized_graph(graph,
+                                    self.fw_default_fqc,
+                                    quant_config=DEFAULTCONFIG,
+                                    bit_width_config=None,
+                                    tb_w=None,
+                                    fw_impl=self.fw_impl,
+                                    mixed_precision_enable=False,
+                                    running_gptq=False)
+
         return graph

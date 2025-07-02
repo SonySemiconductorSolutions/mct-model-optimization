@@ -19,7 +19,7 @@ import copy
 import abc
 
 import pytest
-
+from model_compression_toolkit.core.graph_prep_runner import get_finalized_graph
 
 import model_compression_toolkit.target_platform_capabilities.schema.mct_current_schema as schema
 from model_compression_toolkit.core import QuantizationConfig, FrameworkInfo
@@ -27,8 +27,8 @@ from model_compression_toolkit.core.common import BaseNode, Graph
 from model_compression_toolkit.core.common.quantization.node_quantization_config import ActivationQuantizationMode
 from model_compression_toolkit.core.common.framework_implementation import FrameworkImplementation
 from model_compression_toolkit.core.common.graph.edge import EDGE_SOURCE_INDEX, EDGE_SINK_INDEX
-from model_compression_toolkit.core.graph_prep_runner import graph_preparation_runner
 from model_compression_toolkit.core.common.fusion.graph_fuser import GraphFuser
+from model_compression_toolkit.graph_builder.common.base_graph_builder import BaseGraphBuilder
 from tests_pytest._test_util.tpc_util import minimal_cfg_options
 
 
@@ -38,6 +38,7 @@ class BaseGraphWithFusingMetadataTest(abc.ABC):
     fw_info: FrameworkInfo
     attach_to_fw_func: Callable
     layer_class_relu: Any  # needed for test_fail_validate_after_adding_node_that_adds_a_fusion
+    fw_graph_builder: BaseGraphBuilder
 
     def _data_gen(self):
         raise NotImplementedError()
@@ -84,16 +85,25 @@ class BaseGraphWithFusingMetadataTest(abc.ABC):
         assert self._data_gen is not None
         assert self.fw_impl is not None
         assert self.attach_to_fw_func is not None
+        assert self.fw_graph_builder is not None
 
         self.fqc = self.attach_to_fw_func(minimal_tpc_with_fusing)
+        quant_config = QuantizationConfig()
 
-        graph_with_fusion_metadata = graph_preparation_runner(self._get_model(),
-                                                              self._data_gen,
-                                                              QuantizationConfig(),
-                                                              fw_impl=self.fw_impl,
-                                                              fqc=self.fqc,
-                                                              mixed_precision_enable=False,
-                                                              running_gptq=False)
+        graph = self.fw_graph_builder.build_graph(model=self._get_model(),
+                                                  representative_dataset=self._data_gen,
+                                                  fqc=self.fqc,
+                                                  linear_collapsing=quant_config.linear_collapsing,
+                                                  residual_collapsing=quant_config.residual_collapsing,
+                                                  relu_bound_to_power_of_2=quant_config.relu_bound_to_power_of_2)
+
+        graph_with_fusion_metadata = get_finalized_graph(graph=graph,
+                                                         fqc=self.fqc,
+                                                         quant_config=quant_config,
+                                                         fw_impl=self.fw_impl,
+                                                         mixed_precision_enable=False,
+                                                         running_gptq=False)
+
         return graph_with_fusion_metadata
 
     def test_expected_fusing_info(self, graph_with_fusion_metadata):

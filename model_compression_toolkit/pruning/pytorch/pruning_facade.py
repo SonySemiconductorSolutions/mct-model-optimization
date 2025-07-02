@@ -24,7 +24,6 @@ from model_compression_toolkit.core.common.pruning.pruner import Pruner
 from model_compression_toolkit.core.common.pruning.pruning_config import PruningConfig
 from model_compression_toolkit.core.common.pruning.pruning_info import PruningInfo
 from model_compression_toolkit.quantization_preparation.load_fqc import load_fqc_configuration
-from model_compression_toolkit.core.graph_prep_runner import read_model_to_graph
 from model_compression_toolkit.logger import Logger
 from model_compression_toolkit.target_platform_capabilities.constants import DEFAULT_TP_MODEL
 
@@ -33,12 +32,12 @@ from model_compression_toolkit.target_platform_capabilities.constants import DEF
 if FOUND_TORCH:
     # Import PyTorch-specific modules from the model compression toolkit.
     from model_compression_toolkit.core.pytorch.back2framework.float_model_builder import FloatPyTorchModelBuilder
-    from model_compression_toolkit.core.pytorch.pruning.pruning_pytorch_implementation import \
-        PruningPytorchImplementation
+    from model_compression_toolkit.core.pytorch.pruning.pruning_pytorch_implementation import PruningPytorchImplementation
     from model_compression_toolkit.core.pytorch.default_framework_info import set_pytorch_info
     from torch.nn import Module
     from model_compression_toolkit.target_platform_capabilities.targetplatform2framework.attach2pytorch import \
         AttachTpcToPytorch
+    from model_compression_toolkit.graph_builder.pytorch.pytorch_graph_builder import PytorchGraphBuilder
 
     # Set the default Target Platform Capabilities (TPC) for PyTorch.
     DEFAULT_PYOTRCH_TPC = get_target_platform_capabilities(PYTORCH, DEFAULT_TP_MODEL)
@@ -126,10 +125,9 @@ if FOUND_TORCH:
         framework_platform_capabilities = attach2pytorch.attach(target_platform_capabilities)
 
         # Convert the original Pytorch model to an internal graph representation.
-        float_graph = read_model_to_graph(model,
-                                          representative_data_gen,
-                                          framework_platform_capabilities,
-                                          fw_impl)
+        float_graph = PytorchGraphBuilder().convert_model_to_graph(model, representative_data_gen)
+        float_graph.set_fqc(framework_platform_capabilities)
+
 
         # Apply quantization configuration to the graph. This step is necessary even when not quantizing,
         # as it prepares the graph for the pruning process.

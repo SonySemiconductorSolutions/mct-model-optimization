@@ -14,6 +14,7 @@
 # ==============================================================================
 
 import tensorflow as tf
+from model_compression_toolkit.core.graph_prep_runner import get_finalized_graph
 from tqdm import tqdm
 
 from mct_quantizers import QuantizationMethod
@@ -33,8 +34,8 @@ from model_compression_toolkit.core.common.quantization.quantization_params_gene
 from model_compression_toolkit.core.common.statistics_correction.statistics_correction import \
     statistics_correction_runner
 from model_compression_toolkit.core.common.substitutions.apply_substitutions import substitute
-from model_compression_toolkit.core.graph_prep_runner import graph_preparation_runner
 from model_compression_toolkit.core.keras.constants import KERNEL
+from model_compression_toolkit.graph_builder.keras.keras_graph_builder import KerasGraphBuilder
 from model_compression_toolkit.target_platform_capabilities.targetplatform2framework.attach2keras import \
     AttachTpcToKeras
 from tests.keras_tests.feature_networks_tests.base_keras_feature_test import BaseKerasFeatureNetworkTest
@@ -53,15 +54,21 @@ def prepare_graph_for_first_network_editor(in_model, representative_data_gen, co
     attach2keras = AttachTpcToKeras()
     fqc = attach2keras.attach(tpc)
 
-    transformed_graph = graph_preparation_runner(in_model,
-                                                 representative_data_gen,
-                                                 core_config.quantization_config,
-                                                 fw_impl,
-                                                 fqc,
-                                                 core_config.bit_width_config,
-                                                 tb_w,
-                                                 mixed_precision_enable=core_config.is_mixed_precision_enabled)
+    graph = KerasGraphBuilder().build_graph(model=in_model,
+                                            representative_dataset=representative_data_gen,
+                                            fqc=fqc,
+                                            tensorboard_writer=tb_w,
+                                            linear_collapsing=core_config.quantization_config.linear_collapsing,
+                                            residual_collapsing=core_config.quantization_config.residual_collapsing,
+                                            relu_bound_to_power_of_2=core_config.quantization_config.relu_bound_to_power_of_2)
 
+    transformed_graph = get_finalized_graph(graph,
+                                            fqc,
+                                            core_config.quantization_config,
+                                            core_config.bit_width_config,
+                                            tb_w,
+                                            fw_impl,
+                                            core_config.is_mixed_precision_enabled)
 
     ######################################
     # Statistic collection

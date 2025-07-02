@@ -24,7 +24,6 @@ from model_compression_toolkit.constants import HESSIAN_NUM_ITERATIONS
 from model_compression_toolkit.core.common.graph.functional_node import FunctionalNode
 from model_compression_toolkit.core.common.hessian import HessianScoresRequest, HessianMode
 from model_compression_toolkit.core.keras.data_util import data_gen_to_dataloader
-from model_compression_toolkit.core.keras.graph_substitutions.substitutions.remove_identity import RemoveIdentity
 from model_compression_toolkit.core.keras.hessian.activation_hessian_scores_calculator_keras import \
     ActivationHessianScoresCalculatorKeras
 from model_compression_toolkit.core.keras.hessian.weights_hessian_scores_calculator_keras import WeightsHessianScoresCalculatorKeras
@@ -59,45 +58,24 @@ else:
     from keras.layers import Dense, Activation, Conv2D, DepthwiseConv2D, Conv2DTranspose, Concatenate, Add   # pragma: no cover
     from keras.layers.core import TFOpLambda   # pragma: no cover
 
-from model_compression_toolkit.core import QuantizationConfig, FrameworkInfo, CoreConfig
+from model_compression_toolkit.core import QuantizationConfig, CoreConfig
 from model_compression_toolkit.core import common
 from model_compression_toolkit.core.common import Graph, BaseNode
 from model_compression_toolkit.core.common.framework_implementation import FrameworkImplementation
 from model_compression_toolkit.core.common.model_builder_mode import ModelBuilderMode
 from model_compression_toolkit.core.common.node_prior_info import NodePriorInfo
-from model_compression_toolkit.core.keras.graph_substitutions.substitutions.activation_decomposition import \
-    ActivationDecomposition
-from model_compression_toolkit.core.keras.graph_substitutions.substitutions.matmul_substitution import \
-    MatmulToDenseSubstitution
-from model_compression_toolkit.core.keras.graph_substitutions.substitutions.sigmoid_mul_to_swish import MulSigmoidToSwish
-from model_compression_toolkit.core.keras.graph_substitutions.substitutions.conv_funcs_to_layer import \
-    Conv2dFuncToConv2dLayer, DwConv2dFuncToDwConv2dLayer
 from model_compression_toolkit.core.keras.graph_substitutions.substitutions.softmax_shift import \
     keras_softmax_shift
-from model_compression_toolkit.core.keras.graph_substitutions.substitutions.batchnorm_folding import \
-    keras_batchnorm_folding, keras_batchnorm_forward_folding
 from model_compression_toolkit.core.keras.graph_substitutions.substitutions.batchnorm_refusing import \
     keras_batchnorm_refusing
-from model_compression_toolkit.core.keras.graph_substitutions.substitutions.linear_collapsing import \
-    keras_linear_collapsing, keras_op2d_add_const_collapsing
-from model_compression_toolkit.core.keras.graph_substitutions.substitutions.residual_collapsing import \
-    keras_residual_collapsing
 from model_compression_toolkit.core.keras.graph_substitutions.substitutions.input_scaling import InputScaling, \
     InputScalingWithPad
 from model_compression_toolkit.core.keras.graph_substitutions.substitutions.concat_threshold_update import ConcatThresholdUpdate
-from model_compression_toolkit.core.keras.graph_substitutions.substitutions.relu_bound_to_power_of_2 import \
-    ReLUBoundToPowerOfTwo
-from model_compression_toolkit.core.keras.graph_substitutions.substitutions.multi_head_attention_decomposition import \
-    MultiHeadAttentionDecomposition
 from model_compression_toolkit.core.keras.graph_substitutions.substitutions.scale_equalization import \
     ScaleEqualization, ScaleEqualizationWithPad, ScaleEqualizationMidActivation, ScaleEqualizationMidActivationWithPad
-from model_compression_toolkit.core.keras.graph_substitutions.substitutions.separableconv_decomposition import \
-    SeparableConvDecomposition
 from model_compression_toolkit.core.keras.graph_substitutions.substitutions.shift_negative_activation import \
     keras_apply_shift_negative_correction
-from model_compression_toolkit.core.keras.graph_substitutions.substitutions.dwconv_to_conv import DwconvToConv
 from model_compression_toolkit.core.keras.keras_node_prior_info import create_node_prior_info
-from model_compression_toolkit.core.keras.reader.reader import model_reader
 import model_compression_toolkit.core.keras.constants as keras_constants
 from model_compression_toolkit.core.keras.tf_tensor_numpy import tf_tensor_to_numpy, to_tf_tensor
 from model_compression_toolkit.core.keras.back2framework import get_keras_model_builder
@@ -120,20 +98,6 @@ class KerasImplementation(FrameworkImplementation):
 
         """
         return keras_constants
-
-    def model_reader(self,
-                     model: Model,
-                     representative_data_gen: Callable) -> Graph:
-        """
-        Convert a framework's model into a graph.
-        Args:
-            model: Framework's model.
-            representative_data_gen (Callable): Dataset used for calibration.
-
-        Returns:
-            Graph representing the input model.
-        """
-        return model_reader(model)
 
     def to_numpy(self, tensor: tf.Tensor) -> np.ndarray:
         """
@@ -273,40 +237,6 @@ class KerasImplementation(FrameworkImplementation):
                                        ScaleEqualizationMidActivationWithPad(quant_config)])
         return substitutions_list
 
-    def get_substitutions_prepare_graph(self) -> List[common.BaseSubstitution]:
-        """
-
-        Returns: A list of the framework substitutions used to prepare the graph.
-
-        """
-        return [MulSigmoidToSwish(),
-                SeparableConvDecomposition(),
-                MatmulToDenseSubstitution(),
-                Conv2dFuncToConv2dLayer(),
-                DwConv2dFuncToDwConv2dLayer(),
-                MultiHeadAttentionDecomposition(),
-                ActivationDecomposition(),
-                DwconvToConv(),
-                RemoveIdentity()]
-
-    def get_substitutions_pre_statistics_collection(self, quant_config: QuantizationConfig) -> \
-            List[common.BaseSubstitution]:
-        """
-        Return a list of the framework substitutions used before we collect statistics.
-
-        Args:
-            quant_config: QuantizationConfig to determine which substitutions to return.
-
-        Returns:
-            A list of the framework substitutions used before we collect statistics.
-
-        """
-        substitutions_list = [keras_batchnorm_folding(),
-                              keras_batchnorm_forward_folding()]
-        if quant_config.relu_bound_to_power_of_2:
-            substitutions_list.append(ReLUBoundToPowerOfTwo())
-        return substitutions_list
-
     def get_substitutions_statistics_correction(self, quant_config: QuantizationConfig) -> \
             List[common.BaseSubstitution]:
         """
@@ -322,25 +252,6 @@ class KerasImplementation(FrameworkImplementation):
         if quant_config.weights_second_moment_correction:
             substitutions_list.append(keras_batchnorm_reconstruction())
         return substitutions_list
-
-    def get_residual_collapsing_substitution(self) -> List[common.BaseSubstitution]:
-        """
-        Returns: A list of the framework substitutions used for residual collapsing
-        """
-        substitutions_list = [keras_residual_collapsing()]
-        return substitutions_list
-
-    def get_linear_collapsing_substitution(self) -> common.BaseSubstitution:
-        """
-        Returns: linear collapsing substitution
-        """
-        return keras_linear_collapsing()
-
-    def get_op2d_add_const_collapsing_substitution(self) -> common.BaseSubstitution:
-        """
-        Returns: Op2d add-const collapsing substitution
-        """
-        return keras_op2d_add_const_collapsing()
 
     def get_substitutions_post_statistics_collection(self,
                                                      quant_config: QuantizationConfig) -> List[common.BaseSubstitution]:

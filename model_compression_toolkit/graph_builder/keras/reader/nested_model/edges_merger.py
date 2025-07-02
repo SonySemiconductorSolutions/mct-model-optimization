@@ -19,7 +19,7 @@ from typing import List, Dict, Tuple
 from model_compression_toolkit.core.common.graph.base_graph import Graph
 from model_compression_toolkit.core.common.graph.edge import Edge, convert_to_edge
 from model_compression_toolkit.core.common.graph.base_node import BaseNode
-from model_compression_toolkit.core.keras.reader.connectivity_handler import OutTensor
+from model_compression_toolkit.graph_builder.keras.reader.connectivity_handler import OutTensor
 
 
 def merge_models_edges(inner_model_node: BaseNode,

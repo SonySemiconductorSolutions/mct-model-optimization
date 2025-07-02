@@ -14,14 +14,15 @@
 # ==============================================================================
 import unittest
 
-import keras
 import numpy as np
 
 import model_compression_toolkit as mct
 from model_compression_toolkit.core.common.pruning.memory_calculator import MemoryCalculator
 from model_compression_toolkit.core.keras.pruning.pruning_keras_implementation import PruningKerasImplementation
-from model_compression_toolkit.core.graph_prep_runner import read_model_to_graph
 
+import keras
+
+from model_compression_toolkit.graph_builder.keras.keras_graph_builder import KerasGraphBuilder
 from model_compression_toolkit.quantization_preparation.load_fqc import load_fqc_configuration
 from model_compression_toolkit.target_platform_capabilities.targetplatform2framework.attach2keras import \
     AttachTpcToKeras
@@ -53,10 +54,8 @@ class TestParameterCounter(unittest.TestCase):
         fqc = AttachTpcToKeras().attach(tpc)
 
         # Convert the original Keras model to an internal graph representation.
-        float_graph = read_model_to_graph(model,
-                                          self.representative_dataset,
-                                          fqc,
-                                          fw_impl)
+        float_graph = KerasGraphBuilder().convert_model_to_graph(model)
+        float_graph.set_fqc(fqc)
 
         # Apply quantization configuration to the graph. This step is necessary even when not quantizing,
         # as it prepares the graph for the pruning process.

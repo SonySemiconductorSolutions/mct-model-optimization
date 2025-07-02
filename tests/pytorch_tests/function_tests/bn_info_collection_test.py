@@ -20,12 +20,21 @@ import numpy as np
 from model_compression_toolkit.core import DEFAULTCONFIG
 from model_compression_toolkit.core.pytorch.pytorch_implementation import PytorchImplementation
 from model_compression_toolkit.core.common.substitutions.apply_substitutions import substitute
+from model_compression_toolkit.graph_builder.pytorch.pytorch_graph_builder import PytorchGraphBuilder
 from tests.pytorch_tests.model_tests.base_pytorch_test import BasePytorchTest
 
 """
 This test checks the BatchNorm info collection.
 """
 
+def _build_graph(model, representative_data_gen):
+    graph = PytorchGraphBuilder().build_graph(model=model,
+                                              representative_dataset=representative_data_gen,
+                                              fqc=None,
+                                              linear_collapsing=False,
+                                              residual_collapsing=False,
+                                              relu_bound_to_power_of_2=False)
+    return graph
 
 def bn_weight_change(bn: torch.nn.Module):
     bw_shape = bn.weight.shape
@@ -154,12 +163,7 @@ class BNInfoCollectionTest(BasePytorchTest):
         def representative_data_gen():
             yield x
 
-        graph = pytorch_impl.model_reader(in_model, representative_data_gen)  # model reading
-        graph = substitute(graph, pytorch_impl.get_substitutions_prepare_graph())
-        for node in graph.nodes:
-            node.prior_info = pytorch_impl.get_node_prior_info(node=node,
-                                                               graph=graph)
-        transformed_graph = substitute(graph, pytorch_impl.get_substitutions_pre_statistics_collection(DEFAULTCONFIG))
+        transformed_graph = _build_graph(in_model, representative_data_gen)
         return transformed_graph
 
     def run_test(self):
@@ -201,12 +205,7 @@ class Conv2D2BNInfoCollectionTest(BasePytorchTest):
         def representative_data_gen():
             yield x
 
-        graph = pytorch_impl.model_reader(in_model, representative_data_gen)  # model reading
-        graph = substitute(graph, pytorch_impl.get_substitutions_prepare_graph())
-        for node in graph.nodes:
-            node.prior_info = pytorch_impl.get_node_prior_info(node=node,
-                                                               graph=graph)
-        transformed_graph = substitute(graph, pytorch_impl.get_substitutions_pre_statistics_collection(DEFAULTCONFIG))
+        transformed_graph = _build_graph(in_model, representative_data_gen)
         return transformed_graph
 
     def run_test(self):
@@ -271,12 +270,7 @@ class Conv2DBNChainInfoCollectionTest(BasePytorchTest):
         def representative_data_gen():
             yield x
 
-        graph = pytorch_impl.model_reader(in_model, representative_data_gen)  # model reading
-        graph = substitute(graph, pytorch_impl.get_substitutions_prepare_graph())
-        for node in graph.nodes:
-            node.prior_info = pytorch_impl.get_node_prior_info(node=node,
-                                                               graph=graph)
-        transformed_graph = substitute(graph, pytorch_impl.get_substitutions_pre_statistics_collection(DEFAULTCONFIG))
+        transformed_graph = _build_graph(in_model, representative_data_gen)
         return transformed_graph
 
     def run_test(self):
@@ -329,12 +323,7 @@ class BNChainInfoCollectionTest(BasePytorchTest):
         def representative_data_gen():
             yield x
 
-        graph = pytorch_impl.model_reader(in_model, representative_data_gen)  # model reading
-        graph = substitute(graph, pytorch_impl.get_substitutions_prepare_graph())
-        for node in graph.nodes:
-            node.prior_info = pytorch_impl.get_node_prior_info(node=node,
-                                                               graph=graph)
-        transformed_graph = substitute(graph, pytorch_impl.get_substitutions_pre_statistics_collection(DEFAULTCONFIG))
+        transformed_graph = _build_graph(in_model, representative_data_gen)
         return transformed_graph
 
     def run_test(self):
@@ -399,12 +388,7 @@ class BNLayerInfoCollectionTest(BasePytorchTest):
         def representative_data_gen():
             yield x
 
-        graph = pytorch_impl.model_reader(in_model, representative_data_gen)  # model reading
-        graph = substitute(graph, pytorch_impl.get_substitutions_prepare_graph())
-        for node in graph.nodes:
-            node.prior_info = pytorch_impl.get_node_prior_info(node=node,
-                                                               graph=graph)
-        transformed_graph = substitute(graph, pytorch_impl.get_substitutions_pre_statistics_collection(DEFAULTCONFIG))
+        transformed_graph = _build_graph(in_model, representative_data_gen)
         return transformed_graph
 
     def run_test(self):
@@ -505,12 +489,7 @@ class INP2BNInfoCollectionTest(BasePytorchTest):
         def representative_data_gen():
             yield x
 
-        graph = pytorch_impl.model_reader(in_model, representative_data_gen)  # model reading
-        graph = substitute(graph, pytorch_impl.get_substitutions_prepare_graph())
-        for node in graph.nodes:
-            node.prior_info = pytorch_impl.get_node_prior_info(node=node,
-                                                               graph=graph)
-        transformed_graph = substitute(graph, pytorch_impl.get_substitutions_pre_statistics_collection(DEFAULTCONFIG))
+        transformed_graph = _build_graph(in_model, representative_data_gen)
         return transformed_graph
 
     def run_test(self):

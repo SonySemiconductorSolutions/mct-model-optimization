@@ -20,17 +20,16 @@ from unittest.mock import Mock
 
 import pytest
 from mct_quantizers import QuantizationMethod
+from model_compression_toolkit.core.graph_prep_runner import get_finalized_graph
 
 from model_compression_toolkit.core import FrameworkInfo
 from model_compression_toolkit.core.common.framework_implementation import FrameworkImplementation
 from model_compression_toolkit.core.common.fusion.fusing_info import FusingInfo
 from model_compression_toolkit.core.common.fusion.graph_fuser import GraphFuser
-from model_compression_toolkit.core.common.quantization.candidate_node_quantization_config import \
-    CandidateNodeQuantizationConfig
-from model_compression_toolkit.core.common.quantization.node_quantization_config import \
-    NodeActivationQuantizationConfig, ActivationQuantizationMode
-from model_compression_toolkit.core.graph_prep_runner import graph_preparation_runner
+from model_compression_toolkit.core.common.quantization.candidate_node_quantization_config import CandidateNodeQuantizationConfig
+from model_compression_toolkit.core.common.quantization.node_quantization_config import NodeActivationQuantizationConfig, ActivationQuantizationMode
 import model_compression_toolkit.target_platform_capabilities.schema.mct_current_schema as schema
+from model_compression_toolkit.graph_builder.common.base_graph_builder import BaseGraphBuilder
 from tests_pytest._test_util.tpc_util import minimal_cfg_options
 
 
@@ -74,6 +73,8 @@ class BaseFusingInfoGeneratorTest(abc.ABC):
     attach_to_fw_func: Callable
     expected_fi: FusingInfo
     last_node_activation_nbits: List[int]
+    fw_graph_builder: BaseGraphBuilder
+
 
     def _data_gen(self):
         raise NotImplementedError()
@@ -93,16 +94,24 @@ class BaseFusingInfoGeneratorTest(abc.ABC):
         Creates a graph with fusing metadata based on a generated model and a predefined configuration.
         Ensures all required components (framework implementation, framework info, etc.) are present.
         """
+
         self.fqc = self.attach_to_fw_func(self._get_tpc(minimal_cfg_options()),
                                           self._get_qc().custom_tpc_opset_to_layer)
 
-        graph_with_fusion_metadata = graph_preparation_runner(self._get_model(),
-                                                              self._data_gen,
-                                                              self._get_qc(),
-                                                              fw_impl=self.fw_impl,
-                                                              fqc=self.fqc,
-                                                              mixed_precision_enable=True,
-                                                              running_gptq=False)
+        graph = self.fw_graph_builder.build_graph(model=self._get_model(),
+                                                  representative_dataset=self._data_gen,
+                                                  fqc=self.fqc,
+                                                  linear_collapsing=self._get_qc().linear_collapsing,
+                                                  residual_collapsing=self._get_qc().residual_collapsing,
+                                                  relu_bound_to_power_of_2=self._get_qc().relu_bound_to_power_of_2)
+
+        graph_with_fusion_metadata = get_finalized_graph(graph=graph,
+                                                         fqc=self.fqc,
+                                                         quant_config=self._get_qc(),
+                                                         fw_impl=self.fw_impl,
+                                                         mixed_precision_enable=True,
+                                                         running_gptq=False)
+
         return graph_with_fusion_metadata
 
     @pytest.fixture

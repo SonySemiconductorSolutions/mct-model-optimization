@@ -33,6 +33,7 @@ from model_compression_toolkit.core.pytorch.statistics_correction.apply_second_m
     pytorch_apply_second_moment_correction
 from model_compression_toolkit.core.pytorch.utils import to_torch_tensor, set_model
 from model_compression_toolkit.core.runner import core_runner
+from model_compression_toolkit.graph_builder.pytorch.pytorch_graph_builder import PytorchGraphBuilder
 from model_compression_toolkit.target_platform_capabilities.targetplatform2framework.attach2pytorch import \
     AttachTpcToPytorch
 from model_compression_toolkit.target_platform_capabilities.targetplatform2framework.framework_quantization_capabilities import \
@@ -361,7 +362,8 @@ class ValueSecondMomentTest(BaseSecondMomentTest):
                                                   core_config=core_config,
                                                   fw_impl=fw_impl,
                                                   fqc=framework_quantization_capabilities,
-                                                  tb_w=tb_w)
+                                                  tb_w=tb_w,
+                                                  fw_graph_builder=PytorchGraphBuilder())
         graph_to_apply_second_moment = copy.deepcopy(tg)
         semi_quantized_model = quantized_model_builder_for_second_moment_correction(graph_to_apply_second_moment,
                                                                                     fw_impl)

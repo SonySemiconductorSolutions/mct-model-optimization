@@ -31,6 +31,7 @@ from model_compression_toolkit.core.common.quantization.quantization_params_gene
     calculate_quantization_params
 from model_compression_toolkit.core.common.similarity_analyzer import compute_mse
 from model_compression_toolkit.core.keras.keras_implementation import KerasImplementation
+from model_compression_toolkit.graph_builder.keras.convert_keras_model_to_graph import convert_keras_model_to_graph
 from model_compression_toolkit.quantization_preparation.load_fqc import load_fqc_configuration
 from model_compression_toolkit.target_platform_capabilities.constants import KERNEL_ATTR
 from model_compression_toolkit.target_platform_capabilities.targetplatform2framework.attach2keras import \
@@ -62,10 +63,7 @@ class TestSearchBitwidthConfiguration(unittest.TestCase):
         in_model = keras.Model(inputs=input_tensor, outputs=relu)
         keras_impl = KerasImplementation()
 
-        def dummy_representative_dataset():
-            return None
-
-        graph = keras_impl.model_reader(in_model, dummy_representative_dataset)  # model reading
+        graph = convert_keras_model_to_graph(in_model)
 
         fqc = AttachTpcToKeras().attach(tpc)
 

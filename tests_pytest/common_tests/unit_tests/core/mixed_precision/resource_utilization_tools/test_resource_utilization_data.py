@@ -33,32 +33,30 @@ class TestResourceUtilizationData:
         core_cfg_orig = copy.deepcopy(core_cfg)
 
         model_mock = Mock()
-        data_gen_mock = Mock()
         fqc_mock = Mock()
         ru_calc_cls = mocker.patch('model_compression_toolkit.core.common.mixed_precision.resource_utilization_tools.'
                                    'resource_utilization_data.ResourceUtilizationCalculator',
                                    spec_set=ResourceUtilizationCalculator)
         ru_calc_cls.compute_resource_utilization = Mock()
-        prep_runner = mocker.patch('model_compression_toolkit.core.common.mixed_precision.resource_utilization_tools.'
-                                   'resource_utilization_data.graph_preparation_runner')
+        finalized_graph = mocker.patch('model_compression_toolkit.core.common.mixed_precision'
+                                       '.resource_utilization_tools.'
+                                       'resource_utilization_data.get_finalized_graph')
 
         compute_resource_utilization_data(model_mock,
-                                          data_gen_mock,
                                           core_cfg,
                                           fqc_mock,
                                           fw_impl_mock)
 
-        assert prep_runner.call_args.args == (model_mock,)
-        passed_q_cfg = prep_runner.call_args.kwargs.pop('quantization_config')
+        assert finalized_graph.call_args.args == (model_mock,)
+        passed_q_cfg = finalized_graph.call_args.kwargs.pop('quant_config')
         assert passed_q_cfg.weights_error_method == QuantizationErrorMethod.MSE
-        assert prep_runner.call_args.kwargs == dict(representative_data_gen=data_gen_mock,
-                                                    fw_impl=fw_impl_mock,
-                                                    fqc=fqc_mock,
-                                                    bit_width_config=core_cfg.bit_width_config,
-                                                    mixed_precision_enable=False,
-                                                    running_gptq=False)
+        assert finalized_graph.call_args.kwargs == dict(fw_impl=fw_impl_mock,
+                                                        fqc=fqc_mock,
+                                                        bit_width_config=core_cfg.bit_width_config,
+                                                        mixed_precision_enable=False,
+                                                        running_gptq=False)
 
-        ru_calc_cls.assert_called_with(prep_runner.return_value, fw_impl=fw_impl_mock)
+        ru_calc_cls.assert_called_with(finalized_graph.return_value, fw_impl=fw_impl_mock)
         ru_calc_cls.return_value.compute_resource_utilization.assert_called_with(TargetInclusionCriterion.AnyQuantizedNonFused,
                                                                                  BitwidthMode.QDefaultSP)
         # make sure the original config wasn't changed
@@ -68,6 +66,6 @@ class TestResourceUtilizationData:
         # and wasn't used internally (its copy was)
         def assert_not_same_obj(a, b):
             assert type(a) is type(b) and a is not b
-        assert_not_same_obj(core_cfg.bit_width_config, prep_runner.call_args.kwargs['bit_width_config'])
+        assert_not_same_obj(core_cfg.bit_width_config, finalized_graph.call_args.kwargs['bit_width_config'])
         assert_not_same_obj(core_cfg.quantization_config, passed_q_cfg)
 

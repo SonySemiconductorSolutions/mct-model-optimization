@@ -42,7 +42,7 @@ if FOUND_TF:
     from tensorflow.keras.models import Model
     from model_compression_toolkit.target_platform_capabilities.constants import DEFAULT_TP_MODEL
     from model_compression_toolkit.exporter.model_wrapper import get_exportable_keras_model
-
+    from model_compression_toolkit.graph_builder.keras.keras_graph_builder import KerasGraphBuilder
     from model_compression_toolkit import get_target_platform_capabilities
     from mct_quantizers.keras.metadata import add_metadata
 
@@ -154,7 +154,8 @@ if FOUND_TF:
                                                                 fw_impl=fw_impl,
                                                                 fqc=framework_platform_capabilities,
                                                                 target_resource_utilization=target_resource_utilization,
-                                                                tb_w=tb_w)
+                                                                tb_w=tb_w,
+                                                                fw_graph_builder=KerasGraphBuilder())
 
         # At this point, tg is a graph that went through substitutions (such as BN folding) and is
         # ready for quantization (namely, it holds quantization params, etc.) but the weights are

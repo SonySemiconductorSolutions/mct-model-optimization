@@ -20,11 +20,14 @@ import tensorflow as tf
 from model_compression_toolkit.core import MixedPrecisionQuantizationConfig
 from model_compression_toolkit.core.common.mixed_precision.sensitivity_eval.sensitivity_evaluation import SensitivityEvaluation
 from model_compression_toolkit.core.keras.keras_implementation import KerasImplementation
+from model_compression_toolkit.graph_builder.keras.keras_graph_builder import KerasGraphBuilder
 from model_compression_toolkit.target_platform_capabilities.targetplatform2framework.attach2keras import \
     AttachTpcToKeras
 from model_compression_toolkit.target_platform_capabilities.tpc_models.imx500_tpc.latest import generate_keras_tpc
 from tests.common_tests.helpers.prep_graph_for_func_test import prepare_graph_with_quantization_parameters
 import model_compression_toolkit.core.common.hessian as hess
+from model_compression_toolkit.core.keras.default_framework_info import KerasInfo
+from model_compression_toolkit.core.common.framework_info import set_fw_info
 
 keras = tf.keras
 layers = keras.layers
@@ -77,6 +80,10 @@ def representative_dataset():
 
 class TestSensitivityEvalWithNonSupportedOutputNodes(unittest.TestCase):
 
+    def setUp(self) -> None:
+        set_fw_info(KerasInfo)
+
+
     def verify_test_for_model(self, model):
         keras_impl = KerasImplementation()
         graph = prepare_graph_with_quantization_parameters(model,
@@ -85,7 +92,8 @@ class TestSensitivityEvalWithNonSupportedOutputNodes(unittest.TestCase):
                                                            generate_keras_tpc,
                                                            attach2fw=AttachTpcToKeras(),
                                                            input_shape=(1, 8, 8, 3),
-                                                           mixed_precision_enabled=True)
+                                                           mixed_precision_enabled=True,
+                                                           fw_graph_builder=KerasGraphBuilder())
 
         hessian_info_service = hess.HessianInfoService(graph=graph,
                                                        fw_impl=keras_impl)

@@ -13,7 +13,6 @@
 # limitations under the License.
 # ==============================================================================
 import operator
-from copy import deepcopy
 from functools import partial
 from typing import List, Any, Tuple, Callable, Generator
 
@@ -33,43 +32,13 @@ from model_compression_toolkit.core.common.framework_implementation import Frame
 from model_compression_toolkit.core.common.graph.functional_node import FunctionalNode
 from model_compression_toolkit.core.common.hessian import HessianScoresRequest, HessianMode
 from model_compression_toolkit.core.common.model_builder_mode import ModelBuilderMode
-from model_compression_toolkit.core.common.node_prior_info import NodePriorInfo
 from model_compression_toolkit.core.common.similarity_analyzer import compute_mse, compute_kl_divergence, compute_cs
 from model_compression_toolkit.core.pytorch.back2framework import get_pytorch_model_builder
 from model_compression_toolkit.core.pytorch.data_util import data_gen_to_dataloader
-from model_compression_toolkit.core.pytorch.graph_substitutions.substitutions.batchnorm_folding import \
-    pytorch_batchnorm_folding, pytorch_batchnorm_forward_folding
 from model_compression_toolkit.core.pytorch.graph_substitutions.substitutions.batchnorm_reconstruction import \
     pytorch_batchnorm_reconstruction
 from model_compression_toolkit.core.pytorch.graph_substitutions.substitutions.batchnorm_refusing import \
     pytorch_batchnorm_refusing
-from model_compression_toolkit.core.pytorch.graph_substitutions.substitutions.functional_batch_norm import \
-    FunctionalBatchNorm
-from model_compression_toolkit.core.pytorch.graph_substitutions.substitutions.functional_layer_norm import \
-    FunctionalLayerNorm
-from model_compression_toolkit.core.pytorch.graph_substitutions.substitutions.functional_linear import \
-    FunctionalLinear
-from model_compression_toolkit.core.pytorch.graph_substitutions.substitutions.matmul_decomposition import \
-    MatMulDecomposition
-from model_compression_toolkit.core.pytorch.graph_substitutions.substitutions.linear_collapsing import \
-    pytorch_linear_collapsing
-from model_compression_toolkit.core.pytorch.graph_substitutions.substitutions.multi_head_attention_decomposition \
-    import MultiHeadAttentionDecomposition
-from model_compression_toolkit.core.pytorch.graph_substitutions.substitutions.scaled_dot_product_attention import \
-    ScaledDotProductDecomposition
-from model_compression_toolkit.core.pytorch.graph_substitutions.substitutions.transform_function_call_method import \
-    TransformFunctionCallMethod
-from model_compression_toolkit.core.pytorch.graph_substitutions.substitutions.convtranspose_dynamic_padding import \
-    ConvtransposeDynamicPadding
-from model_compression_toolkit.core.pytorch.graph_substitutions.substitutions.const_holder_conv import \
-    FunctionalConvSubstitution
-from model_compression_toolkit.core.pytorch.graph_substitutions.substitutions.relu_bound_to_power_of_2 import \
-    ReLUBoundToPowerOfTwo
-from model_compression_toolkit.core.pytorch.graph_substitutions.substitutions.remove_identity import RemoveIdentity
-from model_compression_toolkit.core.pytorch.graph_substitutions.substitutions.reshape_with_static_shapes import \
-    ReshapeWithStaticShapes
-from model_compression_toolkit.core.pytorch.graph_substitutions.substitutions.residual_collapsing import \
-    pytorch_residual_collapsing
 from model_compression_toolkit.core.pytorch.graph_substitutions.substitutions.scale_equalization import \
     ScaleEqualization, \
     ScaleEqualizationWithPad
@@ -91,13 +60,11 @@ from model_compression_toolkit.core.pytorch.mixed_precision.configurable_activat
     ConfigurableActivationQuantizer
 from model_compression_toolkit.core.pytorch.mixed_precision.configurable_weights_quantizer import \
     ConfigurableWeightsQuantizer
-from model_compression_toolkit.core.pytorch.pytorch_node_prior_info import create_node_prior_info
-from model_compression_toolkit.core.pytorch.reader.reader import model_reader
 from model_compression_toolkit.core.pytorch.statistics_correction.apply_second_moment_correction import \
     pytorch_apply_second_moment_correction
 from model_compression_toolkit.core.pytorch.statistics_correction.pytorch_compute_activation_bias_correction_of_graph import \
     pytorch_compute_activation_bias_correction_of_graph
-from model_compression_toolkit.core.pytorch.utils import to_torch_tensor, torch_tensor_to_numpy, set_model
+from model_compression_toolkit.core.pytorch.utils import to_torch_tensor, torch_tensor_to_numpy
 from model_compression_toolkit.exporter.model_wrapper.fw_agnostic.get_inferable_quantizers import \
     get_inferable_quantizers
 from model_compression_toolkit.exporter.model_wrapper.pytorch.builder.node_to_quantizer import \
@@ -157,21 +124,6 @@ class PytorchImplementation(FrameworkImplementation):
             if not isinstance(item, torch.Tensor):
                 return False
         return True
-
-    def model_reader(self,
-                     module: Module,
-                     representative_data_gen: Callable) -> Graph:
-        """
-        Convert a framework's module into a graph.
-        Args:
-            module: Framework's module.
-            representative_data_gen (Callable): Dataset used for calibration.
-        Returns:
-            Graph representing the input module.
-        """
-        _module = deepcopy(module)
-        _module.eval()
-        return model_reader(_module, representative_data_gen, self.to_numpy, self.to_tensor)
 
     def model_builder(self,
                       graph: Graph,
@@ -276,39 +228,6 @@ class PytorchImplementation(FrameworkImplementation):
                                        ScaleEqualizationWithPad(quant_config)])
         return substitutions_list
 
-    def get_substitutions_prepare_graph(self) -> List[common.BaseSubstitution]:
-        """
-
-        Returns: A list of the framework substitutions used before we collect the prior information.
-
-        """
-        return [ReshapeWithStaticShapes(),
-                MultiHeadAttentionDecomposition(),
-                ScaledDotProductDecomposition(),
-                MatMulDecomposition(),
-                TransformFunctionCallMethod(),
-                FunctionalConvSubstitution(),
-                FunctionalBatchNorm(),
-                FunctionalLayerNorm(),
-                FunctionalLinear(),
-                RemoveIdentity(),
-                ConvtransposeDynamicPadding()]
-
-    def get_substitutions_pre_statistics_collection(self,
-                                                    quant_config: QuantizationConfig
-                                                    ) -> List[common.BaseSubstitution]:
-        """
-        Args:
-            quant_config: QuantizationConfig to determine which substitutions to return.
-
-        Returns: A list of the framework substitutions used before we build a quantized module.
-        """
-        substitutions_list = [pytorch_batchnorm_folding(),
-                              pytorch_batchnorm_forward_folding()]
-        if quant_config.relu_bound_to_power_of_2:
-            substitutions_list.append(ReLUBoundToPowerOfTwo())
-        return substitutions_list
-
     def get_substitutions_statistics_correction(self, quant_config: QuantizationConfig
                                                 ) -> List[common.BaseSubstitution]:
         """
@@ -324,25 +243,6 @@ class PytorchImplementation(FrameworkImplementation):
         if quant_config.weights_second_moment_correction:
             substitutions_list.append(pytorch_batchnorm_reconstruction())
         return substitutions_list
-
-    def get_residual_collapsing_substitution(self) -> List[common.BaseSubstitution]:
-        """
-        Returns: A list of the framework substitutions used for residual collapsing
-        """
-        substitutions_list = [pytorch_residual_collapsing()]
-        return substitutions_list
-
-    def get_linear_collapsing_substitution(self) -> common.BaseSubstitution:
-        """
-        Returns: linear collapsing substitution
-        """
-        return pytorch_linear_collapsing()
-
-    def get_op2d_add_const_collapsing_substitution(self) -> common.BaseSubstitution:
-        """
-        Returns: None, as Op2d add-const substitution is not supported in torch yet
-        """
-        return None
 
     def get_substitutions_post_statistics_collection(self,
                                                      quant_config: QuantizationConfig) -> List[common.BaseSubstitution]:
@@ -386,21 +286,6 @@ class PytorchImplementation(FrameworkImplementation):
         if quant_config.weights_second_moment_correction:
             substitutions_list.append(pytorch_batchnorm_refusing())
         return substitutions_list
-
-    def get_node_prior_info(self,
-                            node: BaseNode,
-                            graph: Graph) -> NodePriorInfo:
-        """
-        Get a NodePriorInfo object for a node that represents a Pytorch layer.
-        Args:
-            node: Node to get its prior info.
-            graph: Graph to check the next node type.
-        Returns:
-            NodePriorInfo with information about the node.
-        """
-
-        return create_node_prior_info(node=node,
-                                      graph=graph)
 
     def count_node_for_mixed_precision_interest_points(self, node: BaseNode) -> bool:
         """

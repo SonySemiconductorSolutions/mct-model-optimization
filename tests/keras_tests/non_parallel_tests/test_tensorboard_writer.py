@@ -27,6 +27,7 @@ from model_compression_toolkit.core import QuantizationConfig
 from model_compression_toolkit.core.common.visualization.final_config_visualizer import \
     ActivationFinalBitwidthConfigVisualizer
 from model_compression_toolkit.core.keras.keras_implementation import KerasImplementation
+from model_compression_toolkit.graph_builder.keras.keras_graph_builder import KerasGraphBuilder
 from model_compression_toolkit.logger import Logger
 from model_compression_toolkit.core.common.quantization.quantization_config import CustomOpsetLayers
 from model_compression_toolkit.target_platform_capabilities.targetplatform2framework.attach2keras import \
@@ -161,7 +162,8 @@ class TestFileLogger(unittest.TestCase):
                                                                                                    activation_memory=191),
                                           n_iter=1,
                                           analyze_similarity=True,
-                                          mp_cfg=mp_cfg)
+                                          mp_cfg=mp_cfg,
+                                          fw_graph_builder=KerasGraphBuilder())
         tensors_sizes = [4.0 * n.get_total_output_params() / 1000000.0
                          for n in tg.get_sorted_activation_configurable_nodes()]  # in MB
         max_tensor_size = max(tensors_sizes)

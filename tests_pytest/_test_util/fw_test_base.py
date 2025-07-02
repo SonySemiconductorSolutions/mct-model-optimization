@@ -15,9 +15,11 @@
 import abc
 from typing import Callable
 
-from model_compression_toolkit.core import FrameworkInfo, QuantizationConfig
+from model_compression_toolkit.core.graph_prep_runner import get_finalized_graph
+
+from model_compression_toolkit.core import QuantizationConfig
 from model_compression_toolkit.core.common.framework_implementation import FrameworkImplementation
-from model_compression_toolkit.core.graph_prep_runner import graph_preparation_runner
+from model_compression_toolkit.graph_builder.common.base_graph_builder import BaseGraphBuilder
 
 
 class BaseFWIntegrationTest(abc.ABC):
@@ -25,16 +27,25 @@ class BaseFWIntegrationTest(abc.ABC):
 
     fw_impl: FrameworkImplementation
     attach_to_fw_func: Callable
+    fw_graph_builder: BaseGraphBuilder
 
     def run_graph_preparation(self, model, datagen, tpc, quant_config=None,
                               mp: bool = False, gptq: bool = False, bit_width_config=None):
         quant_config = quant_config or QuantizationConfig()
-        graph = graph_preparation_runner(model,
-                                         datagen,
-                                         quantization_config=quant_config,
-                                         fw_impl=self.fw_impl,
-                                         fqc=self.attach_to_fw_func(tpc),
-                                         mixed_precision_enable=mp,
-                                         running_gptq=gptq,
-                                         bit_width_config=bit_width_config)
+        fqc = self.attach_to_fw_func(tpc)
+        graph = self.fw_graph_builder.build_graph(model=model,
+                                                  representative_dataset=datagen,
+                                                  fqc=fqc,
+                                                  linear_collapsing=quant_config.linear_collapsing,
+                                                  residual_collapsing=quant_config.residual_collapsing,
+                                                  relu_bound_to_power_of_2=quant_config.relu_bound_to_power_of_2)
+
+        graph = get_finalized_graph(graph=graph,
+                                    fqc=fqc,
+                                    quant_config=quant_config,
+                                    bit_width_config=bit_width_config,
+                                    fw_impl=self.fw_impl,
+                                    mixed_precision_enable=mp,
+                                    running_gptq=gptq)
+
         return graph

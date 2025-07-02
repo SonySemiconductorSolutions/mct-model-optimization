@@ -18,6 +18,7 @@ from typing import List, Tuple
 import torch
 from mct_quantizers import PytorchActivationQuantizationHolder, PytorchQuantizationWrapper
 
+from model_compression_toolkit.graph_builder.pytorch.pytorch_graph_builder import PytorchGraphBuilder
 from model_compression_toolkit.target_platform_capabilities.targetplatform2framework.attach2pytorch import \
     AttachTpcToPytorch
 from model_compression_toolkit.core.common.framework_info import set_fw_info
@@ -38,6 +39,7 @@ class TorchFwMixin:
     set_fw_info(PyTorchInfo)
     fw_impl = PytorchImplementation()
     attach_to_fw_func = AttachTpcToPytorch().attach
+    fw_graph_builder = PytorchGraphBuilder()
 
     @staticmethod
     def get_basic_data_gen(shapes: List[Tuple]):

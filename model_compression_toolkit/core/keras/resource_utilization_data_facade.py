@@ -30,7 +30,7 @@ if FOUND_TF:
     from model_compression_toolkit.core.keras.keras_implementation import KerasImplementation
     from model_compression_toolkit.core.keras.default_framework_info import set_keras_info
     from tensorflow.keras.models import Model
-
+    from model_compression_toolkit.graph_builder.keras.keras_graph_builder import KerasGraphBuilder
     from model_compression_toolkit import get_target_platform_capabilities
 
     KERAS_DEFAULT_TPC = get_target_platform_capabilities(TENSORFLOW, DEFAULT_TP_MODEL)
@@ -90,8 +90,13 @@ if FOUND_TF:
             target_platform_capabilities,
             custom_opset2layer=core_config.quantization_config.custom_tpc_opset_to_layer)
 
-        return compute_resource_utilization_data(in_model,
-                                                 representative_data_gen,
+        graph = KerasGraphBuilder().build_graph(model=in_model,
+                                                fqc=target_platform_capabilities,
+                                                linear_collapsing=core_config.quantization_config.linear_collapsing,
+                                                residual_collapsing=core_config.quantization_config.residual_collapsing,
+                                                relu_bound_to_power_of_2=core_config.quantization_config.relu_bound_to_power_of_2)
+
+        return compute_resource_utilization_data(graph,
                                                  core_config,
                                                  target_platform_capabilities,
                                                  fw_impl)

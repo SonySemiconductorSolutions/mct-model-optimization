@@ -16,6 +16,7 @@
 from model_compression_toolkit import get_target_platform_capabilities
 from model_compression_toolkit.constants import TENSORFLOW
 from model_compression_toolkit.core.keras.keras_implementation import KerasImplementation
+from model_compression_toolkit.graph_builder.keras.keras_graph_builder import KerasGraphBuilder
 from model_compression_toolkit.target_platform_capabilities.targetplatform2framework.attach2keras import \
     AttachTpcToKeras
 from model_compression_toolkit.xquant.common.framework_report_utils import FrameworkReportUtils
@@ -48,7 +49,8 @@ class KerasReportUtils(FrameworkReportUtils):
 
         dataset_utils = KerasDatasetUtils()
         model_folding = ModelFoldingUtils(fw_impl=fw_impl,
-                                          fw_default_fqc=framework_platform_capabilities)
+                                          fw_default_fqc=framework_platform_capabilities,
+                                          fw_graph_builder=KerasGraphBuilder())
 
         similarity_calculator = SimilarityCalculator(dataset_utils=dataset_utils,
                                                      model_folding=model_folding,

@@ -20,9 +20,10 @@ import numpy as np
 
 from model_compression_toolkit.core.common.framework_info import set_fw_info
 from model_compression_toolkit.core.pytorch.default_framework_info import PyTorchInfo
-from model_compression_toolkit.core.pytorch.reader.reader import fx_graph_module_generation
-from model_compression_toolkit.core.pytorch.pytorch_implementation import to_torch_tensor, PytorchImplementation
+from model_compression_toolkit.graph_builder.pytorch.convert_pytorch_model_to_graph import convert_pytorch_model_to_graph
+from model_compression_toolkit.graph_builder.pytorch.reader.reader import fx_graph_module_generation
 
+from model_compression_toolkit.core.pytorch.pytorch_implementation import to_torch_tensor
 
 class BadFxModel(torch.nn.Module):
     def __init__(self):
@@ -66,7 +67,7 @@ class TestGraphReading(unittest.TestCase):
                 return self.conv(x)
 
         with self.assertRaises(ValueError) as e:
-            PytorchImplementation().model_reader(Model(), data_gen)
+            convert_pytorch_model_to_graph(Model(), data_gen)
         self.assertEqual(str(e.exception), r"The network contains disconnected input(s): ['unused'].")
 
 

@@ -15,7 +15,7 @@
 
 import inspect
 
-from model_compression_toolkit.core.pytorch.reader.node_holders import DummyPlaceHolder
+from model_compression_toolkit.graph_builder.pytorch.reader.node_holders import DummyPlaceHolder
 from mct_quantizers import PytorchActivationQuantizationHolder
 import model_compression_toolkit as mct
 import torch

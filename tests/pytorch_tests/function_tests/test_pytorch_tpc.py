@@ -29,10 +29,10 @@ from model_compression_toolkit.core import MixedPrecisionQuantizationConfig
 from model_compression_toolkit.defaultdict import DefaultDict
 from model_compression_toolkit.constants import PYTORCH, FUSED_LAYER_PATTERN
 from model_compression_toolkit.core.common import BaseNode
+from model_compression_toolkit.graph_builder.pytorch.convert_pytorch_model_to_graph import convert_pytorch_model_to_graph
 from model_compression_toolkit.quantization_preparation.load_fqc import fetch_qc_options_for_node
 from model_compression_toolkit.target_platform_capabilities.constants import DEFAULT_TP_MODEL, IMX500_TP_MODEL, \
     TFLITE_TP_MODEL, QNNPACK_TP_MODEL, KERNEL_ATTR, WEIGHTS_N_BITS, PYTORCH_KERNEL, BIAS_ATTR, BIAS
-from model_compression_toolkit.core.pytorch.pytorch_implementation import PytorchImplementation
 from model_compression_toolkit.target_platform_capabilities.targetplatform2framework import LayerFilterParams, \
     OperationsSetToLayers
 from model_compression_toolkit.target_platform_capabilities.targetplatform2framework.attribute_filter import Greater, \
@@ -318,5 +318,5 @@ def get_node(layer) -> BaseNode:
     def rep_data():
         yield [np.random.randn(1, 3, 16, 16)]
 
-    graph = PytorchImplementation().model_reader(model, rep_data)
+    graph = convert_pytorch_model_to_graph(model, rep_data)
     return graph.get_topo_sorted_nodes()[1]

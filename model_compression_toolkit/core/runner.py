@@ -13,8 +13,9 @@
 # limitations under the License.
 # ==============================================================================
 
-import copy
 from typing import Callable, Any, List, Optional
+
+from model_compression_toolkit.core.graph_prep_runner import get_finalized_graph
 
 from model_compression_toolkit.core.common.framework_implementation import FrameworkImplementation
 from model_compression_toolkit.core.common.fusion.graph_fuser import GraphFuser
@@ -35,8 +36,8 @@ from model_compression_toolkit.core.common.network_editors.edit_network import e
 from model_compression_toolkit.core.common.quantization.core_config import CoreConfig
 from model_compression_toolkit.core.common.visualization.tensorboard_writer import TensorboardWriter, \
     finalize_bitwidth_in_tb
-from model_compression_toolkit.core.graph_prep_runner import graph_preparation_runner
 from model_compression_toolkit.core.quantization_prep_runner import quantization_preparation_runner
+from model_compression_toolkit.graph_builder.common.base_graph_builder import BaseGraphBuilder
 from model_compression_toolkit.logger import Logger
 from model_compression_toolkit.target_platform_capabilities.targetplatform2framework.framework_quantization_capabilities import \
     FrameworkQuantizationCapabilities
@@ -49,7 +50,8 @@ def core_runner(in_model: Any,
                 fqc: FrameworkQuantizationCapabilities,
                 target_resource_utilization: ResourceUtilization = None,
                 running_gptq: bool = False,
-                tb_w: TensorboardWriter = None):
+                tb_w: TensorboardWriter = None,
+                fw_graph_builder: BaseGraphBuilder = None):
     """
     Quantize a trained model using post-training quantization.
     First, the model graph is optimized using several transformations (e.g. folding BatchNormalization to preceding
@@ -68,7 +70,9 @@ def core_runner(in_model: Any,
         fqc: FrameworkQuantizationCapabilities object that models the inference target platform and
                                               the attached framework operator's information.
         target_resource_utilization: ResourceUtilization to constraint the search of the mixed-precision configuration for the model.
+        running_gptq: Whether GPTQ should run after the runner or not.
         tb_w: TensorboardWriter object for logging
+        fw_graph_builder: Object of the framework specific class to build the graph from the framework model.
 
     Returns:
         An internal graph representation of the input model.
@@ -93,15 +97,22 @@ def core_runner(in_model: Any,
         core_config.mixed_precision_config.set_mixed_precision_enable()
         Logger.info('Mixed precision enabled.')
 
-    graph = graph_preparation_runner(in_model,
-                                     representative_data_gen,
-                                     core_config.quantization_config,
-                                     fw_impl,
-                                     fqc,
-                                     core_config.bit_width_config,
-                                     tb_w,
-                                     mixed_precision_enable=core_config.is_mixed_precision_enabled,
-                                     running_gptq=running_gptq)
+    graph = fw_graph_builder.build_graph(model=in_model,
+                                         representative_dataset=representative_data_gen,
+                                         fqc=fqc,
+                                         tensorboard_writer=tb_w,
+                                         linear_collapsing=core_config.quantization_config.linear_collapsing,
+                                         residual_collapsing=core_config.quantization_config.residual_collapsing,
+                                         relu_bound_to_power_of_2=core_config.quantization_config.relu_bound_to_power_of_2)
+
+    graph = get_finalized_graph(graph,
+                                fqc,
+                                core_config.quantization_config,
+                                core_config.bit_width_config,
+                                tb_w,
+                                fw_impl,
+                                core_config.is_mixed_precision_enabled,
+                                running_gptq)
 
     hessian_info_service = HessianInfoService(graph=graph, fw_impl=fw_impl)
 

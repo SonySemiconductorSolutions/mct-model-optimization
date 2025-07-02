@@ -23,6 +23,7 @@ from packaging import version
 import model_compression_toolkit.target_platform_capabilities.schema.mct_current_schema as schema
 from model_compression_toolkit.defaultdict import DefaultDict
 from model_compression_toolkit.core.common import BaseNode
+from model_compression_toolkit.graph_builder.keras.convert_keras_model_to_graph import convert_keras_model_to_graph
 from model_compression_toolkit.quantization_preparation.load_fqc import fetch_qc_options_for_node
 from model_compression_toolkit.target_platform_capabilities.targetplatform2framework import LayerFilterParams
 from model_compression_toolkit.target_platform_capabilities.targetplatform2framework.attribute_filter import Greater, \
@@ -41,10 +42,9 @@ else:
     from keras import Input
 
 import model_compression_toolkit as mct
-from model_compression_toolkit.constants import TENSORFLOW, FUSED_LAYER_PATTERN, FUSED_OP_QUANT_CONFIG
+from model_compression_toolkit.constants import TENSORFLOW, FUSED_LAYER_PATTERN
 from model_compression_toolkit.target_platform_capabilities.constants import DEFAULT_TP_MODEL, IMX500_TP_MODEL, \
     QNNPACK_TP_MODEL, TFLITE_TP_MODEL, KERNEL_ATTR, BIAS_ATTR, KERAS_KERNEL, BIAS, WEIGHTS_N_BITS
-from model_compression_toolkit.core.keras.keras_implementation import KerasImplementation
 from model_compression_toolkit.core.common.framework_info import set_fw_info
 from model_compression_toolkit.core.keras.default_framework_info import KerasInfo
 
@@ -57,7 +57,7 @@ def get_node(layer) -> BaseNode:
     i = Input(shape=(3, 16, 16))
     x = layer(i)
     model = tf.keras.Model(i, x)
-    graph = KerasImplementation().model_reader(model, None)
+    graph = convert_keras_model_to_graph(model)
     return graph.get_topo_sorted_nodes()[1]
 
 

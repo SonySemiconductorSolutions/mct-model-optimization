@@ -41,8 +41,8 @@ if FOUND_TORCH:
     from model_compression_toolkit.exporter.model_wrapper.pytorch.builder.fully_quantized_model_builder import get_exportable_pytorch_model
     from model_compression_toolkit import get_target_platform_capabilities
     from mct_quantizers.pytorch.metadata import add_metadata
-    from model_compression_toolkit.target_platform_capabilities.targetplatform2framework.attach2pytorch import \
-        AttachTpcToPytorch
+    from model_compression_toolkit.target_platform_capabilities.targetplatform2framework.attach2pytorch import AttachTpcToPytorch
+    from model_compression_toolkit.graph_builder.pytorch.pytorch_graph_builder import PytorchGraphBuilder
 
     DEFAULT_PYTORCH_TPC = get_target_platform_capabilities(PYTORCH, DEFAULT_TP_MODEL)
 
@@ -118,7 +118,7 @@ if FOUND_TORCH:
         # Attach tpc model to framework
         attach2pytorch = AttachTpcToPytorch()
         framework_platform_capabilities = attach2pytorch.attach(target_platform_capabilities,
-                                                             core_config.quantization_config.custom_tpc_opset_to_layer)
+                                                                core_config.quantization_config.custom_tpc_opset_to_layer)
 
         # Ignore hessian info service as it is not used here yet.
         tg, bit_widths_config, _, scheduling_info = core_runner(in_model=in_module,
@@ -127,7 +127,8 @@ if FOUND_TORCH:
                                                                 fw_impl=fw_impl,
                                                                 fqc=framework_platform_capabilities,
                                                                 target_resource_utilization=target_resource_utilization,
-                                                                tb_w=tb_w)
+                                                                tb_w=tb_w,
+                                                                fw_graph_builder=PytorchGraphBuilder())
 
         # At this point, tg is a graph that went through substitutions (such as BN folding) and is
         # ready for quantization (namely, it holds quantization params, etc.) but the weights are

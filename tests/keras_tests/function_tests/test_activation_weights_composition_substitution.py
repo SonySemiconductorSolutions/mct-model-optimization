@@ -23,6 +23,7 @@ import tensorflow as tf
 
 from model_compression_toolkit.core.keras.default_framework_info import KerasInfo
 from model_compression_toolkit.core.common.quantization.quantization_config import CustomOpsetLayers
+from model_compression_toolkit.graph_builder.keras.keras_graph_builder import KerasGraphBuilder
 from model_compression_toolkit.quantization_preparation.load_fqc import load_fqc_configuration
 from model_compression_toolkit.target_platform_capabilities.targetplatform2framework.attach2keras import \
     AttachTpcToKeras
@@ -98,12 +99,6 @@ def representative_dataset():
 def prepare_graph(in_model, keras_impl, mixed_precision_candidates_list, base_config, default_config):
     qc = mct.core.QuantizationConfig(custom_tpc_opset_to_layer={"Input": CustomOpsetLayers([InputLayer])})
 
-    graph = keras_impl.model_reader(in_model, representative_dataset)  # model reading
-    graph = substitute(graph, keras_impl.get_substitutions_prepare_graph())
-    for node in graph.nodes:
-        node.prior_info = keras_impl.get_node_prior_info(node=node, graph=graph)
-    graph = substitute(graph, keras_impl.get_substitutions_pre_statistics_collection(qc))
-
     tpc = get_tpc_with_activation_mp_keras(base_config=base_config,
                                            default_config=default_config,
                                            mp_bitwidth_candidates_list=mixed_precision_candidates_list,
@@ -111,10 +106,14 @@ def prepare_graph(in_model, keras_impl, mixed_precision_candidates_list, base_co
 
     attach2keras = AttachTpcToKeras()
     fqc = attach2keras.attach(tpc, qc.custom_tpc_opset_to_layer)
+    graph = KerasGraphBuilder().build_graph(model=in_model,
+                                            fqc=fqc,
+                                            linear_collapsing=qc.linear_collapsing,
+                                            residual_collapsing=qc.residual_collapsing,
+                                            relu_bound_to_power_of_2=qc.relu_bound_to_power_of_2)
+
     graph = load_fqc_configuration(graph, fqc)
-
     graph = filter_nodes_candidates(graph)
-
     return graph
 
 

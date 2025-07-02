@@ -23,6 +23,7 @@ from mct_quantizers import QuantizationMethod
 from model_compression_toolkit.core import QuantizationConfig, QuantizationErrorMethod
 from model_compression_toolkit.constants import RANGE_MIN, RANGE_MAX
 from model_compression_toolkit.core.keras.constants import KERNEL
+from model_compression_toolkit.graph_builder.keras.keras_graph_builder import KerasGraphBuilder
 from model_compression_toolkit.target_platform_capabilities.targetplatform2framework.attach2keras import \
     AttachTpcToKeras
 from model_compression_toolkit.target_platform_capabilities.tpc_models.imx500_tpc.latest import generate_keras_tpc
@@ -104,7 +105,7 @@ class TestUniformRangeSelectionWeights(unittest.TestCase):
                                                            representative_dataset,
                                                            lambda name, _tp: get_tpc(per_channel),
                                                            qc=qc, input_shape=(1, 16, 16, 4),
-                                                           attach2fw=AttachTpcToKeras(), )
+                                                           attach2fw=AttachTpcToKeras(), fw_graph_builder=KerasGraphBuilder())
 
         nodes_list = list(graph.nodes)
         conv1_min = nodes_list[0].candidates_quantization_cfg[0].weights_quantization_cfg.get_attr_config(KERNEL).weights_quantization_params[RANGE_MIN].flatten()

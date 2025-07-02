@@ -12,17 +12,15 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 #  ==============================================================================
-from mct_quantizers import PytorchActivationQuantizationHolder, PytorchQuantizationWrapper
+from mct_quantizers import PytorchQuantizationWrapper
 from model_compression_toolkit.core.common import Graph, BaseNode
-from model_compression_toolkit.core.common.framework_info import FrameworkInfo
 from typing import Dict, Any, Callable, List
 
 import torch
 
 from model_compression_toolkit.core.common.framework_implementation import FrameworkImplementation
-from model_compression_toolkit.core.pytorch.reader.reader import model_reader
+from model_compression_toolkit.graph_builder.pytorch.convert_pytorch_model_to_graph import convert_pytorch_model_to_graph
 from model_compression_toolkit.xquant.common.constants import XQUANT_REPR, INTERMEDIATE_SIMILARITY_METRICS_REPR, XQUANT_VAL, INTERMEDIATE_SIMILARITY_METRICS_VAL
-from model_compression_toolkit.xquant.common.model_folding_utils import ModelFoldingUtils
 from model_compression_toolkit.xquant.common.tensorboard_utils import TensorboardUtils
 
 NODES_WITHOUT_CUT_INFO = [torch.fake_quantize_per_tensor_affine]
@@ -71,10 +69,8 @@ class PytorchTensorboardUtils(TensorboardUtils):
             The updated quantized model graph with similarity metrics embedded.
         """
         # Read the model and generate a graph representation
-        quant_graph = model_reader(quantized_model,
-                                   representative_data_gen=repr_dataset,
-                                   to_tensor=self.fw_impl.to_tensor,
-                                   to_numpy=self.fw_impl.to_numpy)
+        quant_graph = convert_pytorch_model_to_graph(quantized_model,
+                                                     repr_dataset)
 
         if 'scheduling_info' in quantized_model_metadata:
             insert_cut_info_into_graph(quant_graph, quantized_model_metadata, quantized_model)

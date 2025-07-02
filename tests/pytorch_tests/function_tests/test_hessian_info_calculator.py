@@ -22,6 +22,7 @@ import numpy as np
 
 from model_compression_toolkit.core.pytorch.default_framework_info import PyTorchInfo
 from model_compression_toolkit.core.pytorch.pytorch_implementation import PytorchImplementation
+from model_compression_toolkit.graph_builder.pytorch.pytorch_graph_builder import PytorchGraphBuilder
 from model_compression_toolkit.target_platform_capabilities.targetplatform2framework.attach2pytorch import \
     AttachTpcToPytorch
 from model_compression_toolkit.target_platform_capabilities.tpc_models.imx500_tpc.latest import generate_pytorch_tpc
@@ -223,7 +224,7 @@ class BaseHessianTraceBasicModelTest(BasePytorchTest):
         pytorch_impl = PytorchImplementation()
         graph = prepare_graph_with_configs(model_float, PytorchImplementation(),
                                            self.representative_data_gen, generate_pytorch_tpc,
-                                           attach2fw=AttachTpcToPytorch())
+                                           attach2fw=AttachTpcToPytorch(), fw_graph_builder=PytorchGraphBuilder())
 
         return graph, pytorch_impl
 

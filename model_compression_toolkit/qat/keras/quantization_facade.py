@@ -35,13 +35,12 @@ if FOUND_TF:
     import tensorflow as tf
     from tensorflow.keras.layers import Layer
     from tensorflow.keras.models import Model
-
+    from model_compression_toolkit.graph_builder.keras.keras_graph_builder import KerasGraphBuilder
     from model_compression_toolkit.trainable_infrastructure import KerasTrainableQuantizationWrapper
     from model_compression_toolkit.core.keras.keras_implementation import KerasImplementation
     from model_compression_toolkit.core.keras.keras_model_validation import KerasModelValidation
     from model_compression_toolkit.target_platform_capabilities.constants import DEFAULT_TP_MODEL
     from model_compression_toolkit.core.keras.default_framework_info import set_keras_info
-
     from model_compression_toolkit.core.keras.back2framework.keras_model_builder import KerasModelBuilder
 
     from model_compression_toolkit import get_target_platform_capabilities
@@ -200,7 +199,8 @@ if FOUND_TF:
                                                   fw_impl=fw_impl,
                                                   fqc=target_platform_capabilities,
                                                   target_resource_utilization=target_resource_utilization,
-                                                  tb_w=tb_w)
+                                                  tb_w=tb_w,
+                                                  fw_graph_builder=KerasGraphBuilder())
 
         tg = ptq_runner(tg, representative_data_gen, core_config, fw_impl, tb_w)
 

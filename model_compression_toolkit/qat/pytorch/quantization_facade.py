@@ -46,6 +46,7 @@ if FOUND_TORCH:
     from model_compression_toolkit.qat.common.qat_config import QATConfig
     from model_compression_toolkit.qat.pytorch.quantizer.quantization_builder import get_activation_quantizer_holder
     from model_compression_toolkit.qat.pytorch.quantizer.quantization_builder import quantization_builder
+    from model_compression_toolkit.graph_builder.pytorch.pytorch_graph_builder import PytorchGraphBuilder
 
     DEFAULT_PYTORCH_TPC = get_target_platform_capabilities(PYTORCH, DEFAULT_TP_MODEL)
 
@@ -166,7 +167,8 @@ if FOUND_TORCH:
                                                   fw_impl=fw_impl,
                                                   fqc=framework_platform_capabilities,
                                                   target_resource_utilization=target_resource_utilization,
-                                                  tb_w=tb_w)
+                                                  tb_w=tb_w,
+                                                  fw_graph_builder=PytorchGraphBuilder())
 
         tg = ptq_runner(tg, representative_data_gen, core_config, fw_impl, tb_w)
 

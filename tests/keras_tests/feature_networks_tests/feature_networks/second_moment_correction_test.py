@@ -37,6 +37,7 @@ from model_compression_toolkit.core.keras.keras_model_validation import KerasMod
 from model_compression_toolkit.core.keras.statistics_correction.apply_second_moment_correction import \
     keras_apply_second_moment_correction
 from model_compression_toolkit.core.runner import core_runner
+from model_compression_toolkit.graph_builder.keras.keras_graph_builder import KerasGraphBuilder
 from model_compression_toolkit.target_platform_capabilities.constants import DEFAULT_TP_MODEL
 from model_compression_toolkit.target_platform_capabilities.schema.mct_current_schema import TargetPlatformCapabilities
 from model_compression_toolkit.target_platform_capabilities.targetplatform2framework.attach2keras import \
@@ -289,7 +290,9 @@ class ValueSecondMomentTest(BaseSecondMomentTest):
                                                   core_config=core_config,
                                                   fw_impl=fw_impl,
                                                   fqc=framework_quantization_capabilities,
-                                                  tb_w=tb_w)
+                                                  tb_w=tb_w,
+                                                  fw_graph_builder=KerasGraphBuilder())
+
         graph_to_apply_second_moment = copy.deepcopy(tg)
         semi_quantized_model = quantized_model_builder_for_second_moment_correction(graph_to_apply_second_moment,
                                                                                     fw_impl)

@@ -49,8 +49,8 @@ if FOUND_TORCH:
     from torch.optim import Adam, Optimizer
     from model_compression_toolkit import get_target_platform_capabilities
     from mct_quantizers.pytorch.metadata import add_metadata
-    from model_compression_toolkit.target_platform_capabilities.targetplatform2framework.attach2pytorch import \
-        AttachTpcToPytorch
+    from model_compression_toolkit.target_platform_capabilities.targetplatform2framework.attach2pytorch import AttachTpcToPytorch
+    from model_compression_toolkit.graph_builder.pytorch.pytorch_graph_builder import PytorchGraphBuilder
 
     DEFAULT_PYTORCH_TPC = get_target_platform_capabilities(PYTORCH, DEFAULT_TP_MODEL)
 
@@ -226,7 +226,7 @@ if FOUND_TORCH:
         # Attach tpc model to framework
         attach2pytorch = AttachTpcToPytorch()
         framework_quantization_capabilities = attach2pytorch.attach(target_platform_capabilities,
-                                                             core_config.quantization_config.custom_tpc_opset_to_layer)
+                                                                    core_config.quantization_config.custom_tpc_opset_to_layer)
 
         # ---------------------- #
         # Core Runner
@@ -238,7 +238,8 @@ if FOUND_TORCH:
                                                                                       fqc=framework_quantization_capabilities,
                                                                                       target_resource_utilization=target_resource_utilization,
                                                                                       tb_w=tb_w,
-                                                                                      running_gptq=True)
+                                                                                      running_gptq=True,
+                                                                                      fw_graph_builder=PytorchGraphBuilder())
 
         float_graph = copy.deepcopy(graph)
 
