@@ -13,11 +13,12 @@
 # limitations under the License.
 # ==============================================================================
 
+from abc import ABC, abstractmethod
 import numpy as np
 from model_compression_toolkit.logger import Logger
 
 
-class BaseCollector(object):
+class BaseCollector(ABC):
     """
     Base class for statistics collection object.
     """
@@ -26,6 +27,7 @@ class BaseCollector(object):
         # When manipulation statistics in a granularity they were not collected by, the data is invalid.
         self.is_legal = True
 
+    @abstractmethod
     def scale(self, scale_factor: np.ndarray):
         """
         Scale all statistics in collector by some factor.
@@ -37,6 +39,7 @@ class BaseCollector(object):
         raise NotImplemented(
             f'{self.__class__.__name__} needs to implement scale operation for its state.')  # pragma: no cover
 
+    @abstractmethod
     def shift(self, shift_value: np.ndarray):
         """
         Shift all statistics in collector by some value.

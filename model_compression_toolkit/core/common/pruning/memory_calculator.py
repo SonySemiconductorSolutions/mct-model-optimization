@@ -303,7 +303,7 @@ class MemoryCalculator:
             num_oc = np.sum(output_mask)
         else:
             # Get the node channel axis from framework info
-            channel_axis = node.out_channel_axis
+            channel_axis = self.fw_impl.default_output_channel_axis if node.out_channel_axis is None else node.out_channel_axis
             if channel_axis is None:
                 Logger.critical(f"The channel axis is undefined. Please ensure the channel axis is explicitly defined for node {node.type} in the framework info.")
 

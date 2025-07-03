@@ -29,6 +29,10 @@ import numpy as np
 from model_compression_toolkit.logger import Logger
 
 
+# default output channel axis to use when it's not defined in node's fw_info.
+_default_output_channel_axis = 1
+
+
 class PruningPytorchImplementation(PytorchImplementation, PruningFrameworkImplementation):
     """
     Implementation of the PruningFramework for the Pytorch framework. This class provides
@@ -190,6 +194,10 @@ class PruningPytorchImplementation(PytorchImplementation, PruningFrameworkImplem
 
         return attributes_with_axis
 
+    @property
+    def default_output_channel_axis(self):
+        return _default_output_channel_axis
+
 
 def _is_pytorch_node_pruning_section_edge(node: BaseNode) -> bool:
     """
@@ -283,7 +291,7 @@ def _edit_node_input_shape(node: BaseNode,
 
     # Adjust the last dimension of the shape to match the number of unpruned (retained) channels.
     # This is done by summing the mask, as each '1' in the mask represents a retained channel.
-    channel_axis = node.out_channel_axis
+    channel_axis = _default_output_channel_axis if node.out_channel_axis is None else node.out_channel_axis
     new_input_shape[0][channel_axis] = int(np.sum(input_mask))
 
     # Update the node's input shape with the new dimensions.

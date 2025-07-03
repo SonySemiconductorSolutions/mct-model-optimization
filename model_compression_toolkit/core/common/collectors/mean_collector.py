@@ -88,9 +88,12 @@ class MeanCollector(BaseCollector):
         """
         self.i += 1  # Update the iteration index
         axis = (len(x.shape) - 1) if self.axis == LAST_AXIS else self.axis
-        n = x.shape[axis]
-        transpose_index = [axis, *[i for i in range(len(x.shape)) if i != axis]]
-        mu = np.mean(np.reshape(np.transpose(x, transpose_index), [n, -1]), axis=-1) # mean per channel for a batch
+        if axis is None:
+            mu = np.mean(np.reshape(x, [1, -1]), axis=-1)  # mean per channel for a batch
+        else:
+            n = x.shape[axis]
+            transpose_index = [axis, *[i for i in range(len(x.shape)) if i != axis]]
+            mu = np.mean(np.reshape(np.transpose(x, transpose_index), [n, -1]), axis=-1) # mean per channel for a batch
         self.current_sum += mu # sum of all batches
         self.current_mean = self.current_sum / self.i # mean of all batches
 
