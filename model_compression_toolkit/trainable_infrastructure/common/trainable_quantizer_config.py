@@ -44,7 +44,6 @@ class TrainableQuantizerActivationConfig:
                  activation_n_bits: int,
                  activation_quantization_params: Dict,
                  enable_activation_quantization: bool,
-                 min_threshold: float,
                  activation_quantization_candidates: List[TrainableQuantizerCandidateConfig] = None,
                  ):
         """
@@ -55,13 +54,11 @@ class TrainableQuantizerActivationConfig:
             activation_n_bits (int): Number of bits to quantize the activations.
             activation_quantization_params (Dict): Dictionary that contains activation quantization params.
             enable_activation_quantization (bool): Whether to quantize the layer's activations or not.
-            min_threshold (float): Minimum threshold to use during thresholds selection.
         """
         self.activation_quantization_method = activation_quantization_method
         self.activation_n_bits = activation_n_bits
         self.activation_quantization_params = activation_quantization_params
         self.enable_activation_quantization = enable_activation_quantization
-        self.min_threshold = min_threshold
         self.activation_bits_candidates = activation_quantization_candidates
 
 

@@ -62,15 +62,11 @@ class TestPytorchBaseWeightsQuantizer(BasePytorchInfrastructureTest):
 
 class TestPytorchBaseActivationQuantizer(BasePytorchInfrastructureTest):
 
-    def __init__(self, unit_test):
-        super().__init__(unit_test)
-
     def get_activation_quantization_config(self):
         return TrainableQuantizerActivationConfig(activation_quantization_method=QuantizationMethod.UNIFORM,
                                                   activation_n_bits=8,
                                                   activation_quantization_params={},
-                                                  enable_activation_quantization=True,
-                                                  min_threshold=0)
+                                                  enable_activation_quantization=True)
 
     def run_test(self):
 

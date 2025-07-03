@@ -74,7 +74,6 @@ class TestSearchBitwidthConfiguration(unittest.TestCase):
         for node in graph.nodes:
             # TODO irena remove set_qc:
             for c in node.quantization_cfg.candidates_quantization_cfg:
-                c.activation_quantization_cfg.set_qc(core_config.quantization_config)
                 c.weights_quantization_cfg.set_qc(core_config.quantization_config)
                 for attr_cfg in c.weights_quantization_cfg.get_all_weight_attrs_configs().values():
                     attr_cfg.weights_error_method = core_config.quantization_config.weights_error_method
@@ -92,7 +91,8 @@ class TestSearchBitwidthConfiguration(unittest.TestCase):
         def representative_data_gen():
             yield [np.random.random(input_shape)]
 
-        calculate_quantization_params(graph, fw_impl=keras_impl, repr_data_gen_fn=representative_data_gen)
+        calculate_quantization_params(graph, core_config.quantization_config,
+                                      fw_impl=keras_impl, repr_data_gen_fn=representative_data_gen)
 
         SensitivityEvaluation(graph, core_config.mixed_precision_config, representative_data_gen,
                               fw_impl=keras_impl)
