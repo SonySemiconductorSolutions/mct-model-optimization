@@ -28,6 +28,10 @@ import numpy as np
 from model_compression_toolkit.logger import Logger
 
 
+# default output channel axis to use when it's not defined in node's fw_info.
+_default_output_channel_axis = -1
+
+
 class PruningKerasImplementation(KerasImplementation, PruningFrameworkImplementation):
     """
     Implementation of the PruningFramework for the Keras framework. This class provides
@@ -171,6 +175,10 @@ class PruningKerasImplementation(KerasImplementation, PruningFrameworkImplementa
                 attributes_with_axis[attr] = (-1, None)
 
         return attributes_with_axis
+
+    @property
+    def default_output_channel_axis(self):
+        return _default_output_channel_axis
 
 
 def _is_keras_node_pruning_section_edge(node: BaseNode) -> bool:
