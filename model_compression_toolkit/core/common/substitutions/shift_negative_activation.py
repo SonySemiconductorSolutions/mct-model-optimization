@@ -298,7 +298,7 @@ def shift_negative_function(graph: Graph,
 
     negative_rate = np.abs(min_to_correct) / activation_threshold
 
-    enable_sub = negative_rate <= non_linear_node_cfg_candidate.shift_negative_ratio
+    enable_sub = negative_rate <= core_config.quantization_config.shift_negative_ratio
     if min_to_correct >= 0 or not enable_sub:
         return graph
 
@@ -316,7 +316,7 @@ def shift_negative_function(graph: Graph,
     if core_config.quantization_config.shift_negative_params_search:
 
         hist_bins, hist_count = graph.get_out_stats_collector(non_linear_node).hc.get_histogram()
-        hist_count = z_score_filter(non_linear_node_cfg_candidate.z_threshold,
+        hist_count = z_score_filter(core_config.quantization_config.z_threshold,
                                     hist_bins, hist_count)
 
         min_mse, _th, _shift = np.inf, None, None
@@ -471,10 +471,12 @@ def shift_negative_function(graph: Graph,
                                pad_node=pad_node,
                                op2d_node=op2d_node)
 
-    if non_linear_node_cfg_candidate.shift_negative_threshold_recalculation:
-        activation_param = compute_activation_qparams(activation_quant_cfg=non_linear_node_cfg_candidate,
+    if core_config.quantization_config.shift_negative_threshold_recalculation:
+        activation_param = compute_activation_qparams(quant_cfg=core_config.quantization_config,
+                                                      node_activation_quant_cfg=non_linear_node_cfg_candidate,
                                                       node_prior_info=non_linear_node.prior_info,
-                                                      out_stats_container=graph.get_out_stats_collector(non_linear_node))
+                                                      out_stats_container=graph.get_out_stats_collector(
+                                                          non_linear_node))
 
         assert activation_param.get(SIGNED) is False
         for candidate_qc in non_linear_node.candidates_quantization_cfg:

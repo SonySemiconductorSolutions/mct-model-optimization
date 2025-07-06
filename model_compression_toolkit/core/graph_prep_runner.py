@@ -153,20 +153,10 @@ def get_finalized_graph(initial_graph: Graph,
     if bit_width_config:
         set_manual_bitwidth_config(graph, bit_width_config)
 
-    # TODO irena: load_fqc_configuration only loads config from tpc. Previously quant_config was read as well.
-    #  As a first stage we keep the attributes in internal configs and fill them manually from quant_config
-    #  not to break all the code at once. Eventually we need to handle quant_config directly, without injecting into candidates.
-    #  TODO 2: Also we adjust candidates for single precision, which we shouldn't do here.
-    def update(qc):
-        qc.activation_quantization_cfg.set_qc(quant_config)
-        qc.weights_quantization_cfg.set_qc(quant_config)
-        for attr_cfg in qc.weights_quantization_cfg.get_all_weight_attrs_configs().values():
-            attr_cfg.weights_error_method = quant_config.weights_error_method
-            attr_cfg.l_p_value = quant_config.l_p_value
+    # TODO irena: remove after base config is used
     for n in transformed_graph.nodes:
         if not mixed_precision_enable:
             n.quantization_cfg.candidates_quantization_cfg = [n.quantization_cfg.base_quantization_cfg]
-        n.quantization_cfg.update_all(update)
 
     ######################################
     # Channel equalization

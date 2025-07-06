@@ -48,7 +48,6 @@ def get_trainable_quantizer_weights_config(
                                            final_attr_cfg.enable_weights_quantization,
                                            final_attr_cfg.weights_channels_axis[0],  # Output channel axis
                                            final_attr_cfg.weights_per_channel_threshold,
-                                           final_node_cfg.min_threshold,
                                            weights_quantization_candidates)
 
 
@@ -76,7 +75,6 @@ def get_trainable_quantizer_activation_config(
                                               final_cfg.activation_n_bits,
                                               final_cfg.activation_quantization_params,
                                               final_cfg.enable_activation_quantization,
-                                              final_cfg.min_threshold,
                                               activation_quantization_candidates)
 
 

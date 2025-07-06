@@ -102,13 +102,12 @@ class BasePytorchInfrastructureTest:
                                                weights_quantization_params={},
                                                enable_weights_quantization=True,
                                                weights_channels_axis=0,
-                                               weights_per_channel_threshold=True,
-                                               min_threshold=0)
+                                               weights_per_channel_threshold=True)
 
     def get_activation_quantization_config(self, quant_method=QuantizationMethod.POWER_OF_TWO,
                                            activation_quant_params=None):
         return TrainableQuantizerActivationConfig(activation_quantization_method=quant_method,
                                                   activation_n_bits=8,
                                                   activation_quantization_params=activation_quant_params or {},
-                                                  enable_activation_quantization=True,
-                                                  min_threshold=0)
+                                                  enable_activation_quantization=True)
+

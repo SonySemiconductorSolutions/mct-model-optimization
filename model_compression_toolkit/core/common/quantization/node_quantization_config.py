@@ -18,7 +18,6 @@ from enum import Enum, auto
 from model_compression_toolkit.core.common.framework_info import ChannelAxisMapping
 from model_compression_toolkit.logger import Logger
 
-from model_compression_toolkit.core.common.quantization.quantization_config import QuantizationConfig
 from model_compression_toolkit.target_platform_capabilities.constants import POSITIONAL_ATTR
 from model_compression_toolkit.target_platform_capabilities.schema.mct_current_schema import \
     AttributeQuantizationConfig, OpQuantizationConfig
@@ -41,6 +40,7 @@ class ActivationQuantizationMode(Enum):
     NO_QUANT = auto()
     FLN_NO_QUANT = auto()
 
+
 class BaseNodeQuantizationConfig(object):
     """
     Base class for node quantization configuration
@@ -59,12 +59,11 @@ class BaseNodeQuantizationConfig(object):
             kwargs: A dictionary with additional key arguments.
 
         """
-
         if hasattr(self, config_parameter_name):
             setattr(self, config_parameter_name, config_parameter_value)
         else:
-            Logger.warning(f"Parameter {config_parameter_name} could not be found in the node quantization config and "
-                           f"was not updated!")
+            raise AttributeError(
+                f"Parameter {config_parameter_name} could not be found in the node quantization config.")
 
     def __repr__(self) -> str:
         """
@@ -97,36 +96,8 @@ class NodeActivationQuantizationConfig(BaseNodeQuantizationConfig):
         self.signedness = op_cfg.signedness
 
         self.activation_quantization_params = {}
-        # TODO irena: computed by compute_activation_bias_correction. shouldnt really be here
+        # TODO: computed by compute_activation_bias_correction. Probably shouldnt be here.
         self.activation_bias_correction_term = None
-
-        # TODO irena remove along with set_qc. Keeping for eq and hash to work without set_qc being called
-        self.activation_error_method = None
-        self.relu_bound_to_power_of_2 = None
-        self.activation_channel_equalization = None
-        self.input_scaling = None
-        self.min_threshold = None
-        self.l_p_value = None
-        self.shift_negative_activation_correction = None
-        self.z_threshold = None
-        self.shift_negative_ratio = None
-        self.shift_negative_threshold_recalculation = None
-        self.concat_threshold_update = None
-
-    def set_qc(self, qc: QuantizationConfig):
-        """ TODO irena: temporary keep all the attributes as before not to break all code at once.
-             Eventually all of them should be removed from here. """
-        self.activation_error_method = qc.activation_error_method
-        self.relu_bound_to_power_of_2 = qc.relu_bound_to_power_of_2
-        self.activation_channel_equalization = qc.activation_channel_equalization
-        self.input_scaling = qc.input_scaling
-        self.min_threshold = qc.min_threshold
-        self.l_p_value = qc.l_p_value
-        self.shift_negative_activation_correction = qc.shift_negative_activation_correction
-        self.z_threshold = qc.z_threshold
-        self.shift_negative_ratio = qc.shift_negative_ratio
-        self.shift_negative_threshold_recalculation = qc.shift_negative_threshold_recalculation
-        self.concat_threshold_update = qc.concat_threshold_update
 
     @property
     def enable_activation_quantization(self):
@@ -165,32 +136,16 @@ class NodeActivationQuantizationConfig(BaseNodeQuantizationConfig):
         if not isinstance(other, NodeActivationQuantizationConfig):
             return False  # pragma: no cover
 
-        return self.activation_error_method == other.activation_error_method and \
-               self.activation_quantization_method == other.activation_quantization_method and \
+        return self.activation_quantization_method == other.activation_quantization_method and \
                self.activation_n_bits == other.activation_n_bits and \
                self.quant_mode == other.quant_mode and \
-               self.activation_channel_equalization == other.activation_channel_equalization and \
-               self.input_scaling == other.input_scaling and \
-               self.min_threshold == other.min_threshold and \
-               self.l_p_value == other.l_p_value and \
-               self.shift_negative_activation_correction == other.shift_negative_activation_correction and \
-               self.z_threshold == other.z_threshold and \
-               self.shift_negative_ratio == other.shift_negative_ratio and \
-               self.shift_negative_threshold_recalculation == other.shift_negative_threshold_recalculation
+               self.signedness == other.signedness
 
     def __hash__(self):
-        return hash((self.activation_error_method,
-                     self.activation_quantization_method,
+        return hash((self.activation_quantization_method,
                      self.activation_n_bits,
                      self.quant_mode,
-                     self.activation_channel_equalization,
-                     self.input_scaling,
-                     self.min_threshold,
-                     self.l_p_value,
-                     self.shift_negative_activation_correction,
-                     self.z_threshold,
-                     self.shift_negative_ratio,
-                     self.shift_negative_threshold_recalculation))
+                     self.signedness))
 
 
 class WeightsAttrQuantizationConfig:
@@ -211,16 +166,8 @@ class WeightsAttrQuantizationConfig:
         self.weights_n_bits = weights_attr_cfg.weights_n_bits
         self.weights_per_channel_threshold = weights_attr_cfg.weights_per_channel_threshold
         self.enable_weights_quantization = weights_attr_cfg.enable_weights_quantization
+
         self.weights_quantization_params = {}
-
-        # TODO irena remove along with set_qc. Keeping for eq and hash to work without set_qc being called
-        self.weights_error_method = None
-        self.l_p_value = None
-
-    def set_qc(self, qc: QuantizationConfig):
-        # TODO irena: temporary keep the fields to not break everything at once.
-        self.weights_error_method = qc.weights_error_method
-        self.l_p_value = qc.l_p_value
 
     def set_weights_quantization_param(self,
                                        weights_params: dict):
@@ -252,18 +199,14 @@ class WeightsAttrQuantizationConfig:
                self.weights_quantization_method == other.weights_quantization_method and \
                self.weights_n_bits == other.weights_n_bits and \
                self.weights_per_channel_threshold == other.weights_per_channel_threshold and \
-               self.enable_weights_quantization == other.enable_weights_quantization and \
-               self.weights_error_method == other.weights_error_method and \
-               self.l_p_value == other.l_p_value
+               self.enable_weights_quantization == other.enable_weights_quantization
 
     def __hash__(self):
         return hash((self.weights_channels_axis,
-                     self.weights_error_method,
                      self.weights_quantization_method,
                      self.weights_n_bits,
                      self.weights_per_channel_threshold,
-                     self.enable_weights_quantization,
-                     self.l_p_value))
+                     self.enable_weights_quantization))
 
 
 class NodeWeightsQuantizationConfig(BaseNodeQuantizationConfig):
@@ -330,16 +273,14 @@ class NodeWeightsQuantizationConfig(BaseNodeQuantizationConfig):
 
                 self.attributes_config_mapping[attr] = WeightsAttrQuantizationConfig(weights_attr_cfg=attr_cfg,
                                                                                      weights_channels_axis=weights_channels_axis)
-        # TODO irena remove along with set_qc. Keeping for eq and hash to work without set_qc being called
-        self.min_threshold = None
+        # TODO this is set by batch norm reconstruction substitution when folded batch norms are added back, to mark
+        #  the nodes that the correction should be applied to (for some nodes it gets disabled) and BNs removed.
+        #  The actual correction is only computed when it's applied in ptq, so it seems that both substitutions could
+        #  be unified, and no info need to pass between.
         self.weights_second_moment_correction = None
-        self.weights_bias_correction = None
-
-    def set_qc(self, qc: QuantizationConfig):
-        # TODO irena: temporary keep the fields to not break everything at once.
-        self.min_threshold = qc.min_threshold
-        self.weights_second_moment_correction = qc.weights_second_moment_correction
-        self.weights_bias_correction = qc.weights_bias_correction
+        # TODO: computed corrected bias is injected to the node config. Probably shouldn't be here. Also it can be
+        #  computed on the final config, instead of all candidates and then there is no need to save it at all.
+        self.bias_corrected = None
 
     def get_attr_config(self, attr_name: 'WeightAttrT') -> WeightsAttrQuantizationConfig:
         """
@@ -476,8 +417,8 @@ class NodeWeightsQuantizationConfig(BaseNodeQuantizationConfig):
                 if hasattr(attr_cfg, config_parameter_name):
                     setattr(attr_cfg, config_parameter_name, config_parameter_value)
                 else:
-                    Logger.warning(f"Parameter {config_parameter_name} could not be found in the node quantization config of "
-                                   f"weights attribute {attr_name} and was not updated!")
+                    raise AttributeError(f"Parameter {config_parameter_name} could not be found in the node quantization config of "
+                                         f"weights attribute {attr_name}.")
             else:  # pragma: no cover
                 Logger.critical(f"Weights attribute {attr_name} could not be found to set parameter {config_parameter_name}.")
 
@@ -494,10 +435,7 @@ class NodeWeightsQuantizationConfig(BaseNodeQuantizationConfig):
         if not isinstance(other, NodeWeightsQuantizationConfig):
             return False  # pragma: no cover
 
-        return self.min_threshold == other.min_threshold and \
-            self.simd_size == other.simd_size and \
-            self.weights_second_moment_correction == other.weights_second_moment_correction and \
-            self.weights_bias_correction == other.weights_bias_correction and \
+        return self.simd_size == other.simd_size and \
             self.attributes_config_mapping.keys() == other.attributes_config_mapping.keys() and \
             all([self.attributes_config_mapping[k] == other.attributes_config_mapping[k]
                  for k in self.attributes_config_mapping.keys()]) and \
@@ -506,9 +444,6 @@ class NodeWeightsQuantizationConfig(BaseNodeQuantizationConfig):
                  for k in self.pos_attributes_config_mapping.keys()])
 
     def __hash__(self):
-        return hash((self.min_threshold,
-                     self.simd_size,
-                     self.weights_second_moment_correction,
-                     self.weights_bias_correction,
+        return hash((self.simd_size,
                      frozenset(self.attributes_config_mapping),
                      frozenset(self.pos_attributes_config_mapping)))

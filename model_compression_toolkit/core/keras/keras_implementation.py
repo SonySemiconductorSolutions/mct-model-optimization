@@ -357,8 +357,8 @@ class KerasImplementation(FrameworkImplementation):
         if quant_config.softmax_shift:
             substitutions_list.append(keras_softmax_shift())
         if quant_config.input_scaling:
-            substitutions_list.append(InputScaling())
-            substitutions_list.append(InputScalingWithPad())
+            substitutions_list.append(InputScaling(quant_config))
+            substitutions_list.append(InputScalingWithPad(quant_config))
         if quant_config.concat_threshold_update:
             substitutions_list.append(ConcatThresholdUpdate())
         return substitutions_list

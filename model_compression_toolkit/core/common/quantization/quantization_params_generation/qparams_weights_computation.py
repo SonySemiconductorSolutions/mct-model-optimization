@@ -18,7 +18,8 @@ from typing import Dict, Any, Tuple, Callable, TYPE_CHECKING
 import numpy as np
 from mct_quantizers import QuantizationMethod
 
-from model_compression_toolkit.constants import NUM_QPARAM_HESSIAN_SAMPLES
+from model_compression_toolkit.constants import NUM_QPARAM_HESSIAN_SAMPLES, MIN_THRESHOLD
+from model_compression_toolkit.core import QuantizationErrorMethod
 from model_compression_toolkit.core.common.hessian import HessianInfoService
 from model_compression_toolkit.core.common.quantization.quantization_params_generation import \
     power_of_two_selection_tensor, lut_kmeans_tensor, symmetric_selection_tensor, uniform_selection_tensor
@@ -28,10 +29,12 @@ if TYPE_CHECKING:
     from model_compression_toolkit.core.common.quantization.node_quantization_config import WeightsAttrQuantizationConfig
 
 
-def compute_weights_qparams(weights_attr_values: np.ndarray,
+def compute_weights_qparams(weights_attr_data: np.ndarray,
                             attr_quant_config: 'WeightsAttrQuantizationConfig',
+                            weights_error_method: QuantizationErrorMethod,
+                            l_p_value: int,
                             output_channels_axis: int,
-                            min_threshold: float,
+                            min_threshold: float = MIN_THRESHOLD,
                             node=None,
                             hessian_info_service: HessianInfoService = None,
                             num_hessian_samples: int = NUM_QPARAM_HESSIAN_SAMPLES) -> Tuple[Dict[Any, Any], int]:
@@ -40,8 +43,10 @@ def compute_weights_qparams(weights_attr_values: np.ndarray,
     instance.
 
     Args:
-        weights_attr_values: Weights attribute parameter to compute the quantization thresholds for.
+        weights_attr_data: Weights attribute parameter to compute the quantization thresholds for.
         attr_quant_config: A specific weights attribute quantization configuration to get its params.
+        weights_error_method: quantization error method.
+        l_p_value: p-norm to use for the Lp-norm distance.
         output_channels_axis: Index of the kernel output channels dimension.
         min_threshold: Minimal threshold to use if threshold is too small.
         node: The node for which the quantization error is computed (used only with HMSE error method).
@@ -54,13 +59,13 @@ def compute_weights_qparams(weights_attr_values: np.ndarray,
     """
     params_fn = _get_weights_quantization_params_fn(attr_quant_config.weights_quantization_method)
     weights_params, output_channels_axis = params_fn(
-        weights_attr_values,
-        p=attr_quant_config.l_p_value,
+        weights_attr_data,
+        p=l_p_value,
         n_bits=attr_quant_config.weights_n_bits,
         per_channel=attr_quant_config.weights_per_channel_threshold,
         channel_axis=output_channels_axis,
         min_threshold=min_threshold,
-        quant_error_method=attr_quant_config.weights_error_method,
+        quant_error_method=weights_error_method,
         node=node,
         hessian_info_service=hessian_info_service,
         num_hessian_samples=num_hessian_samples)
