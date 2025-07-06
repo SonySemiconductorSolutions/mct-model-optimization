@@ -130,10 +130,10 @@ class MinMaxPerChannelCollector(BaseCollector):
             x: Tensor that goes through the collector and needs to be considered in the min/max computation.
         """
 
-        axis = (len(x.shape) - 1) if self.axis == LAST_AXIS else self.axis
-        if axis is None:
+        if self.axis is None:
             x_reshape = np.reshape(x, [1, -1])
         else:
+            axis = (len(x.shape) - 1) if self.axis == LAST_AXIS else self.axis
             n = x.shape[axis]
             transpose_index = [axis, *[i for i in range(len(x.shape)) if i != axis]]
             x_reshape = np.reshape(np.transpose(x, transpose_index), [n, -1])

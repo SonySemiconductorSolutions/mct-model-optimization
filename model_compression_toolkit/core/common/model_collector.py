@@ -157,6 +157,17 @@ class ModelCollector:
         for n in graph.get_topo_sorted_nodes():
             quant_node_in_fln = n.is_fln_quantization() and graph.fusing_info.is_quantized_node_in_fln(n)
             sc = create_stats_collector_for_node(n, quant_node_in_fln=quant_node_in_fln)  # Get static collector for the node
+            if isinstance(sc, common.StatsCollector) and (sc.mc.axis is None or sc.mpcc.axis is None):
+                # Missing output channel axis info, so try to extract it from previous and next nodes output channel axis.
+                possible_output_channel_axis_set = {nn.out_channel_axis for nn in graph.get_next_nodes(n) + graph.get_prev_nodes(n)}
+                # Filter out None values.
+                possible_output_channel_axis_list = list(filter(lambda x: x is not None, possible_output_channel_axis_set))
+                if len(possible_output_channel_axis_list) > 0:
+                    if len(possible_output_channel_axis_list) > 1:
+                        Logger.warning(f'Ambiguous input channel data from next nodes for {n.name}.')
+                    sc.mc.axis = possible_output_channel_axis_list[0]
+                    sc.mpcc.axis = possible_output_channel_axis_list[0]
+
             # If we use bias correction, and the node has kernel weights to quantize, we need to make sure
             # its previous nodes' tensors are consistent with this node.
             if qc.weights_bias_correction and n.kernel_attr is not None and n.is_weights_quantization_enabled(
