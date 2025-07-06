@@ -36,7 +36,7 @@ def apply_bias_correction_to_graph(graph_to_apply_bias_correction: Graph,
 
     graph = copy.deepcopy(graph_to_apply_bias_correction)
     for n in graph.nodes:
-        if (n.final_weights_quantization_cfg.bias_corrected is not None and
+        if (n.final_weights_quantization_cfg and n.final_weights_quantization_cfg.bias_corrected is not None and
                 not n.final_weights_quantization_cfg.weights_second_moment_correction):
             _apply_bias_correction_to_node(n, fw_impl)
     return graph
