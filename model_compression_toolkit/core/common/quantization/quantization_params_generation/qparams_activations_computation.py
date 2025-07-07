@@ -47,9 +47,12 @@ def compute_activation_qparams(quant_cfg: QuantizationConfig,
         node_activation_quant_cfg.activation_quantization_method, no_clipping=node_prior_info.is_output_bounded())
 
     # Extract and filter histogram data from the statistics container.
+    z_threshold = quant_cfg.z_threshold
+    if node_activation_quant_cfg.z_threshold is not None:
+        z_threshold = node_activation_quant_cfg.z_threshold
     bins_values, bins_counts = _get_histogram_data(out_stats_container,
                                                    activation_error_method=quant_cfg.activation_error_method,
-                                                   z_threshold=quant_cfg.z_threshold)
+                                                   z_threshold=z_threshold)
 
     # Retrieve the minimum and maximum values from the statistics container.
     min_value, max_value = out_stats_container.get_min_max_values()

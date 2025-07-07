@@ -55,7 +55,7 @@ class TestActivationQParams:
         op_cfg = OpQuantizationConfig(
             default_weight_attr_config=AttributeQuantizationConfig(),
             attr_weights_configs_mapping={},
-            activation_quantization_method=QuantizationMethod.POWER_OF_TWO,
+            activation_quantization_method=quant_method,
             activation_n_bits=n_bits,
             supported_input_activation_n_bits=n_bits,
             enable_activation_quantization=True,
@@ -66,7 +66,6 @@ class TestActivationQParams:
             signedness=signedness
         )
         activation_quant_cfg = NodeActivationQuantizationConfig(op_cfg)
-        activation_quant_cfg.activation_quantization_method = quant_method
         return activation_quant_cfg
 
     def test_get_histogram_data_error_method(self):
@@ -190,3 +189,25 @@ class TestActivationQParams:
         activation_quant_cfg = self._create_activation_quant_cfg(quant_method, n_bits=2)
         result = compute_activation_qparams(QuantizationConfig(), activation_quant_cfg, nodes_prior_info, stats)
         assert result == expected_result
+
+    def test_overriden_z_thresh(self, mocker):
+        """ Check that correct z-threshold is passed to _get_histogram_data """
+        spy = mocker.patch('model_compression_toolkit.core.common.quantization.quantization_params_generation.'
+                           'qparams_activations_computation._get_histogram_data',
+                           return_value=(np.array([1, 2]), np.array([100])))
+        stat_collector_mock = mocker.Mock(spec_set=StatsCollector, get_min_max_values=lambda: (-1, 1))
+
+        acfg = self._create_activation_quant_cfg(QuantizationMethod.POWER_OF_TWO)
+        assert acfg.z_threshold is None
+        compute_activation_qparams(QuantizationConfig(z_threshold=100), acfg, NodePriorInfo(), stat_collector_mock)
+        # z-threshold from quant config is used
+        assert spy.called_once_with(stat_collector_mock,
+                                    activation_error_method=QuantizationMethod.POWER_OF_TWO,
+                                    z_threshold=100)
+
+        # z-threshold from the node should be used
+        acfg.z_threshold = 5
+        compute_activation_qparams(QuantizationConfig(z_threshold=100), acfg, NodePriorInfo(), stat_collector_mock)
+        assert spy.called_with(stat_collector_mock,
+                               activation_error_method=QuantizationMethod.POWER_OF_TWO,
+                               z_threshold=5)

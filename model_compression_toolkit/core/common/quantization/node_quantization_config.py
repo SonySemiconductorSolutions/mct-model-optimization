@@ -98,6 +98,9 @@ class NodeActivationQuantizationConfig(BaseNodeQuantizationConfig):
         self.activation_quantization_params = {}
         # TODO: computed by compute_activation_bias_correction. Probably shouldnt be here.
         self.activation_bias_correction_term = None
+        # Z-threshold is a global param from QuantizationConfig, however it can be overridden per node by NetworkEditor.
+        # Since activation qparams are re-computed in several places, it's easier to keep it here and update it once.
+        self.z_threshold = None
 
     @property
     def enable_activation_quantization(self):
