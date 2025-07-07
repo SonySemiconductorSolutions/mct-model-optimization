@@ -113,10 +113,6 @@ class BaseGraphWithFusingMetadataTest(abc.ABC):
         """Tests that the correct nodes have activation quantization disabled after
         calling _disable_nodes_activation_quantization.
         """
-        for node in graph_with_fusion_metadata.nodes:
-            for qc in node.candidates_quantization_cfg:
-                qc.activation_quantization_cfg.quant_mode = ActivationQuantizationMode.QUANT
-
         graph_with_fusion_metadata.override_fused_node_activation_quantization_candidates()
         disabled_nodes = [
             node.name for node in graph_with_fusion_metadata.nodes

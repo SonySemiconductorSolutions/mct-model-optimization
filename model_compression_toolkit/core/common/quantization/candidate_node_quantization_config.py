@@ -46,6 +46,20 @@ class NodeQuantizationConfig:
 
     validate: InitVar[bool] = True
 
+    def __post_init__(self, validate=True):
+        if validate:
+            if not any(self.base_quantization_cfg == qc for qc in self.candidates_quantization_cfg):
+                raise ValueError('Candidates should contain the base config.')
+            self._validate_consistent_activation_quant_mode()
+            self._validate_consistent_weights_quant_mode()
+
+        self.remove_duplicates()
+
+        # TODO irena
+        # for now make sure they are separate objects so that one doesnt inadvertently modify the other
+        if any(self.base_quantization_cfg is qc for qc in self.candidates_quantization_cfg):
+            self.base_quantization_cfg = copy.deepcopy(self.base_quantization_cfg)
+
     def update_all(self, update_fn: Callable[[CandidateNodeQuantizationConfig], None], remove_duplicates: bool = True):
         """
         Apply update function on the base config and all candidates configs.
@@ -69,7 +83,7 @@ class NodeQuantizationConfig:
             mode: quantization mode.
         """
         def fn(c):
-            c.activation_quantization_cfg.quant_mode = mode
+            c.activation_quantization_cfg.set_quant_mode(mode)
 
         self.update_all(fn)
 
@@ -101,17 +115,6 @@ class NodeQuantizationConfig:
             if qc not in uniq_qcs:
                 uniq_qcs.append(qc)
         self.candidates_quantization_cfg = uniq_qcs
-
-    def __post_init__(self, validate=True):
-        if validate:
-            if not any(self.base_quantization_cfg == qc for qc in self.candidates_quantization_cfg):
-                raise ValueError('Candidates should contain the base config.')
-            self._validate_consistent_activation_quant_mode()
-            self._validate_consistent_weights_quant_mode()
-        # TODO irena
-        # for now make sure they are separate objects so that one doesnt inadvertently modify the other
-        if any(self.base_quantization_cfg is qc for qc in self.candidates_quantization_cfg):
-            self.base_quantization_cfg = copy.deepcopy(self.base_quantization_cfg)
 
     def _validate_consistent_activation_quant_mode(self):
         """

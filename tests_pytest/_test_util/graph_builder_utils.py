@@ -130,14 +130,16 @@ def build_nbits_qc(a_nbits=8, a_enable=True, w_attr=None, pos_attr=(32, False, (
 
     # we generate q configs via constructors to follow the real code as closely as reasonably possible.
     # verify that we actually got the configurations we want
-    assert qc.activation_quantization_cfg.activation_n_bits == a_nbits
     assert qc.activation_quantization_cfg.enable_activation_quantization is a_enable
+    if a_enable:
+        assert qc.activation_quantization_cfg.activation_n_bits == a_nbits
     for k, v in w_attr.items():
         # get_attr_config accepts canonical attr names
-        assert qc.weights_quantization_cfg.get_attr_config(k).weights_n_bits == v[0]
         assert qc.weights_quantization_cfg.get_attr_config(k).enable_weights_quantization == v[1]
+        if v[1]:
+            assert qc.weights_quantization_cfg.get_attr_config(k).weights_n_bits == v[0]
     for pos in pos_attr[2]:
-        assert qc.weights_quantization_cfg.get_attr_config(pos).weights_n_bits == pos_attr[0]
         assert qc.weights_quantization_cfg.get_attr_config(pos).enable_weights_quantization == pos_attr[1]
-
+        if pos_attr[1]:
+            assert qc.weights_quantization_cfg.get_attr_config(pos).weights_n_bits == pos_attr[0]
     return qc

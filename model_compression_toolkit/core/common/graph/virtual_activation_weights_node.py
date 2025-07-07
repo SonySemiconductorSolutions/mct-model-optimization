@@ -80,8 +80,7 @@ class VirtualSplitWeightsNode(VirtualSplitNode):
             base_quantization_cfg=None, validate=False
         )
         for c in self.quantization_cfg.candidates_quantization_cfg:
-            c.activation_quantization_cfg.quant_mode = ActivationQuantizationMode.NO_QUANT
-            c.activation_quantization_cfg.activation_n_bits = FLOAT_BITWIDTH
+            c.activation_quantization_cfg.set_quant_mode(ActivationQuantizationMode.NO_QUANT)
 
 
 class VirtualSplitActivationNode(VirtualSplitNode):

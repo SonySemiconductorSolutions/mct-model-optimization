@@ -85,15 +85,18 @@ class NodeActivationQuantizationConfig(BaseNodeQuantizationConfig):
         """
         self.activation_quantization_method = op_cfg.activation_quantization_method
         self.activation_n_bits = op_cfg.activation_n_bits
+        self.signedness = op_cfg.signedness
+
         if op_cfg.enable_activation_quantization and op_cfg.quantization_preserving:
             raise ValueError("An OpQuantizationConfig can't have both enable_activation_quantization and quantization_preserving enabled.")
+
+        self._quant_mode = None
         if op_cfg.enable_activation_quantization:
-            self.quant_mode = ActivationQuantizationMode.QUANT
+            self.set_quant_mode(ActivationQuantizationMode.QUANT)
         elif op_cfg.quantization_preserving:
-            self.quant_mode = ActivationQuantizationMode.PRESERVE_QUANT
+            self.set_quant_mode(ActivationQuantizationMode.PRESERVE_QUANT)
         else:
-            self.quant_mode = ActivationQuantizationMode.NO_QUANT
-        self.signedness = op_cfg.signedness
+            self.set_quant_mode(ActivationQuantizationMode.NO_QUANT)
 
         self.activation_quantization_params = {}
         # TODO: computed by compute_activation_bias_correction. Probably shouldnt be here.
@@ -101,6 +104,26 @@ class NodeActivationQuantizationConfig(BaseNodeQuantizationConfig):
         # Z-threshold is a global param from QuantizationConfig, however it can be overridden per node by NetworkEditor.
         # Since activation qparams are re-computed in several places, it's easier to keep it here and update it once.
         self.z_threshold = None
+        # Z-threshold is a global param from QuantizationConfig, however it can be overridden per node by NetworkEditor.
+        # Since activation qparams are re-computed in several places, it's easier to keep it here and update it once.
+        self.z_threshold = None
+
+    def set_quant_mode(self, quant_mode: ActivationQuantizationMode):
+        """ Sets quantization mode. If quantization is off, resets config attributes to None. """
+        self._quant_mode = quant_mode
+        if quant_mode in [ActivationQuantizationMode.NO_QUANT, ActivationQuantizationMode.FLN_NO_QUANT,
+                          ActivationQuantizationMode.PRESERVE_QUANT]:
+            self._unset()
+        else:
+            assert None not in [self.activation_quantization_method, self.activation_n_bits, self.signedness]
+
+    @property
+    def quant_mode(self):
+        return self._quant_mode
+
+    @quant_mode.setter
+    def quant_mode(self, mode):
+        raise RuntimeError('quant_mode cannot be set directly. Use set_quant_mode.')
 
     @property
     def enable_activation_quantization(self):
@@ -122,7 +145,8 @@ class NodeActivationQuantizationConfig(BaseNodeQuantizationConfig):
             activation_params: Dictionary that contains weight quantization params.
 
         """
-        assert self.quant_mode == ActivationQuantizationMode.QUANT or self.quant_mode == ActivationQuantizationMode.FLN_QUANT
+        assert self.quant_mode in [ActivationQuantizationMode.QUANT, ActivationQuantizationMode.FLN_QUANT]
+        # TODO shouldn't the whole self.activation_quantization_params be reset instead of updated?
         for param_name, param_value in activation_params.items():
             self.activation_quantization_params[param_name] = param_value
 
@@ -164,13 +188,32 @@ class WeightsAttrQuantizationConfig:
             weights_attr_cfg: AttributeQuantizationConfig with parameters to use when creating the node's attribute quantization config.
             weights_channels_axis: Axis to quantize a node's attribute when quantizing per-channel (if not quantizing per-channel than expecting None).
         """
+        if weights_attr_cfg.lut_values_bitwidth is not None:
+            raise ValueError('None-default lut_values_bitwidth in AttributeQuantizationConfig is not supported.')
+
         self.weights_channels_axis = weights_channels_axis
         self.weights_quantization_method = weights_attr_cfg.weights_quantization_method
         self.weights_n_bits = weights_attr_cfg.weights_n_bits
         self.weights_per_channel_threshold = weights_attr_cfg.weights_per_channel_threshold
-        self.enable_weights_quantization = weights_attr_cfg.enable_weights_quantization
+
+        self._enable_weights_quantization = weights_attr_cfg.enable_weights_quantization
+        if weights_attr_cfg.enable_weights_quantization is False:
+            self._unset()
 
         self.weights_quantization_params = {}
+
+    @property
+    def enable_weights_quantization(self):
+        return self._enable_weights_quantization
+
+    @enable_weights_quantization.setter
+    def enable_weights_quantization(self, flag):
+        raise RuntimeError('enable_quantization should not be set directly, use disable_quantization() or '
+                           'create a new instance.')
+
+    def disable_quantization(self):
+        self._enable_weights_quantization = False
+        self._unset()
 
     def set_weights_quantization_param(self,
                                        weights_params: dict):
@@ -182,6 +225,7 @@ class WeightsAttrQuantizationConfig:
 
         """
         assert self.enable_weights_quantization
+        # TODO shouldn't the whole self.weights_quantization_params be reset instead of updated?
         for param_name, param_value in weights_params.items():
             self.weights_quantization_params[param_name] = param_value
 
@@ -373,9 +417,9 @@ class NodeWeightsQuantizationConfig(BaseNodeQuantizationConfig):
     def disable_all_weights_quantization(self):
         """ Disable quantization for all weights. """
         for w_cfg in self.pos_attributes_config_mapping.values():
-            w_cfg.enable_weights_quantization = False
+            w_cfg.disable_quantization()
         for w_cfg in self.attributes_config_mapping.values():
-            w_cfg.enable_weights_quantization = False
+            w_cfg.disable_quantization()
 
     def _extract_config_for_attributes_with_name(self, attr_name) -> Dict[str, WeightsAttrQuantizationConfig]:
         """

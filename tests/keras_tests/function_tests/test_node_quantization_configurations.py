@@ -26,24 +26,8 @@ from model_compression_toolkit.target_platform_capabilities.tpc_models.imx500_tp
 
 class TestNodeQuantizationConfigurations(unittest.TestCase):
 
-    def test_activation_set_quant_config_attribute(self):
-        op_cfg, _, _ = get_op_quantization_configs()
-
-        nac = NodeActivationQuantizationConfig(op_cfg)
-        og_nac = copy.deepcopy(nac)
-
-        self.assertTrue(nac.activation_n_bits == 8)
-        nac.set_quant_config_attr("activation_n_bits", 4)
-        self.assertTrue(nac.activation_n_bits == 4, "Expects set_quant_config_attr to be successful, "
-                                                    "new activation_n_bits should be 4.")
-        self.assertFalse(nac == og_nac)
-
-        with self.assertRaises(AttributeError) as e:
-            nac.set_quant_config_attr("activation_M_bits", 8)
-        self.assertEqual(str(e.exception),
-                         "Parameter activation_M_bits could not be found in the node quantization config.")
-
     def test_weights_set_quant_config_attribute(self):
+        raise Exception
         op_cfg, _, _ = get_op_quantization_configs()
 
         nwc = NodeWeightsQuantizationConfig(op_cfg,

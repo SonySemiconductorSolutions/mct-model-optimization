@@ -125,12 +125,12 @@ class BatchNormalizationReconstruction(common.BaseSubstitution):
         bn_node.quantization_cfg = copy.deepcopy(source_node.quantization_cfg)
 
         for qc in bn_node.candidates_quantization_cfg:
-            qc.activation_quantization_cfg.quant_mode = ActivationQuantizationMode.NO_QUANT
+            qc.activation_quantization_cfg.set_quant_mode(ActivationQuantizationMode.NO_QUANT)
             for attr in bn_node.get_node_weights_attributes():
                 if qc.weights_quantization_cfg.has_attribute_config(attr):
                     # we only create a BN layer to collect statistics, so we don't need to quantize anything,
                     # but we do need to add the BN attributes to the reconstructed node.
-                    qc.weights_quantization_cfg.get_attr_config(attr).enable_weights_quantization = False
+                    qc.weights_quantization_cfg.get_attr_config(attr).disable_quantization()
                 else:
                     # setting a "dummy" attribute configuration with disabled quantization.
                     # TODO: once enabling BN attributes quantization, need to figure out if thie

@@ -424,7 +424,7 @@ def shift_negative_function(graph: Graph,
                                          fqc=graph.fqc)
 
         for candidate_qc in pad_node.candidates_quantization_cfg:
-            candidate_qc.activation_quantization_cfg.quant_mode = ActivationQuantizationMode.NO_QUANT
+            candidate_qc.activation_quantization_cfg.set_quant_mode(ActivationQuantizationMode.NO_QUANT)
             for attr in pad_node.get_node_weights_attributes():
                 candidate_qc.weights_quantization_cfg.get_attr_config(attr).enable_weights_quantization = False
 

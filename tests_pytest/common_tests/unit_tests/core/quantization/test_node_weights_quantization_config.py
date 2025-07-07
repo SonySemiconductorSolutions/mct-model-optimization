@@ -18,8 +18,10 @@ from unittest.mock import Mock
 import pytest
 
 from mct_quantizers import QuantizationMethod
+
+from model_compression_toolkit.core.common.framework_info import ChannelAxisMapping
 from model_compression_toolkit.core.common.quantization.node_quantization_config import \
-    NodeWeightsQuantizationConfig
+    NodeWeightsQuantizationConfig, WeightsAttrQuantizationConfig
 from model_compression_toolkit.target_platform_capabilities import Signedness, OpQuantizationConfig
 from model_compression_toolkit.target_platform_capabilities.constants import POSITIONAL_ATTR
 from model_compression_toolkit.target_platform_capabilities.schema.v1 import AttributeQuantizationConfig
@@ -160,3 +162,60 @@ class TestPositionalWeightsAttrQuantizationConfig:
                                              'that each operator\'s attribute would have a unique matching name.'):
             NodeWeightsQuantizationConfig(op_cfg=op_cfg, weights_channels_axis=Mock(),
                                           node_attrs_list=[positional_weight_attr])
+
+
+class TestNodeWeightsAttrConfig:
+    @pytest.mark.parametrize('method, nbits, per_channel, enabled', [
+        (QuantizationMethod.POWER_OF_TWO, 5, True, True),
+        (QuantizationMethod.SYMMETRIC, 7, False, True),
+        (QuantizationMethod.SYMMETRIC, 7, False, False),
+    ])
+    def test_config(self, method, nbits, per_channel, enabled):
+        input_cfg = AttributeQuantizationConfig(
+            weights_quantization_method=method,
+            weights_n_bits=nbits,
+            weights_per_channel_threshold=per_channel,
+            enable_weights_quantization=enabled,
+            lut_values_bitwidth=None)
+
+        cfg = WeightsAttrQuantizationConfig(input_cfg, weights_channels_axis=ChannelAxisMapping(2, 3))
+        assert cfg.enable_weights_quantization == enabled
+        if enabled:
+            assert cfg.weights_quantization_method == method
+            assert cfg.weights_n_bits == nbits
+            assert cfg.weights_per_channel_threshold == per_channel
+            assert cfg.weights_channels_axis == ChannelAxisMapping(2, 3)
+        else:
+            self._assert_unset(cfg)
+
+        # disable quantization
+        cfg.disable_quantization()
+        assert cfg.enable_weights_quantization is False
+        self._assert_unset(cfg)
+
+        with pytest.raises(RuntimeError, match='enable_quantization should not be set directly'):
+            cfg.enable_weights_quantization = False
+
+    def test_set_quantization_param(self):
+        input_cfg = AttributeQuantizationConfig(enable_weights_quantization=True)
+        cfg = WeightsAttrQuantizationConfig(input_cfg)
+        params = {'foo': 5, 'bar': 10}
+        cfg.set_weights_quantization_param(params)
+        assert cfg.weights_quantization_params == params
+
+        params = {'baz': 42}
+        cfg.set_weights_quantization_param(params)
+        # TODO: this is the current behavior. I think each call should reset the params, not update upon existing.
+        assert cfg.weights_quantization_params == {'foo': 5, 'bar': 10, 'baz': 42}
+
+    def test_unsupported_lut(self):
+        input_cfg = AttributeQuantizationConfig(enable_weights_quantization=True, lut_values_bitwidth=5)
+        with pytest.raises(ValueError, match='None-default lut_values_bitwidth in AttributeQuantizationConfig '
+                                             'is not supported.'):
+            WeightsAttrQuantizationConfig(input_cfg)
+
+    def _assert_unset(self, cfg: WeightsAttrQuantizationConfig):
+        assert cfg.weights_quantization_method is None
+        assert cfg.weights_n_bits == 0
+        assert cfg.weights_per_channel_threshold is None
+        assert cfg.weights_channels_axis is None

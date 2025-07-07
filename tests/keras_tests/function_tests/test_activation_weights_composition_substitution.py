@@ -36,7 +36,6 @@ import numpy as np
 
 from model_compression_toolkit.core.common.graph.virtual_activation_weights_node import VirtualSplitActivationNode, \
     VirtualActivationWeightsNode, VirtualSplitWeightsNode
-from model_compression_toolkit.core.common.quantization.filter_nodes_candidates import filter_nodes_candidates
 from model_compression_toolkit.core.keras.graph_substitutions.substitutions.virtual_activation_weights_composition import \
     VirtualActivationWeightsComposition
 from model_compression_toolkit.core.keras.graph_substitutions.substitutions.weights_activation_split import \
@@ -112,8 +111,6 @@ def prepare_graph(in_model, keras_impl, mixed_precision_candidates_list, base_co
     attach2keras = AttachTpcToKeras()
     fqc = attach2keras.attach(tpc, qc.custom_tpc_opset_to_layer)
     graph = load_fqc_configuration(graph, fqc)
-
-    graph = filter_nodes_candidates(graph)
 
     return graph
 
