@@ -132,11 +132,12 @@ class TestStatisticsCollectors:
         graph = Mock()
         node = Mock()
         node.type = DummyLayer
+        node.out_channel_axis = 6
 
         # Simulate absence of an output stats collector.
         graph.get_out_stats_collector = Mock(return_value=None)
 
-        create_tensor2node(graph, node)
+        create_tensor2node(graph, node, 5)
 
         # Verify that set_out_stats_collector_to_node was called with the node and a StatsCollector.
         graph.set_out_stats_collector_to_node.assert_called_once()
@@ -144,6 +145,19 @@ class TestStatisticsCollectors:
         assigned_node, assigned_collector = args
         assert assigned_node is node
         assert isinstance(assigned_collector, StatsCollector)
+        assert assigned_collector.mc.axis == 6
+        assert assigned_collector.mpcc.axis == 6
+
+        node.out_channel_axis = None
+        create_tensor2node(graph, node, 5)
+
+        # Verify that set_out_stats_collector_to_node was called with the node and a StatsCollector.
+        args, _ = graph.set_out_stats_collector_to_node.call_args
+        assigned_node, assigned_collector = args
+        assert assigned_node is node
+        assert isinstance(assigned_collector, StatsCollector)
+        assert assigned_collector.mc.axis == 5
+        assert assigned_collector.mpcc.axis == 5
 
 
 class TestModelCollectorInit:
@@ -226,8 +240,8 @@ class TestModelCollectorInit:
 
         calls = []
         # Define a fake function to record call arguments for create_tensor2node.
-        def fake_create_tensor2node(graph, node):
-            calls.append((graph, node))
+        def fake_create_tensor2node(graph, node, next_node_output_channel_axis):
+            calls.append((graph, node, next_node_output_channel_axis))
 
         # Patch create_tensor2node in the model_collector module.
         monkeypatch.setattr(model_collector, "create_tensor2node", fake_create_tensor2node)

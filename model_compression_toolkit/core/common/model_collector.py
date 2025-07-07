@@ -57,19 +57,21 @@ def create_stats_collector_for_node(node: common.BaseNode,
 
 
 def create_tensor2node(graph: common.Graph,
-                       node: common.BaseNode):
+                       node: common.BaseNode,
+                       next_node_output_channel_axis: int):
     """
     Force statistic collector creation and assignment for a node.
     Args:
         graph: Graph of the node (for retrieving the current tensor).
         node: Node to create a tensor for.
+        next_node_output_channel_axis: channel output axis of next node.
 
     """
     current_sc = graph.get_out_stats_collector(node)
     is_list_nostat_collectors = isinstance(current_sc, list) and len(
         [sc for sc in current_sc if not isinstance(sc, common.NoStatsCollector)]) == 0
     if isinstance(current_sc, common.NoStatsCollector) or current_sc is None or is_list_nostat_collectors:
-        stats_collector = common.StatsCollector(node.out_channel_axis)
+        stats_collector = common.StatsCollector(next_node_output_channel_axis if node.out_channel_axis is None else node.out_channel_axis)
         graph.set_out_stats_collector_to_node(node, stats_collector)
 
 
@@ -175,7 +177,8 @@ class ModelCollector:
                 for ie in graph.incoming_edges(n):
                     input_node = ie.source_node
                     create_tensor2node(graph,
-                                       input_node)
+                                       input_node,
+                                       n.out_channel_axis)
             if sc is not None:
                 graph.set_out_stats_collector_to_node(n, sc)
 
