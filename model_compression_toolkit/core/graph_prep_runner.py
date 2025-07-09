@@ -19,7 +19,6 @@ from typing import Callable, Any
 from model_compression_toolkit.core.common.framework_implementation import FrameworkImplementation
 from model_compression_toolkit.core.common.graph.base_graph import Graph
 from model_compression_toolkit.core.common.quantization.bit_width_config import BitWidthConfig
-from model_compression_toolkit.core.common.quantization.filter_nodes_candidates import filter_nodes_candidates
 from model_compression_toolkit.core.common.quantization.quantization_config import DEFAULTCONFIG, \
     QuantizationErrorMethod
 from model_compression_toolkit.core.common.quantization.quantization_config import QuantizationConfig
@@ -166,11 +165,6 @@ def get_finalized_graph(initial_graph: Graph,
 
     if tb_w is not None:
         tb_w.add_graph(transformed_graph, 'after_graph_marking')
-
-    ######################################
-    # Filter nodes' candidates
-    ######################################
-    transformed_graph = filter_nodes_candidates(transformed_graph)
 
     if tb_w is not None:
         tb_w.add_graph(transformed_graph, 'after_candidates_filtering')

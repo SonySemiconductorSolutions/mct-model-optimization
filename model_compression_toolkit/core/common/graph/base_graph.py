@@ -874,7 +874,7 @@ class Graph(nx.MultiDiGraph, GraphSearches):
             if fusing_op_quantization_cfg is not None and fusing_op_quantization_cfg.enable_activation_quantization:
                 def update(qc):
                     qc.activation_quantization_cfg = NodeActivationQuantizationConfig(fusing_op_quantization_cfg)
-                    qc.activation_quantization_cfg.quant_mode = ActivationQuantizationMode.FLN_QUANT
+                    qc.activation_quantization_cfg.set_quant_mode(ActivationQuantizationMode.FLN_QUANT)
                 node.quantization_cfg.update_all(update, remove_duplicates=True)
             else:
                 node.quantization_cfg.update_activation_quantization_mode(ActivationQuantizationMode.FLN_NO_QUANT)

@@ -99,11 +99,9 @@ class SensitivityEvaluation:
         # be added to the model).
         for n in evaluation_graph.get_topo_sorted_nodes():
             if disable_activations or not n.has_configurable_activation():
-                for c in n.candidates_quantization_cfg:
-                    c.activation_quantization_cfg.quant_mode = ActivationQuantizationMode.NO_QUANT
+                n.quantization_cfg.update_activation_quantization_mode(ActivationQuantizationMode.NO_QUANT)
             if not n.has_any_configurable_weight():
-                for c in n.candidates_quantization_cfg:
-                    c.weights_quantization_cfg.disable_all_weights_quantization()
+                n.quantization_cfg.disable_weights_quantization()
 
         model_mp, _, conf_node2layers = self.fw_impl.model_builder(evaluation_graph,
                                                                    mode=ModelBuilderMode.MIXEDPRECISION,

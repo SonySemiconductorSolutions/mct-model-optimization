@@ -46,18 +46,13 @@ class BaseNodeQuantizationConfig(object):
     Base class for node quantization configuration
     """
 
-    def set_quant_config_attr(self, config_parameter_name: str, config_parameter_value: Any,
-                              *args: List[Any], **kwargs: Dict[str, Any]):
+    def set_quant_config_attr(self, config_parameter_name: str, config_parameter_value: Any):
         """
         Changes a BaseNodeQuantizationConfig's parameter.
-        Note that arg and kwargs are only to allow clean override in the child classes.
 
         Args:
             config_parameter_name: parameter name to change.
             config_parameter_value: parameter value to change.
-            args: A list of additional arguments.
-            kwargs: A dictionary with additional key arguments.
-
         """
         if hasattr(self, config_parameter_name):
             setattr(self, config_parameter_name, config_parameter_value)
@@ -77,6 +72,12 @@ class NodeActivationQuantizationConfig(BaseNodeQuantizationConfig):
     """
     Attributes for configuring the quantization of the activations of a node.
     """
+    _no_cfg_modes = [
+        ActivationQuantizationMode.NO_QUANT,
+        ActivationQuantizationMode.FLN_NO_QUANT,
+        ActivationQuantizationMode.PRESERVE_QUANT
+    ]
+
     def __init__(self, op_cfg: OpQuantizationConfig):
         """
 
@@ -85,15 +86,18 @@ class NodeActivationQuantizationConfig(BaseNodeQuantizationConfig):
         """
         self.activation_quantization_method = op_cfg.activation_quantization_method
         self.activation_n_bits = op_cfg.activation_n_bits
+        self.signedness = op_cfg.signedness
+
         if op_cfg.enable_activation_quantization and op_cfg.quantization_preserving:
             raise ValueError("An OpQuantizationConfig can't have both enable_activation_quantization and quantization_preserving enabled.")
+
+        self._quant_mode = None
         if op_cfg.enable_activation_quantization:
-            self.quant_mode = ActivationQuantizationMode.QUANT
+            self.set_quant_mode(ActivationQuantizationMode.QUANT)
         elif op_cfg.quantization_preserving:
-            self.quant_mode = ActivationQuantizationMode.PRESERVE_QUANT
+            self.set_quant_mode(ActivationQuantizationMode.PRESERVE_QUANT)
         else:
-            self.quant_mode = ActivationQuantizationMode.NO_QUANT
-        self.signedness = op_cfg.signedness
+            self.set_quant_mode(ActivationQuantizationMode.NO_QUANT)
 
         self.activation_quantization_params = {}
         # TODO: computed by compute_activation_bias_correction. Probably shouldnt be here.
@@ -101,6 +105,28 @@ class NodeActivationQuantizationConfig(BaseNodeQuantizationConfig):
         # Z-threshold is a global param from QuantizationConfig, however it can be overridden per node by NetworkEditor.
         # Since activation qparams are re-computed in several places, it's easier to keep it here and update it once.
         self.z_threshold = None
+
+    def set_quant_mode(self, quant_mode: ActivationQuantizationMode):
+        """
+        Set quantization mode. If no configuration is associated with the quant_mode, it's un-set.
+
+        Args:
+            quant_mode: quantization mode to set.
+        """
+        if quant_mode in [ActivationQuantizationMode.QUANT, ActivationQuantizationMode.FLN_QUANT]:
+            if self.quant_mode in self._no_cfg_modes:
+                raise ValueError(f'Cannot change quant_mode to {quant_mode.name} from {self.quant_mode.name}.')
+        self._quant_mode = quant_mode
+        if quant_mode in self._no_cfg_modes:
+            self._unset()
+
+    @property
+    def quant_mode(self):
+        return self._quant_mode
+
+    @quant_mode.setter
+    def quant_mode(self, mode):
+        raise RuntimeError('quant_mode cannot be set directly. Use set_quant_mode.')
 
     @property
     def enable_activation_quantization(self):
@@ -122,9 +148,29 @@ class NodeActivationQuantizationConfig(BaseNodeQuantizationConfig):
             activation_params: Dictionary that contains weight quantization params.
 
         """
-        assert self.quant_mode == ActivationQuantizationMode.QUANT or self.quant_mode == ActivationQuantizationMode.FLN_QUANT
-        for param_name, param_value in activation_params.items():
-            self.activation_quantization_params[param_name] = param_value
+        assert self.quant_mode in [ActivationQuantizationMode.QUANT, ActivationQuantizationMode.FLN_QUANT]
+        self.activation_quantization_params = activation_params
+
+    def set_quant_config_attr(self, attr_name: str, value: Any):
+        """
+        Update config's attribute.
+
+        Args:
+            attr_name: attribute to set.
+            value: value to set.
+        """
+        if attr_name == 'quant_mode':
+            self.set_quant_mode(value)
+        else:
+            if self.quant_mode in self._no_cfg_modes:
+                raise ValueError(f'Cannot set attribute {attr_name} for activation with disabled quantization.')
+            super().set_quant_config_attr(attr_name, value)
+
+    def _unset(self):
+        """ Unset activation quantization fields to None. """
+        self.activation_quantization_method = None
+        self.activation_n_bits = 0
+        self.signedness = None
 
     def __eq__(self, other: Any) -> bool:
         """
@@ -164,13 +210,32 @@ class WeightsAttrQuantizationConfig:
             weights_attr_cfg: AttributeQuantizationConfig with parameters to use when creating the node's attribute quantization config.
             weights_channels_axis: Axis to quantize a node's attribute when quantizing per-channel (if not quantizing per-channel than expecting None).
         """
+        if weights_attr_cfg.lut_values_bitwidth is not None:
+            raise ValueError('None-default lut_values_bitwidth in AttributeQuantizationConfig is not supported.')
+
         self.weights_channels_axis = weights_channels_axis
         self.weights_quantization_method = weights_attr_cfg.weights_quantization_method
         self.weights_n_bits = weights_attr_cfg.weights_n_bits
         self.weights_per_channel_threshold = weights_attr_cfg.weights_per_channel_threshold
-        self.enable_weights_quantization = weights_attr_cfg.enable_weights_quantization
+
+        self._enable_weights_quantization = weights_attr_cfg.enable_weights_quantization
+        if weights_attr_cfg.enable_weights_quantization is False:
+            self._unset()
 
         self.weights_quantization_params = {}
+
+    @property
+    def enable_weights_quantization(self):
+        return self._enable_weights_quantization
+
+    @enable_weights_quantization.setter
+    def enable_weights_quantization(self, flag):
+        raise RuntimeError('enable_quantization should not be set directly, use disable_quantization() or '
+                           'create a new instance.')
+
+    def disable_quantization(self):
+        self._enable_weights_quantization = False
+        self._unset()
 
     def set_weights_quantization_param(self,
                                        weights_params: dict):
@@ -182,8 +247,13 @@ class WeightsAttrQuantizationConfig:
 
         """
         assert self.enable_weights_quantization
-        for param_name, param_value in weights_params.items():
-            self.weights_quantization_params[param_name] = param_value
+        self.weights_quantization_params = weights_params
+
+    def _unset(self):
+        self.weights_channels_axis = None
+        self.weights_quantization_method = None
+        self.weights_n_bits = 0
+        self.weights_per_channel_threshold = None
 
     def __eq__(self, other: Any) -> bool:
         """
@@ -229,6 +299,8 @@ class NodeWeightsQuantizationConfig(BaseNodeQuantizationConfig):
             node_attrs_list: A list of the node's weights attributes names.
 
         """
+        # TODO it makes no sense that the same weights_channels_axis is going to all attrs
+
         self.simd_size = op_cfg.simd_size
 
         # Initialize a quantization configuration for each of the node's attributes
@@ -320,19 +392,22 @@ class NodeWeightsQuantizationConfig(BaseNodeQuantizationConfig):
 
         return attr_cfg
 
-    def set_attr_config(self, attr_name: 'WeightAttrT', attr_qc: WeightsAttrQuantizationConfig):
+    def set_attr_config(self, attr_name: 'WeightAttrT', attr_qc: WeightsAttrQuantizationConfig, force=False):
         """
         Adding a new attribute with quantization configuration to the node's weights configurations mapping.
 
         Args:
             attr_name: The name of the attribute to set a quantization configuration to.
             attr_qc: The quantization configuration to set.
-
+            force: if True, the attribute is set without checking if it exists.
         """
-        if isinstance(attr_name, int):
+        if attr_name in self.pos_attributes_config_mapping or (force and isinstance(attr_name, int)):
             self.pos_attributes_config_mapping[attr_name] = attr_qc
-        else:
+        elif attr_name in self.attributes_config_mapping or force:
+            assert isinstance(attr_name, str)
             self.attributes_config_mapping[attr_name] = attr_qc
+        else:
+            raise ValueError(f'Unknown weights attr {attr_name}.')
 
     def has_attribute_config(self, attr_name: 'WeightAttrT') -> bool:
         """
@@ -345,13 +420,10 @@ class NodeWeightsQuantizationConfig(BaseNodeQuantizationConfig):
 
         """
         if isinstance(attr_name, int):
-            return self.pos_attributes_config_mapping.get(attr_name, False)
-        else:
-            saved_attr_name = self._extract_config_for_attributes_with_name(attr_name)
-            if len(saved_attr_name) >= 1:
-                return True
+            return attr_name in self.pos_attributes_config_mapping
 
-        return False
+        saved_attr_name = self._extract_config_for_attributes_with_name(attr_name)
+        return len(saved_attr_name) >= 1
 
     @property
     def all_weight_attrs(self) -> List['WeightAttrT']:
@@ -373,9 +445,9 @@ class NodeWeightsQuantizationConfig(BaseNodeQuantizationConfig):
     def disable_all_weights_quantization(self):
         """ Disable quantization for all weights. """
         for w_cfg in self.pos_attributes_config_mapping.values():
-            w_cfg.enable_weights_quantization = False
+            w_cfg.disable_quantization()
         for w_cfg in self.attributes_config_mapping.values():
-            w_cfg.enable_weights_quantization = False
+            w_cfg.disable_quantization()
 
     def _extract_config_for_attributes_with_name(self, attr_name) -> Dict[str, WeightsAttrQuantizationConfig]:
         """
@@ -396,7 +468,7 @@ class NodeWeightsQuantizationConfig(BaseNodeQuantizationConfig):
         return attrs_with_name
 
     def set_quant_config_attr(self, config_parameter_name: str, config_parameter_value: Any,
-                              attr_name: 'WeightAttrT' = None, *args: List[Any], **kwargs: Dict[str, Any]):
+                              attr_name: 'WeightAttrT' = None):
         """
         This method overrides the parent class set_quant_config_attr to enable setting a specific weights
         attribute config parameter.
@@ -405,25 +477,35 @@ class NodeWeightsQuantizationConfig(BaseNodeQuantizationConfig):
             attr_name: attribute name to change.
             config_parameter_name: parameter name to change.
             config_parameter_value: parameter value to change.
-            args: A list of additional arguments.
-            kwargs: A dictionary with additional key arguments.
-
         """
-
         if attr_name is None:
             super(NodeWeightsQuantizationConfig, self).set_quant_config_attr(config_parameter_name,
-                                                                             config_parameter_value,
-                                                                             *args, **kwargs)
-        else:
-            if self.has_attribute_config(attr_name):
-                attr_cfg = self.get_attr_config(attr_name)
-                if hasattr(attr_cfg, config_parameter_name):
-                    setattr(attr_cfg, config_parameter_name, config_parameter_value)
-                else:
-                    raise AttributeError(f"Parameter {config_parameter_name} could not be found in the node quantization config of "
-                                         f"weights attribute {attr_name}.")
-            else:  # pragma: no cover
-                Logger.critical(f"Weights attribute {attr_name} could not be found to set parameter {config_parameter_name}.")
+                                                                             config_parameter_value)
+            return
+
+        if not self.has_attribute_config(attr_name):
+            raise ValueError(
+                f"Weights attribute {attr_name} could not be found to set parameter {config_parameter_name}.")
+
+        attr_cfg = self.get_attr_config(attr_name)
+        if config_parameter_name == 'enable_weights_quantization':
+            if config_parameter_value is False:
+                attr_cfg.disable_quantization()
+            elif attr_cfg.enable_weights_quantization is False:
+                raise ValueError(f'Cannot enable quantization for attr {attr_name} with disabled quantization.')
+            return
+
+        if not hasattr(attr_cfg, config_parameter_name):
+            raise AttributeError(
+                f"Parameter {config_parameter_name} could not be found in the quantization config of "
+                f"weights attribute {attr_name}.")
+
+        if attr_cfg.enable_weights_quantization is False:
+            # TODO we can add an option to reset the whole attr config for a specific attr, but this whole
+            #  mechanism should be revised. Also attr cfg code should be moved to attr cfg.
+            raise ValueError(f'Cannot set param {config_parameter_name} for attr {attr_name} with disabled quantization.')
+
+        setattr(attr_cfg, config_parameter_name, config_parameter_value)
 
     def __eq__(self, other: Any) -> bool:
         """

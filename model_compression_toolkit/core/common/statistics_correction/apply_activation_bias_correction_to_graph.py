@@ -71,7 +71,8 @@ def _apply_activation_bias_correction_to_node(node: BaseNode,
         node.final_weights_quantization_cfg.set_attr_config(fw_impl.constants.BIAS,
                                                             WeightsAttrQuantizationConfig(
                                                                 AttributeQuantizationConfig(
-                                                                    enable_weights_quantization=False)))
+                                                                    enable_weights_quantization=False)),
+                                                            force=True)
     else:
         # If the layer has bias, we subtract the correction from original bias
         node.set_weights_by_keys(fw_impl.constants.BIAS, bias - correction)

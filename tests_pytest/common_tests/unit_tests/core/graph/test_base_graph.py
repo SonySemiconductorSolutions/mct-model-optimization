@@ -20,7 +20,8 @@ from unittest.mock import Mock
 from mct_quantizers import QuantizationMethod
 from model_compression_toolkit.core.common import Graph
 from model_compression_toolkit.core.common.fusion.fusing_info import FusingInfo
-from model_compression_toolkit.target_platform_capabilities.schema.mct_current_schema import Signedness
+from model_compression_toolkit.target_platform_capabilities.schema.mct_current_schema import Signedness, \
+    OpQuantizationConfig
 from model_compression_toolkit.core.common.quantization.node_quantization_config import ActivationQuantizationMode, NodeActivationQuantizationConfig
 from model_compression_toolkit.core.common.quantization.candidate_node_quantization_config import \
     CandidateNodeQuantizationConfig, NodeQuantizationConfig
@@ -58,12 +59,12 @@ def build_mock_node(name, layer_class, w_cfgs):
     """
     node = build_node(name, layer_class=layer_class)
 
-    def eq(self_, other):
-        return self_.activation_n_bits == other.activation_n_bits and self_._quant_mode == other.quant_mode
-    a_cfgs = [Mock(spec=NodeActivationQuantizationConfig,
-                   quant_mode=Mock(),
-                   activation_n_bits=b,
-                   __eq__=eq) for b in [5, 6]]
+    a_cfgs = [NodeActivationQuantizationConfig(Mock(spec=OpQuantizationConfig,
+                                                    activation_quantization_method=QuantizationMethod.POWER_OF_TWO,
+                                                    activation_n_bits=b,
+                                                    enable_activation_quantization=True,
+                                                    quantization_preserving=False,
+                                                    signedness=Signedness.AUTO)) for b in [5, 6]]
 
     qcs = [CandidateNodeQuantizationConfig(a_cfg, w_cfg) for a_cfg, w_cfg in itertools.product(a_cfgs, w_cfgs)]
 

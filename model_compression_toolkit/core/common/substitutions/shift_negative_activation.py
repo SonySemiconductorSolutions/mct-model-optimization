@@ -67,7 +67,8 @@ def op2d_bias_correction(op2d_node: BaseNode,
         for qc in op2d_node.candidates_quantization_cfg:
             qc.weights_quantization_cfg.set_attr_config(bias_flag_str,
                                                         WeightsAttrQuantizationConfig(AttributeQuantizationConfig(
-                                                                                          enable_weights_quantization=False)))
+                                                                                          enable_weights_quantization=False)),
+                                                        force=True)
 
     # Each node adds a different noise due to the shifting. It depends on the
     # dimensions of the kernel, thus the correction term is a function of
@@ -424,7 +425,7 @@ def shift_negative_function(graph: Graph,
                                          fqc=graph.fqc)
 
         for candidate_qc in pad_node.candidates_quantization_cfg:
-            candidate_qc.activation_quantization_cfg.quant_mode = ActivationQuantizationMode.NO_QUANT
+            candidate_qc.activation_quantization_cfg.set_quant_mode(ActivationQuantizationMode.NO_QUANT)
             for attr in pad_node.get_node_weights_attributes():
                 candidate_qc.weights_quantization_cfg.get_attr_config(attr).enable_weights_quantization = False
 

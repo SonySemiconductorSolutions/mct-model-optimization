@@ -58,7 +58,7 @@ class TestCalculateQuantizationParams:
             node.is_fln_quantization.return_value = False
 
         activation_quantization_cfg = NodeActivationQuantizationConfig(op_cfg=self.build_op_cfg())
-        activation_quantization_cfg.quant_mode = q_mode
+        activation_quantization_cfg.set_quant_mode(q_mode)
 
         candidate_quantization_config = Mock(spec=CandidateNodeQuantizationConfig)
         candidate_quantization_config.activation_quantization_cfg = activation_quantization_cfg
