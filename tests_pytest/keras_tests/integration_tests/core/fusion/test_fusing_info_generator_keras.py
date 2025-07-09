@@ -23,7 +23,7 @@ from tests_pytest._fw_tests_common_base.fusing.base_fusing_info_generator_test i
 from tests_pytest._test_util.graph_builder_utils import build_node
 from tests_pytest.keras_tests.keras_test_util.keras_test_mixin import KerasFwMixin
 import model_compression_toolkit.target_platform_capabilities.schema.mct_current_schema as schema
-from model_compression_toolkit.constants import FUSED_LAYER_PATTERN, FUSED_OP_QUANT_CONFIG
+from model_compression_toolkit.constants import FUSED_LAYER_PATTERN, FUSE_OP_QUANT_CONFIG
 
 from tensorflow.keras import backend as K
 
@@ -53,7 +53,7 @@ class TestFusingConvRelu(BaseTestFusingInfoGeneratorKeras):
     ]
 
     expected_fusing_patterns = [
-        {FUSED_LAYER_PATTERN: [fusing_patterns[0]], FUSED_OP_QUANT_CONFIG: None}
+        {FUSED_LAYER_PATTERN: [fusing_patterns[0]], FUSE_OP_QUANT_CONFIG: None}
     ]
 
     expected_fi = FusingInfo(
@@ -96,7 +96,7 @@ class TestFusingAnyActKeras(BaseTestFusingInfoGeneratorKeras):
     ]
 
     expected_fusing_patterns = [
-        {FUSED_LAYER_PATTERN: [fusing_patterns[0]], FUSED_OP_QUANT_CONFIG: None}
+        {FUSED_LAYER_PATTERN: [fusing_patterns[0]], FUSE_OP_QUANT_CONFIG: None}
     ]
 
     expected_fi = FusingInfo(
@@ -153,7 +153,7 @@ class TestFusingConvReLUOnlyKeras(BaseTestFusingInfoGeneratorKeras):
     ]
 
     expected_fusing_patterns = [
-        {FUSED_LAYER_PATTERN: [fusing_patterns[0]], FUSED_OP_QUANT_CONFIG: None}
+        {FUSED_LAYER_PATTERN: [fusing_patterns[0]], FUSE_OP_QUANT_CONFIG: None}
     ]
 
     expected_fi = FusingInfo(
@@ -220,12 +220,12 @@ class TestFusingComplexPatternsKeras(BaseTestFusingInfoGeneratorKeras):
     ]
 
     expected_fusing_patterns = [
-        {FUSED_LAYER_PATTERN: [fusing_patterns[0]], FUSED_OP_QUANT_CONFIG: None},
-        {FUSED_LAYER_PATTERN: [fusing_patterns[1]], FUSED_OP_QUANT_CONFIG: None},
-        {FUSED_LAYER_PATTERN: [fusing_patterns[2]], FUSED_OP_QUANT_CONFIG: None},
-        {FUSED_LAYER_PATTERN: [fusing_patterns[3]], FUSED_OP_QUANT_CONFIG: None},
-        {FUSED_LAYER_PATTERN: [fusing_patterns[4]], FUSED_OP_QUANT_CONFIG: None},
-        {FUSED_LAYER_PATTERN: [fusing_patterns[5]], FUSED_OP_QUANT_CONFIG: None}
+        {FUSED_LAYER_PATTERN: [fusing_patterns[0]], FUSE_OP_QUANT_CONFIG: None},
+        {FUSED_LAYER_PATTERN: [fusing_patterns[1]], FUSE_OP_QUANT_CONFIG: None},
+        {FUSED_LAYER_PATTERN: [fusing_patterns[2]], FUSE_OP_QUANT_CONFIG: None},
+        {FUSED_LAYER_PATTERN: [fusing_patterns[3]], FUSE_OP_QUANT_CONFIG: None},
+        {FUSED_LAYER_PATTERN: [fusing_patterns[4]], FUSE_OP_QUANT_CONFIG: None},
+        {FUSED_LAYER_PATTERN: [fusing_patterns[5]], FUSE_OP_QUANT_CONFIG: None}
     ]
 
     expected_fi = FusingInfo(
@@ -313,7 +313,7 @@ class TestFusingConvSwishWithMultiSuccessorsKeras(BaseTestFusingInfoGeneratorKer
     ]
 
     expected_fusing_patterns = [
-        {FUSED_LAYER_PATTERN: [fusing_patterns[0]], FUSED_OP_QUANT_CONFIG: None}
+        {FUSED_LAYER_PATTERN: [fusing_patterns[0]], FUSE_OP_QUANT_CONFIG: None}
     ]
 
     expected_fi = FusingInfo(
@@ -360,7 +360,7 @@ class TestFusingConvReluWithMultiPredecessorsKeras(BaseTestFusingInfoGeneratorKe
     ]
 
     expected_fusing_patterns = [
-        {FUSED_LAYER_PATTERN: [fusing_patterns[0]], FUSED_OP_QUANT_CONFIG: None}
+        {FUSED_LAYER_PATTERN: [fusing_patterns[0]], FUSE_OP_QUANT_CONFIG: None}
     ]
 
     expected_fi = FusingInfo(

@@ -97,15 +97,21 @@ class NetworkTest:
                 self.unit_test.assertTrue(False, f'fail TFLite convertion with the following error: {error_msg}')
 
     def run_network(self, inputs_list, qc, tpc):
+        from model_compression_toolkit.gptq.common.gptq_config import GradualActivationQuantizationConfig
         def representative_data_gen():
             for _ in range(self.num_calibration_iter):
                 yield inputs_list
 
         core_config = mct.core.CoreConfig(quantization_config=qc)
         if self.gptq:
-            arc = mct.gptq.GradientPTQConfig(n_epochs=2, optimizer=tf.keras.optimizers.Adam(
-                learning_rate=0.0001), optimizer_rest=tf.keras.optimizers.Adam(
-                learning_rate=0.0001), loss=multiple_tensors_mse_loss)
+            arc = mct.gptq.GradientPTQConfig(n_epochs=2,
+                                             optimizer=tf.keras.optimizers.Adam(learning_rate=0.0001),
+                                             optimizer_rest=tf.keras.optimizers.Adam(learning_rate=0.0001),
+                                             loss=multiple_tensors_mse_loss,
+                                             train_bias=True,
+                                             hessian_weights_config=None,
+                                             gradual_activation_quantization_config= GradualActivationQuantizationConfig(),
+                                             regularization_factor=1)
 
             ptq_model, quantization_info = mct.gptq.keras_gradient_post_training_quantization(
                 self.model_float,

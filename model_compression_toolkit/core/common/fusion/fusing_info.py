@@ -15,7 +15,7 @@
 
 from model_compression_toolkit.target_platform_capabilities import LayerFilterParams
 from model_compression_toolkit.target_platform_capabilities.schema.mct_current_schema import OpQuantizationConfig
-from model_compression_toolkit.constants import FUSED_LAYER_PATTERN, FUSED_OP_QUANT_CONFIG
+from model_compression_toolkit.constants import FUSED_LAYER_PATTERN, FUSE_OP_QUANT_CONFIG
 from dataclasses import dataclass, field
 
 from typing import Optional, List, Dict, Any, Tuple
@@ -131,7 +131,7 @@ class FusingInfo:
         """
         fusing_pattern = next((fp for fp in self.fusing_patterns if is_valid_fusion([fp.get(FUSED_LAYER_PATTERN)], nodes)), None)
         if fusing_pattern is not None:
-            self.fused_op_id_to_quant_config[op_id] = fusing_pattern.get(FUSED_OP_QUANT_CONFIG)
+            self.fused_op_id_to_quant_config[op_id] = fusing_pattern.get(FUSE_OP_QUANT_CONFIG)
 
     def remove_fused_operation(self, op_id: str) -> None:
         """

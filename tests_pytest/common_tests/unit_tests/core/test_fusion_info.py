@@ -19,7 +19,7 @@ from unittest.mock import Mock
 from model_compression_toolkit.core.common.fusion.fusing_info import FusingInfoGenerator, FUSED_OP_ID_PREFIX, FusingInfo
 from model_compression_toolkit.target_platform_capabilities import FrameworkQuantizationCapabilities
 from model_compression_toolkit.core.common import BaseNode
-from model_compression_toolkit.constants import FUSED_LAYER_PATTERN, FUSED_OP_QUANT_CONFIG
+from model_compression_toolkit.constants import FUSED_LAYER_PATTERN, FUSE_OP_QUANT_CONFIG
 from mct_quantizers import QuantizationMethod
 
 from tests.common_tests.helpers.generate_test_tpc import generate_test_attr_configs, generate_test_op_qc
@@ -51,8 +51,8 @@ def fusing_patterns():
     """
     - Returns predefined fusing patterns: Conv2D + ReLU and Linear + Softmax.
     """
-    return [{FUSED_LAYER_PATTERN: ["Conv2d", "ReLU"], FUSED_OP_QUANT_CONFIG: None},
-            {FUSED_LAYER_PATTERN: ["Linear", "Softmax"], FUSED_OP_QUANT_CONFIG: None}]
+    return [{FUSED_LAYER_PATTERN: ["Conv2d", "ReLU"], FUSE_OP_QUANT_CONFIG: None},
+            {FUSED_LAYER_PATTERN: ["Linear", "Softmax"], FUSE_OP_QUANT_CONFIG: None}]
 
 
 @pytest.fixture
@@ -249,10 +249,10 @@ def fusing_patterns_with_qconfig():
     """
     - Returns predefined fusing patterns: Conv2D + ReLU and  Conv2D + Tanh, Linear + Softmax.
     """
-    return [{FUSED_LAYER_PATTERN: ["Conv2d", "ReLU"], FUSED_OP_QUANT_CONFIG: TEST_QC_1},
-            {FUSED_LAYER_PATTERN: ["Conv2d", "Tanh"], FUSED_OP_QUANT_CONFIG: None}, 
-            {FUSED_LAYER_PATTERN: ["Conv2d", "BatchNorm2d", "ReLU6"], FUSED_OP_QUANT_CONFIG: TEST_QC_2},
-            {FUSED_LAYER_PATTERN: ["Linear", "Softmax"], FUSED_OP_QUANT_CONFIG: TEST_QC_3 }]
+    return [{FUSED_LAYER_PATTERN: ["Conv2d", "ReLU"], FUSE_OP_QUANT_CONFIG: TEST_QC_1},
+            {FUSED_LAYER_PATTERN: ["Conv2d", "Tanh"], FUSE_OP_QUANT_CONFIG: None}, 
+            {FUSED_LAYER_PATTERN: ["Conv2d", "BatchNorm2d", "ReLU6"], FUSE_OP_QUANT_CONFIG: TEST_QC_2},
+            {FUSED_LAYER_PATTERN: ["Linear", "Softmax"], FUSE_OP_QUANT_CONFIG: TEST_QC_3 }]
 
 @pytest.fixture
 def fusing_info_generator_with_qconfig(fusing_patterns_with_qconfig):

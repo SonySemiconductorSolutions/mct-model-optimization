@@ -142,4 +142,4 @@ NODE_OUTPUT_INDEX = 'node_output_index'
 
 # Fusing Patterns constants
 FUSED_LAYER_PATTERN = 'fused_layer_pattern'
-FUSED_OP_QUANT_CONFIG = 'fused_op_quantization_config'
+FUSE_OP_QUANT_CONFIG = 'fuse_op_quantization_config'

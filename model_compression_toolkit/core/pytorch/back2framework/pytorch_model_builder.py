@@ -33,7 +33,7 @@ from model_compression_toolkit.core.pytorch.back2framework.instance_builder impo
 from model_compression_toolkit.core.pytorch.reader.node_holders import DummyPlaceHolder
 from model_compression_toolkit.core.pytorch.utils import to_torch_tensor
 from mct_quantizers.common.constants import ACTIVATION_HOLDER_QUANTIZER
-from mct_quantizers import PytorchQuantizationWrapper, PytorchActivationQuantizationHolder, PytorchPreservingActivationQuantizationHolder
+from mct_quantizers import PytorchQuantizationWrapper, PytorchActivationQuantizationHolder, PytorchPreservingActivationQuantizationHolder, PytorchFLNActivationQuantizationHolder
 
 
 def _build_input_tensors_list(node: BaseNode,
@@ -346,6 +346,12 @@ class PytorchModel(torch.nn.Module):
                             activation_quantizer_holder = self.get_activation_quantizer_holder(prev_node,
                                                                                                holder_type=PytorchPreservingActivationQuantizationHolder,
                                                                                                **holder_kwargs)
+
+                elif node.is_fln_quantization():
+                    holder_kwargs = {'quantization_bypass': True}
+                    activation_quantizer_holder = self.get_activation_quantizer_holder(node,
+                                                                                       holder_type=PytorchFLNActivationQuantizationHolder,
+                                                                                       **holder_kwargs)
 
             if activation_quantizer_holder is not None:
                 activation_quantizer_holder_name = node.name + '_' + ACTIVATION_HOLDER_QUANTIZER

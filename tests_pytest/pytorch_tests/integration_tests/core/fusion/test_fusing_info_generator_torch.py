@@ -26,7 +26,7 @@ from tests_pytest.pytorch_tests.torch_test_util.torch_test_mixin import TorchFwM
 
 import torch.nn as nn
 import model_compression_toolkit.target_platform_capabilities.schema.mct_current_schema as schema
-from model_compression_toolkit.constants import FUSED_LAYER_PATTERN, FUSED_OP_QUANT_CONFIG
+from model_compression_toolkit.constants import FUSED_LAYER_PATTERN, FUSE_OP_QUANT_CONFIG
 
 
 class BaseTestFusingInfoGeneratorPytorch(BaseFusingInfoGeneratorTest, TorchFwMixin):
@@ -53,7 +53,7 @@ class TestFusingConvRelu(BaseTestFusingInfoGeneratorPytorch):
     ]
 
     expected_fusing_patterns = [
-        {FUSED_LAYER_PATTERN: [fusing_patterns[0]], FUSED_OP_QUANT_CONFIG: None}
+        {FUSED_LAYER_PATTERN: [fusing_patterns[0]], FUSE_OP_QUANT_CONFIG: None}
     ]
 
     expected_fi = FusingInfo(
@@ -104,7 +104,7 @@ class TestFusingAnyAct(BaseTestFusingInfoGeneratorPytorch):
     ]
 
     expected_fusing_patterns = [
-        {FUSED_LAYER_PATTERN: [fusing_patterns[0]], FUSED_OP_QUANT_CONFIG: None}
+        {FUSED_LAYER_PATTERN: [fusing_patterns[0]], FUSE_OP_QUANT_CONFIG: None}
     ]
 
     expected_fi = FusingInfo(
@@ -175,7 +175,7 @@ class TestFusingConvReLUOnly(BaseTestFusingInfoGeneratorPytorch):
     ]
 
     expected_fusing_patterns = [
-        {FUSED_LAYER_PATTERN: [fusing_patterns[0]], FUSED_OP_QUANT_CONFIG: None}
+        {FUSED_LAYER_PATTERN: [fusing_patterns[0]], FUSE_OP_QUANT_CONFIG: None}
     ]
 
     expected_fi = FusingInfo(
@@ -254,12 +254,12 @@ class TestFusingComplexPatterns(BaseTestFusingInfoGeneratorPytorch):
     ]
 
     expected_fusing_patterns = [
-        {FUSED_LAYER_PATTERN: [fusing_patterns[0]], FUSED_OP_QUANT_CONFIG: None},
-        {FUSED_LAYER_PATTERN: [fusing_patterns[1]], FUSED_OP_QUANT_CONFIG: None},
-        {FUSED_LAYER_PATTERN: [fusing_patterns[2]], FUSED_OP_QUANT_CONFIG: None},
-        {FUSED_LAYER_PATTERN: [fusing_patterns[3]], FUSED_OP_QUANT_CONFIG: None},
-        {FUSED_LAYER_PATTERN: [fusing_patterns[4]], FUSED_OP_QUANT_CONFIG: None},
-        {FUSED_LAYER_PATTERN: [fusing_patterns[5]], FUSED_OP_QUANT_CONFIG: None}
+        {FUSED_LAYER_PATTERN: [fusing_patterns[0]], FUSE_OP_QUANT_CONFIG: None},
+        {FUSED_LAYER_PATTERN: [fusing_patterns[1]], FUSE_OP_QUANT_CONFIG: None},
+        {FUSED_LAYER_PATTERN: [fusing_patterns[2]], FUSE_OP_QUANT_CONFIG: None},
+        {FUSED_LAYER_PATTERN: [fusing_patterns[3]], FUSE_OP_QUANT_CONFIG: None},
+        {FUSED_LAYER_PATTERN: [fusing_patterns[4]], FUSE_OP_QUANT_CONFIG: None},
+        {FUSED_LAYER_PATTERN: [fusing_patterns[5]], FUSE_OP_QUANT_CONFIG: None}
     ]
 
     expected_fi = FusingInfo(
@@ -362,7 +362,7 @@ class TestFusingConvSwishWithMultiSuccessors(BaseTestFusingInfoGeneratorPytorch)
     ]
 
     expected_fusing_patterns = [
-        {FUSED_LAYER_PATTERN: [fusing_patterns[0]], FUSED_OP_QUANT_CONFIG: None}
+        {FUSED_LAYER_PATTERN: [fusing_patterns[0]], FUSE_OP_QUANT_CONFIG: None}
     ]
 
     expected_fi = FusingInfo(
@@ -415,7 +415,7 @@ class TestFusingConvReluWithMultiPredecessors(BaseTestFusingInfoGeneratorPytorch
     ]
 
     expected_fusing_patterns = [
-        {FUSED_LAYER_PATTERN: [fusing_patterns[0]], FUSED_OP_QUANT_CONFIG: None}
+        {FUSED_LAYER_PATTERN: [fusing_patterns[0]], FUSE_OP_QUANT_CONFIG: None}
     ]
 
     expected_fi = FusingInfo(

@@ -31,7 +31,7 @@ from model_compression_toolkit.target_platform_capabilities.schema.mct_current_s
     OpQuantizationConfig, QuantizationConfigOptions
 from model_compression_toolkit.target_platform_capabilities.targetplatform2framework.current_tpc import  _current_tpc
 
-from model_compression_toolkit.constants import FUSED_LAYER_PATTERN, FUSED_OP_QUANT_CONFIG
+from model_compression_toolkit.constants import FUSED_LAYER_PATTERN, FUSE_OP_QUANT_CONFIG
 
 
 class FrameworkQuantizationCapabilities(ImmutableClass):
@@ -113,8 +113,8 @@ class FrameworkQuantizationCapabilities(ImmutableClass):
             ops = [self.get_layers_by_opset(x) for x in p.operator_groups]
             res.extend(itertools.product(*ops))
 
-            fused_op_quant_config = getattr(p, FUSED_OP_QUANT_CONFIG, None)
-            patterns.extend({FUSED_LAYER_PATTERN: list(x), FUSED_OP_QUANT_CONFIG: fused_op_quant_config} for x in res)
+            fuse_op_quant_config = getattr(p, FUSE_OP_QUANT_CONFIG, None)
+            patterns.extend({FUSED_LAYER_PATTERN: list(x), FUSE_OP_QUANT_CONFIG: fuse_op_quant_config} for x in res)
 
         return patterns
 
