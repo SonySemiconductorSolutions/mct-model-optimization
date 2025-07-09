@@ -67,7 +67,8 @@ def op2d_bias_correction(op2d_node: BaseNode,
         for qc in op2d_node.candidates_quantization_cfg:
             qc.weights_quantization_cfg.set_attr_config(bias_flag_str,
                                                         WeightsAttrQuantizationConfig(AttributeQuantizationConfig(
-                                                                                          enable_weights_quantization=False)))
+                                                                                          enable_weights_quantization=False)),
+                                                        force=True)
 
     # Each node adds a different noise due to the shifting. It depends on the
     # dimensions of the kernel, thus the correction term is a function of

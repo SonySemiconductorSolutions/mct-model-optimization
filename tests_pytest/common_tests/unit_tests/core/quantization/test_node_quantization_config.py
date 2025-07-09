@@ -62,16 +62,17 @@ class TestNodeActivationConfig:
         self._assert_unset_acfg(cfg)
 
         # after losing the config cannot set quant back
-        with pytest.raises(AssertionError):
-            cfg.set_quant_mode(ActivationQuantizationMode.QUANT)
+        for qmode in [ActivationQuantizationMode.QUANT, ActivationQuantizationMode.FLN_QUANT]:
+            with pytest.raises(ValueError, match=f'Cannot change quant_mode to {qmode.name} from {mode.name}'):
+                cfg.set_quant_mode(qmode)
 
         with pytest.raises(RuntimeError, match='quant_mode cannot be set directly'):
             cfg.quant_mode = ActivationQuantizationMode.NO_QUANT
 
     def test_set_quant_config_attribute(self):
         cfg = NodeActivationQuantizationConfig(self._get_op_config(True, False))
-        assert cfg.activation_n_bits == 5
 
+        assert cfg.activation_n_bits == 5
         cfg.set_quant_config_attr('activation_n_bits', 4)
         assert cfg.activation_n_bits == 4
 
@@ -79,19 +80,35 @@ class TestNodeActivationConfig:
                            match='Parameter activation_M_bits could not be found in the node quantization config.'):
             cfg.set_quant_config_attr('activation_M_bits', 8)
 
+        # quant_mode has a special handling
+        cfg.set_quant_config_attr('quant_mode', ActivationQuantizationMode.FLN_QUANT)
+        assert cfg.quant_mode == ActivationQuantizationMode.FLN_QUANT
+
+        cfg.set_quant_config_attr('quant_mode', ActivationQuantizationMode.PRESERVE_QUANT)
+        self._assert_unset_acfg(cfg)
+
+        cfg.set_quant_config_attr('quant_mode', ActivationQuantizationMode.NO_QUANT)
+        self._assert_unset_acfg(cfg)
+
+        with pytest.raises(ValueError, match=f'Cannot change quant_mode to QUANT from NO_QUANT.'):
+            cfg.set_quant_config_attr('quant_mode', ActivationQuantizationMode.QUANT)
+
+        with pytest.raises(ValueError, match='Cannot set attribute activation_n_bits for activation with disabled '
+                                             'quantization'):
+            cfg.set_quant_config_attr('activation_n_bits', 5)
+
     @pytest.mark.parametrize('mode', [ActivationQuantizationMode.QUANT, ActivationQuantizationMode.FLN_QUANT])
     def test_set_quantization_params(self, mode):
         cfg = NodeActivationQuantizationConfig(self._get_op_config(True, False))
         cfg.set_quant_mode(mode)
 
-        params = {'foo': 5, 'bar': 10}
-        cfg.set_activation_quantization_param(params)
-        assert cfg.activation_quantization_params == params
+        params1 = {'foo': 5, 'bar': 10}
+        cfg.set_activation_quantization_param(params1)
+        assert cfg.activation_quantization_params == params1
 
-        params = {'baz': 42}
-        cfg.set_activation_quantization_param(params)
-        # TODO: this is the current behavior. I think each call should reset the params, not update upon existing.
-        assert cfg.activation_quantization_params == {'foo': 5, 'bar': 10, 'baz': 42}
+        params2 = {'baz': 42}
+        cfg.set_activation_quantization_param(params2)
+        assert cfg.activation_quantization_params == params2
 
     def _assert_unset_acfg(self, cfg: NodeActivationQuantizationConfig):
         assert cfg.activation_n_bits == 0

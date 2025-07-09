@@ -12,6 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 # ==============================================================================
+import copy
 from typing import List
 from unittest.mock import Mock
 
@@ -27,7 +28,64 @@ from model_compression_toolkit.target_platform_capabilities.constants import POS
 from model_compression_toolkit.target_platform_capabilities.schema.v1 import AttributeQuantizationConfig
 
 
-class TestPositionalWeightsAttrQuantizationConfig:
+class TestNodeWeightsAttrConfig:
+    @pytest.mark.parametrize('method, nbits, per_channel, enabled', [
+        (QuantizationMethod.POWER_OF_TWO, 5, True, True),
+        (QuantizationMethod.SYMMETRIC, 7, False, True),
+        (QuantizationMethod.SYMMETRIC, 7, False, False),
+    ])
+    def test_config(self, method, nbits, per_channel, enabled):
+        input_cfg = AttributeQuantizationConfig(
+            weights_quantization_method=method,
+            weights_n_bits=nbits,
+            weights_per_channel_threshold=per_channel,
+            enable_weights_quantization=enabled,
+            lut_values_bitwidth=None)
+
+        cfg = WeightsAttrQuantizationConfig(input_cfg, weights_channels_axis=ChannelAxisMapping(2, 3))
+        assert cfg.enable_weights_quantization == enabled
+        if enabled:
+            assert cfg.weights_quantization_method == method
+            assert cfg.weights_n_bits == nbits
+            assert cfg.weights_per_channel_threshold == per_channel
+            assert cfg.weights_channels_axis == ChannelAxisMapping(2, 3)
+        else:
+            assert_unset_attr_config(cfg)
+
+        # disable quantization
+        cfg.disable_quantization()
+        assert cfg.enable_weights_quantization is False
+        assert_unset_attr_config(cfg)
+
+        with pytest.raises(RuntimeError, match='enable_quantization should not be set directly'):
+            cfg.enable_weights_quantization = False
+
+    def test_set_quantization_param(self):
+        input_cfg = AttributeQuantizationConfig(enable_weights_quantization=True)
+        cfg = WeightsAttrQuantizationConfig(input_cfg)
+        params1 = {'foo': 5, 'bar': 10}
+        cfg.set_weights_quantization_param(params1)
+        assert cfg.weights_quantization_params == params1
+
+        params2 = {'baz': 42}
+        cfg.set_weights_quantization_param(params2)
+        assert cfg.weights_quantization_params == params2
+
+    def test_unsupported_lut(self):
+        input_cfg = AttributeQuantizationConfig(enable_weights_quantization=True, lut_values_bitwidth=5)
+        with pytest.raises(ValueError, match='None-default lut_values_bitwidth in AttributeQuantizationConfig '
+                                             'is not supported.'):
+            WeightsAttrQuantizationConfig(input_cfg)
+
+
+def assert_unset_attr_config(cfg: WeightsAttrQuantizationConfig):
+    assert cfg.weights_quantization_method is None
+    assert cfg.weights_n_bits == 0
+    assert cfg.weights_per_channel_threshold is None
+    assert cfg.weights_channels_axis is None
+
+
+class TestWeightsQuantizationConfig:
     def _create_weights_attr_quantization_config(self, weights_n_bits: int) -> AttributeQuantizationConfig:
         """
         Helper method to create a weights attribute quantization configuration.
@@ -163,59 +221,127 @@ class TestPositionalWeightsAttrQuantizationConfig:
             NodeWeightsQuantizationConfig(op_cfg=op_cfg, weights_channels_axis=Mock(),
                                           node_attrs_list=[positional_weight_attr])
 
+    def _create_wcfg(self):
+        # include enabled and disabled attrs
+        # include a name identical to config keys, and an extended name
+        attr_weights_configs_mapping = {'foo': AttributeQuantizationConfig(enable_weights_quantization=True,
+                                                                           weights_n_bits=7),
+                                        'bar': AttributeQuantizationConfig(enable_weights_quantization=False)}
+        default_weight_attr_config = AttributeQuantizationConfig(enable_weights_quantization=True,
+                                                                 weights_n_bits=5)
+        node_attrs_list = ['afooz', 'bar', 0, 1]
+        wcfg = NodeWeightsQuantizationConfig(Mock(spec=OpQuantizationConfig,
+                                                  attr_weights_configs_mapping=attr_weights_configs_mapping,
+                                                  default_weight_attr_config=default_weight_attr_config,
+                                                  simd_size=None),
+                                             weights_channels_axis=ChannelAxisMapping(1, 2),
+                                             node_attrs_list=node_attrs_list)
+        return wcfg, node_attrs_list
 
-class TestNodeWeightsAttrConfig:
-    @pytest.mark.parametrize('method, nbits, per_channel, enabled', [
-        (QuantizationMethod.POWER_OF_TWO, 5, True, True),
-        (QuantizationMethod.SYMMETRIC, 7, False, True),
-        (QuantizationMethod.SYMMETRIC, 7, False, False),
-    ])
-    def test_config(self, method, nbits, per_channel, enabled):
-        input_cfg = AttributeQuantizationConfig(
-            weights_quantization_method=method,
-            weights_n_bits=nbits,
-            weights_per_channel_threshold=per_channel,
-            enable_weights_quantization=enabled,
-            lut_values_bitwidth=None)
+    def test_has_get_set_weights_attr_config(self):
+        """ Test has_attr_config, get_attr_config and set_attr_config """
+        wcfg, node_attrs_list = self._create_wcfg()
 
-        cfg = WeightsAttrQuantizationConfig(input_cfg, weights_channels_axis=ChannelAxisMapping(2, 3))
-        assert cfg.enable_weights_quantization == enabled
-        if enabled:
-            assert cfg.weights_quantization_method == method
-            assert cfg.weights_n_bits == nbits
-            assert cfg.weights_per_channel_threshold == per_channel
-            assert cfg.weights_channels_axis == ChannelAxisMapping(2, 3)
-        else:
-            self._assert_unset(cfg)
+        for attr in node_attrs_list:
+            assert wcfg.has_attribute_config(attr) is True
+        assert wcfg.has_attribute_config('baz') is False
+        assert wcfg.has_attribute_config(2) is False
 
-        # disable quantization
-        cfg.disable_quantization()
-        assert cfg.enable_weights_quantization is False
-        self._assert_unset(cfg)
+        assert wcfg.get_attr_config('foo').weights_n_bits == 7
+        # get config should work by both long and short name
+        assert wcfg.get_attr_config('afooz') == wcfg.get_attr_config('foo')
+        assert wcfg.get_attr_config('bar').enable_weights_quantization is False
+        assert wcfg.get_attr_config(0).weights_n_bits == 5
+        assert wcfg.get_attr_config(1).weights_n_bits == 5
 
-        with pytest.raises(RuntimeError, match='enable_quantization should not be set directly'):
-            cfg.enable_weights_quantization = False
+        new_cfg = Mock()
+        wcfg.set_attr_config('afooz', new_cfg)
+        assert wcfg.get_attr_config('foo') == new_cfg
 
-    def test_set_quantization_param(self):
-        input_cfg = AttributeQuantizationConfig(enable_weights_quantization=True)
-        cfg = WeightsAttrQuantizationConfig(input_cfg)
-        params = {'foo': 5, 'bar': 10}
-        cfg.set_weights_quantization_param(params)
-        assert cfg.weights_quantization_params == params
+        assert wcfg.get_attr_config('bar') != new_cfg
+        wcfg.set_attr_config('bar', new_cfg)
+        assert wcfg.get_attr_config('bar') == new_cfg
 
-        params = {'baz': 42}
-        cfg.set_weights_quantization_param(params)
-        # TODO: this is the current behavior. I think each call should reset the params, not update upon existing.
-        assert cfg.weights_quantization_params == {'foo': 5, 'bar': 10, 'baz': 42}
+        assert wcfg.get_attr_config(1) != new_cfg
+        wcfg.set_attr_config(1, new_cfg)
+        assert wcfg.get_attr_config(1) == new_cfg
 
-    def test_unsupported_lut(self):
-        input_cfg = AttributeQuantizationConfig(enable_weights_quantization=True, lut_values_bitwidth=5)
-        with pytest.raises(ValueError, match='None-default lut_values_bitwidth in AttributeQuantizationConfig '
-                                             'is not supported.'):
-            WeightsAttrQuantizationConfig(input_cfg)
+        # non-existing attrs
+        with pytest.raises(ValueError, match='Unknown weights attr foo'):
+            # set attr expects the full name
+            wcfg.set_attr_config('foo', new_cfg)
+        with pytest.raises(ValueError, match='Unknown weights attr 2'):
+            wcfg.set_attr_config(2, new_cfg)
 
-    def _assert_unset(self, cfg: WeightsAttrQuantizationConfig):
-        assert cfg.weights_quantization_method is None
-        assert cfg.weights_n_bits == 0
-        assert cfg.weights_per_channel_threshold is None
-        assert cfg.weights_channels_axis is None
+        # non-existing attrs with force=True
+        wcfg.set_attr_config('baz', new_cfg, force=True)
+        assert wcfg.get_attr_config(1) == new_cfg
+
+        wcfg.set_attr_config(2, new_cfg, force=True)
+        assert wcfg.get_attr_config(1) == new_cfg
+
+    def test_set_quant_config_wcfg_level(self):
+        """ Test set_quant_config for attributes at the weight config level. """
+        wcfg, _ = self._create_wcfg()
+
+        assert wcfg.simd_size is None
+        wcfg.set_quant_config_attr('simd_size', 5)
+        assert wcfg.simd_size == 5
+
+        with pytest.raises(AttributeError):
+            wcfg.set_quant_config_attr('no_such_attr', 5)
+
+    def test_set_quant_config_attr_level(self):
+        """ Test set_quant_config for attributes of weights attrs configs. """
+        wcfg, _ = self._create_wcfg()
+
+        wcfg.set_quant_config_attr('weights_n_bits', 4, attr_name='afooz')
+        assert wcfg.get_attr_config('afooz').weights_n_bits == 4
+
+        assert wcfg.get_attr_config(0).weights_n_bits == 5
+        wcfg.set_quant_config_attr('weights_n_bits', 7, attr_name=1)
+        assert wcfg.get_attr_config(1).weights_n_bits == 7
+        # 0 is not affected
+        assert wcfg.get_attr_config(0).weights_n_bits == 5
+
+        # enable_weights_quantization has a special handling:
+        foo_cfg = copy.deepcopy(wcfg.get_attr_config('afooz'))
+        # True with already enabled quantization has no effect (but doesn't fail)
+        wcfg.set_quant_config_attr('enable_weights_quantization', True, attr_name='afooz')
+        assert wcfg.get_attr_config('afooz') == foo_cfg
+        # False should reset all attrs
+        wcfg.set_quant_config_attr('enable_weights_quantization', False, attr_name='afooz')
+        assert_unset_attr_config(wcfg.get_attr_config('afooz'))
+        # False can be set again (check that doesn't crash)
+        wcfg.set_quant_config_attr('enable_weights_quantization', False, attr_name='afooz')
+
+    def test_set_quant_config_attr_level_errors(self):
+        """ Test set_quant_config for attributes of weights attrs configs. """
+        wcfg, _ = self._create_wcfg()
+
+        for attr in ['baz', 2]:
+            with pytest.raises(ValueError, match=f'Weights attribute {attr} could not be found'):
+                wcfg.set_quant_config_attr('weights_n_bits', 5, attr_name=attr)
+
+        with pytest.raises(AttributeError, match='Parameter no_such_attr could not be found in the quantization config '
+                                                 'of weights attribute 1'):
+            wcfg.set_quant_config_attr('no_such_attr', 5, attr_name=1)
+
+        # disabled quantization cannot be turned on (enable_weights_quantization has a special handling)
+        with pytest.raises(ValueError, match=f'Cannot enable quantization for attr bar with disabled quantization.'):
+            wcfg.set_quant_config_attr('enable_weights_quantization', True, attr_name='bar')
+        # no other attr can be set for disabled quantization
+        with pytest.raises(ValueError, match=f'Cannot set param weights_n_bits for attr bar with disabled quantization.'):
+            wcfg.set_quant_config_attr('weights_n_bits', 5, attr_name='bar')
+
+    def test_disable_all(self):
+        wcfg, node_attrs_list = self._create_wcfg()
+        wcfg.disable_all_weights_quantization()
+        for attr in node_attrs_list:
+            assert_unset_attr_config(wcfg.get_attr_config(attr))
+
+    def test_get_all(self):
+        wcfg, node_attrs_list = self._create_wcfg()
+        assert sorted(wcfg.all_weight_attrs, key=lambda v: str(v)) == sorted(node_attrs_list, key=lambda v: str(v))
+        cfgs = wcfg.get_all_weight_attrs_configs()
+        assert cfgs == {attr: wcfg.get_attr_config(attr) for attr in node_attrs_list}

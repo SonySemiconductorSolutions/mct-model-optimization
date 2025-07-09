@@ -138,7 +138,8 @@ class BatchNormalizationReconstruction(common.BaseSubstitution):
                     qc.weights_quantization_cfg.set_attr_config(attr,
                                                                 WeightsAttrQuantizationConfig(
                                                                     AttributeQuantizationConfig(
-                                                                        enable_weights_quantization=False)))
+                                                                        enable_weights_quantization=False)),
+                                                                force=True)
 
         # Check if the source node was part of a fusion. If so, there are two cases:
         # either this is no longer a fusion, and the fusion info should be updated by removing
