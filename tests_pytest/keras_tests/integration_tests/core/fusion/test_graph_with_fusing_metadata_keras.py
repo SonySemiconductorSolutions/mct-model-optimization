@@ -19,13 +19,9 @@ from tests_pytest.keras_tests.keras_test_util.keras_test_mixin import KerasFwMix
 
 import keras
 
-
 class TestGraphWithFusionMetadataKeras(BaseGraphWithFusingMetadataTest, KerasFwMixin):
 
     layer_class_relu = keras.layers.ReLU
-
-    def test_disable_act_quantization(self, graph_with_fusion_metadata):
-        super().test_disable_act_quantization(graph_with_fusion_metadata)
 
     def _data_gen(self):
         return self.get_basic_data_gen(shapes=[(1, 3, 5, 5)])()

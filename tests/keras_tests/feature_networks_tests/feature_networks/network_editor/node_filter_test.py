@@ -44,9 +44,10 @@ class ScopeFilterTest(BaseKerasFeatureNetworkTest):
     - Check attribute changes
     '''
 
-    def __init__(self, unit_test, activation_n_bits: int = 3, weights_n_bits: int = 3):
-        self.activation_n_bits = activation_n_bits
-        self.weights_n_bits = weights_n_bits
+    def __init__(self, unit_test):
+        self.activation_n_bits = 5
+        self.weights_n_bits = 3
+        self.weights_n_bits2 = 2
         self.kernel = 3
         self.num_conv_channels = 4
         self.scope = 'scope'
@@ -73,12 +74,9 @@ class ScopeFilterTest(BaseKerasFeatureNetworkTest):
                           EditRule(filter=NodeNameScopeFilter(self.scope),
                                    action=ChangeCandidatesWeightsQuantConfigAttr(attr_name=KERNEL,
                                                                                  weights_n_bits=self.weights_n_bits)),
-                          EditRule(filter=NodeNameScopeFilter('change_2'),
-                                   action=ChangeCandidatesWeightsQuantConfigAttr(attr_name=KERNEL,
-                                                                                 enable_weights_quantization=True)),
                           EditRule(filter=NodeNameScopeFilter('change_2') or NodeNameScopeFilter('does_not_exist'),
                                    action=ChangeCandidatesWeightsQuantConfigAttr(attr_name=KERNEL,
-                                                                                 enable_weights_quantization=False))
+                                                                                 weights_n_bits=self.weights_n_bits2))
                           ]
         return mct.core.DebugConfig(network_editor=network_editor)
 
@@ -107,10 +105,12 @@ class ScopeFilterTest(BaseKerasFeatureNetworkTest):
         self.unit_test.assertTrue(
             len(np.unique(conv_layers[1].get_quantized_weights()['kernel'].numpy())) in [2 ** (self.weights_n_bits) - 1,
                                                                              2 ** (self.weights_n_bits)])
+        self.unit_test.assertTrue(
+            len(np.unique(conv_layers[2].get_quantized_weights()['kernel'].numpy())) in [2 ** (self.weights_n_bits2) - 1,
+                                                                                         2 ** (self.weights_n_bits2)])
+
         # check that this conv's weights did not change
         self.unit_test.assertTrue(np.all(conv_layers[0].get_quantized_weights()['kernel'].numpy() == self.conv_w))
-        # check that this conv's weights did not change
-        self.unit_test.assertTrue(np.all(conv_layers[2].kernel == self.conv_w))
         holder_layers = get_layers_from_model_by_type(quantized_model, KerasActivationQuantizationHolder)
         self.unit_test.assertTrue(holder_layers[1].activation_holder_quantizer.get_config()['num_bits'] == 16)
         self.unit_test.assertTrue(holder_layers[2].activation_holder_quantizer.get_config()['num_bits'] == self.activation_n_bits)
