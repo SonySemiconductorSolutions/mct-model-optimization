@@ -4,3 +4,4 @@ scratch_pad.py
 ./docs/build
 ./docs/_build
 tutorials/notebooks/.ipynb_checkpoints
+*.egg-info

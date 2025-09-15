@@ -32,6 +32,7 @@ CUT_TOTAL_SIZE = 'cut_total_size'
 
 # Report file name:
 REPORT_FILENAME = 'quant_report.json'
+TROUBLESHOOT_REPORT_FILENAME = 'troubleshoot_report.json'
 
 # Tag to use in tensorboard for the graph we plot:
 TENSORBOARD_DEFAULT_TAG = 'xquant'

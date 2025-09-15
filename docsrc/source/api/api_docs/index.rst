@@ -79,6 +79,7 @@ xquant
 ===========
 
 - :ref:`xquant_report_pytorch_experimental<ug-xquant_report_pytorch_experimental>`: A function to generate an explainable quantization report for a quantized Pytorch model (experimental).
+- :ref:`xquant_report_troubleshoot_pytorch_experimental<ug-xquant_report_troubleshoot_pytorch_experimental>`: A function to generate an explainable quantization report, detect degraded layaers and judge degrade causes for a quantized Pytorch model. (experimental).
 - :ref:`xquant_report_keras_experimental<ug-xquant_report_keras_experimental>`: A function to generate an explainable quantization report for a quantized Keras model (experimental).
 
 - :ref:`XQuantConfig<ug-XQuantConfig>`: Configuration for the XQuant report (experimental).

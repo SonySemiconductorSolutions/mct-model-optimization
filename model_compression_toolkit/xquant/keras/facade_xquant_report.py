@@ -16,13 +16,13 @@
 from typing import Callable, Dict, Any
 
 from model_compression_toolkit.verify_packages import FOUND_TF
-from model_compression_toolkit.xquant.common.core_report_generator import core_report_generator
 from model_compression_toolkit.xquant import XQuantConfig
 from model_compression_toolkit.logger import Logger
 
 if FOUND_TF:
     import keras
     from model_compression_toolkit.xquant.keras.keras_report_utils import KerasReportUtils
+    from model_compression_toolkit.xquant.keras.core_report_generator import core_report_generator
 
     def xquant_report_keras_experimental(float_model: keras.Model,
                                          quantized_model: keras.Model,
