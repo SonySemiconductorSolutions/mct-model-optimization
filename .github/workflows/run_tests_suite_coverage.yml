@@ -12,7 +12,7 @@ concurrency:
 jobs:
   build:
     runs-on: ubuntu-latest
-    timeout-minutes: 80
+    timeout-minutes: 100
     env:
       COVERAGE_THRESHOLD: 98
     steps:
