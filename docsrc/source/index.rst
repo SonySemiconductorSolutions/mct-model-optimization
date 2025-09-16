@@ -73,6 +73,7 @@ Visualization:
     :maxdepth: 1
 
     Visualize a model and other data within the TensorBoard UI. <../guidelines/visualization>
+    XQuant Extension Tool <../guidelines/XQuant_Extension_Tool>
 
 
 Quickstart
