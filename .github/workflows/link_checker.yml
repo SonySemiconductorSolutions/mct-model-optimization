@@ -5,11 +5,7 @@ on:
   schedule:
     - cron: 0 0 * * *
   pull_request:
-    branches:
-      - main
   push:
-    branches:
-      - main
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
@@ -17,8 +13,10 @@ concurrency:
 
 jobs:
   link-checker:
-    if: github.repository == 'sony/model_optimization'
+    if: github.repository == 'SonySemiconductorSolutions/mct-model-optimization'
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
     steps:
       - uses: actions/checkout@v4
       - name: Install Python 3

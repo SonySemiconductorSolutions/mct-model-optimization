@@ -4,8 +4,6 @@ on:
   schedule:
     - cron: 0 0 * * *
   pull_request:
-    branches:
-      - main
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
@@ -14,7 +12,7 @@ concurrency:
 jobs:
   build:
     runs-on: ubuntu-latest
-    timeout-minutes: 80
+    timeout-minutes: 100
     env:
       COVERAGE_THRESHOLD: 98
     steps:
