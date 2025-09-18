@@ -6,12 +6,12 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>trainable_infrastructure Module &#8212; MCT Documentation: ver 2.4.3.dev1</title>
-    <link rel="stylesheet" type="text/css" href="../../../static/pygments.css?v=03e43079" />
+    <title>trainable_infrastructure Module &#8212; MCT Documentation: ver 2.4.2</title>
+    <link rel="stylesheet" type="text/css" href="../../../static/pygments.css?v=fa44fd50" />
     <link rel="stylesheet" type="text/css" href="../../../static/bizstyle.css?v=5283bb3d" />
     <link rel="stylesheet" type="text/css" href="../../../static/css/custom.css?v=01243f34" />
     
-    <script src="../../../static/documentation_options.js?v=d35ef609"></script>
+    <script src="../../../static/documentation_options.js?v=de1351e5"></script>
     <script src="../../../static/doctools.js?v=9bcbadda"></script>
     <script src="../../../static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../../static/bizstyle.js"></script>
@@ -28,7 +28,7 @@
         <li class="right" style="margin-right: 10px">
           <a href="../../../genindex.html" title="General Index"
              accesskey="I">index</a></li>
-        <li class="nav-item nav-item-0"><a href="../../../index.html">MCT Documentation: ver 2.4.3.dev1</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">MCT Documentation: ver 2.4.2</a> &#187;</li>
         <li class="nav-item nav-item-this"><a href="">trainable_infrastructure Module</a></li> 
       </ul>
     </div>  
@@ -57,7 +57,7 @@ We start by explaining the basic building block of a trainable quantizer, and th
 It adds to the base quantizer a get_config and from_config functions to enable loading and saving the keras model.</p>
 <dl class="py class">
 <dt class="sig sig-object py" id="model_compression_toolkit.trainable_infrastructure.BaseKerasTrainableQuantizer">
-<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">model_compression_toolkit.trainable_infrastructure.</span></span><span class="sig-name descname"><span class="pre">BaseKerasTrainableQuantizer</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">quantization_config</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">freeze_quant_params</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#model_compression_toolkit.trainable_infrastructure.BaseKerasTrainableQuantizer" title="Link to this definition">¶</a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">model_compression_toolkit.trainable_infrastructure.</span></span><span class="sig-name descname"><span class="pre">BaseKerasTrainableQuantizer</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">quantization_config</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">freeze_quant_params</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#model_compression_toolkit.trainable_infrastructure.BaseKerasTrainableQuantizer" title="Link to this definition">¶</a></dt>
 <dd><p>This class is a base quantizer which validates provided quantization config and defines an abstract function which any quantizer needs to implement.
 This class adds to the base quantizer a get_config and from_config functions to enable loading and saving the keras model.</p>
 <p>This class is a base quantizer which validates the provided quantization config and defines an abstract function which any quantizer needs to implment.</p>
@@ -78,7 +78,7 @@ This class adds to the base quantizer a get_config and from_config functions to 
 It adds to the base quantizer a get_config and from_config functions to enable loading and saving the keras model.</p>
 <dl class="py class">
 <dt class="sig sig-object py" id="model_compression_toolkit.trainable_infrastructure.BasePytorchTrainableQuantizer">
-<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">model_compression_toolkit.trainable_infrastructure.</span></span><span class="sig-name descname"><span class="pre">BasePytorchTrainableQuantizer</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">quantization_config</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">freeze_quant_params</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#model_compression_toolkit.trainable_infrastructure.BasePytorchTrainableQuantizer" title="Link to this definition">¶</a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">model_compression_toolkit.trainable_infrastructure.</span></span><span class="sig-name descname"><span class="pre">BasePytorchTrainableQuantizer</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">quantization_config</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">freeze_quant_params</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#model_compression_toolkit.trainable_infrastructure.BasePytorchTrainableQuantizer" title="Link to this definition">¶</a></dt>
 <dd><p>Base class for PyTorch trainable quantizers</p>
 <p>This class is a base quantizer which validates the provided quantization config and defines an abstract function which any quantizer needs to implment.</p>
 <dl class="field-list simple">
@@ -97,7 +97,7 @@ It adds to the base quantizer a get_config and from_config functions to enable l
 <p><strong>Select a training method:</strong></p>
 <dl class="py class">
 <dt class="sig sig-object py" id="model_compression_toolkit.trainable_infrastructure.TrainingMethod">
-<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">model_compression_toolkit.trainable_infrastructure.</span></span><span class="sig-name descname"><span class="pre">TrainingMethod</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#model_compression_toolkit.trainable_infrastructure.TrainingMethod" title="Link to this definition">¶</a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">model_compression_toolkit.trainable_infrastructure.</span></span><span class="sig-name descname"><span class="pre">TrainingMethod</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#model_compression_toolkit.trainable_infrastructure.TrainingMethod" title="Link to this definition">¶</a></dt>
 <dd><p>An enum for selecting a training method</p>
 <p>STE - Standard straight-through estimator. Includes PowerOfTwo, symmetric &amp; uniform quantizers</p>
 <p>DQA -  DNN Quantization with Attention. Includes a smooth quantization introduces by DQA method</p>
@@ -110,7 +110,7 @@ It adds to the base quantizer a get_config and from_config functions to enable l
 <p>This configuration object contains the necessary attributes for configuring a weights trainable quantizer.</p>
 <dl class="py class">
 <dt class="sig sig-object py" id="model_compression_toolkit.trainable_infrastructure.TrainableQuantizerWeightsConfig">
-<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">model_compression_toolkit.trainable_infrastructure.</span></span><span class="sig-name descname"><span class="pre">TrainableQuantizerWeightsConfig</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">weights_quantization_method</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">weights_n_bits</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">weights_quantization_params</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">enable_weights_quantization</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">weights_channels_axis</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">weights_per_channel_threshold</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">min_threshold</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">weights_quantization_candidates</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#model_compression_toolkit.trainable_infrastructure.TrainableQuantizerWeightsConfig" title="Link to this definition">¶</a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">model_compression_toolkit.trainable_infrastructure.</span></span><span class="sig-name descname"><span class="pre">TrainableQuantizerWeightsConfig</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">weights_quantization_method</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">weights_n_bits</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">weights_quantization_params</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">enable_weights_quantization</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">weights_channels_axis</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">weights_per_channel_threshold</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">min_threshold</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">weights_quantization_candidates</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#model_compression_toolkit.trainable_infrastructure.TrainableQuantizerWeightsConfig" title="Link to this definition">¶</a></dt>
 <dd><p>Attributes for configuring weights trainable quantizer.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -128,8 +128,8 @@ It adds to the base quantizer a get_config and from_config functions to enable l
 </dd></dl>
 
 <p>For example, we can set a trainable weights quantizer with the following configuration:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">model_compression_toolkit.target_platform_capabilities.target_platform_capabilities</span><span class="w"> </span><span class="kn">import</span> <span class="n">QuantizationMethod</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">model_compression_toolkit.constants</span><span class="w"> </span><span class="kn">import</span> <span class="n">THRESHOLD</span><span class="p">,</span> <span class="n">MIN_THRESHOLD</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">model_compression_toolkit.target_platform_capabilities.target_platform_capabilities</span> <span class="kn">import</span> <span class="n">QuantizationMethod</span>
+<span class="kn">from</span> <span class="nn">model_compression_toolkit.constants</span> <span class="kn">import</span> <span class="n">THRESHOLD</span><span class="p">,</span> <span class="n">MIN_THRESHOLD</span>
 
 <span class="n">TrainableQuantizerWeightsConfig</span><span class="p">(</span><span class="n">weights_quantization_method</span><span class="o">=</span><span class="n">QuantizationMethod</span><span class="o">.</span><span class="n">SYMMETRIC</span><span class="p">,</span>
                                            <span class="n">weights_n_bits</span><span class="o">=</span><span class="mi">8</span><span class="p">,</span>
@@ -149,7 +149,7 @@ It adds to the base quantizer a get_config and from_config functions to enable l
 <p>This configuration object contains the necessary attributes for configuring an activation trainable quantizer.</p>
 <dl class="py class">
 <dt class="sig sig-object py" id="model_compression_toolkit.trainable_infrastructure.TrainableQuantizerActivationConfig">
-<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">model_compression_toolkit.trainable_infrastructure.</span></span><span class="sig-name descname"><span class="pre">TrainableQuantizerActivationConfig</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">activation_quantization_method</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">activation_n_bits</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">activation_quantization_params</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">enable_activation_quantization</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">min_threshold</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">activation_quantization_candidates</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#model_compression_toolkit.trainable_infrastructure.TrainableQuantizerActivationConfig" title="Link to this definition">¶</a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">model_compression_toolkit.trainable_infrastructure.</span></span><span class="sig-name descname"><span class="pre">TrainableQuantizerActivationConfig</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">activation_quantization_method</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">activation_n_bits</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">activation_quantization_params</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">enable_activation_quantization</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">min_threshold</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">activation_quantization_candidates</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#model_compression_toolkit.trainable_infrastructure.TrainableQuantizerActivationConfig" title="Link to this definition">¶</a></dt>
 <dd><p>Attributes for configuring activations trainable quantizer.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -165,8 +165,8 @@ It adds to the base quantizer a get_config and from_config functions to enable l
 </dd></dl>
 
 <p>For example, we can set a trainable activation quantizer with the following configuration:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">model_compression_toolkit.target_platform_capabilities.target_platform_capabilities</span><span class="w"> </span><span class="kn">import</span> <span class="n">QuantizationMethod</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">model_compression_toolkit.constants</span><span class="w"> </span><span class="kn">import</span> <span class="n">THRESHOLD</span><span class="p">,</span> <span class="n">MIN_THRESHOLD</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">model_compression_toolkit.target_platform_capabilities.target_platform_capabilities</span> <span class="kn">import</span> <span class="n">QuantizationMethod</span>
+<span class="kn">from</span> <span class="nn">model_compression_toolkit.constants</span> <span class="kn">import</span> <span class="n">THRESHOLD</span><span class="p">,</span> <span class="n">MIN_THRESHOLD</span>
 
 <span class="n">TrainableQuantizerActivationConfig</span><span class="p">(</span><span class="n">activation_quantization_method</span><span class="o">=</span><span class="n">QuantizationMethod</span><span class="o">.</span><span class="n">UNIFORM</span><span class="p">,</span>
                                               <span class="n">activation_n_bits</span><span class="o">=</span><span class="mi">8</span><span class="p">,</span>
@@ -237,13 +237,13 @@ It adds to the base quantizer a get_config and from_config functions to enable l
         <li class="right" style="margin-right: 10px">
           <a href="../../../genindex.html" title="General Index"
              >index</a></li>
-        <li class="nav-item nav-item-0"><a href="../../../index.html">MCT Documentation: ver 2.4.3.dev1</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">MCT Documentation: ver 2.4.2</a> &#187;</li>
         <li class="nav-item nav-item-this"><a href="">trainable_infrastructure Module</a></li> 
       </ul>
     </div>
     <div class="footer" role="contentinfo">
     &#169; Copyright 2022, Sony Semiconductor Israel.
-      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 8.2.3.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 8.1.3.
     </div>
   </body>
 </html>

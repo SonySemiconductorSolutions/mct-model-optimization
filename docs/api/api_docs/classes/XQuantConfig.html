@@ -6,12 +6,12 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>XQuant Configuration &#8212; MCT Documentation: ver 2.4.3.dev1</title>
-    <link rel="stylesheet" type="text/css" href="../../../static/pygments.css?v=03e43079" />
+    <title>XQuant Configuration &#8212; MCT Documentation: ver 2.4.2</title>
+    <link rel="stylesheet" type="text/css" href="../../../static/pygments.css?v=fa44fd50" />
     <link rel="stylesheet" type="text/css" href="../../../static/bizstyle.css?v=5283bb3d" />
     <link rel="stylesheet" type="text/css" href="../../../static/css/custom.css?v=01243f34" />
     
-    <script src="../../../static/documentation_options.js?v=d35ef609"></script>
+    <script src="../../../static/documentation_options.js?v=de1351e5"></script>
     <script src="../../../static/doctools.js?v=9bcbadda"></script>
     <script src="../../../static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../../static/bizstyle.js"></script>
@@ -28,7 +28,7 @@
         <li class="right" style="margin-right: 10px">
           <a href="../../../genindex.html" title="General Index"
              accesskey="I">index</a></li>
-        <li class="nav-item nav-item-0"><a href="../../../index.html">MCT Documentation: ver 2.4.3.dev1</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">MCT Documentation: ver 2.4.2</a> &#187;</li>
         <li class="nav-item nav-item-this"><a href="">XQuant Configuration</a></li> 
       </ul>
     </div>  
@@ -42,7 +42,7 @@
 <span id="ug-xquantconfig"></span><h1>XQuant Configuration<a class="headerlink" href="#xquant-configuration" title="Link to this heading">¶</a></h1>
 <dl class="py class">
 <dt class="sig sig-object py" id="model_compression_toolkit.xquant.common.xquant_config.XQuantConfig">
-<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">model_compression_toolkit.xquant.common.xquant_config.</span></span><span class="sig-name descname"><span class="pre">XQuantConfig</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">report_dir</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">custom_similarity_metrics</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">quantize_reported_dir</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">threshold_quantize_error</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">{'mse':</span> <span class="pre">0.1,</span> <span class="pre">'cs':</span> <span class="pre">0.1,</span> <span class="pre">'sqnr':</span> <span class="pre">0.1}</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">is_detect_under_threshold_quantize_error</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">{'mse':</span> <span class="pre">False,</span> <span class="pre">'cs':</span> <span class="pre">True,</span> <span class="pre">'sqnr':</span> <span class="pre">True}</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">threshold_degrade_layer_ratio</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.5</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">threshold_zscore_outlier_removal</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">5.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">threshold_ratio_unbalanced_concatenation</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">16.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">threshold_bitwidth_mixed_precision_with_model_output_loss_objective</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">2</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#model_compression_toolkit.xquant.common.xquant_config.XQuantConfig" title="Link to this definition">¶</a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">model_compression_toolkit.xquant.common.xquant_config.</span></span><span class="sig-name descname"><span class="pre">XQuantConfig</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">report_dir</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">custom_similarity_metrics</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">quantize_reported_dir</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">threshold_quantize_error</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">{'mse':</span> <span class="pre">0.1,</span> <span class="pre">'cs':</span> <span class="pre">0.1,</span> <span class="pre">'sqnr':</span> <span class="pre">0.1}</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">is_detect_under_threshold_quantize_error</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">{'mse':</span> <span class="pre">False,</span> <span class="pre">'cs':</span> <span class="pre">True,</span> <span class="pre">'sqnr':</span> <span class="pre">True}</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">threshold_degrade_layer_ratio</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.5</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">threshold_zscore_outlier_removal</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">5.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">threshold_ratio_unbalanced_concatenation</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">16.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">threshold_bitwidth_mixed_precision_with_model_output_loss_objective</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">2</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#model_compression_toolkit.xquant.common.xquant_config.XQuantConfig" title="Link to this definition">¶</a></dt>
 <dd><p>Configuration for generating the report.
 It allows to set the log dir that the report will be saved in and to add similarity metrics
 to measure between tensors of the two models.</p>
@@ -116,13 +116,13 @@ to measure between tensors of the two models.</p>
         <li class="right" style="margin-right: 10px">
           <a href="../../../genindex.html" title="General Index"
              >index</a></li>
-        <li class="nav-item nav-item-0"><a href="../../../index.html">MCT Documentation: ver 2.4.3.dev1</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">MCT Documentation: ver 2.4.2</a> &#187;</li>
         <li class="nav-item nav-item-this"><a href="">XQuant Configuration</a></li> 
       </ul>
     </div>
     <div class="footer" role="contentinfo">
     &#169; Copyright 2022, Sony Semiconductor Israel.
-      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 8.2.3.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 8.1.3.
     </div>
   </body>
 </html>

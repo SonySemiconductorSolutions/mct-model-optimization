@@ -6,12 +6,12 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>Pruning Configuration &#8212; MCT Documentation: ver 2.4.3.dev1</title>
-    <link rel="stylesheet" type="text/css" href="../../../static/pygments.css?v=03e43079" />
+    <title>Pruning Configuration &#8212; MCT Documentation: ver 2.4.2</title>
+    <link rel="stylesheet" type="text/css" href="../../../static/pygments.css?v=fa44fd50" />
     <link rel="stylesheet" type="text/css" href="../../../static/bizstyle.css?v=5283bb3d" />
     <link rel="stylesheet" type="text/css" href="../../../static/css/custom.css?v=01243f34" />
     
-    <script src="../../../static/documentation_options.js?v=d35ef609"></script>
+    <script src="../../../static/documentation_options.js?v=de1351e5"></script>
     <script src="../../../static/doctools.js?v=9bcbadda"></script>
     <script src="../../../static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../../static/bizstyle.js"></script>
@@ -28,7 +28,7 @@
         <li class="right" style="margin-right: 10px">
           <a href="../../../genindex.html" title="General Index"
              accesskey="I">index</a></li>
-        <li class="nav-item nav-item-0"><a href="../../../index.html">MCT Documentation: ver 2.4.3.dev1</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">MCT Documentation: ver 2.4.2</a> &#187;</li>
         <li class="nav-item nav-item-this"><a href="">Pruning Configuration</a></li> 
       </ul>
     </div>  
@@ -42,7 +42,7 @@
 <span id="ug-pruningconfig"></span><h1>Pruning Configuration<a class="headerlink" href="#pruning-configuration" title="Link to this heading">¶</a></h1>
 <dl class="py class">
 <dt class="sig sig-object py" id="model_compression_toolkit.pruning.PruningConfig">
-<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">model_compression_toolkit.pruning.</span></span><span class="sig-name descname"><span class="pre">PruningConfig</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">num_score_approximations</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">PRUNING_NUM_SCORE_APPROXIMATIONS</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">importance_metric</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">ImportanceMetric.LFH</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">channels_filtering_strategy</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">ChannelsFilteringStrategy.GREEDY</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#model_compression_toolkit.pruning.PruningConfig" title="Link to this definition">¶</a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">model_compression_toolkit.pruning.</span></span><span class="sig-name descname"><span class="pre">PruningConfig</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">num_score_approximations</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">PRUNING_NUM_SCORE_APPROXIMATIONS</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">importance_metric</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">ImportanceMetric.LFH</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">channels_filtering_strategy</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">ChannelsFilteringStrategy.GREEDY</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#model_compression_toolkit.pruning.PruningConfig" title="Link to this definition">¶</a></dt>
 <dd><p>Configuration class for specifying how a neural network should be pruned.</p>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="model_compression_toolkit.pruning.PruningConfig.num_score_approximations">
@@ -100,7 +100,7 @@ Defaults to a greedy approach.</p></li>
 <h2>ImportanceMetric<a class="headerlink" href="#importancemetric" title="Link to this heading">¶</a></h2>
 <dl class="py class">
 <dt class="sig sig-object py" id="model_compression_toolkit.pruning.ImportanceMetric">
-<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">model_compression_toolkit.pruning.</span></span><span class="sig-name descname"><span class="pre">ImportanceMetric</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#model_compression_toolkit.pruning.ImportanceMetric" title="Link to this definition">¶</a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">model_compression_toolkit.pruning.</span></span><span class="sig-name descname"><span class="pre">ImportanceMetric</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#model_compression_toolkit.pruning.ImportanceMetric" title="Link to this definition">¶</a></dt>
 <dd><p>Enum for specifying the metric used to determine the importance of channels when pruning:</p>
 <p>LFH - Label-Free Hessian uses hessian info for measuring each channel’s sensitivity.</p>
 </dd></dl>
@@ -110,7 +110,7 @@ Defaults to a greedy approach.</p></li>
 <h2>ChannelsFilteringStrategy<a class="headerlink" href="#channelsfilteringstrategy" title="Link to this heading">¶</a></h2>
 <dl class="py class">
 <dt class="sig sig-object py" id="model_compression_toolkit.pruning.ChannelsFilteringStrategy">
-<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">model_compression_toolkit.pruning.</span></span><span class="sig-name descname"><span class="pre">ChannelsFilteringStrategy</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#model_compression_toolkit.pruning.ChannelsFilteringStrategy" title="Link to this definition">¶</a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">model_compression_toolkit.pruning.</span></span><span class="sig-name descname"><span class="pre">ChannelsFilteringStrategy</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#model_compression_toolkit.pruning.ChannelsFilteringStrategy" title="Link to this definition">¶</a></dt>
 <dd><p>Enum for specifying the strategy used for filtering (pruning) channels:</p>
 <p>GREEDY - Prune the least important channel groups up to the allowed resources utilization limit (for now, only weights_memory is considered).</p>
 </dd></dl>
@@ -168,13 +168,13 @@ Defaults to a greedy approach.</p></li>
         <li class="right" style="margin-right: 10px">
           <a href="../../../genindex.html" title="General Index"
              >index</a></li>
-        <li class="nav-item nav-item-0"><a href="../../../index.html">MCT Documentation: ver 2.4.3.dev1</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">MCT Documentation: ver 2.4.2</a> &#187;</li>
         <li class="nav-item nav-item-this"><a href="">Pruning Configuration</a></li> 
       </ul>
     </div>
     <div class="footer" role="contentinfo">
     &#169; Copyright 2022, Sony Semiconductor Israel.
-      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 8.2.3.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 8.1.3.
     </div>
   </body>
 </html>
