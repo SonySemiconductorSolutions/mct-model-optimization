@@ -1,0 +1,124 @@
+
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="../">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>Mixed Precision with model output loss objective &#8212; TroubleShooting Documentation (MCT XQuant Extension Tool): ver 1.0</title>
+    <link rel="stylesheet" type="text/css" href="../static/pygments.css?v=fa44fd50" />
+    <link rel="stylesheet" type="text/css" href="../static/bizstyle.css?v=5283bb3d" />
+    <link rel="stylesheet" type="text/css" href="../static/css/custom.css?v=01243f34" />
+    
+    <script src="../static/documentation_options.js?v=f2a433a1"></script>
+    <script src="../static/doctools.js?v=9bcbadda"></script>
+    <script src="../static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../static/bizstyle.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <meta name="viewport" content="width=device-width,initial-scale=1.0" />
+    <!--[if lt IE 9]>
+    <script src="static/css3-mediaqueries.js"></script>
+    <![endif]-->
+  </head><body>
+    <div class="related" role="navigation" aria-label="Related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="nav-item nav-item-0"><a href="../index.html">TroubleShooting Documentation (MCT XQuant Extension Tool): ver 1.0</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">Mixed Precision with model output loss objective</a></li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <section id="mixed-precision-with-model-output-loss-objective">
+<span id="ug-mixed-precision-with-model-output-loss-objective"></span><h1>Mixed Precision with model output loss objective<a class="headerlink" href="#mixed-precision-with-model-output-loss-objective" title="Link to this heading">¶</a></h1>
+<p>In Mixed Precision quantization, MCT will assign a different bitwidth to each weight in the model, depending on the weight’s layer sensitivity and a resource constraint defined by the user, such as target model size.</p>
+<p>Check out the <a class="reference external" href="https://github.com/SonySemiconductorSolutions/mct-model-optimization/blob/v2.4.2/tutorials/notebooks/mct_features_notebooks/pytorch/example_pytorch_mixed_precision_ptq.ipynb">Mixed Precision tutorial</a> for more information.</p>
+<section id="overview">
+<h2>Overview<a class="headerlink" href="#overview" title="Link to this heading">¶</a></h2>
+<p>In Mixed Precision optimization, the aim is to determine an optimal bitwidth assignment for each quantized layer to maximize the accuracy of the resulting model.</p>
+<p>Traditionally, the Mixed Precision search relies on optimizing a loss function to achieve a high correlation with the actual model loss.</p>
+<p>However, in scenarios involving high compression rates and complex models, the default objective may prioritize reducing the precision of the last layer, potentially leading to compromised results.</p>
+</section>
+<section id="trouble-situation">
+<h2>Trouble Situation<a class="headerlink" href="#trouble-situation" title="Link to this heading">¶</a></h2>
+<p>The quantization accuracy may degrade when the activation quantization bitwidth of the last layer is an extremely small number (e.g. 2 bits).</p>
+<dl>
+<dt>For example, you can check the activation quantization bitwidth of the last layer by TensorBoard visualizations (<strong>after_statistics_correction</strong> in the below image).</dt><dd><a class="reference internal image-reference" href="../images/quantization_bitwidth_of_last_layer.png"><img alt="../images/quantization_bitwidth_of_last_layer.png" src="../images/quantization_bitwidth_of_last_layer.png" style="width: 479.40000000000003px; height: 233.20000000000002px;" />
+</a>
+</dd>
+</dl>
+</section>
+<section id="solution">
+<h2>Solution<a class="headerlink" href="#solution" title="Link to this heading">¶</a></h2>
+<p>MCT offers an API to adjust the Mixed Precision objective method (<code class="docutils literal notranslate"><span class="pre">MpDistanceWeighting</span></code>).</p>
+<p>Set the <code class="docutils literal notranslate"><span class="pre">distance_weighting_method</span></code> attribute to <code class="docutils literal notranslate"><span class="pre">MpDistanceWeighting.LAST_LAYER</span></code> in the <code class="docutils literal notranslate"><span class="pre">MixedPrecisionQuantizationConfig</span></code> of the <code class="docutils literal notranslate"><span class="pre">CoreConfig</span></code>.</p>
+<p>By emphasizing a loss function that places greater importance on enhancing the model’s quantized output, users can mitigate the risk of detrimental precision reductions in the last layer.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">model_compression_toolkit.core.common.mixed_precision</span> <span class="kn">import</span> <span class="n">MpDistanceWeighting</span>
+
+<span class="n">mixed_precision_config</span> <span class="o">=</span> <span class="n">mct</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">MixedPrecisionQuantizationConfig</span><span class="p">(</span><span class="n">distance_weighting_method</span><span class="o">=</span><span class="n">MpDistanceWeighting</span><span class="o">.</span><span class="n">LAST_LAYER</span><span class="p">)</span>
+<span class="n">core_config</span> <span class="o">=</span> <span class="n">mct</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">CoreConfig</span><span class="p">(</span><span class="n">mixed_precision_config</span><span class="o">=</span><span class="n">mixed_precision_config</span><span class="p">)</span>
+<span class="n">quantized_model</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">mct</span><span class="o">.</span><span class="n">ptq</span><span class="o">.</span><span class="n">pytorch_post_training_quantization</span><span class="p">(</span><span class="o">...</span><span class="p">,</span>
+                                                                <span class="n">core_config</span><span class="o">=</span><span class="n">core_config</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+</section>
+
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="Main">
+        <div class="sphinxsidebarwrapper">
+  <div>
+    <h3><a href="../index.html">Table of Contents</a></h3>
+    <ul>
+<li><a class="reference internal" href="#">Mixed Precision with model output loss objective</a><ul>
+<li><a class="reference internal" href="#overview">Overview</a></li>
+<li><a class="reference internal" href="#trouble-situation">Trouble Situation</a></li>
+<li><a class="reference internal" href="#solution">Solution</a></li>
+</ul>
+</li>
+</ul>
+
+  </div>
+<search id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</search>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="Related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="nav-item nav-item-0"><a href="../index.html">TroubleShooting Documentation (MCT XQuant Extension Tool): ver 1.0</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">Mixed Precision with model output loss objective</a></li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+    &#169; Copyright 2025, Sony Semiconductor Solutions Corporation.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 8.1.3.
+    </div>
+  </body>
+</html>

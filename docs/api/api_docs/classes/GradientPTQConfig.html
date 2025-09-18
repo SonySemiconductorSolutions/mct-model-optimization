@@ -1,22 +1,19 @@
 
+<!DOCTYPE html>
 
-<!doctype html>
-
-<html lang="en">
+<html lang="en" data-content_root="../../../">
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
     <title>GradientPTQConfig Class &#8212; MCT Documentation: ver 2.4.2</title>
-    <link rel="stylesheet" type="text/css" href="../../../static/pygments.css" />
-    <link rel="stylesheet" type="text/css" href="../../../static/bizstyle.css" />
-    <link rel="stylesheet" type="text/css" href="../../../static/css/custom.css" />
+    <link rel="stylesheet" type="text/css" href="../../../static/pygments.css?v=fa44fd50" />
+    <link rel="stylesheet" type="text/css" href="../../../static/bizstyle.css?v=5283bb3d" />
+    <link rel="stylesheet" type="text/css" href="../../../static/css/custom.css?v=01243f34" />
     
-    <script data-url_root="../../../" id="documentation_options" src="../../../static/documentation_options.js"></script>
-    <script src="../../../static/jquery.js"></script>
-    <script src="../../../static/underscore.js"></script>
-    <script src="../../../static/_sphinx_javascript_frameworks_compat.js"></script>
-    <script src="../../../static/doctools.js"></script>
+    <script src="../../../static/documentation_options.js?v=de1351e5"></script>
+    <script src="../../../static/doctools.js?v=9bcbadda"></script>
+    <script src="../../../static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../../static/bizstyle.js"></script>
     <link rel="index" title="Index" href="../../../genindex.html" />
     <link rel="search" title="Search" href="../../../search.html" />
@@ -25,7 +22,7 @@
     <script src="static/css3-mediaqueries.js"></script>
     <![endif]-->
   </head><body>
-    <div class="related" role="navigation" aria-label="related navigation">
+    <div class="related" role="navigation" aria-label="Related">
       <h3>Navigation</h3>
       <ul>
         <li class="right" style="margin-right: 10px">
@@ -42,11 +39,11 @@
           <div class="body" role="main">
             
   <section id="gradientptqconfig-class">
-<span id="ug-gradientptqconfig"></span><h1>GradientPTQConfig Class<a class="headerlink" href="#gradientptqconfig-class" title="Permalink to this heading">¶</a></h1>
+<span id="ug-gradientptqconfig"></span><h1>GradientPTQConfig Class<a class="headerlink" href="#gradientptqconfig-class" title="Link to this heading">¶</a></h1>
 <p><strong>The following API can be used to create a GradientPTQConfig instance which can be used for post training quantization using knowledge distillation from a teacher (float model) to a student (the quantized model)</strong></p>
 <dl class="py class">
 <dt class="sig sig-object py" id="model_compression_toolkit.gptq.GradientPTQConfig">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">model_compression_toolkit.gptq.</span></span><span class="sig-name descname"><span class="pre">GradientPTQConfig</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">n_epochs</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">loss</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">optimizer</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">optimizer_rest</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">train_bias</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">hessian_weights_config</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">gradual_activation_quantization_config</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">regularization_factor</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rounding_type=RoundingType.SoftQuantizer</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">optimizer_quantization_parameter=None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">optimizer_bias=None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">log_function=None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">gptq_quantizer_params_override=&lt;factory&gt;</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#model_compression_toolkit.gptq.GradientPTQConfig" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">model_compression_toolkit.gptq.</span></span><span class="sig-name descname"><span class="pre">GradientPTQConfig</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">n_epochs</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">loss</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">optimizer</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">optimizer_rest</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">train_bias</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">hessian_weights_config</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">gradual_activation_quantization_config</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">regularization_factor</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rounding_type=RoundingType.SoftQuantizer</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">optimizer_quantization_parameter=None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">optimizer_bias=None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">log_function=None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">gptq_quantizer_params_override=&lt;factory&gt;</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#model_compression_toolkit.gptq.GradientPTQConfig" title="Link to this definition">¶</a></dt>
 <dd><p>Configuration to use for quantization with GradientPTQ.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -72,11 +69,11 @@ Hessian scores for the GPTQ loss.</p></li>
 
 </section>
 <section id="gptqhessianscoresconfig-class">
-<h1>GPTQHessianScoresConfig Class<a class="headerlink" href="#gptqhessianscoresconfig-class" title="Permalink to this heading">¶</a></h1>
+<h1>GPTQHessianScoresConfig Class<a class="headerlink" href="#gptqhessianscoresconfig-class" title="Link to this heading">¶</a></h1>
 <p><strong>The following API can be used to create a GPTQHessianScoresConfig instance which can be used to define necessary parameters for computing Hessian scores for the GPTQ loss function.</strong></p>
 <dl class="py class">
 <dt class="sig sig-object py" id="model_compression_toolkit.gptq.GPTQHessianScoresConfig">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">model_compression_toolkit.gptq.</span></span><span class="sig-name descname"><span class="pre">GPTQHessianScoresConfig</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">per_sample</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">hessians_num_samples</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">norm_scores</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">log_norm</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">scale_log_norm</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">hessian_batch_size</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">32</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#model_compression_toolkit.gptq.GPTQHessianScoresConfig" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">model_compression_toolkit.gptq.</span></span><span class="sig-name descname"><span class="pre">GPTQHessianScoresConfig</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">per_sample</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">hessians_num_samples</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">norm_scores</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">log_norm</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">scale_log_norm</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">hessian_batch_size</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">32</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#model_compression_toolkit.gptq.GPTQHessianScoresConfig" title="Link to this definition">¶</a></dt>
 <dd><p>Configuration to use for computing the Hessian-based scores for GPTQ loss metric.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -95,10 +92,10 @@ If None, compute Hessian for all images.</p></li>
 
 </section>
 <section id="roundingtype">
-<h1>RoundingType<a class="headerlink" href="#roundingtype" title="Permalink to this heading">¶</a></h1>
+<h1>RoundingType<a class="headerlink" href="#roundingtype" title="Link to this heading">¶</a></h1>
 <dl class="py class">
 <dt class="sig sig-object py" id="model_compression_toolkit.gptq.RoundingType">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">model_compression_toolkit.gptq.</span></span><span class="sig-name descname"><span class="pre">RoundingType</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#model_compression_toolkit.gptq.RoundingType" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">model_compression_toolkit.gptq.</span></span><span class="sig-name descname"><span class="pre">RoundingType</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#model_compression_toolkit.gptq.RoundingType" title="Link to this definition">¶</a></dt>
 <dd><p>An enum for choosing the GPTQ rounding methods:</p>
 <p>STE - STRAIGHT-THROUGH ESTIMATOR</p>
 <p>SoftQuantizer - SoftQuantizer</p>
@@ -106,11 +103,11 @@ If None, compute Hessian for all images.</p></li>
 
 </section>
 <section id="gradualactivationquantizationconfig">
-<h1>GradualActivationQuantizationConfig<a class="headerlink" href="#gradualactivationquantizationconfig" title="Permalink to this heading">¶</a></h1>
+<h1>GradualActivationQuantizationConfig<a class="headerlink" href="#gradualactivationquantizationconfig" title="Link to this heading">¶</a></h1>
 <p><strong>The following API can be used to configure the gradual activation quantization when using GPTQ.</strong></p>
 <dl class="py class">
 <dt class="sig sig-object py" id="model_compression_toolkit.gptq.GradualActivationQuantizationConfig">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">model_compression_toolkit.gptq.</span></span><span class="sig-name descname"><span class="pre">GradualActivationQuantizationConfig</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">q_fraction_scheduler_policy=&lt;factory&gt;</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#model_compression_toolkit.gptq.GradualActivationQuantizationConfig" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">model_compression_toolkit.gptq.</span></span><span class="sig-name descname"><span class="pre">GradualActivationQuantizationConfig</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">q_fraction_scheduler_policy=&lt;factory&gt;</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#model_compression_toolkit.gptq.GradualActivationQuantizationConfig" title="Link to this definition">¶</a></dt>
 <dd><p>Configuration for Gradual Activation Quantization.</p>
 <p>By default, the quantized fraction increases linearly from 0 to 1 throughout the training.</p>
 <dl class="field-list simple">
@@ -123,10 +120,10 @@ Only linear annealing is currently supported.</p>
 
 </section>
 <section id="qfractionlinearannealingconfig">
-<h1>QFractionLinearAnnealingConfig<a class="headerlink" href="#qfractionlinearannealingconfig" title="Permalink to this heading">¶</a></h1>
+<h1>QFractionLinearAnnealingConfig<a class="headerlink" href="#qfractionlinearannealingconfig" title="Link to this heading">¶</a></h1>
 <dl class="py class">
 <dt class="sig sig-object py" id="model_compression_toolkit.gptq.QFractionLinearAnnealingConfig">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">model_compression_toolkit.gptq.</span></span><span class="sig-name descname"><span class="pre">QFractionLinearAnnealingConfig</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">initial_q_fraction</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">target_q_fraction</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">start_step</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">end_step</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#model_compression_toolkit.gptq.QFractionLinearAnnealingConfig" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">model_compression_toolkit.gptq.</span></span><span class="sig-name descname"><span class="pre">QFractionLinearAnnealingConfig</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">initial_q_fraction</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">target_q_fraction</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">start_step</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">end_step</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#model_compression_toolkit.gptq.QFractionLinearAnnealingConfig" title="Link to this definition">¶</a></dt>
 <dd><p>Config for the quantized fraction linear scheduler of Gradual Activation Quantization.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -147,20 +144,35 @@ Only linear annealing is currently supported.</p>
           </div>
         </div>
       </div>
-      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+      <div class="sphinxsidebar" role="navigation" aria-label="Main">
         <div class="sphinxsidebarwrapper">
   <div>
     <h3><a href="../../../index.html">Table of Contents</a></h3>
     <ul>
-<li><a class="reference internal" href="#">GradientPTQConfig Class</a></li>
-<li><a class="reference internal" href="#gptqhessianscoresconfig-class">GPTQHessianScoresConfig Class</a></li>
-<li><a class="reference internal" href="#roundingtype">RoundingType</a></li>
-<li><a class="reference internal" href="#gradualactivationquantizationconfig">GradualActivationQuantizationConfig</a></li>
-<li><a class="reference internal" href="#qfractionlinearannealingconfig">QFractionLinearAnnealingConfig</a></li>
+<li><a class="reference internal" href="#">GradientPTQConfig Class</a><ul>
+<li><a class="reference internal" href="#model_compression_toolkit.gptq.GradientPTQConfig"><code class="docutils literal notranslate"><span class="pre">GradientPTQConfig</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#gptqhessianscoresconfig-class">GPTQHessianScoresConfig Class</a><ul>
+<li><a class="reference internal" href="#model_compression_toolkit.gptq.GPTQHessianScoresConfig"><code class="docutils literal notranslate"><span class="pre">GPTQHessianScoresConfig</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#roundingtype">RoundingType</a><ul>
+<li><a class="reference internal" href="#model_compression_toolkit.gptq.RoundingType"><code class="docutils literal notranslate"><span class="pre">RoundingType</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#gradualactivationquantizationconfig">GradualActivationQuantizationConfig</a><ul>
+<li><a class="reference internal" href="#model_compression_toolkit.gptq.GradualActivationQuantizationConfig"><code class="docutils literal notranslate"><span class="pre">GradualActivationQuantizationConfig</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#qfractionlinearannealingconfig">QFractionLinearAnnealingConfig</a><ul>
+<li><a class="reference internal" href="#model_compression_toolkit.gptq.QFractionLinearAnnealingConfig"><code class="docutils literal notranslate"><span class="pre">QFractionLinearAnnealingConfig</span></code></a></li>
+</ul>
+</li>
 </ul>
 
   </div>
-<div id="searchbox" style="display: none" role="search">
+<search id="searchbox" style="display: none" role="search">
   <h3 id="searchlabel">Quick search</h3>
     <div class="searchformwrapper">
     <form class="search" action="../../../search.html" method="get">
@@ -168,13 +180,13 @@ Only linear annealing is currently supported.</p>
       <input type="submit" value="Go" />
     </form>
     </div>
-</div>
+</search>
 <script>document.getElementById('searchbox').style.display = "block"</script>
         </div>
       </div>
       <div class="clearer"></div>
     </div>
-    <div class="related" role="navigation" aria-label="related navigation">
+    <div class="related" role="navigation" aria-label="Related">
       <h3>Navigation</h3>
       <ul>
         <li class="right" style="margin-right: 10px">
@@ -185,8 +197,8 @@ Only linear annealing is currently supported.</p>
       </ul>
     </div>
     <div class="footer" role="contentinfo">
-        &#169; Copyright 2022, Sony Semiconductor Israel.
-      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 5.0.2.
+    &#169; Copyright 2022, Sony Semiconductor Israel.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 8.1.3.
     </div>
   </body>
 </html>

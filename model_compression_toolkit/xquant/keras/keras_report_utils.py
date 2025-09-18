@@ -19,9 +19,9 @@ from model_compression_toolkit.core.keras.default_framework_info import DEFAULT_
 from model_compression_toolkit.core.keras.keras_implementation import KerasImplementation
 from model_compression_toolkit.target_platform_capabilities.targetplatform2framework.attach2keras import \
     AttachTpcToKeras
-from model_compression_toolkit.xquant.common.framework_report_utils import FrameworkReportUtils
+from model_compression_toolkit.xquant.keras.framework_report_utils import FrameworkReportUtils
 from model_compression_toolkit.xquant.common.model_folding_utils import ModelFoldingUtils
-from model_compression_toolkit.xquant.common.similarity_calculator import SimilarityCalculator
+from model_compression_toolkit.xquant.keras.similarity_calculator import SimilarityCalculator
 from model_compression_toolkit.xquant.keras.dataset_utils import KerasDatasetUtils
 from model_compression_toolkit.xquant.keras.model_analyzer import KerasModelAnalyzer
 

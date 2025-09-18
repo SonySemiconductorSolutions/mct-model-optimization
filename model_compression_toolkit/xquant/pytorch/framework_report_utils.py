@@ -20,10 +20,10 @@ from model_compression_toolkit.core.common.framework_implementation import Frame
 from model_compression_toolkit.core.common.framework_info import FrameworkInfo
 from typing import Any, Dict, Callable
 
-from model_compression_toolkit.xquant.common.constants import REPORT_FILENAME
+from model_compression_toolkit.xquant.common.constants import REPORT_FILENAME, TROUBLESHOOT_REPORT_FILENAME
 from model_compression_toolkit.xquant.common.dataset_utils import DatasetUtils
 from model_compression_toolkit.xquant.common.model_folding_utils import ModelFoldingUtils
-from model_compression_toolkit.xquant.common.similarity_calculator import SimilarityCalculator
+from model_compression_toolkit.xquant.pytorch.similarity_calculator import SimilarityCalculator
 from model_compression_toolkit.xquant.common.tensorboard_utils import TensorboardUtils
 from model_compression_toolkit.logger import Logger
 
@@ -73,6 +73,24 @@ class FrameworkReportUtils:
 
         """
         report_file_name = os.path.join(report_dir, REPORT_FILENAME)
+        report_file_name = os.path.abspath(report_file_name)
+        Logger.info(f"Dumping report data to: {report_file_name}")
+
+        with open(report_file_name, 'w') as f:
+            json.dump(collected_data, f, indent=4)
+
+    def dump_troubleshoot_report_to_json(self,
+                                         report_dir: str,
+                                         collected_data: Dict[str, Any]):
+        """
+        Dump the collected data (similarity, etc.) into a JSON file.
+
+        Args:
+            report_dir (str): Directory where the report will be saved.
+            collected_data (Dict[str, Any]): Data collected during report generation.
+
+        """
+        report_file_name = os.path.join(report_dir, TROUBLESHOOT_REPORT_FILENAME)
         report_file_name = os.path.abspath(report_file_name)
         Logger.info(f"Dumping report data to: {report_file_name}")
 

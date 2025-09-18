@@ -1,0 +1,132 @@
+
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="./">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>TroubleShooting Documentation (MCT XQuant Extension Tool) &#8212; TroubleShooting Documentation (MCT XQuant Extension Tool): ver 1.0</title>
+    <link rel="stylesheet" type="text/css" href="static/pygments.css?v=fa44fd50" />
+    <link rel="stylesheet" type="text/css" href="static/bizstyle.css?v=5283bb3d" />
+    <link rel="stylesheet" type="text/css" href="static/css/custom.css?v=01243f34" />
+    
+    <script src="static/documentation_options.js?v=f2a433a1"></script>
+    <script src="static/doctools.js?v=9bcbadda"></script>
+    <script src="static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="static/bizstyle.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <meta name="viewport" content="width=device-width,initial-scale=1.0" />
+    <!--[if lt IE 9]>
+    <script src="static/css3-mediaqueries.js"></script>
+    <![endif]-->
+  </head><body>
+    <div class="related" role="navigation" aria-label="Related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="nav-item nav-item-0"><a href="#">TroubleShooting Documentation (MCT XQuant Extension Tool): ver 1.0</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">TroubleShooting Documentation (MCT XQuant Extension Tool)</a></li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <section id="troubleshooting-documentation-mct-xquant-extension-tool">
+<span id="ug-index"></span><h1>TroubleShooting Documentation (MCT XQuant Extension Tool)<a class="headerlink" href="#troubleshooting-documentation-mct-xquant-extension-tool" title="Link to this heading">¶</a></h1>
+<section id="overview">
+<h2>Overview<a class="headerlink" href="#overview" title="Link to this heading">¶</a></h2>
+<p>The Model Compression Toolkit (MCT) offers numerous functionalities to compress neural networks with minimal accuracy lost. However, in some cases, the compressed model may experience a significant decrease in accuracy. Fear not, as this lost accuracy can often be reclaimed by adjusting the quantization configuration or setup.</p>
+<p>Outlined below are a series of steps aimed at recovering lost accuracy resulting from compression with MCT. Some steps may be applicable to your model, while others may not.</p>
+</section>
+<section id="quantization-troubleshooting-for-mct-1">
+<h2>Quantization Troubleshooting for MCT[1]<a class="headerlink" href="#quantization-troubleshooting-for-mct-1" title="Link to this heading">¶</a></h2>
+<p><strong>1. Judgeable Troubleshoots</strong></p>
+<p>The following items are automatically identified by the XQuant Extension Tool.</p>
+<p>Please read the following items indicated by XQuant Extension Tool, especially the <strong>Solution</strong> section.</p>
+<ul class="simple">
+<li><p><a class="reference internal" href="troubleshoots/outlier_removal.html#ug-outlier-removal"><span class="std std-ref">Outlier Removal</span></a></p></li>
+<li><p><a class="reference internal" href="troubleshoots/shift_negative_activation.html#ug-shift-negative-activation"><span class="std std-ref">Shift Negative Activation</span></a></p></li>
+<li><p><a class="reference internal" href="troubleshoots/unbalanced_concatenation.html#ug-unbalanced-concatenation"><span class="std std-ref">Unbalanced “concatenation”</span></a></p></li>
+<li><p><a class="reference internal" href="troubleshoots/mixed_precision_with_model_output_loss_objective.html#ug-mixed-precision-with-model-output-loss-objective"><span class="std std-ref">Mixed Precision with model output loss objective</span></a></p></li>
+</ul>
+<p><strong>2. General Troubleshoots</strong></p>
+<p>The following items are general troubleshoots for quantization accuracy improvement.</p>
+<p>If quantization accuracy of your model does not improve after reading Judgeable Troubleshoots, please read the following items.</p>
+<ul class="simple">
+<li><p><a class="reference internal" href="troubleshoots/representative_dataset_size_and_diversity.html#ug-representative-dataset-size-and-diversity"><span class="std std-ref">Representative Dataset size and  diversity</span></a></p></li>
+<li><p><a class="reference internal" href="troubleshoots/representative_and_validation_dataset_mismatch.html#ug-representative-and-validation-dataset-mismatch"><span class="std std-ref">Representative and Validation Dataset Mismatch</span></a></p></li>
+<li><p><a class="reference internal" href="troubleshoots/bias_correction.html#ug-bias-correction"><span class="std std-ref">Bias Correction</span></a></p></li>
+<li><p><a class="reference internal" href="troubleshoots/using_more_samples_in_mixed_precision_quantization.html#ug-using-more-samples-in-mixed-precision-quantization"><span class="std std-ref">Using more samples in Mixed Precision quantization</span></a></p></li>
+<li><p><a class="reference internal" href="troubleshoots/threhold_selection_error_method.html#ug-threshold-selection-error-method"><span class="std std-ref">Threshold selection error method</span></a></p></li>
+<li><p><a class="reference internal" href="troubleshoots/enabling_hessian-based_mixed_precision.html#ug-enabling-hessian-based-mixed-precision"><span class="std std-ref">Enabling Hessian-based Mixed Precision</span></a></p></li>
+<li><p><a class="reference internal" href="troubleshoots/gptq-gradient_based_post_training_quantization.html#ug-gptq-gradient-based-post-training-quantization"><span class="std std-ref">GPTQ - Gradient-Based Post Training Quantization</span></a></p></li>
+</ul>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>In some pages, there are TensorBoard visualizations.
+You can make TensorBoard visualizations if you set <code class="docutils literal notranslate"><span class="pre">mct.set_log_folder</span></code>. <a class="reference external" href="https://sonysemiconductorsolutions.github.io/mct-model-optimization/guidelines/visualization.html">Read more</a></p>
+</div>
+</section>
+<section id="references">
+<h2>References<a class="headerlink" href="#references" title="Link to this heading">¶</a></h2>
+<p>[1] <a class="reference external" href="https://github.com/SonySemiconductorSolutions/mct-model-optimization/blob/v2.4.2/quantization_troubleshooting.md">Quantization Troubleshooting for MCT</a></p>
+<p>[2] <a class="reference external" href="https://docs.pytorch.org/docs/2.5/index.html">PyTorch documentation (v2.5)</a></p>
+</section>
+</section>
+
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="Main">
+        <div class="sphinxsidebarwrapper">
+  <div>
+    <h3><a href="#">Table of Contents</a></h3>
+    <ul>
+<li><a class="reference internal" href="#">TroubleShooting Documentation (MCT XQuant Extension Tool)</a><ul>
+<li><a class="reference internal" href="#overview">Overview</a></li>
+<li><a class="reference internal" href="#quantization-troubleshooting-for-mct-1">Quantization Troubleshooting for MCT[1]</a></li>
+<li><a class="reference internal" href="#references">References</a></li>
+</ul>
+</li>
+</ul>
+
+  </div>
+<search id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</search>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="Related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="nav-item nav-item-0"><a href="#">TroubleShooting Documentation (MCT XQuant Extension Tool): ver 1.0</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">TroubleShooting Documentation (MCT XQuant Extension Tool)</a></li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+    &#169; Copyright 2025, Sony Semiconductor Solutions Corporation.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 8.1.3.
+    </div>
+  </body>
+</html>

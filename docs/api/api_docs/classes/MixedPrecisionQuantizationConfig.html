@@ -1,22 +1,19 @@
 
+<!DOCTYPE html>
 
-<!doctype html>
-
-<html lang="en">
+<html lang="en" data-content_root="../../../">
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
     <title>MixedPrecisionQuantizationConfig &#8212; MCT Documentation: ver 2.4.2</title>
-    <link rel="stylesheet" type="text/css" href="../../../static/pygments.css" />
-    <link rel="stylesheet" type="text/css" href="../../../static/bizstyle.css" />
-    <link rel="stylesheet" type="text/css" href="../../../static/css/custom.css" />
+    <link rel="stylesheet" type="text/css" href="../../../static/pygments.css?v=fa44fd50" />
+    <link rel="stylesheet" type="text/css" href="../../../static/bizstyle.css?v=5283bb3d" />
+    <link rel="stylesheet" type="text/css" href="../../../static/css/custom.css?v=01243f34" />
     
-    <script data-url_root="../../../" id="documentation_options" src="../../../static/documentation_options.js"></script>
-    <script src="../../../static/jquery.js"></script>
-    <script src="../../../static/underscore.js"></script>
-    <script src="../../../static/_sphinx_javascript_frameworks_compat.js"></script>
-    <script src="../../../static/doctools.js"></script>
+    <script src="../../../static/documentation_options.js?v=de1351e5"></script>
+    <script src="../../../static/doctools.js?v=9bcbadda"></script>
+    <script src="../../../static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../../static/bizstyle.js"></script>
     <link rel="index" title="Index" href="../../../genindex.html" />
     <link rel="search" title="Search" href="../../../search.html" />
@@ -25,7 +22,7 @@
     <script src="static/css3-mediaqueries.js"></script>
     <![endif]-->
   </head><body>
-    <div class="related" role="navigation" aria-label="related navigation">
+    <div class="related" role="navigation" aria-label="Related">
       <h3>Navigation</h3>
       <ul>
         <li class="right" style="margin-right: 10px">
@@ -42,11 +39,11 @@
           <div class="body" role="main">
             
   <section id="mixedprecisionquantizationconfig">
-<span id="ug-mixedprecisionquantizationconfig"></span><h1>MixedPrecisionQuantizationConfig<a class="headerlink" href="#mixedprecisionquantizationconfig" title="Permalink to this heading">¶</a></h1>
+<span id="ug-mixedprecisionquantizationconfig"></span><h1>MixedPrecisionQuantizationConfig<a class="headerlink" href="#mixedprecisionquantizationconfig" title="Link to this heading">¶</a></h1>
 <p><strong>Class to configure the quantization process of the model when quantizing in mixed-precision:</strong></p>
 <dl class="py class">
 <dt class="sig sig-object py" id="model_compression_toolkit.core.MixedPrecisionQuantizationConfig">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">model_compression_toolkit.core.</span></span><span class="sig-name descname"><span class="pre">MixedPrecisionQuantizationConfig</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">compute_distance_fn</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">distance_weighting_method</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">num_of_images</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">32</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">configuration_overwrite</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">num_interest_points_factor</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">use_hessian_based_scores</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">norm_scores</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">refine_mp_solution</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">metric_normalization_threshold</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">10000000000.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">hessian_batch_size</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">32</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">metric_normalization</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">MpMetricNormalization.NONE</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">metric_epsilon</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1e-06</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">exp_distance_weighting_sigma</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">custom_metric_fn</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#model_compression_toolkit.core.MixedPrecisionQuantizationConfig" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">model_compression_toolkit.core.</span></span><span class="sig-name descname"><span class="pre">MixedPrecisionQuantizationConfig</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">compute_distance_fn</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">distance_weighting_method</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">num_of_images</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">32</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">configuration_overwrite</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">num_interest_points_factor</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">use_hessian_based_scores</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">norm_scores</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">refine_mp_solution</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">metric_normalization_threshold</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">10000000000.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">hessian_batch_size</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">32</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">metric_normalization</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">MpMetricNormalization.NONE</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">metric_epsilon</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1e-06</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">exp_distance_weighting_sigma</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">custom_metric_fn</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#model_compression_toolkit.core.MixedPrecisionQuantizationConfig" title="Link to this definition">¶</a></dt>
 <dd><p>Class with mixed precision parameters to quantize the input model.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -76,10 +73,10 @@ float value for metric. If None, uses interest point metric.</p></li>
 </dd></dl>
 
 <section id="mpdistanceweighting">
-<h2>MpDistanceWeighting<a class="headerlink" href="#mpdistanceweighting" title="Permalink to this heading">¶</a></h2>
+<h2>MpDistanceWeighting<a class="headerlink" href="#mpdistanceweighting" title="Link to this heading">¶</a></h2>
 <dl class="py class">
 <dt class="sig sig-object py" id="model_compression_toolkit.core.MpDistanceWeighting">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">model_compression_toolkit.core.</span></span><span class="sig-name descname"><span class="pre">MpDistanceWeighting</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#model_compression_toolkit.core.MpDistanceWeighting" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">model_compression_toolkit.core.</span></span><span class="sig-name descname"><span class="pre">MpDistanceWeighting</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#model_compression_toolkit.core.MpDistanceWeighting" title="Link to this definition">¶</a></dt>
 <dd><p>Defines interest points distances weighting methods.</p>
 <p>AVG - take the average distance over all interest points.</p>
 <p>LAST_LAYER - take only the distance of the last interest point.</p>
@@ -89,10 +86,10 @@ float value for metric. If None, uses interest point metric.</p></li>
 
 </section>
 <section id="mpmetricnormalization">
-<h2>MpMetricNormalization<a class="headerlink" href="#mpmetricnormalization" title="Permalink to this heading">¶</a></h2>
+<h2>MpMetricNormalization<a class="headerlink" href="#mpmetricnormalization" title="Link to this heading">¶</a></h2>
 <dl class="py class">
 <dt class="sig sig-object py" id="model_compression_toolkit.core.MpMetricNormalization">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">model_compression_toolkit.core.</span></span><span class="sig-name descname"><span class="pre">MpMetricNormalization</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#model_compression_toolkit.core.MpMetricNormalization" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">model_compression_toolkit.core.</span></span><span class="sig-name descname"><span class="pre">MpMetricNormalization</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#model_compression_toolkit.core.MpMetricNormalization" title="Link to this definition">¶</a></dt>
 <dd><p>MAXBIT: normalize sensitivity metrics of layer candidates by max-bitwidth candidate (of that layer).</p>
 <p>MINBIT: normalize sensitivity metrics of layer candidates by min-bitwidth candidate (of that layer).</p>
 <p>NONE: no normalization.</p>
@@ -106,20 +103,27 @@ float value for metric. If None, uses interest point metric.</p></li>
           </div>
         </div>
       </div>
-      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+      <div class="sphinxsidebar" role="navigation" aria-label="Main">
         <div class="sphinxsidebarwrapper">
   <div>
     <h3><a href="../../../index.html">Table of Contents</a></h3>
     <ul>
 <li><a class="reference internal" href="#">MixedPrecisionQuantizationConfig</a><ul>
-<li><a class="reference internal" href="#mpdistanceweighting">MpDistanceWeighting</a></li>
-<li><a class="reference internal" href="#mpmetricnormalization">MpMetricNormalization</a></li>
+<li><a class="reference internal" href="#model_compression_toolkit.core.MixedPrecisionQuantizationConfig"><code class="docutils literal notranslate"><span class="pre">MixedPrecisionQuantizationConfig</span></code></a></li>
+<li><a class="reference internal" href="#mpdistanceweighting">MpDistanceWeighting</a><ul>
+<li><a class="reference internal" href="#model_compression_toolkit.core.MpDistanceWeighting"><code class="docutils literal notranslate"><span class="pre">MpDistanceWeighting</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#mpmetricnormalization">MpMetricNormalization</a><ul>
+<li><a class="reference internal" href="#model_compression_toolkit.core.MpMetricNormalization"><code class="docutils literal notranslate"><span class="pre">MpMetricNormalization</span></code></a></li>
+</ul>
+</li>
 </ul>
 </li>
 </ul>
 
   </div>
-<div id="searchbox" style="display: none" role="search">
+<search id="searchbox" style="display: none" role="search">
   <h3 id="searchlabel">Quick search</h3>
     <div class="searchformwrapper">
     <form class="search" action="../../../search.html" method="get">
@@ -127,13 +131,13 @@ float value for metric. If None, uses interest point metric.</p></li>
       <input type="submit" value="Go" />
     </form>
     </div>
-</div>
+</search>
 <script>document.getElementById('searchbox').style.display = "block"</script>
         </div>
       </div>
       <div class="clearer"></div>
     </div>
-    <div class="related" role="navigation" aria-label="related navigation">
+    <div class="related" role="navigation" aria-label="Related">
       <h3>Navigation</h3>
       <ul>
         <li class="right" style="margin-right: 10px">
@@ -144,8 +148,8 @@ float value for metric. If None, uses interest point metric.</p></li>
       </ul>
     </div>
     <div class="footer" role="contentinfo">
-        &#169; Copyright 2022, Sony Semiconductor Israel.
-      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 5.0.2.
+    &#169; Copyright 2022, Sony Semiconductor Israel.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 8.1.3.
     </div>
   </body>
 </html>

@@ -16,12 +16,12 @@
 from typing import Callable
 
 from model_compression_toolkit.verify_packages import FOUND_TORCH
-from model_compression_toolkit.xquant.common.core_report_generator import core_report_generator
 from model_compression_toolkit.xquant import XQuantConfig
 from model_compression_toolkit.logger import Logger
 
 if FOUND_TORCH:
     from model_compression_toolkit.xquant.pytorch.pytorch_report_utils import PytorchReportUtils
+    from model_compression_toolkit.xquant.pytorch.core_report_generator import core_report_generator, core_report_generator_troubleshoot
     import torch
 
     def xquant_report_pytorch_experimental(float_model: torch.nn.Module,
@@ -58,7 +58,47 @@ if FOUND_TORCH:
 
         return _collected_data
 
+    def xquant_report_troubleshoot_pytorch_experimental(float_model: torch.nn.Module,
+                                                        quantized_model: torch.nn.Module,
+                                                        repr_dataset: Callable,
+                                                        validation_dataset: Callable,
+                                                        xquant_config: XQuantConfig):
+        """
+        Generate an explainable quantization report, detect degraded layaers and judge degrade causes for a quantized Pytorch model.
+
+        Args:
+            float_model (torch.nn.Module): The original floating-point Pytorch model.
+            quantized_model (torch.nn.Module): The quantized Pytorch model.
+            repr_dataset (Callable): The representative dataset used during quantization.
+            validation_dataset (Callable): The validation dataset used for evaluation.
+            xquant_config (XQuantConfig): Configuration settings for explainable quantization.
+
+        Returns:
+            Dict[str, Any]: A dictionary containing the collected similarity metrics and report data.
+            Dict[str, Any]: A dictionary containing the analyze degrade cause report for degraded layaers.
+        """
+        # Initialize the logger with the report directory.
+        Logger.set_log_file(log_folder=xquant_config.report_dir)
+
+        pytorch_report_utils = PytorchReportUtils(xquant_config.report_dir)
+
+        _collected_data, _troubleshoot_data = core_report_generator_troubleshoot(float_model=float_model,
+                                                quantized_model=quantized_model,
+                                                repr_dataset=repr_dataset,
+                                                validation_dataset=validation_dataset,
+                                                fw_report_utils=pytorch_report_utils,
+                                                xquant_config=xquant_config)
+
+        Logger.shutdown()
+
+        return _collected_data, _troubleshoot_data
+
+
 else:
     def xquant_report_pytorch_experimental(*args, **kwargs):
         Logger.critical("PyTorch must be installed to use 'xquant_report_pytorch_experimental'. "
+                                     "The 'torch' package is missing.")  # pragma: no cover
+
+    def xquant_report_troubleshoot_pytorch_experimental(*args, **kwargs):
+        Logger.critical("PyTorch must be installed to use 'xquant_report_troubleshoot_pytorch_experimental'. "
                                      "The 'torch' package is missing.")  # pragma: no cover

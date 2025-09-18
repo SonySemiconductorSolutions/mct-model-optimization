@@ -1,22 +1,19 @@
 
+<!DOCTYPE html>
 
-<!doctype html>
-
-<html lang="en">
+<html lang="en" data-content_root="./">
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
     <title>Model Compression Toolkit User Guide &#8212; MCT Documentation: ver 2.4.2</title>
-    <link rel="stylesheet" type="text/css" href="static/pygments.css" />
-    <link rel="stylesheet" type="text/css" href="static/bizstyle.css" />
-    <link rel="stylesheet" type="text/css" href="static/css/custom.css" />
+    <link rel="stylesheet" type="text/css" href="static/pygments.css?v=fa44fd50" />
+    <link rel="stylesheet" type="text/css" href="static/bizstyle.css?v=5283bb3d" />
+    <link rel="stylesheet" type="text/css" href="static/css/custom.css?v=01243f34" />
     
-    <script data-url_root="./" id="documentation_options" src="static/documentation_options.js"></script>
-    <script src="static/jquery.js"></script>
-    <script src="static/underscore.js"></script>
-    <script src="static/_sphinx_javascript_frameworks_compat.js"></script>
-    <script src="static/doctools.js"></script>
+    <script src="static/documentation_options.js?v=de1351e5"></script>
+    <script src="static/doctools.js?v=9bcbadda"></script>
+    <script src="static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="static/bizstyle.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
@@ -26,7 +23,7 @@
     <script src="static/css3-mediaqueries.js"></script>
     <![endif]-->
   </head><body>
-    <div class="related" role="navigation" aria-label="related navigation">
+    <div class="related" role="navigation" aria-label="Related">
       <h3>Navigation</h3>
       <ul>
         <li class="right" style="margin-right: 10px">
@@ -46,15 +43,15 @@
           <div class="body" role="main">
             
   <section id="model-compression-toolkit-user-guide">
-<span id="ug-index"></span><h1>Model Compression Toolkit User Guide<a class="headerlink" href="#model-compression-toolkit-user-guide" title="Permalink to this heading">¶</a></h1>
+<span id="ug-index"></span><h1>Model Compression Toolkit User Guide<a class="headerlink" href="#model-compression-toolkit-user-guide" title="Link to this heading">¶</a></h1>
 <section id="overview">
-<h2>Overview<a class="headerlink" href="#overview" title="Permalink to this heading">¶</a></h2>
+<h2>Overview<a class="headerlink" href="#overview" title="Link to this heading">¶</a></h2>
 <p>Model Compression Toolkit (MCT) is an open source project for neural networks optimization that enables users to compress and quantize models.
 This project enables researchers, developers and engineers an easily way to optimized and quantized state-of-the-art neural network.</p>
 <p>MCT project is developed by researchers and engineers working in Sony Semiconductor Israel.</p>
 </section>
 <section id="install">
-<h2>Install<a class="headerlink" href="#install" title="Permalink to this heading">¶</a></h2>
+<h2>Install<a class="headerlink" href="#install" title="Link to this heading">¶</a></h2>
 <p>See the MCT install guide for the pip package, and build from source.</p>
 <p>From Source:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">git</span> <span class="n">clone</span> <span class="n">https</span><span class="p">:</span><span class="o">//</span><span class="n">github</span><span class="o">.</span><span class="n">com</span><span class="o">/</span><span class="n">sony</span><span class="o">/</span><span class="n">model_optimization</span><span class="o">.</span><span class="n">git</span>
@@ -75,7 +72,7 @@ This project enables researchers, developers and engineers an easily way to opti
 <a class="reference external" href="https://pytorch.org/">torch</a></p>
 </section>
 <section id="supported-features">
-<h2>Supported Features<a class="headerlink" href="#supported-features" title="Permalink to this heading">¶</a></h2>
+<h2>Supported Features<a class="headerlink" href="#supported-features" title="Link to this heading">¶</a></h2>
 <p>Keras:</p>
 <ul class="simple">
 <li><p><a class="reference internal" href="api/api_docs/methods/keras_post_training_quantization.html#ug-keras-post-training-quantization"><span class="std std-ref">Post Training Quantization</span></a> [1]</p></li>
@@ -100,16 +97,17 @@ This project enables researchers, developers and engineers an easily way to opti
 <li class="toctree-l1"><a class="reference internal" href="guidelines/visualization.html">Visualization within TensorBoard</a></li>
 <li class="toctree-l1"><a class="reference internal" href="guidelines/visualization.html#cosine-similarity-comparison">Cosine Similarity Comparison</a></li>
 <li class="toctree-l1"><a class="reference internal" href="guidelines/visualization.html#mixed-precision-configuration-bit-width">Mixed-precision Configuration Bit-width</a></li>
+<li class="toctree-l1"><a class="reference internal" href="guidelines/XQuant_Extension_Tool.html">XQuant Extension Tool</a></li>
 </ul>
 </div>
 </section>
 <section id="quickstart">
-<h2>Quickstart<a class="headerlink" href="#quickstart" title="Permalink to this heading">¶</a></h2>
+<h2>Quickstart<a class="headerlink" href="#quickstart" title="Link to this heading">¶</a></h2>
 <p>Take a look of how you can start using MCT in just a few minutes!</p>
 <p>Visit our <a class="reference external" href="https://github.com/sony/model_optimization/tree/main/tutorials/notebooks">notebooks</a></p>
 </section>
 <section id="api-documentation">
-<h2>API Documentation<a class="headerlink" href="#api-documentation" title="Permalink to this heading">¶</a></h2>
+<h2>API Documentation<a class="headerlink" href="#api-documentation" title="Link to this heading">¶</a></h2>
 <p>Please visit the MCT API documentation here</p>
 <div class="toctree-wrapper compound">
 <ul>
@@ -118,13 +116,13 @@ This project enables researchers, developers and engineers an easily way to opti
 </div>
 </section>
 <section id="technical-constraints">
-<h2>Technical Constraints<a class="headerlink" href="#technical-constraints" title="Permalink to this heading">¶</a></h2>
+<h2>Technical Constraints<a class="headerlink" href="#technical-constraints" title="Link to this heading">¶</a></h2>
 <ul class="simple">
 <li><p>MCT doesn’t keep the structure of the model’s output. For example, if the output of a model is a list of lists of Tensors [[out1, out2], out3], the optimized model output will be [out1, out2, out3]</p></li>
 </ul>
 </section>
 <section id="references">
-<h2>References<a class="headerlink" href="#references" title="Permalink to this heading">¶</a></h2>
+<h2>References<a class="headerlink" href="#references" title="Link to this heading">¶</a></h2>
 <p>[1] Habi, H.V., Peretz, R., Cohen, E., Dikstein, L., Dror, O., Diamant, I., Jennings, R.H. and Netzer, A., 2021. <a class="reference external" href="https://arxiv.org/abs/2109.09113">HPTQ: Hardware-Friendly Post Training Quantization. arXiv preprint.</a></p>
 <p>[2] Gordon, O., Habi, H.V., and Netzer, A., 2023. <a class="reference external" href="https://arxiv.org/abs/2309.11531">EPTQ: Enhanced Post-Training Quantization via Label-Free Hessian. arXiv preprint.</a></p>
 </section>
@@ -135,7 +133,7 @@ This project enables researchers, developers and engineers an easily way to opti
           </div>
         </div>
       </div>
-      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+      <div class="sphinxsidebar" role="navigation" aria-label="Main">
         <div class="sphinxsidebarwrapper">
   <div>
     <h3><a href="#">Table of Contents</a></h3>
@@ -158,7 +156,7 @@ This project enables researchers, developers and engineers an easily way to opti
     <p class="topless"><a href="guidelines/visualization.html"
                           title="next chapter">Visualization within TensorBoard</a></p>
   </div>
-<div id="searchbox" style="display: none" role="search">
+<search id="searchbox" style="display: none" role="search">
   <h3 id="searchlabel">Quick search</h3>
     <div class="searchformwrapper">
     <form class="search" action="search.html" method="get">
@@ -166,13 +164,13 @@ This project enables researchers, developers and engineers an easily way to opti
       <input type="submit" value="Go" />
     </form>
     </div>
-</div>
+</search>
 <script>document.getElementById('searchbox').style.display = "block"</script>
         </div>
       </div>
       <div class="clearer"></div>
     </div>
-    <div class="related" role="navigation" aria-label="related navigation">
+    <div class="related" role="navigation" aria-label="Related">
       <h3>Navigation</h3>
       <ul>
         <li class="right" style="margin-right: 10px">
@@ -186,8 +184,8 @@ This project enables researchers, developers and engineers an easily way to opti
       </ul>
     </div>
     <div class="footer" role="contentinfo">
-        &#169; Copyright 2022, Sony Semiconductor Israel.
-      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 5.0.2.
+    &#169; Copyright 2022, Sony Semiconductor Israel.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 8.1.3.
     </div>
   </body>
 </html>

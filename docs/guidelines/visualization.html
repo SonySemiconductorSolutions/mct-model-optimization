@@ -1,40 +1,37 @@
 
+<!DOCTYPE html>
 
-<!doctype html>
-
-<html lang="en">
+<html lang="en" data-content_root="../">
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
     <title>Visualization within TensorBoard &#8212; MCT Documentation: ver 2.4.2</title>
-    <link rel="stylesheet" type="text/css" href="../static/pygments.css" />
-    <link rel="stylesheet" type="text/css" href="../static/bizstyle.css" />
-    <link rel="stylesheet" type="text/css" href="../static/css/custom.css" />
+    <link rel="stylesheet" type="text/css" href="../static/pygments.css?v=fa44fd50" />
+    <link rel="stylesheet" type="text/css" href="../static/bizstyle.css?v=5283bb3d" />
+    <link rel="stylesheet" type="text/css" href="../static/css/custom.css?v=01243f34" />
     
-    <script data-url_root="../" id="documentation_options" src="../static/documentation_options.js"></script>
-    <script src="../static/jquery.js"></script>
-    <script src="../static/underscore.js"></script>
-    <script src="../static/_sphinx_javascript_frameworks_compat.js"></script>
-    <script src="../static/doctools.js"></script>
+    <script src="../static/documentation_options.js?v=de1351e5"></script>
+    <script src="../static/doctools.js?v=9bcbadda"></script>
+    <script src="../static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../static/bizstyle.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="API Docs" href="../api/api_docs/index.html" />
+    <link rel="next" title="XQuant Extension Tool" href="XQuant_Extension_Tool.html" />
     <link rel="prev" title="Model Compression Toolkit User Guide" href="../index.html" />
     <meta name="viewport" content="width=device-width,initial-scale=1.0" />
     <!--[if lt IE 9]>
     <script src="static/css3-mediaqueries.js"></script>
     <![endif]-->
   </head><body>
-    <div class="related" role="navigation" aria-label="related navigation">
+    <div class="related" role="navigation" aria-label="Related">
       <h3>Navigation</h3>
       <ul>
         <li class="right" style="margin-right: 10px">
           <a href="../genindex.html" title="General Index"
              accesskey="I">index</a></li>
         <li class="right" >
-          <a href="../api/api_docs/index.html" title="API Docs"
+          <a href="XQuant_Extension_Tool.html" title="XQuant Extension Tool"
              accesskey="N">next</a> |</li>
         <li class="right" >
           <a href="../index.html" title="Model Compression Toolkit User Guide"
@@ -50,7 +47,7 @@
           <div class="body" role="main">
             
   <section id="visualization-within-tensorboard">
-<span id="ug-visualization"></span><h1>Visualization within TensorBoard<a class="headerlink" href="#visualization-within-tensorboard" title="Permalink to this heading">¶</a></h1>
+<span id="ug-visualization"></span><h1>Visualization within TensorBoard<a class="headerlink" href="#visualization-within-tensorboard" title="Link to this heading">¶</a></h1>
 <p>One may log various graphs and data collected in different phases of the model quantization and display them within the Tensorboard UI.
 To use it, all you have to do is to set a logger path. Setting a path is done by calling <a class="reference internal" href="../api/api_docs/methods/set_logger_path.html#ug-set-log-folder"><span class="std std-ref">set_log_folder</span></a>.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">model_compression_toolkit</span> <span class="k">as</span> <span class="nn">mct</span>
@@ -64,41 +61,49 @@ To visualize them, TensorBoard should be launched with:</p>
 <div class="line"><br /></div>
 </div>
 <p>The graphs representing the model can be seen under the Graphs tab:</p>
-<a class="reference internal image-reference" href="../images/tbwriter_graphs.png"><img alt="../images/tbwriter_graphs.png" src="../images/tbwriter_graphs.png" style="width: 283.2px; height: 248.4px;" /></a>
+<a class="reference internal image-reference" href="../images/tbwriter_graphs.png"><img alt="../images/tbwriter_graphs.png" src="../images/tbwriter_graphs.png" style="width: 283.2px; height: 248.4px;" />
+</a>
 <div class="line-block">
 <div class="line"><br /></div>
 </div>
 <p>Clicking on the Main Graph blocks will open a deeper view of the graph:</p>
-<a class="reference internal image-reference" href="../images/tbwriter_graphs2.png"><img alt="../images/tbwriter_graphs2.png" src="../images/tbwriter_graphs2.png" style="width: 211.20000000000002px; height: 326.0px;" /></a>
-<a class="reference internal image-reference" href="../images/tbwriter_graphs3.png"><img alt="../images/tbwriter_graphs3.png" src="../images/tbwriter_graphs3.png" style="width: 535.2px; height: 373.20000000000005px;" /></a>
+<a class="reference internal image-reference" href="../images/tbwriter_graphs2.png"><img alt="../images/tbwriter_graphs2.png" src="../images/tbwriter_graphs2.png" style="width: 211.20000000000002px; height: 326.0px;" />
+</a>
+<a class="reference internal image-reference" href="../images/tbwriter_graphs3.png"><img alt="../images/tbwriter_graphs3.png" src="../images/tbwriter_graphs3.png" style="width: 535.2px; height: 373.20000000000005px;" />
+</a>
 <div class="line-block">
 <div class="line"><br /></div>
 </div>
 <p>To observe the model at different stages of the quantization process, change the ‘Run’:</p>
-<a class="reference internal image-reference" href="../images/tbwriter_stages.png"><img alt="../images/tbwriter_stages.png" src="../images/tbwriter_stages.png" style="width: 304.5px; height: 359.0px;" /></a>
+<a class="reference internal image-reference" href="../images/tbwriter_stages.png"><img alt="../images/tbwriter_stages.png" src="../images/tbwriter_stages.png" style="width: 304.5px; height: 359.0px;" />
+</a>
 <div class="line-block">
 <div class="line"><br /></div>
 </div>
 <p>To display the required memory (in bytes) of the graph at different stages, change the ‘Tag’ from ‘Default’ to ‘Resources’</p>
-<a class="reference internal image-reference" href="../images/tbwriter_resources.png"><img alt="../images/tbwriter_resources.png" src="../images/tbwriter_resources.png" style="width: 391.8px; height: 224.4px;" /></a>
+<a class="reference internal image-reference" href="../images/tbwriter_resources.png"><img alt="../images/tbwriter_resources.png" src="../images/tbwriter_resources.png" style="width: 391.8px; height: 224.4px;" />
+</a>
 <div class="line-block">
 <div class="line"><br /></div>
 </div>
 <p>By clicking a node, its statistics will show up:</p>
-<a class="reference internal image-reference" href="../images/tbwriter_resources_node.png"><img alt="../images/tbwriter_resources_node.png" src="../images/tbwriter_resources_node.png" style="width: 345.59999999999997px; height: 118.8px;" /></a>
+<a class="reference internal image-reference" href="../images/tbwriter_resources_node.png"><img alt="../images/tbwriter_resources_node.png" src="../images/tbwriter_resources_node.png" style="width: 345.59999999999997px; height: 118.8px;" />
+</a>
 <div class="line-block">
 <div class="line"><br /></div>
 </div>
 <p>During the quantization process, statistics are gathered at some layers’ output: histograms, min/max per channel and mean per channel.
 These statistics can be viewed under ‘Histograms’ (histograms) or ‘Scalars’ (min/max/mean per channel) for each layer that statistics were gathered in its output:</p>
-<a class="reference internal image-reference" href="../images/tbwriter_histograms.png"><img alt="../images/tbwriter_histograms.png" src="../images/tbwriter_histograms.png" style="width: 356.0px; height: 339.0px;" /></a>
-<a class="reference internal image-reference" href="../images/tbwriter_scalars.png"><img alt="../images/tbwriter_scalars.png" src="../images/tbwriter_scalars.png" style="width: 755.5px; height: 423.0px;" /></a>
+<a class="reference internal image-reference" href="../images/tbwriter_histograms.png"><img alt="../images/tbwriter_histograms.png" src="../images/tbwriter_histograms.png" style="width: 356.0px; height: 339.0px;" />
+</a>
+<a class="reference internal image-reference" href="../images/tbwriter_scalars.png"><img alt="../images/tbwriter_scalars.png" src="../images/tbwriter_scalars.png" style="width: 755.5px; height: 423.0px;" />
+</a>
 <div class="line-block">
 <div class="line"><br /></div>
 </div>
 </section>
 <section id="cosine-similarity-comparison">
-<h1>Cosine Similarity Comparison<a class="headerlink" href="#cosine-similarity-comparison" title="Permalink to this heading">¶</a></h1>
+<h1>Cosine Similarity Comparison<a class="headerlink" href="#cosine-similarity-comparison" title="Link to this heading">¶</a></h1>
 <p>Computing a cosine-similarity is a way to quantify the similarity between two vectors.
 Mathematically, the cosine similarity is the division between the dot product of the vectors and the product of the euclidean norms of each vector.
 Thus, we can use it to measure the two models similarity, by measuring the cosine similarity
@@ -118,13 +123,14 @@ TensorBoard UI.</p>
 final quantized model at different points can be viewed under ‘Images’.
 More specifically, 20 samples from the provided representative dataset generator, are inserted to both of
 the models, and the cosine similarity at the output of different layers are computed and displayed.</p>
-<a class="reference internal image-reference" href="../images/tbwriter_cosinesimilarity.png"><img alt="../images/tbwriter_cosinesimilarity.png" src="../images/tbwriter_cosinesimilarity.png" style="width: 507.5px; height: 330.0px;" /></a>
+<a class="reference internal image-reference" href="../images/tbwriter_cosinesimilarity.png"><img alt="../images/tbwriter_cosinesimilarity.png" src="../images/tbwriter_cosinesimilarity.png" style="width: 507.5px; height: 330.0px;" />
+</a>
 <div class="line-block">
 <div class="line"><br /></div>
 </div>
 </section>
 <section id="mixed-precision-configuration-bit-width">
-<h1>Mixed-precision Configuration Bit-width<a class="headerlink" href="#mixed-precision-configuration-bit-width" title="Permalink to this heading">¶</a></h1>
+<h1>Mixed-precision Configuration Bit-width<a class="headerlink" href="#mixed-precision-configuration-bit-width" title="Link to this heading">¶</a></h1>
 <p>When running mixed-precision quantization, it is possible to present the chosen bit-width configuration for
 each configurable layer of the model using tensorboard.
 The figures can be viewed under ‘Images’.
@@ -139,7 +145,7 @@ and the second one the weights configuration):</p>
           </div>
         </div>
       </div>
-      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+      <div class="sphinxsidebar" role="navigation" aria-label="Main">
         <div class="sphinxsidebarwrapper">
   <div>
     <h3><a href="../index.html">Table of Contents</a></h3>
@@ -157,10 +163,10 @@ and the second one the weights configuration):</p>
   </div>
   <div>
     <h4>Next topic</h4>
-    <p class="topless"><a href="../api/api_docs/index.html"
-                          title="next chapter">API Docs</a></p>
+    <p class="topless"><a href="XQuant_Extension_Tool.html"
+                          title="next chapter">XQuant Extension Tool</a></p>
   </div>
-<div id="searchbox" style="display: none" role="search">
+<search id="searchbox" style="display: none" role="search">
   <h3 id="searchlabel">Quick search</h3>
     <div class="searchformwrapper">
     <form class="search" action="../search.html" method="get">
@@ -168,20 +174,20 @@ and the second one the weights configuration):</p>
       <input type="submit" value="Go" />
     </form>
     </div>
-</div>
+</search>
 <script>document.getElementById('searchbox').style.display = "block"</script>
         </div>
       </div>
       <div class="clearer"></div>
     </div>
-    <div class="related" role="navigation" aria-label="related navigation">
+    <div class="related" role="navigation" aria-label="Related">
       <h3>Navigation</h3>
       <ul>
         <li class="right" style="margin-right: 10px">
           <a href="../genindex.html" title="General Index"
              >index</a></li>
         <li class="right" >
-          <a href="../api/api_docs/index.html" title="API Docs"
+          <a href="XQuant_Extension_Tool.html" title="XQuant Extension Tool"
              >next</a> |</li>
         <li class="right" >
           <a href="../index.html" title="Model Compression Toolkit User Guide"
@@ -191,8 +197,8 @@ and the second one the weights configuration):</p>
       </ul>
     </div>
     <div class="footer" role="contentinfo">
-        &#169; Copyright 2022, Sony Semiconductor Israel.
-      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 5.0.2.
+    &#169; Copyright 2022, Sony Semiconductor Israel.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 8.1.3.
     </div>
   </body>
 </html>

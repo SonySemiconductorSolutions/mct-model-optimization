@@ -104,6 +104,9 @@ Modify your model's quantization configuration for specific layers or apply a cu
 **🖥️ Visualization**. Observe useful information for troubleshooting the quantized model's performance using TensorBoard. [Read more](https://sonysemiconductorsolutions.github.io/mct-model-optimization/guidelines/visualization.html).
 
 **🔑 XQuant (Explainable Quantization)** [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/sony/model_optimization/blob/main/tutorials/notebooks/mct_features_notebooks/pytorch/example_pytorch_xquant.ipynb). Get valuable insights regarding the quality and success of the quantization process of your model. The report includes histograms and similarity metrics between the original float model and the quantized model in key points of the model. The report can be visualized using TensorBoard.
+
+**🔑 XQuant Extension Tool.** Calculates the error for each layer by comparing the float model and quantized model, using both models along with the quantization log. The results are presented in reports. It identifies the causes of the detected errors and recommends appropriate improvement measures for each cause. [Read more](docs/guidelines/XQuant_Extension_Tool.html) [Troubleshoot Manual](docs/docs_troubleshoot/index.html)
+
 __________________________________________________________________________________________________________
 ### Enhanced Post-Training Quantization (EPTQ)
 As part of the GPTQ capability, we provide an advanced optimization algorithm called EPTQ.

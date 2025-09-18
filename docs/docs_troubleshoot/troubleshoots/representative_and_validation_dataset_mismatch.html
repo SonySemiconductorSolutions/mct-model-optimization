@@ -1,0 +1,110 @@
+
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="../">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>Representative and Validation Dataset Mismatch &#8212; TroubleShooting Documentation (MCT XQuant Extension Tool): ver 1.0</title>
+    <link rel="stylesheet" type="text/css" href="../static/pygments.css?v=fa44fd50" />
+    <link rel="stylesheet" type="text/css" href="../static/bizstyle.css?v=5283bb3d" />
+    <link rel="stylesheet" type="text/css" href="../static/css/custom.css?v=01243f34" />
+    
+    <script src="../static/documentation_options.js?v=f2a433a1"></script>
+    <script src="../static/doctools.js?v=9bcbadda"></script>
+    <script src="../static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../static/bizstyle.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <meta name="viewport" content="width=device-width,initial-scale=1.0" />
+    <!--[if lt IE 9]>
+    <script src="static/css3-mediaqueries.js"></script>
+    <![endif]-->
+  </head><body>
+    <div class="related" role="navigation" aria-label="Related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="nav-item nav-item-0"><a href="../index.html">TroubleShooting Documentation (MCT XQuant Extension Tool): ver 1.0</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">Representative and Validation Dataset Mismatch</a></li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <section id="representative-and-validation-dataset-mismatch">
+<span id="ug-representative-and-validation-dataset-mismatch"></span><h1>Representative and Validation Dataset Mismatch<a class="headerlink" href="#representative-and-validation-dataset-mismatch" title="Link to this heading">¶</a></h1>
+<section id="overview">
+<h2>Overview<a class="headerlink" href="#overview" title="Link to this heading">¶</a></h2>
+<p>The representative dataset is used by the MCT to derive the threshold values of activation tensors in the model.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">quantized_model</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">mct</span><span class="o">.</span><span class="n">ptq</span><span class="o">.</span><span class="n">pytorch_post_training_quantization</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">representative_dataset</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Usually, the representative dataset is taken from the training set, and uses the same preprocessing as the validation set.</p>
+<p>If that’s not the case, accuracy degradation is expected.</p>
+</section>
+<section id="trouble-situation">
+<h2>Trouble Situation<a class="headerlink" href="#trouble-situation" title="Link to this heading">¶</a></h2>
+<p>The Quantization accuracy may degrade when the preprocessing of the representative dataset is not identical to the validation dataset, or its images are taken from the different domain.</p>
+</section>
+<section id="solution">
+<h2>Solution<a class="headerlink" href="#solution" title="Link to this heading">¶</a></h2>
+<p>The representative and validation datasets should come from the same domain and have the same preprocessing applied to them.</p>
+</section>
+</section>
+
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="Main">
+        <div class="sphinxsidebarwrapper">
+  <div>
+    <h3><a href="../index.html">Table of Contents</a></h3>
+    <ul>
+<li><a class="reference internal" href="#">Representative and Validation Dataset Mismatch</a><ul>
+<li><a class="reference internal" href="#overview">Overview</a></li>
+<li><a class="reference internal" href="#trouble-situation">Trouble Situation</a></li>
+<li><a class="reference internal" href="#solution">Solution</a></li>
+</ul>
+</li>
+</ul>
+
+  </div>
+<search id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</search>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="Related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="nav-item nav-item-0"><a href="../index.html">TroubleShooting Documentation (MCT XQuant Extension Tool): ver 1.0</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">Representative and Validation Dataset Mismatch</a></li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+    &#169; Copyright 2025, Sony Semiconductor Solutions Corporation.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 8.1.3.
+    </div>
+  </body>
+</html>

@@ -15,6 +15,7 @@
 from functools import partial
 
 from typing import Tuple, Any, Dict, Callable
+import numpy as np
 
 from model_compression_toolkit.xquant.common.constants import MODEL_OUTPUT_KEY
 from model_compression_toolkit.xquant.common.dataset_utils import DatasetUtils
@@ -57,6 +58,7 @@ class SimilarityCalculator:
                                    similarity_metrics: Dict[str, Callable]) -> Dict[str, float]:
         """
         Compute the similarity between two tensors using provided similarity metrics.
+        If the type of inputs are not tensor, the similarity is 0.0.
 
         Args:
             tensors_to_compare (Tuple[Any, Any]): Tensors to compare by computing their similarity.
@@ -66,7 +68,10 @@ class SimilarityCalculator:
             Dict[str, float]: A dictionary of similarity metric names and their computed values.
         """
         x, y = tensors_to_compare
-        similarity_metrics = {k: v(x, y) for k, v in similarity_metrics.items()}
+        if(isinstance(x, np.ndarray) and isinstance(y, np.ndarray)):
+            similarity_metrics = {k: v(x, y) for k, v in similarity_metrics.items()}
+        else:
+            similarity_metrics = {k: 0.0 for k, v in similarity_metrics.items()}
         return similarity_metrics
 
     def _get_float_to_quantized_compare_points(self,

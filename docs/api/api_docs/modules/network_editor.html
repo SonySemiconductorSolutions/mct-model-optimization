@@ -1,22 +1,19 @@
 
+<!DOCTYPE html>
 
-<!doctype html>
-
-<html lang="en">
+<html lang="en" data-content_root="../../../">
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
     <title>network_editor Module &#8212; MCT Documentation: ver 2.4.2</title>
-    <link rel="stylesheet" type="text/css" href="../../../static/pygments.css" />
-    <link rel="stylesheet" type="text/css" href="../../../static/bizstyle.css" />
-    <link rel="stylesheet" type="text/css" href="../../../static/css/custom.css" />
+    <link rel="stylesheet" type="text/css" href="../../../static/pygments.css?v=fa44fd50" />
+    <link rel="stylesheet" type="text/css" href="../../../static/bizstyle.css?v=5283bb3d" />
+    <link rel="stylesheet" type="text/css" href="../../../static/css/custom.css?v=01243f34" />
     
-    <script data-url_root="../../../" id="documentation_options" src="../../../static/documentation_options.js"></script>
-    <script src="../../../static/jquery.js"></script>
-    <script src="../../../static/underscore.js"></script>
-    <script src="../../../static/_sphinx_javascript_frameworks_compat.js"></script>
-    <script src="../../../static/doctools.js"></script>
+    <script src="../../../static/documentation_options.js?v=de1351e5"></script>
+    <script src="../../../static/doctools.js?v=9bcbadda"></script>
+    <script src="../../../static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../../static/bizstyle.js"></script>
     <link rel="index" title="Index" href="../../../genindex.html" />
     <link rel="search" title="Search" href="../../../search.html" />
@@ -25,7 +22,7 @@
     <script src="static/css3-mediaqueries.js"></script>
     <![endif]-->
   </head><body>
-    <div class="related" role="navigation" aria-label="related navigation">
+    <div class="related" role="navigation" aria-label="Related">
       <h3>Navigation</h3>
       <ul>
         <li class="right" style="margin-right: 10px">
@@ -42,13 +39,13 @@
           <div class="body" role="main">
             
   <section id="network-editor-module">
-<span id="ug-network-editor"></span><h1>network_editor Module<a class="headerlink" href="#network-editor-module" title="Permalink to this heading">¶</a></h1>
+<span id="ug-network-editor"></span><h1>network_editor Module<a class="headerlink" href="#network-editor-module" title="Link to this heading">¶</a></h1>
 <p><strong>The model can be edited by a list of EditRules to apply on nodes in a graph that represents the model during the model quantization. Each EditRule is a tuple of a filter and an action, where we apply the action on each node the filter matches</strong></p>
 <section id="editrule">
-<h2>EditRule<a class="headerlink" href="#editrule" title="Permalink to this heading">¶</a></h2>
+<h2>EditRule<a class="headerlink" href="#editrule" title="Link to this heading">¶</a></h2>
 <dl class="py class">
 <dt class="sig sig-object py" id="model_compression_toolkit.core.network_editor.EditRule">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">model_compression_toolkit.core.network_editor.</span></span><span class="sig-name descname"><span class="pre">EditRule</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filter</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">action</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#model_compression_toolkit.core.network_editor.EditRule" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">model_compression_toolkit.core.network_editor.</span></span><span class="sig-name descname"><span class="pre">EditRule</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filter</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">action</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#model_compression_toolkit.core.network_editor.EditRule" title="Link to this definition">¶</a></dt>
 <dd><p>A tuple of a node filter and an action. The filter matches nodes in the graph which represents the model,
 and the action is applied on these nodes during the quantization process.</p>
 <p class="rubric">Examples</p>
@@ -66,10 +63,10 @@ to modify the network during the quantization process.</p>
 
 </section>
 <section id="filters">
-<h2>Filters<a class="headerlink" href="#filters" title="Permalink to this heading">¶</a></h2>
+<h2>Filters<a class="headerlink" href="#filters" title="Link to this heading">¶</a></h2>
 <dl class="py class">
 <dt class="sig sig-object py" id="model_compression_toolkit.core.network_editor.NodeTypeFilter">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">model_compression_toolkit.core.network_editor.</span></span><span class="sig-name descname"><span class="pre">NodeTypeFilter</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">node_type</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#model_compression_toolkit.core.network_editor.NodeTypeFilter" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">model_compression_toolkit.core.network_editor.</span></span><span class="sig-name descname"><span class="pre">NodeTypeFilter</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">node_type</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#model_compression_toolkit.core.network_editor.NodeTypeFilter" title="Link to this definition">¶</a></dt>
 <dd><p>Class NodeNameFilter to check if a node is of a specific type.</p>
 <p>Init a NodeTypeFilter object.</p>
 <dl class="field-list simple">
@@ -84,7 +81,7 @@ to modify the network during the quantization process.</p>
 </div>
 <dl class="py class">
 <dt class="sig sig-object py" id="model_compression_toolkit.core.network_editor.NodeNameFilter">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">model_compression_toolkit.core.network_editor.</span></span><span class="sig-name descname"><span class="pre">NodeNameFilter</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">node_name</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#model_compression_toolkit.core.network_editor.NodeNameFilter" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">model_compression_toolkit.core.network_editor.</span></span><span class="sig-name descname"><span class="pre">NodeNameFilter</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">node_name</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#model_compression_toolkit.core.network_editor.NodeNameFilter" title="Link to this definition">¶</a></dt>
 <dd><p>Class NodeNameFilter to check if a node’s name has a specific value.</p>
 <p>Init a NodeNameFilter object.</p>
 <dl class="field-list simple">
@@ -99,7 +96,7 @@ to modify the network during the quantization process.</p>
 </div>
 <dl class="py class">
 <dt class="sig sig-object py" id="model_compression_toolkit.core.network_editor.NodeNameScopeFilter">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">model_compression_toolkit.core.network_editor.</span></span><span class="sig-name descname"><span class="pre">NodeNameScopeFilter</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">node_name_scope</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#model_compression_toolkit.core.network_editor.NodeNameScopeFilter" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">model_compression_toolkit.core.network_editor.</span></span><span class="sig-name descname"><span class="pre">NodeNameScopeFilter</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">node_name_scope</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#model_compression_toolkit.core.network_editor.NodeNameScopeFilter" title="Link to this definition">¶</a></dt>
 <dd><p>Class NodeNameFilter to check if a string is in a node’s name.</p>
 <p>Init a NodeNameScopeFilter object.</p>
 <dl class="field-list simple">
@@ -111,10 +108,10 @@ to modify the network during the quantization process.</p>
 
 </section>
 <section id="actions">
-<h2>Actions<a class="headerlink" href="#actions" title="Permalink to this heading">¶</a></h2>
+<h2>Actions<a class="headerlink" href="#actions" title="Link to this heading">¶</a></h2>
 <dl class="py class">
 <dt class="sig sig-object py" id="model_compression_toolkit.core.network_editor.ChangeFinalWeightsQuantConfigAttr">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">model_compression_toolkit.core.network_editor.</span></span><span class="sig-name descname"><span class="pre">ChangeFinalWeightsQuantConfigAttr</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">attr_name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#model_compression_toolkit.core.network_editor.ChangeFinalWeightsQuantConfigAttr" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">model_compression_toolkit.core.network_editor.</span></span><span class="sig-name descname"><span class="pre">ChangeFinalWeightsQuantConfigAttr</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">attr_name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#model_compression_toolkit.core.network_editor.ChangeFinalWeightsQuantConfigAttr" title="Link to this definition">¶</a></dt>
 <dd><p>Change attributes in a layer’s final weights quantization config.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -131,7 +128,7 @@ to modify the network during the quantization process.</p>
 </div>
 <dl class="py class">
 <dt class="sig sig-object py" id="model_compression_toolkit.core.network_editor.ChangeCandidatesWeightsQuantConfigAttr">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">model_compression_toolkit.core.network_editor.</span></span><span class="sig-name descname"><span class="pre">ChangeCandidatesWeightsQuantConfigAttr</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">attr_name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#model_compression_toolkit.core.network_editor.ChangeCandidatesWeightsQuantConfigAttr" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">model_compression_toolkit.core.network_editor.</span></span><span class="sig-name descname"><span class="pre">ChangeCandidatesWeightsQuantConfigAttr</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">attr_name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#model_compression_toolkit.core.network_editor.ChangeCandidatesWeightsQuantConfigAttr" title="Link to this definition">¶</a></dt>
 <dd><p>Change attributes in a layer’s weights quantization configuration candidates.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -148,7 +145,7 @@ to modify the network during the quantization process.</p>
 </div>
 <dl class="py class">
 <dt class="sig sig-object py" id="model_compression_toolkit.core.network_editor.ChangeFinalActivationQuantConfigAttr">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">model_compression_toolkit.core.network_editor.</span></span><span class="sig-name descname"><span class="pre">ChangeFinalActivationQuantConfigAttr</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#model_compression_toolkit.core.network_editor.ChangeFinalActivationQuantConfigAttr" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">model_compression_toolkit.core.network_editor.</span></span><span class="sig-name descname"><span class="pre">ChangeFinalActivationQuantConfigAttr</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#model_compression_toolkit.core.network_editor.ChangeFinalActivationQuantConfigAttr" title="Link to this definition">¶</a></dt>
 <dd><p>Change attributes in a layer’s final activation quantization config.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -162,7 +159,7 @@ to modify the network during the quantization process.</p>
 </div>
 <dl class="py class">
 <dt class="sig sig-object py" id="model_compression_toolkit.core.network_editor.ChangeCandidatesActivationQuantConfigAttr">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">model_compression_toolkit.core.network_editor.</span></span><span class="sig-name descname"><span class="pre">ChangeCandidatesActivationQuantConfigAttr</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#model_compression_toolkit.core.network_editor.ChangeCandidatesActivationQuantConfigAttr" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">model_compression_toolkit.core.network_editor.</span></span><span class="sig-name descname"><span class="pre">ChangeCandidatesActivationQuantConfigAttr</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#model_compression_toolkit.core.network_editor.ChangeCandidatesActivationQuantConfigAttr" title="Link to this definition">¶</a></dt>
 <dd><p>Change attributes in a layer’s activation quantization configuration candidates.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -176,7 +173,7 @@ to modify the network during the quantization process.</p>
 </div>
 <dl class="py class">
 <dt class="sig sig-object py" id="model_compression_toolkit.core.network_editor.ChangeQuantizationParamFunction">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">model_compression_toolkit.core.network_editor.</span></span><span class="sig-name descname"><span class="pre">ChangeQuantizationParamFunction</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">attr_name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">activation_quantization_params_fn</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">weights_quantization_params_fn</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#model_compression_toolkit.core.network_editor.ChangeQuantizationParamFunction" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">model_compression_toolkit.core.network_editor.</span></span><span class="sig-name descname"><span class="pre">ChangeQuantizationParamFunction</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">attr_name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">activation_quantization_params_fn</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">weights_quantization_params_fn</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#model_compression_toolkit.core.network_editor.ChangeQuantizationParamFunction" title="Link to this definition">¶</a></dt>
 <dd><p>Class ChangeQuantizationParamFunction to change a node’s weights/activations quantization params function.</p>
 <p>Init a ChangeQuantizationParamFunction object.</p>
 <dl class="field-list simple">
@@ -195,7 +192,7 @@ to modify the network during the quantization process.</p>
 </div>
 <dl class="py class">
 <dt class="sig sig-object py" id="model_compression_toolkit.core.network_editor.ChangeFinalWeightsQuantizationMethod">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">model_compression_toolkit.core.network_editor.</span></span><span class="sig-name descname"><span class="pre">ChangeFinalWeightsQuantizationMethod</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">attr_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">weights_quantization_method</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#model_compression_toolkit.core.network_editor.ChangeFinalWeightsQuantizationMethod" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">model_compression_toolkit.core.network_editor.</span></span><span class="sig-name descname"><span class="pre">ChangeFinalWeightsQuantizationMethod</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">attr_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">weights_quantization_method</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#model_compression_toolkit.core.network_editor.ChangeFinalWeightsQuantizationMethod" title="Link to this definition">¶</a></dt>
 <dd><p>Class ChangeFinalWeightsQuantizationMethod to change a node’s weights/activations quantizer function.</p>
 <p>Init a ChangeFinalWeightsQuantizationMethod object.</p>
 <dl class="field-list simple">
@@ -213,7 +210,7 @@ to modify the network during the quantization process.</p>
 </div>
 <dl class="py class">
 <dt class="sig sig-object py" id="model_compression_toolkit.core.network_editor.ChangeCandidatesWeightsQuantizationMethod">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">model_compression_toolkit.core.network_editor.</span></span><span class="sig-name descname"><span class="pre">ChangeCandidatesWeightsQuantizationMethod</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">attr_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">weights_quantization_method</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#model_compression_toolkit.core.network_editor.ChangeCandidatesWeightsQuantizationMethod" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">model_compression_toolkit.core.network_editor.</span></span><span class="sig-name descname"><span class="pre">ChangeCandidatesWeightsQuantizationMethod</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">attr_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">weights_quantization_method</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#model_compression_toolkit.core.network_editor.ChangeCandidatesWeightsQuantizationMethod" title="Link to this definition">¶</a></dt>
 <dd><p>Class ChangeCandidatesWeightsQuantizationMethod to change a node’s weights quantizer function.</p>
 <p>Init a ChangeCandidatesWeightsQuantizationMethod object.</p>
 <dl class="field-list simple">
@@ -231,7 +228,7 @@ to modify the network during the quantization process.</p>
 </div>
 <dl class="py class">
 <dt class="sig sig-object py" id="model_compression_toolkit.core.network_editor.ChangeCandidatesActivationQuantizationMethod">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">model_compression_toolkit.core.network_editor.</span></span><span class="sig-name descname"><span class="pre">ChangeCandidatesActivationQuantizationMethod</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">activation_quantization_method</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#model_compression_toolkit.core.network_editor.ChangeCandidatesActivationQuantizationMethod" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">model_compression_toolkit.core.network_editor.</span></span><span class="sig-name descname"><span class="pre">ChangeCandidatesActivationQuantizationMethod</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">activation_quantization_method</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#model_compression_toolkit.core.network_editor.ChangeCandidatesActivationQuantizationMethod" title="Link to this definition">¶</a></dt>
 <dd><p>Class ChangeQuantizationMethod to change a node’s activations quantizer function.</p>
 <p>Init a ChangeCandidatesActivationQuantizationMethod object.</p>
 <dl class="field-list simple">
@@ -249,21 +246,39 @@ to modify the network during the quantization process.</p>
           </div>
         </div>
       </div>
-      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+      <div class="sphinxsidebar" role="navigation" aria-label="Main">
         <div class="sphinxsidebarwrapper">
   <div>
     <h3><a href="../../../index.html">Table of Contents</a></h3>
     <ul>
 <li><a class="reference internal" href="#">network_editor Module</a><ul>
-<li><a class="reference internal" href="#editrule">EditRule</a></li>
-<li><a class="reference internal" href="#filters">Filters</a></li>
-<li><a class="reference internal" href="#actions">Actions</a></li>
+<li><a class="reference internal" href="#editrule">EditRule</a><ul>
+<li><a class="reference internal" href="#model_compression_toolkit.core.network_editor.EditRule"><code class="docutils literal notranslate"><span class="pre">EditRule</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#filters">Filters</a><ul>
+<li><a class="reference internal" href="#model_compression_toolkit.core.network_editor.NodeTypeFilter"><code class="docutils literal notranslate"><span class="pre">NodeTypeFilter</span></code></a></li>
+<li><a class="reference internal" href="#model_compression_toolkit.core.network_editor.NodeNameFilter"><code class="docutils literal notranslate"><span class="pre">NodeNameFilter</span></code></a></li>
+<li><a class="reference internal" href="#model_compression_toolkit.core.network_editor.NodeNameScopeFilter"><code class="docutils literal notranslate"><span class="pre">NodeNameScopeFilter</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#actions">Actions</a><ul>
+<li><a class="reference internal" href="#model_compression_toolkit.core.network_editor.ChangeFinalWeightsQuantConfigAttr"><code class="docutils literal notranslate"><span class="pre">ChangeFinalWeightsQuantConfigAttr</span></code></a></li>
+<li><a class="reference internal" href="#model_compression_toolkit.core.network_editor.ChangeCandidatesWeightsQuantConfigAttr"><code class="docutils literal notranslate"><span class="pre">ChangeCandidatesWeightsQuantConfigAttr</span></code></a></li>
+<li><a class="reference internal" href="#model_compression_toolkit.core.network_editor.ChangeFinalActivationQuantConfigAttr"><code class="docutils literal notranslate"><span class="pre">ChangeFinalActivationQuantConfigAttr</span></code></a></li>
+<li><a class="reference internal" href="#model_compression_toolkit.core.network_editor.ChangeCandidatesActivationQuantConfigAttr"><code class="docutils literal notranslate"><span class="pre">ChangeCandidatesActivationQuantConfigAttr</span></code></a></li>
+<li><a class="reference internal" href="#model_compression_toolkit.core.network_editor.ChangeQuantizationParamFunction"><code class="docutils literal notranslate"><span class="pre">ChangeQuantizationParamFunction</span></code></a></li>
+<li><a class="reference internal" href="#model_compression_toolkit.core.network_editor.ChangeFinalWeightsQuantizationMethod"><code class="docutils literal notranslate"><span class="pre">ChangeFinalWeightsQuantizationMethod</span></code></a></li>
+<li><a class="reference internal" href="#model_compression_toolkit.core.network_editor.ChangeCandidatesWeightsQuantizationMethod"><code class="docutils literal notranslate"><span class="pre">ChangeCandidatesWeightsQuantizationMethod</span></code></a></li>
+<li><a class="reference internal" href="#model_compression_toolkit.core.network_editor.ChangeCandidatesActivationQuantizationMethod"><code class="docutils literal notranslate"><span class="pre">ChangeCandidatesActivationQuantizationMethod</span></code></a></li>
+</ul>
+</li>
 </ul>
 </li>
 </ul>
 
   </div>
-<div id="searchbox" style="display: none" role="search">
+<search id="searchbox" style="display: none" role="search">
   <h3 id="searchlabel">Quick search</h3>
     <div class="searchformwrapper">
     <form class="search" action="../../../search.html" method="get">
@@ -271,13 +286,13 @@ to modify the network during the quantization process.</p>
       <input type="submit" value="Go" />
     </form>
     </div>
-</div>
+</search>
 <script>document.getElementById('searchbox').style.display = "block"</script>
         </div>
       </div>
       <div class="clearer"></div>
     </div>
-    <div class="related" role="navigation" aria-label="related navigation">
+    <div class="related" role="navigation" aria-label="Related">
       <h3>Navigation</h3>
       <ul>
         <li class="right" style="margin-right: 10px">
@@ -288,8 +303,8 @@ to modify the network during the quantization process.</p>
       </ul>
     </div>
     <div class="footer" role="contentinfo">
-        &#169; Copyright 2022, Sony Semiconductor Israel.
-      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 5.0.2.
+    &#169; Copyright 2022, Sony Semiconductor Israel.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 8.1.3.
     </div>
   </body>
 </html>

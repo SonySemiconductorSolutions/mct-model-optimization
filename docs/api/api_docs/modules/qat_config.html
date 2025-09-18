@@ -1,22 +1,19 @@
 
+<!DOCTYPE html>
 
-<!doctype html>
-
-<html lang="en">
+<html lang="en" data-content_root="../../../">
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
     <title>qat_config Module &#8212; MCT Documentation: ver 2.4.2</title>
-    <link rel="stylesheet" type="text/css" href="../../../static/pygments.css" />
-    <link rel="stylesheet" type="text/css" href="../../../static/bizstyle.css" />
-    <link rel="stylesheet" type="text/css" href="../../../static/css/custom.css" />
+    <link rel="stylesheet" type="text/css" href="../../../static/pygments.css?v=fa44fd50" />
+    <link rel="stylesheet" type="text/css" href="../../../static/bizstyle.css?v=5283bb3d" />
+    <link rel="stylesheet" type="text/css" href="../../../static/css/custom.css?v=01243f34" />
     
-    <script data-url_root="../../../" id="documentation_options" src="../../../static/documentation_options.js"></script>
-    <script src="../../../static/jquery.js"></script>
-    <script src="../../../static/underscore.js"></script>
-    <script src="../../../static/_sphinx_javascript_frameworks_compat.js"></script>
-    <script src="../../../static/doctools.js"></script>
+    <script src="../../../static/documentation_options.js?v=de1351e5"></script>
+    <script src="../../../static/doctools.js?v=9bcbadda"></script>
+    <script src="../../../static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../../static/bizstyle.js"></script>
     <link rel="index" title="Index" href="../../../genindex.html" />
     <link rel="search" title="Search" href="../../../search.html" />
@@ -25,7 +22,7 @@
     <script src="static/css3-mediaqueries.js"></script>
     <![endif]-->
   </head><body>
-    <div class="related" role="navigation" aria-label="related navigation">
+    <div class="related" role="navigation" aria-label="Related">
       <h3>Navigation</h3>
       <ul>
         <li class="right" style="margin-right: 10px">
@@ -42,20 +39,20 @@
           <div class="body" role="main">
             
   <section id="qat-config-module">
-<span id="ug-qat-config"></span><h1>qat_config Module<a class="headerlink" href="#qat-config-module" title="Permalink to this heading">¶</a></h1>
+<span id="ug-qat-config"></span><h1>qat_config Module<a class="headerlink" href="#qat-config-module" title="Link to this heading">¶</a></h1>
 <section id="trainingmethod">
-<h2>TrainingMethod<a class="headerlink" href="#trainingmethod" title="Permalink to this heading">¶</a></h2>
+<h2>TrainingMethod<a class="headerlink" href="#trainingmethod" title="Link to this heading">¶</a></h2>
 <p>In order to select a training method, please visit the <a class="reference internal" href="trainable_infrastructure.html#ug-trainable-infrastructure"><span class="std std-ref">trainable_infrastructure API.</span></a></p>
 <div class="line-block">
 <div class="line"><br /></div>
 </div>
 </section>
 <section id="qatconfig">
-<h2>QATConfig<a class="headerlink" href="#qatconfig" title="Permalink to this heading">¶</a></h2>
+<h2>QATConfig<a class="headerlink" href="#qatconfig" title="Link to this heading">¶</a></h2>
 <p><strong>Class to configure the quantization process of the model when quantizing using Quantization-aware Training (QAT):</strong></p>
 <dl class="py class">
 <dt class="sig sig-object py" id="model_compression_toolkit.qat.QATConfig">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">model_compression_toolkit.qat.</span></span><span class="sig-name descname"><span class="pre">QATConfig</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">weight_training_method</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">TrainingMethod.STE</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">activation_training_method</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">TrainingMethod.STE</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">weight_quantizer_params_override</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">activation_quantizer_params_override</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#model_compression_toolkit.qat.QATConfig" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">model_compression_toolkit.qat.</span></span><span class="sig-name descname"><span class="pre">QATConfig</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">weight_training_method</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">TrainingMethod.STE</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">activation_training_method</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">TrainingMethod.STE</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">weight_quantizer_params_override</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">activation_quantizer_params_override</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#model_compression_toolkit.qat.QATConfig" title="Link to this definition">¶</a></dt>
 <dd><p>QAT configuration class.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -77,20 +74,23 @@
           </div>
         </div>
       </div>
-      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+      <div class="sphinxsidebar" role="navigation" aria-label="Main">
         <div class="sphinxsidebarwrapper">
   <div>
     <h3><a href="../../../index.html">Table of Contents</a></h3>
     <ul>
 <li><a class="reference internal" href="#">qat_config Module</a><ul>
 <li><a class="reference internal" href="#trainingmethod">TrainingMethod</a></li>
-<li><a class="reference internal" href="#qatconfig">QATConfig</a></li>
+<li><a class="reference internal" href="#qatconfig">QATConfig</a><ul>
+<li><a class="reference internal" href="#model_compression_toolkit.qat.QATConfig"><code class="docutils literal notranslate"><span class="pre">QATConfig</span></code></a></li>
+</ul>
+</li>
 </ul>
 </li>
 </ul>
 
   </div>
-<div id="searchbox" style="display: none" role="search">
+<search id="searchbox" style="display: none" role="search">
   <h3 id="searchlabel">Quick search</h3>
     <div class="searchformwrapper">
     <form class="search" action="../../../search.html" method="get">
@@ -98,13 +98,13 @@
       <input type="submit" value="Go" />
     </form>
     </div>
-</div>
+</search>
 <script>document.getElementById('searchbox').style.display = "block"</script>
         </div>
       </div>
       <div class="clearer"></div>
     </div>
-    <div class="related" role="navigation" aria-label="related navigation">
+    <div class="related" role="navigation" aria-label="Related">
       <h3>Navigation</h3>
       <ul>
         <li class="right" style="margin-right: 10px">
@@ -115,8 +115,8 @@
       </ul>
     </div>
     <div class="footer" role="contentinfo">
-        &#169; Copyright 2022, Sony Semiconductor Israel.
-      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 5.0.2.
+    &#169; Copyright 2022, Sony Semiconductor Israel.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 8.1.3.
     </div>
   </body>
 </html>
