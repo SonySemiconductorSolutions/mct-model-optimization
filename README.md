@@ -34,7 +34,7 @@ Pip install the model compression toolkit package in a Python>=3.9 environment w
 ```
 pip install model-compression-toolkit
 ```
-For installing the nightly version or installing from source, refer to the [installation guide](https://github.com/sony/model_optimization/blob/main/INSTALLATION.md).
+For installing the nightly version or installing from source, refer to the [installation guide](https://github.com/SonySemiconductorSolutions/mct-model-optimization/blob/main/INSTALLATION.md).
 
 **Important note**: In order to use MCT, you’ll need to provide a pre-trained floating point model (PyTorch/Keras) as an input.
 
