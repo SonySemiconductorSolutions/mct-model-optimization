@@ -1,4 +1,4 @@
-# Copyright 2024 Sony Semiconductor Israel, Inc. All rights reserved.
+# Copyright 2025 Sony Semiconductor Solutions, Inc. All rights reserved.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -32,7 +32,7 @@ from model_compression_toolkit.target_platform_capabilities.targetplatform2frame
 from model_compression_toolkit.target_platform_capabilities.targetplatform2framework.attach2fw import \
     AttachTpcToFramework
 from model_compression_toolkit.target_platform_capabilities.targetplatform2framework.attribute_filter import Eq
-from edgemdt_cl.pytorch import MulticlassNMS, MulticlassNMSWithIndices
+from edgemdt_cl.pytorch import MulticlassNMS, MulticlassNMSWithIndices, MulticlassNMSOBB
 
 
 class AttachTpcToPytorch(AttachTpcToFramework):
@@ -98,7 +98,7 @@ class AttachTpcToPytorch(AttachTpcToFramework):
             OperatorSetNames.L2NORM: [LayerFilterParams(torch.nn.functional.normalize,
                                                         Eq('p', 2) | Eq('p', None))],
             OperatorSetNames.SSD_POST_PROCESS: [],  # no such operator in pytorch
-            OperatorSetNames.COMBINED_NON_MAX_SUPPRESSION: [MulticlassNMS, MulticlassNMSWithIndices],
+            OperatorSetNames.COMBINED_NON_MAX_SUPPRESSION: [MulticlassNMS, MulticlassNMSWithIndices, MulticlassNMSOBB],
             OperatorSetNames.EXP: [torch.exp],
             OperatorSetNames.SIN: [torch.sin],
             OperatorSetNames.COS: [torch.cos],
