@@ -16,6 +16,3 @@ This includes fine-tuning PTQ (Post-Training Quantization) configurations, expor
 and exploring advanced compression techniques. 
 These techniques are essential for further optimizing models and achieving superior performance in deployment scenarios.
 - [MCT Features notebooks](notebooks/mct_features_notebooks/README.md)
-
-## imx500
-- [IMX500 Features notebooks](notebooks/imx500_notebooks/README.md)
