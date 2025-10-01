@@ -46,7 +46,9 @@ def test_stack():
                                                           core_config=mct.core.CoreConfig(),
                                                           target_platform_capabilities=tpc)
     
-    assert 'keras_activation_quantization_holder_3' in [layer.name for layer in q_model.layers] # activation holder for stack layer
-    stack_activation_holder = q_model.get_layer('keras_activation_quantization_holder_3')
+    q_model_layers = [layer.name for layer in q_model.layers]
+    assert q_model_layers[-2] == 'tf.stack'
+    
+    stack_activation_holder = q_model.get_layer(q_model_layers[-1]) # activation holder for stack layer
     assert isinstance(stack_activation_holder, KerasActivationQuantizationHolder)
     assert stack_activation_holder.activation_holder_quantizer.num_bits == 8
