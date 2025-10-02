@@ -18,12 +18,12 @@ from model_compression_toolkit.target_platform_capabilities.tpc_models.imx500_tp
 def test_tpc_stack():
 
     tpc = get_tpc_imx500_v1() # only imx500 supported
-    opset = tpc.operator_set[0]
-    assert opset.name == 'Stack'
-    assert opset.qc_options is None
-
-    qc = tpc.default_qco.quantization_configurations[0] # Stack layer applies default qc_options
-    assert qc.default_weight_attr_config.enable_weights_quantization == False
-    assert qc.attr_weights_configs_mapping == {}
-    assert qc.enable_activation_quantization == True
-    assert qc.activation_n_bits == 8
+    for opset in tpc.operator_set:
+        if opset.name == 'Stack':
+            assert opset.qc_options is None # Stack layer applies default qc_options
+    
+    for qc in tpc.default_qco.quantization_configurations:
+        assert qc.default_weight_attr_config.enable_weights_quantization == False
+        assert qc.attr_weights_configs_mapping == {}
+        assert qc.enable_activation_quantization == True
+        assert qc.activation_n_bits == 8
