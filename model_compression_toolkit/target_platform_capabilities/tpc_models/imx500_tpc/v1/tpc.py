@@ -166,10 +166,11 @@ def generate_tpc(default_config: OpQuantizationConfig,
     operator_set = []
     fusing_patterns = []
 
+    activation_quantization_config = (default_configuration_options.clone_and_edit_weight_attribute(enable_weights_quantization=False))
+    operator_set.append(schema.OperatorsSet(name=schema.OperatorSetNames.STACK, qc_options=activation_quantization_config))
+
     no_quantization_config = (default_configuration_options.clone_and_edit(enable_activation_quantization=False)
                               .clone_and_edit_weight_attribute(enable_weights_quantization=False))
-
-    operator_set.append(schema.OperatorsSet(name=schema.OperatorSetNames.STACK, qc_options=no_quantization_config))
     operator_set.append(schema.OperatorsSet(name=schema.OperatorSetNames.UNSTACK, qc_options=no_quantization_config))
     operator_set.append(schema.OperatorsSet(name=schema.OperatorSetNames.DROPOUT, qc_options=no_quantization_config))
     operator_set.append(schema.OperatorsSet(name=schema.OperatorSetNames.FLATTEN, qc_options=no_quantization_config))
