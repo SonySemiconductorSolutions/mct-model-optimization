@@ -22,6 +22,7 @@ from mct_quantizers import KerasActivationQuantizationHolder
 
 
 def get_model():
+
     inputs = keras.layers.Input((32, 32, 3))
     out1 = layers.Conv2D(16, kernel_size=3, padding='same', activation='relu')(inputs)
     out2 = layers.Conv2D(16, kernel_size=3, padding='same', activation='relu')(inputs)
@@ -30,6 +31,7 @@ def get_model():
 
 
 def get_representative_dataset(n_iter=1):
+    
     def representative_dataset() -> Iterator[List]:
         for _ in range(n_iter):
             yield [np.random.randn(1, 32, 32, 3)]

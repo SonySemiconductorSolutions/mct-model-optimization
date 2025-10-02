@@ -42,6 +42,7 @@ def get_model():
 
 
 def get_representative_dataset(n_iter=1):
+
     def representative_dataset() -> Iterator[List]:
         for _ in range(n_iter):
             yield [torch.randn(1, 3, 32, 32)]
