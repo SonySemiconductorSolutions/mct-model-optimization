@@ -29,7 +29,6 @@ body:
       options:
         - source
         - pip (model-compression-toolkit)
-        - pip (mct-nightly)
     validations:
       required: true
   - type: input
