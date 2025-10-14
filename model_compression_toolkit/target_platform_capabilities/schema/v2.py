@@ -16,7 +16,7 @@ import pprint
 from enum import Enum
 from typing import Dict, Any, Union, Tuple, Optional, Annotated
 
-from pydantic import BaseModel, Field, root_validator, model_validator, ConfigDict
+from pydantic import BaseModel, Field, model_validator, ConfigDict
 
 from mct_quantizers import QuantizationMethod
 from model_compression_toolkit.constants import FLOAT_BITWIDTH
@@ -116,7 +116,8 @@ class Fusing(TargetPlatformModelComponent):
 
     model_config = ConfigDict(frozen=True)
 
-    @model_validator(mode="before")
+    @model_validator(mode='before')
+    @classmethod
     def validate_and_set_name(cls, values: Dict[str, Any]) -> Dict[str, Any]:
         """
         Validate the operator_groups and set the name by concatenating operator group names.
@@ -143,16 +144,16 @@ class Fusing(TargetPlatformModelComponent):
 
         return values
 
-    @model_validator(mode="after")
-    def validate_after_initialization(cls, model: 'Fusing') -> Any:
+    @model_validator(mode='after')
+    def validate_after_initialization(self) -> 'Fusing':
         """
         Perform validation after the model has been instantiated.
         Ensures that there are at least two operator groups.
         """
-        if len(model.operator_groups) < 2:
+        if len(self.operator_groups) < 2:
             Logger.critical("Fusing cannot be created for a single operator.")  # pragma: no cover
-        
-        return model
+
+        return self
 
     def contains(self, other: Any) -> bool:
         """
@@ -235,8 +236,8 @@ class TargetPlatformCapabilities(BaseModel):
 
     model_config = ConfigDict(frozen=True)
 
-    @model_validator(mode="after")
-    def validate_after_initialization(cls, model: 'TargetPlatformCapabilities') -> Any:
+    @model_validator(mode='after')
+    def validate_after_initialization(self) -> 'TargetPlatformCapabilities':
         """
         Perform validation after the model has been instantiated.
 
@@ -247,12 +248,12 @@ class TargetPlatformCapabilities(BaseModel):
             TargetPlatformCapabilities: The validated model.
         """
         # Validate `default_qco`
-        default_qco = model.default_qco
+        default_qco = self.default_qco
         if len(default_qco.quantization_configurations) != 1:
             Logger.critical("Default QuantizationConfigOptions must contain exactly one option.")  # pragma: no cover
 
         # Validate `operator_set` uniqueness
-        operator_set = model.operator_set
+        operator_set = self.operator_set
         if operator_set is not None:
             opsets_names = [
                 op.name.value if isinstance(op.name, OperatorSetNames) else op.name
@@ -261,7 +262,7 @@ class TargetPlatformCapabilities(BaseModel):
             if len(set(opsets_names)) != len(opsets_names):
                 Logger.critical("Operator Sets must have unique names.")  # pragma: no cover
 
-        return model
+        return self
 
     def get_info(self) -> Dict[str, Any]:
         """
