@@ -31,11 +31,6 @@ From PyPi - latest stable release:
     pip install model-compression-toolkit
 
 
-A nightly version is also available (unstable):
-::
-
-    pip install mct-nightly
-
 For using with Tensorflow please install the packages:
 `tensorflow <https://www.tensorflow.org/install>`_
 
