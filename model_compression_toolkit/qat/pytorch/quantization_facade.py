@@ -141,7 +141,7 @@ if FOUND_TORCH:
         Logger.warning(
             f"pytorch_quantization_aware_training_init_experimental is experimental and is subject to future changes."
             f"If you encounter an issue, please open an issue in our GitHub "
-            f"project https://github.com/sony/model_optimization")
+            f"project https://github.com/SonySemiconductorSolutions/mct-model-optimization")
 
         if core_config.is_mixed_precision_enabled:
             if not isinstance(core_config.mixed_precision_config, MixedPrecisionQuantizationConfig):
@@ -231,7 +231,7 @@ if FOUND_TORCH:
         Logger.warning(
             f"pytorch_quantization_aware_training_finalize_experimental is experimental and is subject to future changes."
             f"If you encounter an issue, please open an issue in our GitHub "
-            f"project https://github.com/sony/model_optimization")
+            f"project https://github.com/SonySemiconductorSolutions/mct-model-optimization")
 
         for _, layer in in_model.named_children():
             if isinstance(layer, (PytorchQuantizationWrapper, PytorchActivationQuantizationHolder)):

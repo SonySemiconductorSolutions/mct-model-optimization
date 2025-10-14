@@ -173,7 +173,7 @@ if FOUND_TF:
 
         Logger.warning(f"keras_quantization_aware_training_init_experimental is experimental and is subject to future changes."
                        f"If you encounter an issue, please open an issue in our GitHub "
-                       f"project https://github.com/sony/model_optimization")
+                       f"project https://github.com/SonySemiconductorSolutions/mct-model-optimization")
 
         KerasModelValidation(model=in_model,
                              fw_info=DEFAULT_KERAS_INFO).validate()
@@ -274,7 +274,7 @@ if FOUND_TF:
         Logger.warning(
             f"keras_quantization_aware_training_finalize_experimental is experimental and is subject to future changes."
             f"If you encounter an issue, please open an issue in our GitHub "
-            f"project https://github.com/sony/model_optimization")
+            f"project https://github.com/SonySemiconductorSolutions/mct-model-optimization")
 
         def _export(layer):
             if isinstance(layer, KerasTrainableQuantizationWrapper):

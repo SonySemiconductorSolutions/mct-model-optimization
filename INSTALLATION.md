@@ -20,7 +20,7 @@ To work with the MCT source code, follow these steps:
 
 1. Clone the repository:
 ```
-git clone https://github.com/sony/model_optimization.git
+git clone https://github.com/SonySemiconductorSolutions/mct-model-optimization.git
 cd model_optimization
 
 ```

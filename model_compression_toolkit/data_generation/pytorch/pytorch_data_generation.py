@@ -176,7 +176,7 @@ if FOUND_TORCH and FOUND_TORCHVISION:
         Logger.warning(f"pytorch_data_generation_experimental is experimental "
                        f"and is subject to future changes."
                        f"If you encounter an issue, please open an issue in our GitHub "
-                       f"project https://github.com/sony/model_optimization")
+                       f"project https://github.com/SonySemiconductorSolutions/mct-model-optimization")
 
         # get the model device
         device = get_working_device()

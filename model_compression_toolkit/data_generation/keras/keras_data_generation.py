@@ -161,7 +161,7 @@ if FOUND_TF:
         Logger.warning(f"keras_data_generation_experimental is experimental "
                        f"and is subject to future changes."
                        f"If you encounter an issue, please open an issue in our GitHub "
-                       f"project https://github.com/sony/model_optimization")
+                       f"project https://github.com/SonySemiconductorSolutions/mct-model-optimization")
 
         # Get Data Generation functions and classes
         image_pipeline, normalization, bn_layer_weighting_fn, bn_alignment_loss_fn, output_loss_fn, \

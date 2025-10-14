@@ -115,7 +115,7 @@ if FOUND_TORCH:
 
         Logger.warning(f"pytorch_pruning_experimental is experimental and is subject to future changes."
                        f"If you encounter an issue, please open an issue in our GitHub "
-                       f"project https://github.com/sony/model_optimization")
+                       f"project https://github.com/SonySemiconductorSolutions/mct-model-optimization")
 
         # Instantiate the Pytorch framework implementation.
         fw_impl = PruningPytorchImplementation()
