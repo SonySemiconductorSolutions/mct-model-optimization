@@ -9,7 +9,7 @@ trainable_infrastructure Module
 
 The trainable infrastructure is a module containing quantization abstraction and quantizers for hardware-oriented model optimization tools.
 It provides the required abstraction for trainable quantization methods such as quantization-aware training.
-It utilizes the Inferable Quantizers Infrastructure provided by the `MCT Quantizers <https://github.com/sony/mct_quantizers>`_ package, which proposes the required abstraction for emulating inference-time quantization.
+It utilizes the Inferable Quantizers Infrastructure provided by the `MCT Quantizers <https://github.com/SonySemiconductorSolutions/mct-quantization-layers>`_ package, which proposes the required abstraction for emulating inference-time quantization.
 
 When using a trainable quantizer, each layer with quantized weights is wrapped with a "Quantization Wrapper" object,
 and each activation quantizer is being stored in an "Activation Quantization Holder" object.

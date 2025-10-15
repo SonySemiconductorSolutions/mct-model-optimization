@@ -16,7 +16,7 @@ Conv2D <https://www.tensorflow.org/lite/performance/quantization_spec#per-axis_v
 
 This can be addressed in MCT by using the target_platform_capabilities module, that can configure different
 parameters that are hardware-related, and the optimization process will use this to optimize the model accordingly.
-Models for IMX500, TFLite and qnnpack can be observed `here <https://github.com/sony/model_optimization/tree/main/model_compression_toolkit/target_platform_capabilities>`_, and can be used using :ref:`get_target_platform_capabilities function<ug-get_target_platform_capabilities>`.
+Models for IMX500, TFLite and qnnpack can be observed `here <https://github.com/SonySemiconductorSolutions/mct-model-optimization/tree/main/model_compression_toolkit/target_platform_capabilities>`_, and can be used using :ref:`get_target_platform_capabilities function<ug-get_target_platform_capabilities>`.
 
 |
 
