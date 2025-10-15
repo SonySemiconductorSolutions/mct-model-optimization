@@ -9,12 +9,6 @@ follow the MCT install guide and run the following command:
 pip install model-compression-toolkit
 ```
 
-If you prefer to use the nightly package (unstable version),
-you can install it with the following command:
-```
-pip install mct-nightly
-```
-
 ### Working from Source Code
 To work with the MCT source code, follow these steps:
 
