@@ -21,7 +21,7 @@ To work with the MCT source code, follow these steps:
 1. Clone the repository:
 ```
 git clone https://github.com/SonySemiconductorSolutions/mct-model-optimization.git
-cd model_optimization
+cd mct-model-optimization
 
 ```
 2. Install the required packages listed in the requirements file:
