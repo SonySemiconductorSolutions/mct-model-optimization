@@ -16,13 +16,13 @@ Exporting your model to INT8 format (currently, this is supported only for Keras
 but this exporting method is limited to uniform 8-bit quantization only.  
 Note that the IMX500 converter accepts the "fake quantization" model and supports all the features of MCT (e.g. less than 8 bits for weights bit-width and non-uniform quantization).
  
-For more information and an implementation example, check out the [INT8 TFLite export tutorial](https://github.com/sony/model_optimization/blob/main/tutorials/notebooks/mct_features_notebooks/keras/example_keras_export.ipynb)
+For more information and an implementation example, check out the [INT8 TFLite export tutorial](https://github.com/SonySemiconductorSolutions/mct-model-optimization/blob/main/tutorials/notebooks/mct_features_notebooks/keras/example_keras_export.ipynb)
 
 
 ### 2. Why does loading a quantized exported model from a file fail?
 
 The models MCT exports contain QuantizationWrappers and Quantizer objects that define and quantize the model at inference.
-These objects are custom layers and layer wrappers created by MCT (defined in an external repository: [MCTQ](https://github.com/sony/mct_quantizers)), 
+These objects are custom layers and layer wrappers created by MCT (defined in an external repository: [MCTQ](https://github.com/SonySemiconductorSolutions/mct-quantization-layers)), 
 and thus, MCT offers an API for loading these models from a file, depending on the framework.
 
 #### Keras
@@ -36,7 +36,7 @@ quantized_model = mct.keras_load_quantized_model('my_model.keras')
 
 #### PyTorch
 
-PyTorch models can be exported as onnx models. An example of loading a saved onnx model can be found [here](https://github.com/sony/model_optimization/blob/main/tutorials/notebooks/mct_features_notebooks/pytorch/example_pytorch_export.ipynb).
+PyTorch models can be exported as onnx models. An example of loading a saved onnx model can be found [here](https://github.com/SonySemiconductorSolutions/mct-model-optimization/blob/main/tutorials/notebooks/mct_features_notebooks/pytorch/example_pytorch_export.ipynb).
 
 *Note:* Running inference on an ONNX model in the `onnxruntime` package has a high latency.
 Inference on the target platform (e.g. the IMX500) is not affected by this latency.

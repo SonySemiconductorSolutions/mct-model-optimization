@@ -96,8 +96,8 @@ class TestDocsLinks(unittest.TestCase):
                                 _link = link_str.split(']')[-1][1:-1]
                                 # replace colab link with actual github link because accessing a broken link through colab doesn't return an error
                                 _link = _link.replace('://colab.research.google.com/github/', '://github.com/')
-                                if '/model_optimization/blob/main/' in _link:
-                                    _link = join(mct_folder, _link.split('/model_optimization/blob/main/')[1])
+                                if '/mct-model-optimization/blob/main/' in _link:
+                                    _link = join(mct_folder, _link.split('/mct-model-optimization/blob/main/')[1])
                                 if _link[0] == '#':
                                     # A link starting with '#' is a local reference to a headline in the current file --> ignore
                                     pass
@@ -127,8 +127,8 @@ class TestDocsLinks(unittest.TestCase):
                             # format: search for a string between <>, which is the link
                             _strs = re.findall(r"<([^<>]+)>", l)
                             for _link in _strs:
-                                if '/model_optimization/blob/main/' in _link:
-                                    _link = join(mct_folder, _link.split('/model_optimization/blob/main/')[1])
+                                if '/mct-model-optimization/blob/main/' in _link:
+                                    _link = join(mct_folder, _link.split('/mct-model-optimization/blob/main/')[1])
                                 if _link.startswith('ug-'):
                                     # A link starting with 'ug-' is a reference to another .rst file --> ignore
                                     # This link is checked when generating the docs

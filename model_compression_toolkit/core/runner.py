@@ -140,7 +140,7 @@ def core_runner(in_model: Any,
             Logger.warning(
                 f"Running mixed precision for activation compression, please note this feature is experimental and is "
                 f"subject to future changes. If you encounter an issue, please open an issue in our GitHub "
-                f"project https://github.com/sony/model_optimization")
+                f"project https://github.com/SonySemiconductorSolutions/mct-model-optimization")
     else:
         bit_widths_config = []
 
