@@ -1,4 +1,6 @@
 name: Coverage Test
+permissions:
+  contents: read
 on:
   workflow_dispatch: # Allow manual triggers
   schedule:
