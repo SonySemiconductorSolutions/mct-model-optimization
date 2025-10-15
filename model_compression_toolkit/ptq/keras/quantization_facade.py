@@ -121,7 +121,7 @@ if FOUND_TF:
 
             >>> quantized_model, quantization_info = mct.ptq.keras_post_training_quantization(model, repr_datagen, ru, core_config=config)
 
-            For more configuration options, please take a look at our `API documentation <https://sony.github.io/model_optimization/api/api_docs/modules/mixed_precision_quantization_config.html>`_.
+            For more configuration options, please take a look at our `API documentation <https://sonysemiconductorsolutions.github.io/mct-model-optimization/api/api_docs/classes/MixedPrecisionQuantizationConfig.html>`_.
 
          """
 
