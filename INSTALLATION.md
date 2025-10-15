@@ -9,12 +9,6 @@ follow the MCT install guide and run the following command:
 pip install model-compression-toolkit
 ```
 
-If you prefer to use the nightly package (unstable version),
-you can install it with the following command:
-```
-pip install mct-nightly
-```
-
 ### Working from Source Code
 To work with the MCT source code, follow these steps:
 
@@ -22,7 +16,6 @@ To work with the MCT source code, follow these steps:
 ```
 git clone https://github.com/SonySemiconductorSolutions/mct-model-optimization.git
 cd mct-model-optimization
-
 ```
 2. Install the required packages listed in the requirements file:
 ```
