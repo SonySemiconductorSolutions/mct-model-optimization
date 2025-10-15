@@ -17,7 +17,7 @@ const initialiseBizStyle = () => {
 }
 
 window.addEventListener("resize",
-  () => (document.querySelector("li.nav-item-0 a").innerText = (window.innerWidth <= 776) ? "Top" : "MCT Documentation: ver 2.4.2")
+  () => (document.querySelector("li.nav-item-0 a").innerText = (window.innerWidth <= 776) ? "Top" : "MCT Documentation: ver 2.4.4")
 )
 
 if (document.readyState !== "loading") initialiseBizStyle()

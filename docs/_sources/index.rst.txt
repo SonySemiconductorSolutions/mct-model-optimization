@@ -21,7 +21,7 @@ See the MCT install guide for the pip package, and build from source.
 From Source:
 ::
 
-    git clone https://github.com/sony/model_optimization.git
+    git clone https://github.com/SonySemiconductorSolutions/mct-model-optimization.git
     python setup.py install
 
 
@@ -30,11 +30,6 @@ From PyPi - latest stable release:
 
     pip install model-compression-toolkit
 
-
-A nightly version is also available (unstable):
-::
-
-    pip install mct-nightly
 
 For using with Tensorflow please install the packages:
 `tensorflow <https://www.tensorflow.org/install>`_
@@ -80,7 +75,7 @@ Quickstart
 ====================================
 Take a look of how you can start using MCT in just a few minutes!
 
-Visit our `notebooks <https://github.com/sony/model_optimization/tree/main/tutorials/notebooks>`_
+Visit our `notebooks <https://github.com/SonySemiconductorSolutions/mct-model-optimization/tree/main/tutorials/notebooks>`_
 
 
 API Documentation
