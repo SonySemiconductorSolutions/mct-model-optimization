@@ -41,7 +41,7 @@
   <section id="using-more-samples-in-mixed-precision-quantization">
 <span id="ug-using-more-samples-in-mixed-precision-quantization"></span><h1>Using more samples in Mixed Precision quantization<a class="headerlink" href="#using-more-samples-in-mixed-precision-quantization" title="Link to this heading">¶</a></h1>
 <p>In Mixed Precision quantization, MCT will assign a different bit width to each weight in the model, depending on the weight’s layer sensitivity and a resource constraint defined by the user, such as target model size.</p>
-<p>Check out the <a class="reference external" href="https://github.com/SonySemiconductorSolutions/mct-model-optimization/blob/v2.4.2/tutorials/notebooks/mct_features_notebooks/pytorch/example_pytorch_mixed_precision_ptq.ipynb">mixed precision tutorial</a> for more information.</p>
+<p>Check out the <a class="reference external" href="https://github.com/SonySemiconductorSolutions/mct-model-optimization/tree/main/tutorials/notebooks/mct_features_notebooks/pytorch/example_pytorch_mixed_precision_ptq.ipynb">mixed precision tutorial</a> for more information.</p>
 <section id="overview">
 <h2>Overview<a class="headerlink" href="#overview" title="Link to this heading">¶</a></h2>
 <p>By default, MCT employs 32 samples from the provided representative dataset for the Mixed Precision search. Leveraging a larger dataset could enhance results, particularly when dealing with datasets exhibiting high variance.</p>
