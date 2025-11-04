@@ -19,7 +19,7 @@ ______________________________________________________________________
 <p align="center">
   <a href="https://sonysemiconductorsolutions.github.io/mct-model-optimization#prerequisites"><img src="https://img.shields.io/badge/pytorch-2.3%20%7C%202.4%20%7C%202.5%20%7C%202.6-blue" /></a>
   <a href="https://sonysemiconductorsolutions.github.io/mct-model-optimization#prerequisites"><img src="https://img.shields.io/badge/tensorflow-2.14%20%7C%202.15-blue" /></a>
-  <a href="https://sonysemiconductorsolutions.github.io/mct-model-optimization#prerequisites"><img src="https://img.shields.io/badge/python-3.9%20%7C%203.10%20%7C%203.11%20%7C%203.12-blue" /></a>
+  <a href="https://sonysemiconductorsolutions.github.io/mct-model-optimization#prerequisites"><img src="https://img.shields.io/badge/python-3.10%20%7C%203.11%20%7C%203.12-blue" /></a>
   <a href="https://github.com/SonySemiconductorSolutions/mct-model-optimization/releases"><img src="https://img.shields.io/github/v/release/SonySemiconductorSolutions/mct-model-optimization" /></a>
   <a href="https://github.com/SonySemiconductorSolutions/mct-model-optimization/blob/main/LICENSE.md"><img src="https://img.shields.io/badge/license-Apache%202.0-blue" /></a>
   
@@ -30,7 +30,7 @@ ________________________________________________________________________________
 
 ## <div align="center">Getting Started</div>
 ### Quick Installation
-Pip install the model compression toolkit package in a Python>=3.9 environment with PyTorch>=2.3 or Tensorflow>=2.14.
+Pip install the model compression toolkit package in a Python>=3.10 environment with PyTorch>=2.3 or Tensorflow>=2.14.
 ```
 pip install model-compression-toolkit
 ```
