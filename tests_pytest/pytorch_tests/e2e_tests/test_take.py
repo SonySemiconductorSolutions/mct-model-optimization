@@ -84,3 +84,4 @@ def test_take():
                                                                     core_config=mct.core.CoreConfig(),
                                                                     target_platform_capabilities=tpc)
     assert hasattr(quantized_model, 'take')
+    assert not hasattr(quantized_model, 'take_activation_holder_quantizer')
