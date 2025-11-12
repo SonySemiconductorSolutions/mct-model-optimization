@@ -20,4 +20,4 @@ These techniques are essential for further optimizing models and achieving super
 ## Task Notebooks
 This set of tutorials provide for various common deep learning applications(Object detection, Semantic Segmentation, etc).
 The notebooks in this section demonstrate how to use MCT for various tasks and models.
-- [task notebooks](notebooks/task_notebooks/README.md)
+- [Task notebooks](notebooks/task_notebooks/README.md)
