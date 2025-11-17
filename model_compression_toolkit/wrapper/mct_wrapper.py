@@ -42,15 +42,6 @@ class MCTWrapper:
     The wrapper manages the complete quantization pipeline from model input to
     quantized model export, handling framework-specific configurations and
     Target Platform Capabilities (TPC) setup.
-
-    Attributes:
-        params (Dict[str, Any]): Configuration default parameters for quantization [[key, value],...]
-        float_model: Input float precision model
-        method (str): Selected quantization method ('PTQ', 'GPTQ')
-        framework (str): Target framework ('tensorflow', 'pytorch')
-        use_internal_tpc (bool): Whether to use MCT's built-in TPC
-        use_mixed_precision (bool): Whether to use mixed-precision
-        representative_dataset (Callable, np.array, tf.Tensor): Calibration dataset for quantization
     """
 
     def __init__(self):
