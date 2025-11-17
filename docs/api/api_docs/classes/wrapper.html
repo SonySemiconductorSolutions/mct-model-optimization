@@ -52,78 +52,6 @@ mixed-precision quantization.</p>
 <p>The wrapper manages the complete quantization pipeline from model input to
 quantized model export, handling framework-specific configurations and
 Target Platform Capabilities (TPC) setup.</p>
-<dl class="py attribute">
-<dt class="sig sig-object py" id="model_compression_toolkit.wrapper.mct_wrapper.MCTWrapper.params">
-<span class="sig-name descname"><span class="pre">params</span></span><a class="headerlink" href="#model_compression_toolkit.wrapper.mct_wrapper.MCTWrapper.params" title="Link to this definition">¶</a></dt>
-<dd><p>Configuration default parameters for quantization [[key, value],…]</p>
-<dl class="field-list simple">
-<dt class="field-odd">Type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>Dict[str, Any]</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="model_compression_toolkit.wrapper.mct_wrapper.MCTWrapper.float_model">
-<span class="sig-name descname"><span class="pre">float_model</span></span><a class="headerlink" href="#model_compression_toolkit.wrapper.mct_wrapper.MCTWrapper.float_model" title="Link to this definition">¶</a></dt>
-<dd><p>Input float precision model</p>
-</dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="model_compression_toolkit.wrapper.mct_wrapper.MCTWrapper.method">
-<span class="sig-name descname"><span class="pre">method</span></span><a class="headerlink" href="#model_compression_toolkit.wrapper.mct_wrapper.MCTWrapper.method" title="Link to this definition">¶</a></dt>
-<dd><p>Selected quantization method (‘PTQ’, ‘GPTQ’)</p>
-<dl class="field-list simple">
-<dt class="field-odd">Type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>str</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="model_compression_toolkit.wrapper.mct_wrapper.MCTWrapper.framework">
-<span class="sig-name descname"><span class="pre">framework</span></span><a class="headerlink" href="#model_compression_toolkit.wrapper.mct_wrapper.MCTWrapper.framework" title="Link to this definition">¶</a></dt>
-<dd><p>Target framework (‘tensorflow’, ‘pytorch’)</p>
-<dl class="field-list simple">
-<dt class="field-odd">Type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>str</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="model_compression_toolkit.wrapper.mct_wrapper.MCTWrapper.use_internal_tpc">
-<span class="sig-name descname"><span class="pre">use_internal_tpc</span></span><a class="headerlink" href="#model_compression_toolkit.wrapper.mct_wrapper.MCTWrapper.use_internal_tpc" title="Link to this definition">¶</a></dt>
-<dd><p>Whether to use MCT’s built-in TPC</p>
-<dl class="field-list simple">
-<dt class="field-odd">Type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>bool</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="model_compression_toolkit.wrapper.mct_wrapper.MCTWrapper.use_mixed_precision">
-<span class="sig-name descname"><span class="pre">use_mixed_precision</span></span><a class="headerlink" href="#model_compression_toolkit.wrapper.mct_wrapper.MCTWrapper.use_mixed_precision" title="Link to this definition">¶</a></dt>
-<dd><p>Whether to use mixed-precision</p>
-<dl class="field-list simple">
-<dt class="field-odd">Type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>bool</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="model_compression_toolkit.wrapper.mct_wrapper.MCTWrapper.representative_dataset">
-<span class="sig-name descname"><span class="pre">representative_dataset</span></span><a class="headerlink" href="#model_compression_toolkit.wrapper.mct_wrapper.MCTWrapper.representative_dataset" title="Link to this definition">¶</a></dt>
-<dd><p>Calibration dataset for quantization</p>
-<dl class="field-list simple">
-<dt class="field-odd">Type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>Callable, np.array, tf.Tensor</p>
-</dd>
-</dl>
-</dd></dl>
-
 <p>Initialize MCTWrapper with default parameters.</p>
 <p>Users can update the following parameters in param_items:</p>
 <p><strong>PTQ</strong></p>
@@ -335,10 +263,7 @@ quantization.</p></li>
 </ul>
 </dd>
 <dt class="field-odd">Returns<span class="colon">:</span></dt>
-<dd class="field-odd"><p>(quantization success flag, quantized model)</p>
-</dd>
-<dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p>tuple</p>
+<dd class="field-odd"><p>tuple (quantization success flag, quantized model)</p>
 </dd>
 </dl>
 <p class="rubric">Examples</p>
@@ -346,30 +271,30 @@ quantization.</p></li>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span><span class="w"> </span><span class="nn">model_compression_toolkit</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">mct</span>
 </pre></div>
 </div>
-<p># Prepare the float model and dataset</p>
+<p>Prepare the float model and dataset</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">float_model</span> <span class="o">=</span> <span class="o">...</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">representative_dataset</span> <span class="o">=</span> <span class="o">...</span>
 </pre></div>
 </div>
-<p># Create an instance of the MCTWrapper</p>
+<p>Create an instance of the MCTWrapper</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">wrapper</span> <span class="o">=</span> <span class="n">mct</span><span class="o">.</span><span class="n">MCTWrapper</span><span class="p">()</span>
 </pre></div>
 </div>
-<p># set method, framework, and other parameters</p>
+<p>set method, framework, and other parameters</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">method</span> <span class="o">=</span> <span class="s1">&#39;PTQ&#39;</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">framework</span> <span class="o">=</span> <span class="s1">&#39;tensorflow&#39;</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">use_internal_tpc</span> <span class="o">=</span> <span class="kc">True</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">use_mixed_precision</span> <span class="o">=</span> <span class="kc">False</span>
 </pre></div>
 </div>
-<p># set parameters if needed</p>
+<p>set parameters if needed</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">param_items</span> <span class="o">=</span> <span class="p">[[</span><span class="n">key</span><span class="p">,</span> <span class="n">value</span><span class="p">,</span> <span class="n">comment</span><span class="p">]</span><span class="o">...</span><span class="p">]</span>
 </pre></div>
 </div>
-<p># Quantize and export the model</p>
+<p>Quantize and export the model</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">flag</span><span class="p">,</span> <span class="n">quantized_model</span> <span class="o">=</span> <span class="n">wrapper</span><span class="o">.</span><span class="n">quantize_and_export</span><span class="p">(</span>
 <span class="gp">... </span>    <span class="n">float_model</span><span class="o">=</span><span class="n">float_model</span><span class="p">,</span>
-<span class="gp">... </span>    <span class="n">method</span><span class="o">=</span><span class="s1">&#39;PTQ&#39;</span><span class="p">,</span>
+<span class="gp">... </span>    <span class="n">method</span><span class="o">=</span><span class="n">method</span><span class="p">,</span>
 <span class="gp">... </span>    <span class="n">framework</span><span class="o">=</span><span class="n">framework</span><span class="p">,</span>
 <span class="gp">... </span>    <span class="n">use_internal_tpc</span><span class="o">=</span><span class="n">use_internal_tpc</span><span class="p">,</span>
 <span class="gp">... </span>    <span class="n">use_mixed_precision</span><span class="o">=</span><span class="n">use_mixed_precision</span><span class="p">,</span>
@@ -396,13 +321,6 @@ quantization.</p></li>
     <ul>
 <li><a class="reference internal" href="#">wrapper</a><ul>
 <li><a class="reference internal" href="#model_compression_toolkit.wrapper.mct_wrapper.MCTWrapper"><code class="docutils literal notranslate"><span class="pre">MCTWrapper</span></code></a><ul>
-<li><a class="reference internal" href="#model_compression_toolkit.wrapper.mct_wrapper.MCTWrapper.params"><code class="docutils literal notranslate"><span class="pre">MCTWrapper.params</span></code></a></li>
-<li><a class="reference internal" href="#model_compression_toolkit.wrapper.mct_wrapper.MCTWrapper.float_model"><code class="docutils literal notranslate"><span class="pre">MCTWrapper.float_model</span></code></a></li>
-<li><a class="reference internal" href="#model_compression_toolkit.wrapper.mct_wrapper.MCTWrapper.method"><code class="docutils literal notranslate"><span class="pre">MCTWrapper.method</span></code></a></li>
-<li><a class="reference internal" href="#model_compression_toolkit.wrapper.mct_wrapper.MCTWrapper.framework"><code class="docutils literal notranslate"><span class="pre">MCTWrapper.framework</span></code></a></li>
-<li><a class="reference internal" href="#model_compression_toolkit.wrapper.mct_wrapper.MCTWrapper.use_internal_tpc"><code class="docutils literal notranslate"><span class="pre">MCTWrapper.use_internal_tpc</span></code></a></li>
-<li><a class="reference internal" href="#model_compression_toolkit.wrapper.mct_wrapper.MCTWrapper.use_mixed_precision"><code class="docutils literal notranslate"><span class="pre">MCTWrapper.use_mixed_precision</span></code></a></li>
-<li><a class="reference internal" href="#model_compression_toolkit.wrapper.mct_wrapper.MCTWrapper.representative_dataset"><code class="docutils literal notranslate"><span class="pre">MCTWrapper.representative_dataset</span></code></a></li>
 <li><a class="reference internal" href="#model_compression_toolkit.wrapper.mct_wrapper.MCTWrapper.quantize_and_export"><code class="docutils literal notranslate"><span class="pre">MCTWrapper.quantize_and_export()</span></code></a></li>
 </ul>
 </li>
