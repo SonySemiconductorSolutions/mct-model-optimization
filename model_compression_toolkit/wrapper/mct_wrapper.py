@@ -525,7 +525,7 @@ class MCTWrapper:
             param_items (list): List of parameter settings. [[key,value,comment],...]
 
         Returns:
-            tuple: (quantization success flag, quantized model)
+            tuple (quantization success flag, quantized model)
             
         Examples:
 
