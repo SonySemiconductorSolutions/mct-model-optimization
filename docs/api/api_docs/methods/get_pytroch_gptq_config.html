@@ -7,7 +7,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
     <title>Get GradientPTQConfig for Pytorch Models &#8212; MCT Documentation: ver 2.5.0</title>
-    <link rel="stylesheet" type="text/css" href="../../../static/pygments.css?v=fa44fd50" />
+    <link rel="stylesheet" type="text/css" href="../../../static/pygments.css?v=03e43079" />
     <link rel="stylesheet" type="text/css" href="../../../static/bizstyle.css?v=5283bb3d" />
     <link rel="stylesheet" type="text/css" href="../../../static/css/custom.css?v=01243f34" />
     
@@ -68,12 +68,12 @@
 </dl>
 <p class="rubric">Examples</p>
 <p>Import MCT and Create a GradientPTQConfig to run for 5 epochs:</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">model_compression_toolkit</span> <span class="k">as</span> <span class="nn">mct</span>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span><span class="w"> </span><span class="nn">model_compression_toolkit</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">mct</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">gptq_conf</span> <span class="o">=</span> <span class="n">mct</span><span class="o">.</span><span class="n">gptq</span><span class="o">.</span><span class="n">get_pytorch_gptq_config</span><span class="p">(</span><span class="n">n_epochs</span><span class="o">=</span><span class="mi">5</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>Other PyTorch optimizers can be passed with dummy params:</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">torch</span>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span><span class="w"> </span><span class="nn">torch</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">gptq_conf</span> <span class="o">=</span> <span class="n">mct</span><span class="o">.</span><span class="n">gptq</span><span class="o">.</span><span class="n">get_pytorch_gptq_config</span><span class="p">(</span><span class="n">n_epochs</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">optimizer</span><span class="o">=</span><span class="n">torch</span><span class="o">.</span><span class="n">optim</span><span class="o">.</span><span class="n">Adam</span><span class="p">([</span><span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">(</span><span class="mi">1</span><span class="p">)]))</span>
 </pre></div>
 </div>

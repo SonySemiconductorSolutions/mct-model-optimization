@@ -7,7 +7,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
     <title>FrameworkInfo Class &#8212; MCT Documentation: ver 2.5.0</title>
-    <link rel="stylesheet" type="text/css" href="../../../static/pygments.css?v=fa44fd50" />
+    <link rel="stylesheet" type="text/css" href="../../../static/pygments.css?v=03e43079" />
     <link rel="stylesheet" type="text/css" href="../../../static/bizstyle.css?v=5283bb3d" />
     <link rel="stylesheet" type="text/css" href="../../../static/css/custom.css?v=01243f34" />
     
@@ -66,7 +66,7 @@ no_quantization_ops:Layers that should not get quantized (e.g., Reshape, Transpo
 <p class="rubric">Examples</p>
 <p>When quantizing a Keras model, if we want to quantize the kernels of Conv2D layers only, we can
 set, and we know it’s kernel out/in channel indices are (3, 2) respectivly:</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">tensorflow</span> <span class="k">as</span> <span class="nn">tf</span>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span><span class="w"> </span><span class="nn">tensorflow</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">tf</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">kernel_ops</span> <span class="o">=</span> <span class="p">[</span><span class="n">tf</span><span class="o">.</span><span class="n">keras</span><span class="o">.</span><span class="n">layers</span><span class="o">.</span><span class="n">Conv2D</span><span class="p">]</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">kernel_channels_mapping</span> <span class="o">=</span> <span class="n">DefaultDict</span><span class="p">({</span><span class="n">tf</span><span class="o">.</span><span class="n">keras</span><span class="o">.</span><span class="n">layers</span><span class="o">.</span><span class="n">Conv2D</span><span class="p">:</span> <span class="p">(</span><span class="mi">3</span><span class="p">,</span><span class="mi">2</span><span class="p">)})</span>
 </pre></div>

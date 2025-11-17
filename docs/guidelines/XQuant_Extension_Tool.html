@@ -7,7 +7,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
     <title>XQuant Extension Tool &#8212; MCT Documentation: ver 2.5.0</title>
-    <link rel="stylesheet" type="text/css" href="../static/pygments.css?v=fa44fd50" />
+    <link rel="stylesheet" type="text/css" href="../static/pygments.css?v=03e43079" />
     <link rel="stylesheet" type="text/css" href="../static/bizstyle.css?v=5283bb3d" />
     <link rel="stylesheet" type="text/css" href="../static/css/custom.css?v=01243f34" />
     
@@ -93,7 +93,7 @@
 <div class="line">It can suggest more specific countermeasures than conventional tools and provides manuals that are easy to understand even for users who are not familiar with quantization.</div>
 </div>
 <p>When runnnig the tool, replace <strong>xquant_report_pytorch_experimental</strong> in the code with <strong>xquant_report_troubleshoot_pytorch_experimental</strong> in the tutorial of XQuant (Explainable Quantization).</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">model_compression_toolkit.xquant</span> <span class="kn">import</span> <span class="n">xquant_report_troubleshoot_pytorch_experimental</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">model_compression_toolkit.xquant</span><span class="w"> </span><span class="kn">import</span> <span class="n">xquant_report_troubleshoot_pytorch_experimental</span>
 <span class="c1"># xquant_report_pytorch_experimental --&gt; xquant_report_troubleshoot_pytorch_experimental</span>
 <span class="n">result</span> <span class="o">=</span> <span class="n">xquant_report_troubleshoot_pytorch_experimental</span><span class="p">(</span>
             <span class="n">float_model</span><span class="p">,</span>
@@ -120,7 +120,7 @@
 
 <span class="n">xquant_config</span> <span class="o">=</span> <span class="n">XQuantConfig</span><span class="p">(</span><span class="n">report_dir</span><span class="o">=</span><span class="s1">&#39;./log_tensorboard_xquant&#39;</span><span class="p">)</span>
 
-<span class="kn">from</span> <span class="nn">model_compression_toolkit.xquant</span> <span class="kn">import</span> <span class="n">xquant_report_troubleshoot_pytorch_experimental</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">model_compression_toolkit.xquant</span><span class="w"> </span><span class="kn">import</span> <span class="n">xquant_report_troubleshoot_pytorch_experimental</span>
 <span class="n">result</span> <span class="o">=</span> <span class="n">xquant_report_troubleshoot_pytorch_experimental</span><span class="p">(</span>
             <span class="n">float_model</span><span class="p">,</span>
             <span class="n">quantized_model</span><span class="p">,</span>
