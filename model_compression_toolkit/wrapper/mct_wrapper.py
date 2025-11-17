@@ -63,7 +63,7 @@ class MCTWrapper:
            "z_threshold", "float('inf')", "Z-threshold for quantization"
            "linear_collapsing", "True", "Enable linear layer collapsing"
            "residual_collapsing", "True", "Enable residual connection collapsing"
-           "save_model_path", "'./qmodel.tflite' / './qmodel.onnx'", "Path to save quantized model (Keras/Pytorch)"
+           "save_model_path", "'./qmodel.keras' / './qmodel.onnx'", "Path to save quantized model (Keras/Pytorch)"
            "callback", "None", "Callback function"
 
         **PTQ, mixed_precision**
@@ -77,7 +77,7 @@ class MCTWrapper:
            "num_of_images", "5", "Number of images for mixed precision"
            "use_hessian_based_scores", "False", "Use Hessian-based scores for mixed precision"
            "weights_compression_ratio", "None", "Weights compression ratio for resource util"
-           "save_model_path", "'./qmodel.tflite' / './qmodel.onnx'", "Path to save quantized model (Keras/Pytorch)"
+           "save_model_path", "'./qmodel.keras' / './qmodel.onnx'", "Path to save quantized model (Keras/Pytorch)"
            "callback", "None", "Callback function"
 
         **GPTQ**
@@ -90,7 +90,7 @@ class MCTWrapper:
            "tpc_version", "'5.0'", "TPC version (use_internal_tpc=False)"
            "n_epochs", "5", "Number of training epochs for GPTQ"
            "optimizer", "None", "Optimizer for GPTQ training"
-           "save_model_path", "'./qmodel.tflite' / './qmodel.onnx'", "Path to save quantized model (Keras/Pytorch)"
+           "save_model_path", "'./qmodel.keras' / './qmodel.onnx'", "Path to save quantized model (Keras/Pytorch)"
            "callback", "None", "Callback function"
 
         **GPTQ, mixed_precision**
@@ -106,7 +106,7 @@ class MCTWrapper:
            "num_of_images", "5", "Number of images for mixed precision"
            "use_hessian_based_scores", "False", "Use Hessian-based scores for mixed precision"
            "weights_compression_ratio", "None", "Weights compression ratio for resource util"
-           "save_model_path", "'./qmodel.tflite' / './qmodel.onnx'", "Path to save quantized model (Keras/Pytorch)"
+           "save_model_path", "'./qmodel.keras' / './qmodel.onnx'", "Path to save quantized model (Keras/Pytorch)"
            "callback", "None", "Callback function"
 
         """
@@ -480,14 +480,14 @@ class MCTWrapper:
             quantized_model: The quantized model to export.
 
         Note:
-            Export format is framework-specific: TFLite for TensorFlow,
+            Export format is framework-specific: Keras for TensorFlow,
             ONNX for PyTorch.
         """
         if self.framework == 'tensorflow':
             params_export = {
                 'model': quantized_model,
                 'save_model_path': self.params['save_model_path'],
-                'serialization_format': (mct.exporter.KerasExportSerializationFormat.TFLITE),
+                'serialization_format': (mct.exporter.KerasExportSerializationFormat.KERAS),
                 'quantization_format': (mct.exporter.QuantizationFormat.FAKELY_QUANT)
             }
         elif self.framework == 'pytorch':

@@ -421,7 +421,7 @@ class TestMCTWrapper:
         """
         wrapper = MCTWrapper()
         wrapper.framework = 'tensorflow'
-        wrapper.params['save_model_path'] = './test_model.tflite'
+        wrapper.params['save_model_path'] = './test_model.keras'
         wrapper.representative_dataset = Mock()
         wrapper.export_model = Mock()
         
@@ -433,7 +433,7 @@ class TestMCTWrapper:
         wrapper.export_model.assert_called_once()
         call_args = wrapper.export_model.call_args[1]  # Get keyword arguments
         assert call_args['model'] == mock_quantized_model
-        assert call_args['save_model_path'] == './test_model.tflite'
+        assert call_args['save_model_path'] == './test_model.keras'
 
 
 class TestMCTWrapperErrorHandling:
