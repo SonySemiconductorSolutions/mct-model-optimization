@@ -25,7 +25,7 @@ from model_compression_toolkit.wrapper.constants import (
     ACTIVATION_ERROR_METHOD, WEIGHTS_ERROR_METHOD, WEIGHTS_BIAS_CORRECTION,
     Z_THRESHOLD, LINEAR_COLLAPSING, RESIDUAL_COLLAPSING, GPTQ_CONFIG,
     WEIGHTS_COMPRESSION_RATIO, N_EPOCHS, OPTIMIZER, LEARNING_RATE, 
-    CONVERTER_VER, CALLBACK, SAVE_MODEL_PATH
+    CONVERTER_VER, SAVE_MODEL_PATH
 )
 
 
@@ -64,7 +64,6 @@ class MCTWrapper:
            "linear_collapsing", "True", "Enable linear layer collapsing"
            "residual_collapsing", "True", "Enable residual connection collapsing"
            "save_model_path", "'./qmodel.keras' / './qmodel.onnx'", "Path to save quantized model (Keras/Pytorch)"
-           "callback", "None", "Callback function"
 
         **PTQ, mixed_precision**
 
@@ -78,7 +77,6 @@ class MCTWrapper:
            "use_hessian_based_scores", "False", "Use Hessian-based scores for mixed precision"
            "weights_compression_ratio", "None", "Weights compression ratio for resource util"
            "save_model_path", "'./qmodel.keras' / './qmodel.onnx'", "Path to save quantized model (Keras/Pytorch)"
-           "callback", "None", "Callback function"
 
         **GPTQ**
 
@@ -91,7 +89,6 @@ class MCTWrapper:
            "n_epochs", "5", "Number of training epochs for GPTQ"
            "optimizer", "None", "Optimizer for GPTQ training"
            "save_model_path", "'./qmodel.keras' / './qmodel.onnx'", "Path to save quantized model (Keras/Pytorch)"
-           "callback", "None", "Callback function"
 
         **GPTQ, mixed_precision**
 
@@ -107,7 +104,6 @@ class MCTWrapper:
            "use_hessian_based_scores", "False", "Use Hessian-based scores for mixed precision"
            "weights_compression_ratio", "None", "Weights compression ratio for resource util"
            "save_model_path", "'./qmodel.keras' / './qmodel.onnx'", "Path to save quantized model (Keras/Pytorch)"
-           "callback", "None", "Callback function"
 
         """
         self.params: Dict[str, Any] = {
@@ -139,10 +135,7 @@ class MCTWrapper:
             CONVERTER_VER: 'v3.14',
 
             # Export
-            SAVE_MODEL_PATH: './qmodel.onnx',
-
-            # Callback function
-            CALLBACK: None
+            SAVE_MODEL_PATH: './qmodel.onnx'
         }
 
     def _initialize_and_validate(self, float_model: Any, method: str = 'PTQ',
