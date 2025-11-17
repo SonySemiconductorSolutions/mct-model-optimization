@@ -179,7 +179,7 @@ class MCTWrapper:
         Update the internal parameter dictionary with values from param_items.
 
         Args:
-            param_items (list): List of tuples (key, value, description).
+            param_items (list): List of tuples (key, value).
                 If key exists in self.params, updates its value.
                 Non-existing keys are ignored with a warning.
 
@@ -187,7 +187,7 @@ class MCTWrapper:
             Only parameters that exist in the default parameter dictionary
             will be updated. Unknown parameters are silently ignored.
         """
-        for key, value, _ in param_items:
+        for key, value in param_items:
             if key in self.params:
                 # Update parameter value if key exists in default parameters
                 self.params[key] = value
@@ -506,7 +506,7 @@ class MCTWrapper:
             use_mixed_precision (bool): Whether to use mixed-precision
                 quantization.
             representative_dataset (Callable, np.array, tf.Tensor): Representative dataset for calibration.
-            param_items (list): List of parameter settings. [[key,value,comment],...]
+            param_items (list): List of parameter settings. [[key,value],...]
 
         Returns:
             tuple (quantization success flag, quantized model)
@@ -535,7 +535,7 @@ class MCTWrapper:
 
             set parameters if needed
 
-            >>> param_items = [[key, value, comment]...]
+            >>> param_items = [[key, value]...]
 
             Quantize and export the model
 
