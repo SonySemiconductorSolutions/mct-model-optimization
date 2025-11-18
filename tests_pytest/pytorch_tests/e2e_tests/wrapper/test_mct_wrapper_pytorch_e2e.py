@@ -157,13 +157,13 @@ def test_quantization(
 
         # Define quantization parameters for optimal model performance
         param_items = [
-            ['target_platform_version', 'v1'],  # Platform version
+            ['target_platform_version', 'v1'],  # The version of the TPC to use. 
             ['activation_error_method', QuantizationErrorMethod.MSE],  # Error method
-            ['weights_bias_correction', True],  # Bias correction
+            ['weights_bias_correction', True],  # Enable bias correction
             ['z_threshold', float('inf')],  # Z threshold
-            ['linear_collapsing', True],  # Linear collapsing
-            ['residual_collapsing', True],  # Residual collapsing
-            ['save_model_path', './qmodel_PTQ_Pytorch.onnx']  # Save path
+            ['linear_collapsing', True],  # Enable linear collapsing
+            ['residual_collapsing', True],  # Enable residual collapsing
+            ['save_model_path', './qmodel_PTQ_Pytorch.onnx']
         ]
 
         # Execute quantization using MCTWrapper and export to ONNX
@@ -199,11 +199,11 @@ def test_quantization(
 
         # Define mixed precision quantization parameters
         param_items = [
-            ['target_platform_version', 'v1'],  # Platform version
+            ['target_platform_version', 'v1'],  # The version of the TPC to use. 
             ['num_of_images', 5],  # Number of images
-            ['use_hessian_based_scores', False],  # Hessian scores
+            ['use_hessian_based_scores', False],  # Use Hessian scores
             ['weights_compression_ratio', 0.5],  # Compression ratio
-            ['save_model_path', './qmodel_PTQ_Pytorch_mixed_precision.onnx']  # Save path
+            ['save_model_path', './qmodel_PTQ_Pytorch_mixed_precision.onnx']
         ]
 
         # Execute mixed precision quantization and export to ONNX
@@ -240,10 +240,10 @@ def test_quantization(
 
         # Define GPTQ-specific parameters for gradient-based optimization
         param_items = [
-            ['target_platform_version', 'v1'],  # Platform version
-            ['n_epochs', 5],  # Number of epochs
-            ['optimizer', None],  # Optimizer
-            ['save_model_path', './qmodel_GPTQ_Pytorch.onnx']  # Save path
+            ['target_platform_version', 'v1'],  # The version of the TPC to use.
+            ['n_epochs', 5],  # Number of training epochs
+            ['optimizer', None],  # Optimizer for training
+            ['save_model_path', './qmodel_GPTQ_Pytorch.onnx']
         ]
 
         # Execute gradient-based quantization and export to ONNX
@@ -280,12 +280,12 @@ def test_quantization(
         # Define GPTQ mixed precision parameters for advanced optimization
         param_items = [
             ['target_platform_version', 'v1'],  # The version of the TPC to use.
-            ['n_epochs', 5],  # GPTQ-specific training parameters
-            ['optimizer', None],  # Optimizer for gradient-based training
-            ['num_of_images', 5],  # Mixed precision configuration
-            ['use_hessian_based_scores', False],  # Use Hessian-based sensitivity scores for layer importance.
-            ['weights_compression_ratio', 0.5],  # Resource constraint
-            ['save_model_path', './qmodel_GPTQ_Pytorch_mixed_precision.onnx']  # Path to save the quantized model.
+            ['n_epochs', 5],  # Number of training epochs
+            ['optimizer', None],  # Optimizer for training
+            ['num_of_images', 5],  # Number of images
+            ['use_hessian_based_scores', False],  # Use Hessian scores
+            ['weights_compression_ratio', 0.5],  # Compression ratio
+            ['save_model_path', './qmodel_GPTQ_Pytorch_mixed_precision.onnx']
         ]
 
         # Execute advanced GPTQ with mixed precision and export to ONNX
