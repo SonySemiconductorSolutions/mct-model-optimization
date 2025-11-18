@@ -157,13 +157,13 @@ def test_quantization(
 
         # Define quantization parameters for optimal model performance
         param_items = [
-            ['target_platform_version', 'v1'],
-            ['activation_error_method', QuantizationErrorMethod.MSE],
-            ['weights_bias_correction', True],
-            ['z_threshold', float('inf')],
-            ['linear_collapsing', True],
-            ['residual_collapsing', True],
-            ['save_model_path', './qmodel_PTQ_Pytorch.onnx']
+            ['target_platform_version', 'v1'],  # Platform version
+            ['activation_error_method', QuantizationErrorMethod.MSE],  # Error method
+            ['weights_bias_correction', True],  # Bias correction
+            ['z_threshold', float('inf')],  # Z threshold
+            ['linear_collapsing', True],  # Linear collapsing
+            ['residual_collapsing', True],  # Residual collapsing
+            ['save_model_path', './qmodel_PTQ_Pytorch.onnx']  # Save path
         ]
 
         # Execute quantization using MCTWrapper and export to ONNX
@@ -199,11 +199,11 @@ def test_quantization(
 
         # Define mixed precision quantization parameters
         param_items = [
-            ['target_platform_version', 'v1'],
-            ['num_of_images', 5],
-            ['use_hessian_based_scores', False],
-            ['weights_compression_ratio', 0.5],
-            ['save_model_path', './qmodel_PTQ_Pytorch_mixed_precision.onnx']
+            ['target_platform_version', 'v1'],  # Platform version
+            ['num_of_images', 5],  # Number of images
+            ['use_hessian_based_scores', False],  # Hessian scores
+            ['weights_compression_ratio', 0.5],  # Compression ratio
+            ['save_model_path', './qmodel_PTQ_Pytorch_mixed_precision.onnx']  # Save path
         ]
 
         # Execute mixed precision quantization and export to ONNX
@@ -240,10 +240,10 @@ def test_quantization(
 
         # Define GPTQ-specific parameters for gradient-based optimization
         param_items = [
-            ['target_platform_version', 'v1'],
-            ['n_epochs', 5],
-            ['optimizer', None],
-            ['save_model_path', './qmodel_GPTQ_Pytorch.onnx']
+            ['target_platform_version', 'v1'],  # Platform version
+            ['n_epochs', 5],  # Number of epochs
+            ['optimizer', None],  # Optimizer
+            ['save_model_path', './qmodel_GPTQ_Pytorch.onnx']  # Save path
         ]
 
         # Execute gradient-based quantization and export to ONNX

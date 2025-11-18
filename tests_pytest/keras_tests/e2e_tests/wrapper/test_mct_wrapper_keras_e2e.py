@@ -134,13 +134,15 @@ def test_quantization(
         use_mixed_precision = False
 
         # Configure quantization parameters for optimal model performance
-        param_items = [['tpc_version', '1.0'],
-                       ['activation_error_method', QuantizationErrorMethod.MSE],
-                       ['weights_bias_correction', True],
-                       ['z_threshold', float('inf')],
-                       ['linear_collapsing', True],
-                       ['residual_collapsing', True],
-                       ['save_model_path', './qmodel_PTQ_Keras.keras']]
+        param_items = [
+            ['tpc_version', '1.0'],  # TPC version
+            ['activation_error_method', QuantizationErrorMethod.MSE],  # Error method
+            ['weights_bias_correction', True],  # Bias correction
+            ['z_threshold', float('inf')],  # Z threshold
+            ['linear_collapsing', True],  # Linear collapsing
+            ['residual_collapsing', True],  # Residual collapsing
+            ['save_model_path', './qmodel_PTQ_Keras.keras']  # Save path
+        ]
 
         # Execute quantization using MCTWrapper
         wrapper = mct.wrapper.mct_wrapper.MCTWrapper()
@@ -164,11 +166,13 @@ def test_quantization(
         use_mixed_precision = True
 
         # Configure mixed precision parameters for optimal compression
-        param_items = [['tpc_version', '1.0'],
-                       ['num_of_images', 5],
-                       ['use_hessian_based_scores', False],
-                       ['weights_compression_ratio', 0.75],
-                       ['save_model_path', './qmodel_PTQ_Keras_mixed_precision.keras']]
+        param_items = [
+            ['tpc_version', '1.0'],  # TPC version
+            ['num_of_images', 5],  # Number of images
+            ['use_hessian_based_scores', False],  # Hessian scores
+            ['weights_compression_ratio', 0.75],  # Compression ratio
+            ['save_model_path', './qmodel_PTQ_Keras_mixed_precision.keras']  # Save path
+        ]
 
         # Execute quantization with mixed precision using MCTWrapper
         wrapper = mct.wrapper.mct_wrapper.MCTWrapper()
@@ -192,10 +196,12 @@ def test_quantization(
         use_mixed_precision = False
 
         # Configure GPTQ-specific parameters for gradient-based optimization
-        param_items = [['target_platform_version', 'v1'],
-                       ['n_epochs', 5],
-                       ['optimizer', None],
-                       ['save_model_path', './qmodel_GPTQ_Keras.keras']]
+        param_items = [
+            ['target_platform_version', 'v1'],  # Platform version
+            ['n_epochs', 5],  # Number of epochs
+            ['optimizer', None],  # Optimizer
+            ['save_model_path', './qmodel_GPTQ_Keras.keras']  # Save path
+        ]
 
         # Execute gradient-based quantization using MCTWrapper
         wrapper = mct.wrapper.mct_wrapper.MCTWrapper()
@@ -211,13 +217,15 @@ def test_quantization(
         use_internal_tpc = True
         use_mixed_precision = True
 
-        param_items = [['target_platform_version', 'v1'],
-                       ['n_epochs', 5],
-                       ['optimizer', None],
-                       ['num_of_images', 5],
-                       ['use_hessian_based_scores', False],
-                       ['weights_compression_ratio', 0.75],
-                       ['save_model_path', './qmodel_GPTQ_Keras_mixed_precision.keras']]
+        param_items = [
+            ['target_platform_version', 'v1'],  # Platform version
+            ['n_epochs', 5],  # Number of epochs
+            ['optimizer', None],  # Optimizer
+            ['num_of_images', 5],  # Number of images
+            ['use_hessian_based_scores', False],  # Hessian scores
+            ['weights_compression_ratio', 0.75],  # Compression ratio
+            ['save_model_path', './qmodel_GPTQ_Keras_mixed_precision.keras']  # Save path
+        ]
 
         wrapper = mct.wrapper.mct_wrapper.MCTWrapper()
         flag, quantized_model = wrapper.quantize_and_export(float_model, method, framework, use_internal_tpc, use_mixed_precision, representative_dataset_gen, param_items)
@@ -233,10 +241,10 @@ def test_quantization(
         use_mixed_precision = False
 
         param_items = [
-
-                       ['learning_rate', 0.0001],
-                       ['converter_ver', 'v3.14'],
-                       ['save_model_path', './qmodel_LQPTQ_Keras.keras']]
+            ['learning_rate', 0.0001],  # Learning rate
+            ['converter_ver', 'v3.14'],  # Converter version
+            ['save_model_path', './qmodel_LQPTQ_Keras.keras']  # Save path
+        ]
 
         wrapper = mct.wrapper.wrap.MCTWrapper()
         flag, quantized_model = wrapper.quantize_and_export(float_model, method, framework, use_internal_tpc, use_mixed_precision, representative_dataset_gen, param_items)

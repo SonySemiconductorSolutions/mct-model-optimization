@@ -93,7 +93,7 @@ class TestMCTWrapperIntegration:
         
         mock_setting_ptq.return_value = {'mock': 'params'}
         
-        param_items = [('n_epochs', 10)]
+        param_items = [('n_epochs', 10)]  # Number of epochs
         
         # Call the method
         success, result_model = wrapper.quantize_and_export(
