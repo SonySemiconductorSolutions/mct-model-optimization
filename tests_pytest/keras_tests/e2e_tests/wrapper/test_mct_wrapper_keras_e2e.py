@@ -136,12 +136,12 @@ def test_quantization(
         # Configure quantization parameters for optimal model performance
         param_items = [
             ['target_platform_version', 'v1'],  # The version of the TPC to use.
-            ['activation_error_method', QuantizationErrorMethod.MSE],
+            ['activation_error_method', QuantizationErrorMethod.MSE],  # ErrorMethod.
             ['weights_bias_correction', True],  # Enable bias correction
             ['z_threshold', float('inf')],  # Z threshold
             ['linear_collapsing', True],  # Enable linear collapsing
             ['residual_collapsing', True],  # Enable residual collapsing
-            ['save_model_path', './qmodel_PTQ_Keras.keras']
+            ['save_model_path', './qmodel_PTQ_Keras.keras']  # Path to save the model.
         ]
 
         # Execute quantization using MCTWrapper
@@ -171,7 +171,7 @@ def test_quantization(
             ['num_of_images', 5],  # Number of images
             ['use_hessian_based_scores', False],  # Use Hessian scores
             ['weights_compression_ratio', 0.75],  # Compression ratio
-            ['save_model_path', './qmodel_PTQ_Keras_mixed_precision.keras']
+            ['save_model_path', './qmodel_PTQ_Keras_mixed_precision.keras']  # Path to save the model.
         ]
 
         # Execute quantization with mixed precision using MCTWrapper
@@ -200,7 +200,7 @@ def test_quantization(
             ['target_platform_version', 'v1'],  # The version of the TPC to use.
             ['n_epochs', 5],  # Number of training epochs
             ['optimizer', None],  # Optimizer for training
-            ['save_model_path', './qmodel_GPTQ_Keras.keras']
+            ['save_model_path', './qmodel_GPTQ_Keras.keras']  # Path to save the model.
         ]
 
         # Execute gradient-based quantization using MCTWrapper
@@ -224,7 +224,7 @@ def test_quantization(
             ['num_of_images', 5],  # Number of images
             ['use_hessian_based_scores', False],  # Use Hessian scores
             ['weights_compression_ratio', 0.75],  # Compression ratio
-            ['save_model_path', './qmodel_GPTQ_Keras_mixed_precision.keras']
+            ['save_model_path', './qmodel_GPTQ_Keras_mixed_precision.keras']  # Path to save the model.
         ]
 
         wrapper = mct.wrapper.mct_wrapper.MCTWrapper()
@@ -243,7 +243,7 @@ def test_quantization(
         param_items = [
             ['learning_rate', 0.0001],  # Learning rate
             ['converter_ver', 'v3.14'],  # Converter version
-            ['save_model_path', './qmodel_LQPTQ_Keras.keras']
+            ['save_model_path', './qmodel_LQPTQ_Keras.keras']  # Path to save the model.
         ]
 
         wrapper = mct.wrapper.wrap.MCTWrapper()

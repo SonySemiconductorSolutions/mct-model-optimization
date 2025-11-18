@@ -163,7 +163,7 @@ def test_quantization(
             ['z_threshold', float('inf')],  # Z threshold
             ['linear_collapsing', True],  # Enable linear collapsing
             ['residual_collapsing', True],  # Enable residual collapsing
-            ['save_model_path', './qmodel_PTQ_Pytorch.onnx']
+            ['save_model_path', './qmodel_PTQ_Pytorch.onnx']  # Path to save the model.
         ]
 
         # Execute quantization using MCTWrapper and export to ONNX
@@ -203,7 +203,7 @@ def test_quantization(
             ['num_of_images', 5],  # Number of images
             ['use_hessian_based_scores', False],  # Use Hessian scores
             ['weights_compression_ratio', 0.5],  # Compression ratio
-            ['save_model_path', './qmodel_PTQ_Pytorch_mixed_precision.onnx']
+            ['save_model_path', './qmodel_PTQ_Pytorch_mixed_precision.onnx']  # Path to save the model.
         ]
 
         # Execute mixed precision quantization and export to ONNX
@@ -243,7 +243,7 @@ def test_quantization(
             ['target_platform_version', 'v1'],  # The version of the TPC to use.
             ['n_epochs', 5],  # Number of training epochs
             ['optimizer', None],  # Optimizer for training
-            ['save_model_path', './qmodel_GPTQ_Pytorch.onnx']
+            ['save_model_path', './qmodel_GPTQ_Pytorch.onnx']  # Path to save the model.
         ]
 
         # Execute gradient-based quantization and export to ONNX
@@ -285,7 +285,7 @@ def test_quantization(
             ['num_of_images', 5],  # Number of images
             ['use_hessian_based_scores', False],  # Use Hessian scores
             ['weights_compression_ratio', 0.5],  # Compression ratio
-            ['save_model_path', './qmodel_GPTQ_Pytorch_mixed_precision.onnx']
+            ['save_model_path', './qmodel_GPTQ_Pytorch_mixed_precision.onnx']  # Path to save the model.
         ]
 
         # Execute advanced GPTQ with mixed precision and export to ONNX
