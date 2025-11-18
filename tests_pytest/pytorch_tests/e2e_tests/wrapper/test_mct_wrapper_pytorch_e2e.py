@@ -279,13 +279,13 @@ def test_quantization(
 
         # Define GPTQ mixed precision parameters for advanced optimization
         param_items = [
-            ['target_platform_version', 'v1'],
-            ['n_epochs', 5],
-            ['optimizer', None],
-            ['num_of_images', 5],
-            ['use_hessian_based_scores', False],
-            ['weights_compression_ratio', 0.5],
-            ['save_model_path', './qmodel_GPTQ_Pytorch_mixed_precision.onnx']
+            ['target_platform_version', 'v1'],  # The version of the TPC to use.
+            ['n_epochs', 5],  # GPTQ-specific training parameters
+            ['optimizer', None],  # Optimizer for gradient-based training
+            ['num_of_images', 5],  # Mixed precision configuration
+            ['use_hessian_based_scores', False],  # Use Hessian-based sensitivity scores for layer importance.
+            ['weights_compression_ratio', 0.5],  # Resource constraint
+            ['save_model_path', './qmodel_GPTQ_Pytorch_mixed_precision.onnx']  # Path to save the quantized model.
         ]
 
         # Execute advanced GPTQ with mixed precision and export to ONNX
