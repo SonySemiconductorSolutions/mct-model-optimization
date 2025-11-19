@@ -97,12 +97,8 @@ Target Platform Capabilities (TPC) setup.</p>
 <td><p>Enable residual connection collapsing</p></td>
 </tr>
 <tr class="row-odd"><td><p>save_model_path</p></td>
-<td><p>‘./qmodel.tflite’ / ‘./qmodel.onnx’</p></td>
+<td><p>‘./qmodel.keras’ / ‘./qmodel.onnx’</p></td>
 <td><p>Path to save quantized model (Keras/Pytorch)</p></td>
-</tr>
-<tr class="row-even"><td><p>callback</p></td>
-<td><p>None</p></td>
-<td><p>Callback function</p></td>
 </tr>
 </tbody>
 </table>
@@ -141,12 +137,8 @@ Target Platform Capabilities (TPC) setup.</p>
 <td><p>Weights compression ratio for resource util</p></td>
 </tr>
 <tr class="row-odd"><td><p>save_model_path</p></td>
-<td><p>‘./qmodel.tflite’ / ‘./qmodel.onnx’</p></td>
+<td><p>‘./qmodel.keras’ / ‘./qmodel.onnx’</p></td>
 <td><p>Path to save quantized model (Keras/Pytorch)</p></td>
-</tr>
-<tr class="row-even"><td><p>callback</p></td>
-<td><p>None</p></td>
-<td><p>Callback function</p></td>
 </tr>
 </tbody>
 </table>
@@ -181,12 +173,8 @@ Target Platform Capabilities (TPC) setup.</p>
 <td><p>Optimizer for GPTQ training</p></td>
 </tr>
 <tr class="row-even"><td><p>save_model_path</p></td>
-<td><p>‘./qmodel.tflite’ / ‘./qmodel.onnx’</p></td>
+<td><p>‘./qmodel.keras’ / ‘./qmodel.onnx’</p></td>
 <td><p>Path to save quantized model (Keras/Pytorch)</p></td>
-</tr>
-<tr class="row-odd"><td><p>callback</p></td>
-<td><p>None</p></td>
-<td><p>Callback function</p></td>
 </tr>
 </tbody>
 </table>
@@ -233,12 +221,8 @@ Target Platform Capabilities (TPC) setup.</p>
 <td><p>Weights compression ratio for resource util</p></td>
 </tr>
 <tr class="row-odd"><td><p>save_model_path</p></td>
-<td><p>‘./qmodel.tflite’ / ‘./qmodel.onnx’</p></td>
+<td><p>‘./qmodel.keras’ / ‘./qmodel.onnx’</p></td>
 <td><p>Path to save quantized model (Keras/Pytorch)</p></td>
-</tr>
-<tr class="row-even"><td><p>callback</p></td>
-<td><p>None</p></td>
-<td><p>Callback function</p></td>
 </tr>
 </tbody>
 </table>
@@ -259,7 +243,7 @@ Target Platform Capabilities (TPC) setup.</p>
 <li><p><strong>use_mixed_precision</strong> (<em>bool</em>) – Whether to use mixed-precision
 quantization.</p></li>
 <li><p><strong>representative_dataset</strong> (<em>Callable</em><em>, </em><em>np.array</em><em>, </em><em>tf.Tensor</em>) – Representative dataset for calibration.</p></li>
-<li><p><strong>param_items</strong> (<em>list</em>) – List of parameter settings. [[key,value,comment],…]</p></li>
+<li><p><strong>param_items</strong> (<em>list</em>) – List of parameter settings. [[key,value],…]</p></li>
 </ul>
 </dd>
 <dt class="field-odd">Returns<span class="colon">:</span></dt>
@@ -288,7 +272,7 @@ quantization.</p></li>
 </pre></div>
 </div>
 <p>set parameters if needed</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">param_items</span> <span class="o">=</span> <span class="p">[[</span><span class="n">key</span><span class="p">,</span> <span class="n">value</span><span class="p">,</span> <span class="n">comment</span><span class="p">]</span><span class="o">...</span><span class="p">]</span>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">param_items</span> <span class="o">=</span> <span class="p">[[</span><span class="n">key</span><span class="p">,</span> <span class="n">value</span><span class="p">]</span><span class="o">...</span><span class="p">]</span>
 </pre></div>
 </div>
 <p>Quantize and export the model</p>
