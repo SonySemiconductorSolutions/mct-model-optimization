@@ -157,16 +157,13 @@ def test_quantization(
 
         # Define quantization parameters for optimal model performance
         param_items = [
-            ['target_platform_version', 'v1',
-             'Target platform capabilities version.'],
-            ['activation_error_method', QuantizationErrorMethod.MSE,
-             'ErrorMethod.'],
-            ['weights_bias_correction', True, ''],
-            ['z_threshold', float('inf'), ''],
-            ['linear_collapsing', True, ''],
-            ['residual_collapsing', True, ''],
-            ['save_model_path', './qmodel_PTQ_Pytorch.onnx',
-             'Path to save the model.']
+            ['target_platform_version', 'v1'],  # The version of the TPC to use. 
+            ['activation_error_method', QuantizationErrorMethod.MSE],  # Error method
+            ['weights_bias_correction', True],  # Enable bias correction
+            ['z_threshold', float('inf')],  # Z threshold
+            ['linear_collapsing', True],  # Enable linear collapsing
+            ['residual_collapsing', True],  # Enable residual collapsing
+            ['save_model_path', './qmodel_PTQ_Pytorch.onnx']  # Path to save the model.
         ]
 
         # Execute quantization using MCTWrapper and export to ONNX
@@ -202,13 +199,11 @@ def test_quantization(
 
         # Define mixed precision quantization parameters
         param_items = [
-            ['target_platform_version', 'v1',
-             'Target platform capabilities version.'],
-            ['num_of_images', 5, 'Number of images for mixed precision.'],
-            ['use_hessian_based_scores', False, 'Use Hessian-based scores.'],
-            ['weights_compression_ratio', 0.5, 'Compression ratio.'],
-            ['save_model_path', './qmodel_PTQ_Pytorch_mixed_precision.onnx',
-             'Path to save the model.']
+            ['target_platform_version', 'v1'],  # The version of the TPC to use. 
+            ['num_of_images', 5],  # Number of images
+            ['use_hessian_based_scores', False],  # Use Hessian scores
+            ['weights_compression_ratio', 0.5],  # Compression ratio
+            ['save_model_path', './qmodel_PTQ_Pytorch_mixed_precision.onnx']  # Path to save the model.
         ]
 
         # Execute mixed precision quantization and export to ONNX
@@ -245,12 +240,10 @@ def test_quantization(
 
         # Define GPTQ-specific parameters for gradient-based optimization
         param_items = [
-            ['target_platform_version', 'v1',
-             'Target platform capabilities version.'],
-            ['n_epochs', 5, 'Number of epochs for fine-tuning.'],
-            ['optimizer', None, 'Optimizer for fine-tuning.'],
-            ['save_model_path', './qmodel_GPTQ_Pytorch.onnx',
-             'Path to save the model.']
+            ['target_platform_version', 'v1'],  # The version of the TPC to use.
+            ['n_epochs', 5],  # Number of training epochs
+            ['optimizer', None],  # Optimizer for training
+            ['save_model_path', './qmodel_GPTQ_Pytorch.onnx']  # Path to save the model.
         ]
 
         # Execute gradient-based quantization and export to ONNX
@@ -286,15 +279,13 @@ def test_quantization(
 
         # Define GPTQ mixed precision parameters for advanced optimization
         param_items = [
-            ['target_platform_version', 'v1',
-             'Target platform capabilities version.'],
-            ['n_epochs', 5, 'Number of epochs for fine-tuning.'],
-            ['optimizer', None, 'Optimizer for fine-tuning.'],
-            ['num_of_images', 5, 'Number of images for mixed precision.'],
-            ['use_hessian_based_scores', False, 'Use Hessian-based scores.'],
-            ['weights_compression_ratio', 0.5, 'Compression ratio.'],
-            ['save_model_path', './qmodel_GPTQ_Pytorch_mixed_precision.onnx',
-             'Path to save the model.']
+            ['target_platform_version', 'v1'],  # The version of the TPC to use.
+            ['n_epochs', 5],  # Number of training epochs
+            ['optimizer', None],  # Optimizer for training
+            ['num_of_images', 5],  # Number of images
+            ['use_hessian_based_scores', False],  # Use Hessian scores
+            ['weights_compression_ratio', 0.5],  # Compression ratio
+            ['save_model_path', './qmodel_GPTQ_Pytorch_mixed_precision.onnx']  # Path to save the model.
         ]
 
         # Execute advanced GPTQ with mixed precision and export to ONNX

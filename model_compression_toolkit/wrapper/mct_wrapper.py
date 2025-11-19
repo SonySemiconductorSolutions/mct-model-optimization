@@ -25,7 +25,7 @@ from model_compression_toolkit.wrapper.constants import (
     ACTIVATION_ERROR_METHOD, WEIGHTS_ERROR_METHOD, WEIGHTS_BIAS_CORRECTION,
     Z_THRESHOLD, LINEAR_COLLAPSING, RESIDUAL_COLLAPSING, GPTQ_CONFIG,
     WEIGHTS_COMPRESSION_RATIO, N_EPOCHS, OPTIMIZER, LEARNING_RATE, 
-    CONVERTER_VER, CALLBACK, SAVE_MODEL_PATH
+    CONVERTER_VER, SAVE_MODEL_PATH
 )
 
 
@@ -63,8 +63,7 @@ class MCTWrapper:
            "z_threshold", "float('inf')", "Z-threshold for quantization"
            "linear_collapsing", "True", "Enable linear layer collapsing"
            "residual_collapsing", "True", "Enable residual connection collapsing"
-           "save_model_path", "'./qmodel.tflite' / './qmodel.onnx'", "Path to save quantized model (Keras/Pytorch)"
-           "callback", "None", "Callback function"
+           "save_model_path", "'./qmodel.keras' / './qmodel.onnx'", "Path to save quantized model (Keras/Pytorch)"
 
         **PTQ, mixed_precision**
 
@@ -77,8 +76,7 @@ class MCTWrapper:
            "num_of_images", "5", "Number of images for mixed precision"
            "use_hessian_based_scores", "False", "Use Hessian-based scores for mixed precision"
            "weights_compression_ratio", "None", "Weights compression ratio for resource util"
-           "save_model_path", "'./qmodel.tflite' / './qmodel.onnx'", "Path to save quantized model (Keras/Pytorch)"
-           "callback", "None", "Callback function"
+           "save_model_path", "'./qmodel.keras' / './qmodel.onnx'", "Path to save quantized model (Keras/Pytorch)"
 
         **GPTQ**
 
@@ -90,8 +88,7 @@ class MCTWrapper:
            "tpc_version", "'5.0'", "TPC version (use_internal_tpc=False)"
            "n_epochs", "5", "Number of training epochs for GPTQ"
            "optimizer", "None", "Optimizer for GPTQ training"
-           "save_model_path", "'./qmodel.tflite' / './qmodel.onnx'", "Path to save quantized model (Keras/Pytorch)"
-           "callback", "None", "Callback function"
+           "save_model_path", "'./qmodel.keras' / './qmodel.onnx'", "Path to save quantized model (Keras/Pytorch)"
 
         **GPTQ, mixed_precision**
 
@@ -106,8 +103,7 @@ class MCTWrapper:
            "num_of_images", "5", "Number of images for mixed precision"
            "use_hessian_based_scores", "False", "Use Hessian-based scores for mixed precision"
            "weights_compression_ratio", "None", "Weights compression ratio for resource util"
-           "save_model_path", "'./qmodel.tflite' / './qmodel.onnx'", "Path to save quantized model (Keras/Pytorch)"
-           "callback", "None", "Callback function"
+           "save_model_path", "'./qmodel.keras' / './qmodel.onnx'", "Path to save quantized model (Keras/Pytorch)"
 
         """
         self.params: Dict[str, Any] = {
@@ -139,10 +135,7 @@ class MCTWrapper:
             CONVERTER_VER: 'v3.14',
 
             # Export
-            SAVE_MODEL_PATH: './qmodel.onnx',
-
-            # Callback function
-            CALLBACK: None
+            SAVE_MODEL_PATH: './qmodel.onnx'
         }
 
     def _initialize_and_validate(self, float_model: Any, method: str = 'PTQ',
@@ -186,7 +179,7 @@ class MCTWrapper:
         Update the internal parameter dictionary with values from param_items.
 
         Args:
-            param_items (list): List of tuples (key, value, description).
+            param_items (list): List of tuples (key, value).
                 If key exists in self.params, updates its value.
                 Non-existing keys are ignored with a warning.
 
@@ -194,7 +187,7 @@ class MCTWrapper:
             Only parameters that exist in the default parameter dictionary
             will be updated. Unknown parameters are silently ignored.
         """
-        for key, value, _ in param_items:
+        for key, value in param_items:
             if key in self.params:
                 # Update parameter value if key exists in default parameters
                 self.params[key] = value
@@ -480,14 +473,14 @@ class MCTWrapper:
             quantized_model: The quantized model to export.
 
         Note:
-            Export format is framework-specific: TFLite for TensorFlow,
+            Export format is framework-specific: Keras for TensorFlow,
             ONNX for PyTorch.
         """
         if self.framework == 'tensorflow':
             params_export = {
                 'model': quantized_model,
                 'save_model_path': self.params['save_model_path'],
-                'serialization_format': (mct.exporter.KerasExportSerializationFormat.TFLITE),
+                'serialization_format': (mct.exporter.KerasExportSerializationFormat.KERAS),
                 'quantization_format': (mct.exporter.QuantizationFormat.FAKELY_QUANT)
             }
         elif self.framework == 'pytorch':
@@ -513,7 +506,7 @@ class MCTWrapper:
             use_mixed_precision (bool): Whether to use mixed-precision
                 quantization.
             representative_dataset (Callable, np.array, tf.Tensor): Representative dataset for calibration.
-            param_items (list): List of parameter settings. [[key,value,comment],...]
+            param_items (list): List of parameter settings. [[key,value],...]
 
         Returns:
             tuple (quantization success flag, quantized model)
@@ -542,7 +535,7 @@ class MCTWrapper:
 
             set parameters if needed
 
-            >>> param_items = [[key, value, comment]...]
+            >>> param_items = [[key, value]...]
 
             Quantize and export the model
 

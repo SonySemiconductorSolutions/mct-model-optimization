@@ -73,9 +73,9 @@ class TestMCTWrapper:
         
         # Prepare test parameter items with existing keys
         param_items = [
-            ['n_epochs', 10, 'Number of epochs'],
-            ['learning_rate', 0.01, 'Learning rate'],
-            ['fw_name', 'pytorch', 'Framework name']
+            ['n_epochs', 10],  # Number of epochs
+            ['learning_rate', 0.01],  # Learning rate
+            ['fw_name', 'pytorch']  # Framework name
         ]
         
         # Call _modify_params to update existing parameters
@@ -100,8 +100,8 @@ class TestMCTWrapper:
         
         # Prepare test parameter items with non-existing keys
         param_items = [
-            ['non_existing_key', 'value', 'Description'],
-            ['another_fake_key', 42, 'Another description']
+            ['non_existing_key', 'value'],  # Non-existing key
+            ['another_fake_key', 42]  # Another fake key
         ]
         
         # Call _modify_params
