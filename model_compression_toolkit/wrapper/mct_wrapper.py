@@ -174,6 +174,32 @@ class MCTWrapper:
         self.use_mixed_precision = use_mixed_precision
         self.representative_dataset = representative_dataset
 
+        # Keep only the parameters you need for the quantization mode
+        if method == 'PTQ':
+            if not use_mixed_precision:
+                allowed_keys = [ FW_NAME, TARGET_PLATFORM_VERSION, TPC_VERSION, 
+                                 ACTIVATION_ERROR_METHOD, WEIGHTS_BIAS_CORRECTION, 
+                                 Z_THRESHOLD, LINEAR_COLLAPSING, RESIDUAL_COLLAPSING,
+                                 SAVE_MODEL_PATH ]
+            else:
+                allowed_keys = [ FW_NAME, TARGET_PLATFORM_VERSION, TPC_VERSION, 
+                                 NUM_OF_IMAGES, USE_HESSIAN_BASED_SCORES, 
+                                 WEIGHTS_COMPRESSION_RATIO, SAVE_MODEL_PATH ]
+        else:
+            if not use_mixed_precision:
+                allowed_keys = [ FW_NAME, TARGET_PLATFORM_VERSION, TPC_VERSION, 
+                                 N_EPOCHS, OPTIMIZER, SAVE_MODEL_PATH ]
+            else:
+                allowed_keys = [ FW_NAME, TARGET_PLATFORM_VERSION, TPC_VERSION, 
+                                 N_EPOCHS, OPTIMIZER, NUM_OF_IMAGES, 
+                                 USE_HESSIAN_BASED_SCORES, WEIGHTS_COMPRESSION_RATIO, 
+                                 SAVE_MODEL_PATH ]
+                     
+        self.params = { k: v for k, v in self.params.items() if k in allowed_keys }
+
+        if self.framework == 'tensorflow':
+            self.params[SAVE_MODEL_PATH] = './qmodel.keras'
+
     def _modify_params(self, param_items: List[List[Any]]) -> None:
         """
         Update the internal parameter dictionary with values from param_items.
@@ -187,6 +213,9 @@ class MCTWrapper:
             Only parameters that exist in the default parameter dictionary
             will be updated. Unknown parameters are silently ignored.
         """
+        if param_items is None:
+            return
+        
         for key, value in param_items:
             if key in self.params:
                 # Update parameter value if key exists in default parameters
@@ -559,10 +588,6 @@ class MCTWrapper:
 
         """
         try:
-            # Handle default value for param_items
-            if param_items is None:
-                param_items = []
-            
             # Step 1: Initialize and validate all input parameters
             self._initialize_and_validate(
                 float_model, method, framework, use_internal_tpc,
