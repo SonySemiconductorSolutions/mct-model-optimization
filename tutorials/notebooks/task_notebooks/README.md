@@ -14,4 +14,4 @@ The notebooks in this section demonstrate how to use MCT for various tasks and m
   |----------------------------------------------------------------------------|---------------------------|---------------------------------------------------------------------------------------------------|
   | [PoseNet](pytorch/example_posenet_pytorch_mixed_precision_ptq.ipynb)       | Human Pose Estimation     |                                                                                                   |
   | [YOLOX](pytorch/example_yolox_pytorch_mixed_precision_ptq.ipynb)           | Object Detection          | use [CustomLayer](https://github.com/SonySemiconductorSolutions/aitrios-edge-mdt-cl/tree/main)    |
-
+  | [DeepLabv3+](pytorch/example_deeplabv3p_pytorch_mixed_precision_ptq.ipynb) | Semantic Segmentation     |                                                                                                   |
