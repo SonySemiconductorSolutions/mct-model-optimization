@@ -138,22 +138,23 @@ class MCTWrapper:
             SAVE_MODEL_PATH: './qmodel.onnx'
         }
 
-    def _initialize_and_validate(self, float_model: Any, method: str,
+    def _initialize_and_validate(self, float_model: Any,
+                                 representative_dataset: Optional[Any],
+                                 method: str,
                                  framework: str,
                                  use_internal_tpc: bool,
-                                 use_mixed_precision: bool,
-                                 representative_dataset: Optional[Any]
+                                 use_mixed_precision: bool
                                  ) -> None:
         """
         Validate inputs and initialize parameters.
 
         Args:
             float_model: The float model to be quantized.
+            representative_dataset (Callable, np.array, tf.Tensor): Representative dataset for calibration.
             method (str): Quantization method ('PTQ', 'GPTQ', 'LQPTQ').
             framework (str): Target framework ('tensorflow', 'pytorch').
             use_internal_tpc (bool): Whether to use MCT's built-in TPC.
             use_mixed_precision (bool): Whether to use mixed-precision quantization.
-            representative_dataset (Callable, np.array, tf.Tensor): Representative dataset for calibration.
 
         Raises:
             Exception: If method or framework is not supported.
@@ -520,11 +521,12 @@ class MCTWrapper:
             }
         self.export_model(**params_export)
 
-    def quantize_and_export(self, float_model: Any, method: str = 'PTQ',
+    def quantize_and_export(self, float_model: Any,
+                            representative_dataset: Any,
+                            method: str = 'PTQ',
                             framework: str = 'pytorch',
                             use_internal_tpc: bool = True,
                             use_mixed_precision: bool = False,
-                            representative_dataset: Optional[Any] = None,
                             param_items: Optional[List[List[Any]]] = None
                             ) -> Tuple[bool, Any]:
         """
@@ -532,6 +534,8 @@ class MCTWrapper:
 
         Args:
             float_model: The float model to be quantized.
+            representative_dataset (Callable, np.array, tf.Tensor):
+                Representative dataset for calibration.
             method (str): Quantization method, e.g., 'PTQ' or 'GPTQ'.
                 Default: 'PTQ'
             framework (str): 'tensorflow' or 'pytorch'.
@@ -540,8 +544,6 @@ class MCTWrapper:
                 Default: True
             use_mixed_precision (bool): Whether to use mixed-precision
                 quantization. Default: False
-            representative_dataset (Callable, np.array, tf.Tensor):
-                Representative dataset for calibration. Default: None
             param_items (list): List of parameter settings.
                 [[key,value],...]. Default: None
 
@@ -590,8 +592,8 @@ class MCTWrapper:
         try:
             # Step 1: Initialize and validate all input parameters
             self._initialize_and_validate(
-                float_model, method, framework, use_internal_tpc,
-                use_mixed_precision, representative_dataset)
+                float_model, representative_dataset, method, framework,
+                use_internal_tpc, use_mixed_precision)
 
             # Step 2: Apply custom parameter modifications
             self._modify_params(param_items)
