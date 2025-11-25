@@ -169,11 +169,11 @@ class MCTWrapper:
       
         # set parameters --------------------------
         self.float_model = float_model
+        self.representative_dataset = representative_dataset
         self.method = method
         self.framework = framework
         self.use_internal_tpc = use_internal_tpc
         self.use_mixed_precision = use_mixed_precision
-        self.representative_dataset = representative_dataset
 
         # Keep only the parameters you need for the quantization mode
         if method == 'PTQ':
