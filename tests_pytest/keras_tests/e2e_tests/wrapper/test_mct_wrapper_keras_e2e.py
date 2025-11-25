@@ -147,7 +147,7 @@ def test_quantization(
         # Execute quantization using MCTWrapper
         wrapper = mct.wrapper.mct_wrapper.MCTWrapper()
         flag, quantized_model = wrapper.quantize_and_export(float_model, representative_dataset_gen, method, framework, use_internal_tpc, use_mixed_precision, param_items)
-        return True, quantized_model
+        return flag, quantized_model
 
     #########################################################################
     # Run PTQ + Mixed Precision Quantization with Keras
