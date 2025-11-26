@@ -16,3 +16,8 @@ This includes fine-tuning PTQ (Post-Training Quantization) configurations, expor
 and exploring advanced compression techniques. 
 These techniques are essential for further optimizing models and achieving superior performance in deployment scenarios.
 - [MCT Features notebooks](notebooks/mct_features_notebooks/README.md)
+
+## Task Notebooks
+This set of tutorials provide for various common deep learning applications(Object detection, Semantic Segmentation, etc).
+The notebooks in this section demonstrate how to use MCT for various tasks and models.
+- [Task notebooks](notebooks/task_notebooks/README.md)
