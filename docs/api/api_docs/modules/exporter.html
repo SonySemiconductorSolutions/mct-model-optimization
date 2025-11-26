@@ -7,7 +7,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
     <title>exporter Module &#8212; MCT Documentation: ver 2.5.0</title>
-    <link rel="stylesheet" type="text/css" href="../../../static/pygments.css?v=fa44fd50" />
+    <link rel="stylesheet" type="text/css" href="../../../static/pygments.css?v=03e43079" />
     <link rel="stylesheet" type="text/css" href="../../../static/bizstyle.css?v=5283bb3d" />
     <link rel="stylesheet" type="text/css" href="../../../static/css/custom.css?v=01243f34" />
     
@@ -101,9 +101,9 @@ Models that are exported to .tflite format can use quantization_format of Quanti
 <h2>Keras Tutorial<a class="headerlink" href="#keras-tutorial" title="Link to this heading">¶</a></h2>
 <p>To export a TensorFlow model as a quantized model, it is necessary to first apply quantization
 to the model using MCT:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
-<span class="kn">from</span> <span class="nn">keras.applications</span> <span class="kn">import</span> <span class="n">ResNet50</span>
-<span class="kn">import</span> <span class="nn">model_compression_toolkit</span> <span class="k">as</span> <span class="nn">mct</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">keras.applications</span><span class="w"> </span><span class="kn">import</span> <span class="n">ResNet50</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">model_compression_toolkit</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">mct</span>
 
 <span class="c1"># Create a model</span>
 <span class="n">float_model</span> <span class="o">=</span> <span class="n">ResNet50</span><span class="p">()</span>
@@ -122,7 +122,7 @@ Two optional quantization formats are available: MCTQ and FAKELY_QUANT.</p>
 <h3>MCTQ<a class="headerlink" href="#mctq" title="Link to this heading">¶</a></h3>
 <p>By default, <cite>mct.exporter.keras_export_model</cite> will export the quantized Keras model to
 a .keras model with custom quantizers from mct_quantizers module.</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">tempfile</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">tempfile</span>
 
 <span class="c1"># Path of exported model</span>
 <span class="n">_</span><span class="p">,</span> <span class="n">keras_file_path</span> <span class="o">=</span> <span class="n">tempfile</span><span class="o">.</span><span class="n">mkstemp</span><span class="p">(</span><span class="s1">&#39;.keras&#39;</span><span class="p">)</span>
@@ -186,17 +186,17 @@ and activations are float fakely-quantized values) and PytorchExportSerializatio
 </pre></div>
 </div>
 <p>Now, let’s start the export demonstration by quantizing the model using MCT:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">model_compression_toolkit</span> <span class="k">as</span> <span class="nn">mct</span>
-<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
-<span class="kn">import</span> <span class="nn">torch</span>
-<span class="kn">from</span> <span class="nn">torchvision.models.mobilenetv2</span> <span class="kn">import</span> <span class="n">mobilenet_v2</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">model_compression_toolkit</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">mct</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">torch</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">torchvision.models.mobilenetv2</span><span class="w"> </span><span class="kn">import</span> <span class="n">mobilenet_v2</span>
 
 <span class="c1"># Create a model</span>
 <span class="n">float_model</span> <span class="o">=</span> <span class="n">mobilenet_v2</span><span class="p">()</span>
 
 
 <span class="c1"># Notice that here the representative dataset is random for demonstration only.</span>
-<span class="k">def</span> <span class="nf">representative_data_gen</span><span class="p">():</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">representative_data_gen</span><span class="p">():</span>
     <span class="k">yield</span> <span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">random</span><span class="p">((</span><span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">224</span><span class="p">,</span> <span class="mi">224</span><span class="p">))]</span>
 
 
@@ -254,8 +254,8 @@ an ONNX model with custom quantizers from mct_quantizers module.</p>
 <section id="use-exported-model-for-inference">
 <h3>Use exported model for inference<a class="headerlink" href="#use-exported-model-for-inference" title="Link to this heading">¶</a></h3>
 <p>To load and infer using the exported model, which was exported to an ONNX file in MCTQ format, we will use <cite>mct_quantizers</cite> method <cite>get_ort_session_options</cite> during onnxruntime session creation. <strong>Notice</strong>, inference on models that are exported in this format are slowly and suffers from longer latency. However, inference of these models on IMX500 will not suffer from this issue.</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">mct_quantizers</span> <span class="k">as</span> <span class="nn">mctq</span>
-<span class="kn">import</span> <span class="nn">onnxruntime</span> <span class="k">as</span> <span class="nn">ort</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">mct_quantizers</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">mctq</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">onnxruntime</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">ort</span>
 
 <span class="n">sess</span> <span class="o">=</span> <span class="n">ort</span><span class="o">.</span><span class="n">InferenceSession</span><span class="p">(</span><span class="n">onnx_file_path</span><span class="p">,</span>
                             <span class="n">mctq</span><span class="o">.</span><span class="n">get_ort_session_options</span><span class="p">(),</span>
