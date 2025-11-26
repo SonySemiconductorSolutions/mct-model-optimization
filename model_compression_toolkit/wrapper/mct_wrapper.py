@@ -206,7 +206,7 @@ class MCTWrapper:
         Update the internal parameter dictionary with values from param_items.
 
         Args:
-            param_items (list): List of tuples (key, value).
+            param_items (list): List of lists [[key, value], ...].
                 If key exists in self.params, updates its value.
                 Non-existing keys are ignored with a warning.
 
@@ -580,11 +580,11 @@ class MCTWrapper:
 
             >>> flag, quantized_model = wrapper.quantize_and_export(
             ...     float_model=float_model,
+            ...     representative_dataset=representative_dataset,
             ...     method=method,
             ...     framework=framework,
             ...     use_internal_tpc=use_internal_tpc,
             ...     use_mixed_precision=use_mixed_precision,
-            ...     representative_dataset=representative_dataset,
             ...     param_items=param_items
             ... )
 
