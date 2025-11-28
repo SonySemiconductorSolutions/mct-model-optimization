@@ -15,4 +15,5 @@ The notebooks in this section demonstrate how to configure and run simple and ad
 This includes fine-tuning PTQ (Post-Training Quantization) configurations, exporting models,
 and exploring advanced compression techniques. 
 These techniques are essential for further optimizing models and achieving superior performance in deployment scenarios.
+We will also explain the steps to easily perform quantization using a wrapper for users who are not familiar with MCT.
 - [MCT Features notebooks](notebooks/mct_features_notebooks/README.md)
