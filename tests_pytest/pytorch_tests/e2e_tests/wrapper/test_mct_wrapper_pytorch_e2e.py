@@ -169,8 +169,8 @@ def test_quantization(
         # Execute quantization using MCTWrapper and export to ONNX
         wrapper = mct.wrapper.mct_wrapper.MCTWrapper()
         flag, quantized_model = wrapper.quantize_and_export(
-            float_model, method, framework, use_internal_tpc, use_mixed_precision,
-            representative_dataset_gen, param_items)
+            float_model, representative_dataset_gen, method, framework, use_internal_tpc, use_mixed_precision,
+            param_items)
         return flag, quantized_model
 
     #########################################################################
@@ -209,8 +209,8 @@ def test_quantization(
         # Execute mixed precision quantization and export to ONNX
         wrapper = mct.wrapper.mct_wrapper.MCTWrapper()
         flag, quantized_model = wrapper.quantize_and_export(
-            float_model, method, framework, use_internal_tpc, use_mixed_precision,
-            representative_dataset_gen, param_items)
+            float_model, representative_dataset_gen, method, framework, use_internal_tpc, use_mixed_precision,
+            param_items)
         return flag, quantized_model
 
     #########################################################################
@@ -249,8 +249,8 @@ def test_quantization(
         # Execute gradient-based quantization and export to ONNX
         wrapper = mct.wrapper.mct_wrapper.MCTWrapper()
         flag, quantized_model = wrapper.quantize_and_export(
-            float_model, method, framework, use_internal_tpc, use_mixed_precision,
-            representative_dataset_gen, param_items)
+            float_model, representative_dataset_gen, method, framework, use_internal_tpc, use_mixed_precision,
+            param_items)
         return flag, quantized_model
 
     #########################################################################
@@ -291,8 +291,8 @@ def test_quantization(
         # Execute advanced GPTQ with mixed precision and export to ONNX
         wrapper = mct.wrapper.mct_wrapper.MCTWrapper()
         flag, quantized_model = wrapper.quantize_and_export(
-            float_model, method, framework, use_internal_tpc, use_mixed_precision,
-            representative_dataset_gen, param_items)
+            float_model, representative_dataset_gen, method, framework, use_internal_tpc, use_mixed_precision,
+            param_items)
         return flag, quantized_model
 
     # Execute the selected quantization method

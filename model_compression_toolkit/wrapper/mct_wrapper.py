@@ -138,22 +138,23 @@ class MCTWrapper:
             SAVE_MODEL_PATH: './qmodel.onnx'
         }
 
-    def _initialize_and_validate(self, float_model: Any, method: str = 'PTQ',
-                                 framework: str = 'pytorch',
-                                 use_internal_tpc: bool = True,
-                                 use_mixed_precision: bool = False,
-                                 representative_dataset: Optional[Any] = None
+    def _initialize_and_validate(self, float_model: Any,
+                                 representative_dataset: Optional[Any],
+                                 method: str,
+                                 framework: str,
+                                 use_internal_tpc: bool,
+                                 use_mixed_precision: bool
                                  ) -> None:
         """
         Validate inputs and initialize parameters.
 
         Args:
             float_model: The float model to be quantized.
+            representative_dataset (Callable, np.array, tf.Tensor): Representative dataset for calibration.
             method (str): Quantization method ('PTQ', 'GPTQ', 'LQPTQ').
             framework (str): Target framework ('tensorflow', 'pytorch').
             use_internal_tpc (bool): Whether to use MCT's built-in TPC.
             use_mixed_precision (bool): Whether to use mixed-precision quantization.
-            representative_dataset (Callable, np.array, tf.Tensor): Representative dataset for calibration.
 
         Raises:
             Exception: If method or framework is not supported.
@@ -168,18 +169,44 @@ class MCTWrapper:
       
         # set parameters --------------------------
         self.float_model = float_model
+        self.representative_dataset = representative_dataset
         self.method = method
         self.framework = framework
         self.use_internal_tpc = use_internal_tpc
         self.use_mixed_precision = use_mixed_precision
-        self.representative_dataset = representative_dataset
+
+        # Keep only the parameters you need for the quantization mode
+        if method == 'PTQ':
+            if not use_mixed_precision:
+                allowed_keys = [ FW_NAME, TARGET_PLATFORM_VERSION, TPC_VERSION, 
+                                 ACTIVATION_ERROR_METHOD, WEIGHTS_BIAS_CORRECTION, 
+                                 Z_THRESHOLD, LINEAR_COLLAPSING, RESIDUAL_COLLAPSING,
+                                 SAVE_MODEL_PATH ]
+            else:
+                allowed_keys = [ FW_NAME, TARGET_PLATFORM_VERSION, TPC_VERSION, 
+                                 NUM_OF_IMAGES, USE_HESSIAN_BASED_SCORES, 
+                                 WEIGHTS_COMPRESSION_RATIO, SAVE_MODEL_PATH ]
+        else:
+            if not use_mixed_precision:
+                allowed_keys = [ FW_NAME, TARGET_PLATFORM_VERSION, TPC_VERSION, 
+                                 N_EPOCHS, OPTIMIZER, SAVE_MODEL_PATH ]
+            else:
+                allowed_keys = [ FW_NAME, TARGET_PLATFORM_VERSION, TPC_VERSION, 
+                                 N_EPOCHS, OPTIMIZER, NUM_OF_IMAGES, 
+                                 USE_HESSIAN_BASED_SCORES, WEIGHTS_COMPRESSION_RATIO, 
+                                 SAVE_MODEL_PATH ]
+                     
+        self.params = { k: v for k, v in self.params.items() if k in allowed_keys }
+
+        if self.framework == 'tensorflow':
+            self.params[SAVE_MODEL_PATH] = './qmodel.keras'
 
     def _modify_params(self, param_items: List[List[Any]]) -> None:
         """
         Update the internal parameter dictionary with values from param_items.
 
         Args:
-            param_items (list): List of tuples (key, value).
+            param_items (list): List of lists [[key, value], ...].
                 If key exists in self.params, updates its value.
                 Non-existing keys are ignored with a warning.
 
@@ -187,6 +214,9 @@ class MCTWrapper:
             Only parameters that exist in the default parameter dictionary
             will be updated. Unknown parameters are silently ignored.
         """
+        if param_items is None:
+            return
+        
         for key, value in param_items:
             if key in self.params:
                 # Update parameter value if key exists in default parameters
@@ -491,22 +521,31 @@ class MCTWrapper:
             }
         self.export_model(**params_export)
 
-    def quantize_and_export(self, float_model: Any, method: str, framework: str,
-                            use_internal_tpc: bool, use_mixed_precision: bool,
+    def quantize_and_export(self, float_model: Any,
                             representative_dataset: Any,
-                            param_items: List[List[Any]]) -> Tuple[bool, Any]:
+                            method: str = 'PTQ',
+                            framework: str = 'pytorch',
+                            use_internal_tpc: bool = True,
+                            use_mixed_precision: bool = False,
+                            param_items: Optional[List[List[Any]]] = None
+                            ) -> Tuple[bool, Any]:
         """
         Main function to perform model quantization and export.
 
         Args:
             float_model: The float model to be quantized.
-            method (str): Quantization method, e.g., 'PTQ' or 'GPTQ'
+            representative_dataset (Callable, np.array, tf.Tensor):
+                Representative dataset for calibration.
+            method (str): Quantization method, e.g., 'PTQ' or 'GPTQ'.
+                Default: 'PTQ'
             framework (str): 'tensorflow' or 'pytorch'.
+                Default: 'pytorch'
             use_internal_tpc (bool): Whether to use internal_tpc.
+                Default: True
             use_mixed_precision (bool): Whether to use mixed-precision
-                quantization.
-            representative_dataset (Callable, np.array, tf.Tensor): Representative dataset for calibration.
-            param_items (list): List of parameter settings. [[key,value],...]
+                quantization. Default: False
+            param_items (list): List of parameter settings.
+                [[key,value],...]. Default: None
 
         Returns:
             tuple (quantization success flag, quantized model)
@@ -541,11 +580,11 @@ class MCTWrapper:
 
             >>> flag, quantized_model = wrapper.quantize_and_export(
             ...     float_model=float_model,
+            ...     representative_dataset=representative_dataset,
             ...     method=method,
             ...     framework=framework,
             ...     use_internal_tpc=use_internal_tpc,
             ...     use_mixed_precision=use_mixed_precision,
-            ...     representative_dataset=representative_dataset,
             ...     param_items=param_items
             ... )
 
@@ -553,8 +592,8 @@ class MCTWrapper:
         try:
             # Step 1: Initialize and validate all input parameters
             self._initialize_and_validate(
-                float_model, method, framework, use_internal_tpc,
-                use_mixed_precision, representative_dataset)
+                float_model, representative_dataset, method, framework,
+                use_internal_tpc, use_mixed_precision)
 
             # Step 2: Apply custom parameter modifications
             self._modify_params(param_items)
