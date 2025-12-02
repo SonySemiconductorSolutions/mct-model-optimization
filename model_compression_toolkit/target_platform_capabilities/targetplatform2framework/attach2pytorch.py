@@ -102,6 +102,7 @@ class AttachTpcToPytorch(AttachTpcToFramework):
             OperatorSetNames.EXP: [torch.exp],
             OperatorSetNames.SIN: [torch.sin],
             OperatorSetNames.COS: [torch.cos],
+            OperatorSetNames.TAKE: [torch.take],
         }
 
         pytorch_linear_attr_mapping = {KERNEL_ATTR: DefaultDict(default_value=PYTORCH_KERNEL),

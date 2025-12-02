@@ -93,6 +93,7 @@ class OperatorSetNames(str, Enum):
     EXP = "Exp"
     SIN = "Sin"
     COS = "Cos"
+    TAKE = "Take"
 
     @classmethod
     def get_values(cls):
