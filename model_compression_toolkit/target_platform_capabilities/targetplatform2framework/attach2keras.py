@@ -103,7 +103,8 @@ class AttachTpcToKeras(AttachTpcToFramework):
             OperatorSetNames.SSD_POST_PROCESS: [SSDPostProcess],
             OperatorSetNames.EXP: [tf.math.exp],
             OperatorSetNames.SIN: [tf.math.sin],
-            OperatorSetNames.COS: [tf.math.cos]
+            OperatorSetNames.COS: [tf.math.cos],
+            OperatorSetNames.TAKE: [],  # no such operator in tensorflow
         }
 
         self._opset2attr_mapping = {
