@@ -18,8 +18,6 @@ import tensorflow as tf
 import model_compression_toolkit as mct
 from tests.keras_tests.feature_networks_tests.base_keras_feature_test import BaseKerasFeatureNetworkTest
 
-from model_compression_toolkit.constants import TENSORFLOW
-
 keras = tf.keras
 layers = keras.layers
 
@@ -32,7 +30,7 @@ class TpcTest(BaseKerasFeatureNetworkTest):
 
     def get_tpc(self):
         tpc_name, tp_version = self.tpc_name.split('.')
-        return mct.get_target_platform_capabilities(TENSORFLOW, tpc_name, tp_version)
+        return mct.get_target_platform_capabilities(tp_version, tpc_name)
 
     def create_networks(self):
         inputs = layers.Input(shape=self.get_input_shapes()[0][1:])

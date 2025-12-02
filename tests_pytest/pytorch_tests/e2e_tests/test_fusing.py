@@ -15,11 +15,7 @@
 from model_compression_toolkit import get_target_platform_capabilities
 from model_compression_toolkit.core.pytorch.resource_utilization_data_facade import pytorch_resource_utilization_data
 
-from model_compression_toolkit.constants import PYTORCH
-
-from model_compression_toolkit.target_platform_capabilities.constants import DEFAULT_TP_MODEL
 import torch.nn as nn
-
 
 from model_compression_toolkit.ptq import pytorch_post_training_quantization
 from tests_pytest._fw_tests_common_base.base_fusing_test import BaseFusingTest
@@ -33,7 +29,7 @@ class TestPytorchFusing(BaseFusingTest, TorchFwMixin):
     bhwc_input_shape = (1, 3, 18, 18)
 
     fw_ptq_facade = pytorch_post_training_quantization
-    tpc = get_target_platform_capabilities(PYTORCH, DEFAULT_TP_MODEL)
+    tpc = get_target_platform_capabilities() # IMX500 & TPCv1.0
     fw_ru_data_facade = pytorch_resource_utilization_data
 
     def _build_test_model_reuse(self, input_shape):

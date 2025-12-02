@@ -16,9 +16,7 @@
 
 from model_compression_toolkit import get_target_platform_capabilities
 from model_compression_toolkit.core.keras.resource_utilization_data_facade import keras_resource_utilization_data
-from model_compression_toolkit.constants import TENSORFLOW
 from model_compression_toolkit.ptq import keras_post_training_quantization
-from model_compression_toolkit.target_platform_capabilities.constants import DEFAULT_TP_MODEL
 
 from tensorflow.keras import layers, models
 
@@ -31,7 +29,7 @@ class TestKerasFusing(BaseFusingTest, KerasFwMixin):
     bhwc_input_shape = (1, 18, 18, 3)
 
     fw_ptq_facade = keras_post_training_quantization
-    tpc = get_target_platform_capabilities(TENSORFLOW, DEFAULT_TP_MODEL)
+    tpc = get_target_platform_capabilities() # IMX500 & TPCv1.0
     fw_ru_data_facade = keras_resource_utilization_data
 
     def _build_test_model_basic_fusing(self, input_shape):

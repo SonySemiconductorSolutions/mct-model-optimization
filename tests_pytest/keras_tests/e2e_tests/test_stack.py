@@ -41,7 +41,7 @@ def get_representative_dataset(n_iter=1):
 def test_stack():
 
     model = get_model()
-    tpc = mct.get_target_platform_capabilities('tensorflow', 'imx500') # only imx500 supported
+    tpc = mct.get_target_platform_capabilities() # only imx500 supported
     q_model, _ = mct.ptq.keras_post_training_quantization(model,
                                                           get_representative_dataset(n_iter=1),
                                                           target_resource_utilization=None,

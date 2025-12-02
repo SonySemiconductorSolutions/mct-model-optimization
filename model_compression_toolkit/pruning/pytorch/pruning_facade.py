@@ -15,7 +15,6 @@
 
 from typing import Callable, Tuple, Union
 from model_compression_toolkit import get_target_platform_capabilities
-from model_compression_toolkit.constants import PYTORCH
 from model_compression_toolkit.target_platform_capabilities.schema.mct_current_schema import TargetPlatformCapabilities
 from model_compression_toolkit.target_platform_capabilities.tpc_io_handler import load_target_platform_capabilities
 from model_compression_toolkit.verify_packages import FOUND_TORCH
@@ -27,7 +26,6 @@ from model_compression_toolkit.core.common.quantization.set_node_quantization_co
 from model_compression_toolkit.core.graph_prep_runner import read_model_to_graph
 from model_compression_toolkit.logger import Logger
 from model_compression_toolkit.core.common.quantization.quantization_config import DEFAULTCONFIG
-from model_compression_toolkit.target_platform_capabilities.constants import DEFAULT_TP_MODEL
 
 
 # Check if PyTorch is available in the environment.
@@ -42,14 +40,14 @@ if FOUND_TORCH:
         AttachTpcToPytorch
 
     # Set the default Target Platform Capabilities (TPC) for PyTorch.
-    DEFAULT_PYOTRCH_TPC = get_target_platform_capabilities(PYTORCH, DEFAULT_TP_MODEL)
+    DEFAULT_PYTORCH_TPC = get_target_platform_capabilities() # IMX500 & TPCv1.0
 
     def pytorch_pruning_experimental(model: Module,
                                      target_resource_utilization: ResourceUtilization,
                                      representative_data_gen: Callable,
                                      pruning_config: PruningConfig = PruningConfig(),
                                      target_platform_capabilities: Union[TargetPlatformCapabilities, str]
-                                     = DEFAULT_PYOTRCH_TPC) -> \
+                                     = DEFAULT_PYTORCH_TPC) -> \
             Tuple[Module, PruningInfo]:
         """
         Perform structured pruning on a Pytorch model to meet a specified target resource utilization.

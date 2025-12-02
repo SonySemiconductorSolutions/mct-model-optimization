@@ -15,7 +15,7 @@
 import copy
 from typing import Callable, Union, Optional, Tuple
 
-from model_compression_toolkit.constants import ACT_HESSIAN_DEFAULT_BATCH_SIZE, PYTORCH, GPTQ_HESSIAN_NUM_SAMPLES
+from model_compression_toolkit.constants import ACT_HESSIAN_DEFAULT_BATCH_SIZE, GPTQ_HESSIAN_NUM_SAMPLES
 from model_compression_toolkit.core import CoreConfig
 from model_compression_toolkit.core.analyzer import analyzer_model_quantization
 from model_compression_toolkit.core.common.mixed_precision.mixed_precision_quantization_config import \
@@ -41,7 +41,6 @@ from model_compression_toolkit.verify_packages import FOUND_TORCH
 if FOUND_TORCH:
     from model_compression_toolkit.core.pytorch.default_framework_info import DEFAULT_PYTORCH_INFO
     from model_compression_toolkit.gptq.pytorch.gptq_pytorch_implementation import GPTQPytorchImplemantation
-    from model_compression_toolkit.target_platform_capabilities.constants import DEFAULT_TP_MODEL
     from model_compression_toolkit.gptq.pytorch.gptq_loss import multiple_tensors_mse_loss, sample_layer_attention_loss
     from model_compression_toolkit.exporter.model_wrapper.pytorch.builder.fully_quantized_model_builder import get_exportable_pytorch_model
     import torch
@@ -52,7 +51,7 @@ if FOUND_TORCH:
     from model_compression_toolkit.target_platform_capabilities.targetplatform2framework.attach2pytorch import \
         AttachTpcToPytorch
 
-    DEFAULT_PYTORCH_TPC = get_target_platform_capabilities(PYTORCH, DEFAULT_TP_MODEL)
+    DEFAULT_PYTORCH_TPC = get_target_platform_capabilities() # IMX500 & TPCv1.0
 
     def get_pytorch_gptq_config(n_epochs: int,
                                 optimizer: Optimizer = None,

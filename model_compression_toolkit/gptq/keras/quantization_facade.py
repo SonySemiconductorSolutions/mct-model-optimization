@@ -21,7 +21,7 @@ from model_compression_toolkit.core.common.visualization.tensorboard_writer impo
 from model_compression_toolkit.gptq.common.gptq_constants import REG_DEFAULT, LR_DEFAULT, LR_REST_DEFAULT, \
     LR_BIAS_DEFAULT, GPTQ_MOMENTUM, REG_DEFAULT_SLA
 from model_compression_toolkit.logger import Logger
-from model_compression_toolkit.constants import TENSORFLOW, ACT_HESSIAN_DEFAULT_BATCH_SIZE, GPTQ_HESSIAN_NUM_SAMPLES
+from model_compression_toolkit.constants import ACT_HESSIAN_DEFAULT_BATCH_SIZE, GPTQ_HESSIAN_NUM_SAMPLES
 from model_compression_toolkit.target_platform_capabilities.schema.mct_current_schema import TargetPlatformCapabilities
 from model_compression_toolkit.target_platform_capabilities.targetplatform2framework.attach2keras import \
     AttachTpcToKeras
@@ -46,7 +46,6 @@ if FOUND_TF:
     from model_compression_toolkit.core.keras.keras_model_validation import KerasModelValidation
     from tensorflow.keras.models import Model
     from model_compression_toolkit.gptq.keras.gptq_loss import GPTQMultipleTensorsLoss, sample_layer_attention_loss
-    from model_compression_toolkit.target_platform_capabilities.constants import DEFAULT_TP_MODEL
     from model_compression_toolkit.exporter.model_wrapper import get_exportable_keras_model
     from model_compression_toolkit import get_target_platform_capabilities
     from mct_quantizers.keras.metadata import add_metadata
@@ -59,7 +58,7 @@ if FOUND_TF:
     else:
         from tensorflow.python.keras.optimizer_v2.optimizer_v2 import OptimizerV2
 
-    DEFAULT_KERAS_TPC = get_target_platform_capabilities(TENSORFLOW, DEFAULT_TP_MODEL)
+    DEFAULT_KERAS_TPC = get_target_platform_capabilities() # IMX500 & TPCv1.0
 
     def get_keras_gptq_config(n_epochs: int,
                               optimizer: OptimizerV2 = None,

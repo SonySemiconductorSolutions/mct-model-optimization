@@ -14,7 +14,6 @@
 #  ==============================================================================
 
 from model_compression_toolkit import get_target_platform_capabilities
-from model_compression_toolkit.constants import TENSORFLOW
 from model_compression_toolkit.core.keras.default_framework_info import DEFAULT_KERAS_INFO
 from model_compression_toolkit.core.keras.keras_implementation import KerasImplementation
 from model_compression_toolkit.target_platform_capabilities.targetplatform2framework.attach2keras import \
@@ -28,7 +27,6 @@ from model_compression_toolkit.xquant.keras.model_analyzer import KerasModelAnal
 from model_compression_toolkit.xquant.keras.similarity_functions import KerasSimilarityFunctions
 from model_compression_toolkit.xquant.keras.tensorboard_utils import KerasTensorboardUtils
 from mct_quantizers.keras.metadata import get_metadata
-from model_compression_toolkit.target_platform_capabilities.constants import DEFAULT_TP_MODEL
 
 
 class KerasReportUtils(FrameworkReportUtils):
@@ -44,7 +42,7 @@ class KerasReportUtils(FrameworkReportUtils):
         fw_impl = KerasImplementation()
 
         # Set the default Target Platform Capabilities (TPC) for Keras.
-        default_tpc = get_target_platform_capabilities(TENSORFLOW, DEFAULT_TP_MODEL)
+        default_tpc = get_target_platform_capabilities() # IMX500 & TPCv1.0
         attach2pytorch = AttachTpcToKeras()
         framework_platform_capabilities = attach2pytorch.attach(default_tpc)
 

@@ -12,50 +12,31 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 # ==============================================================================
-from model_compression_toolkit.constants import TENSORFLOW, PYTORCH
-from model_compression_toolkit.target_platform_capabilities.constants import DEFAULT_TP_MODEL, IMX500_TP_MODEL, \
-    TFLITE_TP_MODEL, QNNPACK_TP_MODEL
+from model_compression_toolkit.target_platform_capabilities.constants import IMX500_TP_MODEL
 from model_compression_toolkit.target_platform_capabilities.schema.mct_current_schema import TargetPlatformCapabilities
-
-from model_compression_toolkit.target_platform_capabilities.tpc_models.imx500_tpc.v1.tpc import get_tpc as get_tpc_imx500_v1
-from model_compression_toolkit.target_platform_capabilities.tpc_models.tflite_tpc.v1.tpc import get_tpc as get_tpc_tflite_v1
-from model_compression_toolkit.target_platform_capabilities.tpc_models.qnnpack_tpc.v1.tpc import get_tpc as get_tpc_qnnpack_v1
+from model_compression_toolkit.target_platform_capabilities.tpc_models import generate_tpc_func
 
 
-# TODO: These methods need to be replaced once modifying the TPC API.
-
-def get_target_platform_capabilities(fw_name: str,
-                                     target_platform_name: str,
-                                     target_platform_version: str = None) -> TargetPlatformCapabilities:
+def get_target_platform_capabilities(tpc_version: str = '1.0',
+                                     device_type: str = IMX500_TP_MODEL) -> TargetPlatformCapabilities:
     """
-    This is a degenerated function that only returns the MCT default TargetPlatformCapabilities object, to comply with the
-    existing TPC API.
+    Retrieves target platform capabilities model based on tpc version and the specified device type.
 
     Args:
-        fw_name: Framework name of the FrameworkQuantizationCapabilities.
-        target_platform_name: Target platform model name the model will use for inference.
-        target_platform_version: Target platform capabilities version.
-
+        tpc_version (str): Target platform capabilities version.
+        device_type (str): The type of device for the target platform.
+        
     Returns:
-        A default TargetPlatformCapabilities object.
+        The TargetPlatformCapabilities object.
     """
+    # Generate a function containing tpc configurations for the specified device type.
+    tpc_func = generate_tpc_func(device_type=device_type)
 
-    assert fw_name in [TENSORFLOW, PYTORCH], f"Unsupported framework {fw_name}."
+    # Get the target platform model for the version.
+    tpc_version = str(tpc_version)
+    tpc = tpc_func(tpc_version=tpc_version)
 
-    if target_platform_name == DEFAULT_TP_MODEL:
-        return get_tpc_imx500_v1()
-
-    assert target_platform_version == 'v1' or target_platform_version is None, \
-        "The usage of get_target_platform_capabilities API is supported only with the default TPC ('v1')."
-
-    if target_platform_name == IMX500_TP_MODEL:
-        return get_tpc_imx500_v1()
-    elif target_platform_name == TFLITE_TP_MODEL:
-        return get_tpc_tflite_v1()
-    elif target_platform_name == QNNPACK_TP_MODEL:
-        return get_tpc_qnnpack_v1()
-
-    raise ValueError(f"Unsupported target platform name {target_platform_name}.")
+    return tpc
 
 
 def get_tpc_model(name: str, tpc: TargetPlatformCapabilities):

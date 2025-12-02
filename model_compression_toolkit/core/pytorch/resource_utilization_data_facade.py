@@ -16,13 +16,11 @@
 from typing import Callable, Union
 
 from model_compression_toolkit.logger import Logger
-from model_compression_toolkit.constants import PYTORCH
 from model_compression_toolkit.target_platform_capabilities.schema.mct_current_schema import TargetPlatformCapabilities
 from model_compression_toolkit.core.common.mixed_precision.resource_utilization_tools.resource_utilization import ResourceUtilization
 from model_compression_toolkit.core.common.mixed_precision.resource_utilization_tools.resource_utilization_data import compute_resource_utilization_data
 from model_compression_toolkit.core.common.quantization.core_config import CoreConfig
 from model_compression_toolkit.core.common.mixed_precision.mixed_precision_quantization_config import MixedPrecisionQuantizationConfig
-from model_compression_toolkit.target_platform_capabilities.constants import DEFAULT_TP_MODEL
 from model_compression_toolkit.target_platform_capabilities.tpc_io_handler import load_target_platform_capabilities
 from model_compression_toolkit.verify_packages import FOUND_TORCH
 
@@ -35,7 +33,7 @@ if FOUND_TORCH:
 
     from model_compression_toolkit import get_target_platform_capabilities
 
-    PYTORCH_DEFAULT_TPC = get_target_platform_capabilities(PYTORCH, DEFAULT_TP_MODEL)
+    PYTORCH_DEFAULT_TPC = get_target_platform_capabilities() # IMX500 & TPCv1.0
 
 
     def pytorch_resource_utilization_data(in_model: Module,

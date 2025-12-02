@@ -16,7 +16,6 @@
 from typing import Callable, Tuple, Union
 
 from model_compression_toolkit import get_target_platform_capabilities
-from model_compression_toolkit.constants import TENSORFLOW
 from model_compression_toolkit.target_platform_capabilities.schema.mct_current_schema import TargetPlatformCapabilities
 from model_compression_toolkit.target_platform_capabilities.tpc_io_handler import load_target_platform_capabilities
 from model_compression_toolkit.verify_packages import FOUND_TF
@@ -28,7 +27,6 @@ from model_compression_toolkit.core.common.quantization.set_node_quantization_co
 from model_compression_toolkit.core.graph_prep_runner import read_model_to_graph
 from model_compression_toolkit.logger import Logger
 from model_compression_toolkit.core.common.quantization.quantization_config import DEFAULTCONFIG
-from model_compression_toolkit.target_platform_capabilities.constants import DEFAULT_TP_MODEL
 
 if FOUND_TF:
     from model_compression_toolkit.target_platform_capabilities.targetplatform2framework.attach2keras import \
@@ -38,7 +36,7 @@ if FOUND_TF:
     from model_compression_toolkit.core.keras.default_framework_info import DEFAULT_KERAS_INFO
     from tensorflow.keras.models import Model
 
-    DEFAULT_KERAS_TPC = get_target_platform_capabilities(TENSORFLOW, DEFAULT_TP_MODEL)
+    DEFAULT_KERAS_TPC = get_target_platform_capabilities() # IMX500 & TPCv1.0
 
     def keras_pruning_experimental(model: Model,
                                    target_resource_utilization: ResourceUtilization,

@@ -15,7 +15,6 @@
 from typing import Callable, Union
 from functools import partial
 
-from model_compression_toolkit.constants import PYTORCH
 from model_compression_toolkit.target_platform_capabilities.schema.mct_current_schema import TargetPlatformCapabilities
 from model_compression_toolkit.target_platform_capabilities.targetplatform2framework.attach2pytorch import \
     AttachTpcToPytorch
@@ -37,7 +36,6 @@ if FOUND_TORCH:
     from torch.nn import Module
     from mct_quantizers import PytorchActivationQuantizationHolder
     from model_compression_toolkit.core.pytorch.default_framework_info import DEFAULT_PYTORCH_INFO
-    from model_compression_toolkit.target_platform_capabilities.constants import DEFAULT_TP_MODEL
     from model_compression_toolkit.core.pytorch.pytorch_implementation import PytorchImplementation
     from model_compression_toolkit.qat.common.qat_config import is_qat_applicable
     from model_compression_toolkit.core.pytorch.back2framework.pytorch_model_builder import PyTorchModelBuilder
@@ -47,7 +45,7 @@ if FOUND_TORCH:
     from model_compression_toolkit.qat.pytorch.quantizer.quantization_builder import get_activation_quantizer_holder
     from model_compression_toolkit.qat.pytorch.quantizer.quantization_builder import quantization_builder
 
-    DEFAULT_PYTORCH_TPC = get_target_platform_capabilities(PYTORCH, DEFAULT_TP_MODEL)
+    DEFAULT_PYTORCH_TPC = get_target_platform_capabilities() # IMX500 & TPCv1.0
 
 
     def qat_wrapper(n: common.BaseNode,

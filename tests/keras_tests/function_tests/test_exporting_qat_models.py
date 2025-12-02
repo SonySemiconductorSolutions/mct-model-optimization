@@ -51,7 +51,7 @@ class TestExportingQATModelBase(unittest.TestCase):
         yield [np.random.rand(1, 224, 224, 3)]
 
     def get_tpc(self):
-        return mct.get_target_platform_capabilities('tensorflow', 'default')
+        return mct.get_target_platform_capabilities() # IMX500 & TPCv1.0
 
     def get_serialization_format(self):
         return mct.exporter.KerasExportSerializationFormat.KERAS

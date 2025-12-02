@@ -22,7 +22,6 @@ from model_compression_toolkit.core.common.quantization.quantize_graph_weights i
 from model_compression_toolkit.core.common.user_info import UserInformation
 from model_compression_toolkit.core.common.visualization.tensorboard_writer import init_tensorboard_writer
 from model_compression_toolkit.logger import Logger
-from model_compression_toolkit.constants import TENSORFLOW
 from model_compression_toolkit.target_platform_capabilities.schema.mct_current_schema import TargetPlatformCapabilities
 from model_compression_toolkit.target_platform_capabilities.tpc_io_handler import load_target_platform_capabilities
 from model_compression_toolkit.verify_packages import FOUND_TF
@@ -40,13 +39,12 @@ if FOUND_TF:
     from model_compression_toolkit.core.keras.keras_implementation import KerasImplementation
     from model_compression_toolkit.core.keras.keras_model_validation import KerasModelValidation
     from tensorflow.keras.models import Model
-    from model_compression_toolkit.target_platform_capabilities.constants import DEFAULT_TP_MODEL
     from model_compression_toolkit.exporter.model_wrapper import get_exportable_keras_model
 
     from model_compression_toolkit import get_target_platform_capabilities
     from mct_quantizers.keras.metadata import add_metadata
 
-    DEFAULT_KERAS_TPC = get_target_platform_capabilities(TENSORFLOW, DEFAULT_TP_MODEL)
+    DEFAULT_KERAS_TPC = get_target_platform_capabilities() # IMX500 & TPCv1.0
 
 
     def keras_post_training_quantization(in_model: Model,

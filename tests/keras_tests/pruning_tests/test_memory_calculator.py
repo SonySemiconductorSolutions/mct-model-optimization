@@ -51,7 +51,7 @@ class TestParameterCounter(unittest.TestCase):
 
         fw_info = DEFAULT_KERAS_INFO
         fw_impl = PruningKerasImplementation()
-        tpc = mct.get_target_platform_capabilities('tensorflow', 'imx500')
+        tpc = mct.get_target_platform_capabilities() # IMX500 & TPCv1.0
 
         tpc = AttachTpcToKeras().attach(tpc)
 

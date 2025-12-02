@@ -40,24 +40,18 @@ if FOUND_TF:
     from model_compression_toolkit.core.keras.default_framework_info import DEFAULT_KERAS_INFO
     from model_compression_toolkit.core.keras.keras_implementation import KerasImplementation
     from model_compression_toolkit.core.keras.keras_model_validation import KerasModelValidation
-    from model_compression_toolkit.target_platform_capabilities.constants import DEFAULT_TP_MODEL
 
     from model_compression_toolkit.core.keras.back2framework.keras_model_builder import KerasModelBuilder
 
     from model_compression_toolkit import get_target_platform_capabilities
-
-    from model_compression_toolkit import get_target_platform_capabilities
     from model_compression_toolkit.core import common
     from model_compression_toolkit.core.common import BaseNode
-    from model_compression_toolkit.constants import TENSORFLOW
     from model_compression_toolkit.qat.common.qat_config import is_qat_applicable
-    from model_compression_toolkit.target_platform_capabilities.constants import DEFAULT_TP_MODEL
-    from model_compression_toolkit.core.keras.default_framework_info import DEFAULT_KERAS_INFO
     from model_compression_toolkit.qat.keras.quantizer.quantization_builder import quantization_builder, \
     get_activation_quantizer_holder
     from model_compression_toolkit.qat.common.qat_config import QATConfig
 
-    DEFAULT_KERAS_TPC = get_target_platform_capabilities(TENSORFLOW, DEFAULT_TP_MODEL)
+    DEFAULT_KERAS_TPC = get_target_platform_capabilities() # IMX500 & TPCv1.0
 
 
     def qat_wrapper(n: common.BaseNode,

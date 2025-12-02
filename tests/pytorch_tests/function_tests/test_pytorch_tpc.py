@@ -259,7 +259,7 @@ class TestPytorchTPModel(unittest.TestCase):
 class TestGetPytorchTPC(unittest.TestCase):
 
     def test_get_pytorch_models(self):
-        tpc = mct.get_target_platform_capabilities(PYTORCH, DEFAULT_TP_MODEL)
+        tpc = mct.get_target_platform_capabilities() # IMX500 & TPCv1.0
         model = mobilenet_v2(pretrained=True)
 
         def rep_data():
@@ -281,31 +281,23 @@ class TestGetPytorchTPC(unittest.TestCase):
                                                                         core_config=core_config)
 
     def test_get_pytorch_supported_version(self):
-        tpc = mct.get_target_platform_capabilities(PYTORCH, DEFAULT_TP_MODEL)  # Latest
+        tpc = mct.get_target_platform_capabilities(device_type=IMX500_TP_MODEL) # IMX500 & TPCv1.0
         self.assertTrue(tpc.tpc_minor_version == 1)
 
-        tpc = mct.get_target_platform_capabilities(PYTORCH, IMX500_TP_MODEL, "v1")
+        tpc = mct.get_target_platform_capabilities(device_type=TFLITE_TP_MODEL) # tflite & TPCv1.0
         self.assertTrue(tpc.tpc_minor_version == 1)
 
-        tpc = mct.get_target_platform_capabilities(PYTORCH, TFLITE_TP_MODEL, "v1")
-        self.assertTrue(tpc.tpc_minor_version == 1)
-
-        tpc = mct.get_target_platform_capabilities(PYTORCH, QNNPACK_TP_MODEL, "v1")
+        tpc = mct.get_target_platform_capabilities(device_type=QNNPACK_TP_MODEL) # qnnpack & TPCv1.0
         self.assertTrue(tpc.tpc_minor_version == 1)
 
     def test_get_pytorch_not_supported_platform(self):
         with self.assertRaises(Exception) as e:
-            mct.get_target_platform_capabilities(PYTORCH, "platform1")
-        self.assertTrue(e.exception)
-
-    def test_get_pytorch_not_supported_fw(self):
-        with self.assertRaises(Exception) as e:
-            mct.get_target_platform_capabilities("ONNX", DEFAULT_TP_MODEL)
+            mct.get_target_platform_capabilities(device_type="platform1")
         self.assertTrue(e.exception)
 
     def test_get_pytorch_not_supported_version(self):
         with self.assertRaises(Exception) as e:
-            mct.get_target_platform_capabilities(PYTORCH, IMX500_TP_MODEL, "v0")
+            mct.get_target_platform_capabilities(tpc_version="v0")
         self.assertTrue(e.exception)
 
 

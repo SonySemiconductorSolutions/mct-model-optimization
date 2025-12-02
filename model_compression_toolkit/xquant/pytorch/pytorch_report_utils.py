@@ -13,9 +13,7 @@
 #  limitations under the License.
 #  ==============================================================================
 from model_compression_toolkit import get_target_platform_capabilities
-from model_compression_toolkit.constants import PYTORCH
 from model_compression_toolkit.core.pytorch.utils import get_working_device
-from model_compression_toolkit.target_platform_capabilities.constants import DEFAULT_TP_MODEL
 from model_compression_toolkit.target_platform_capabilities.targetplatform2framework.attach2pytorch import \
     AttachTpcToPytorch
 
@@ -42,7 +40,7 @@ class PytorchReportUtils(FrameworkReportUtils):
         fw_info = DEFAULT_PYTORCH_INFO
         fw_impl = PytorchImplementation()
         # Set the default Target Platform Capabilities (TPC) for PyTorch.
-        default_tpc = get_target_platform_capabilities(PYTORCH, DEFAULT_TP_MODEL)
+        default_tpc = get_target_platform_capabilities() # IMX500 & TPCv1.0
         attach2pytorch = AttachTpcToPytorch()
         framework_quantization_capabilities = attach2pytorch.attach(default_tpc)
 

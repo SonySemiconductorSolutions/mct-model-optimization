@@ -19,7 +19,6 @@ from typing import Callable, Union, Tuple, Optional
 from model_compression_toolkit.core.common.user_info import UserInformation
 from model_compression_toolkit.core.common.visualization.tensorboard_writer import init_tensorboard_writer
 from model_compression_toolkit.logger import Logger
-from model_compression_toolkit.constants import PYTORCH
 from model_compression_toolkit.target_platform_capabilities.schema.mct_current_schema import TargetPlatformCapabilities
 from model_compression_toolkit.target_platform_capabilities.tpc_io_handler import load_target_platform_capabilities
 from model_compression_toolkit.verify_packages import FOUND_TORCH
@@ -36,7 +35,6 @@ from model_compression_toolkit.metadata import create_model_metadata
 if FOUND_TORCH:
     from model_compression_toolkit.core.pytorch.default_framework_info import DEFAULT_PYTORCH_INFO
     from model_compression_toolkit.core.pytorch.pytorch_implementation import PytorchImplementation
-    from model_compression_toolkit.target_platform_capabilities.constants import DEFAULT_TP_MODEL
     from torch.nn import Module
     from model_compression_toolkit.exporter.model_wrapper.pytorch.builder.fully_quantized_model_builder import get_exportable_pytorch_model
     from model_compression_toolkit import get_target_platform_capabilities
@@ -44,7 +42,7 @@ if FOUND_TORCH:
     from model_compression_toolkit.target_platform_capabilities.targetplatform2framework.attach2pytorch import \
         AttachTpcToPytorch
 
-    DEFAULT_PYTORCH_TPC = get_target_platform_capabilities(PYTORCH, DEFAULT_TP_MODEL)
+    DEFAULT_PYTORCH_TPC = get_target_platform_capabilities() # IMX500 & TPCv1.0
 
     def pytorch_post_training_quantization(in_module: Module,
                                            representative_data_gen: Callable,
