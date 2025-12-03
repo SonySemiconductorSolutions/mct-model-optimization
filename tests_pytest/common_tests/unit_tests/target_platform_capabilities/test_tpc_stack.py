@@ -12,7 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 # ==============================================================================
-from model_compression_toolkit.target_platform_capabilities.tpc_models.imx500_tpc.v1.tpc import get_tpc as get_tpc_imx500_v1
+from model_compression_toolkit.target_platform_capabilities.tpc_models.imx500_tpc.v1_0.tpc import get_tpc as get_tpc_imx500_v1
 
 
 def test_tpc_stack():
