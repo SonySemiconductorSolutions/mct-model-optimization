@@ -842,9 +842,9 @@ class FeatureNetworkTest(unittest.TestCase):
         MetadataTest(self).run_test()
 
     def test_keras_tpcs(self):
-        TpcTest(f'{C.IMX500_TP_MODEL}.v1', self).run_test()
-        TpcTest(f'{C.TFLITE_TP_MODEL}.v1', self).run_test()
-        TpcTest(f'{C.QNNPACK_TP_MODEL}.v1', self).run_test()
+        TpcTest(f'{C.IMX500_TP_MODEL}_1.0', self).run_test()
+        TpcTest(f'{C.TFLITE_TP_MODEL}_1.0', self).run_test()
+        TpcTest(f'{C.QNNPACK_TP_MODEL}_1.0', self).run_test()
 
     def test_sigmoid_mul_substitution(self):
         SigMulSubstitutionTest(self).run_test()

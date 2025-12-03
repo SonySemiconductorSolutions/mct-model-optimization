@@ -41,7 +41,7 @@ class TpcTest(BasePytorchFeatureNetworkTest):
         self.tpc_name = tpc_name
 
     def get_tpc(self):
-        tpc_name, tp_version = self.tpc_name.split('.')
+        tpc_name, tp_version = self.tpc_name.split('_')
         return mct.get_target_platform_capabilities(tp_version, tpc_name)
 
     def create_networks(self):
