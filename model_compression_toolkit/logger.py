@@ -24,14 +24,12 @@ LOGGER_NAME = 'Model Compression Toolkit'
 
 class Logger:
     # Logger has levels of verbosity.
-    log_level_translate = {
-        'debug': logging.DEBUG,
-        'info': logging.INFO,
-        'warning': logging.WARNING,
-        'error': logging.ERROR,
-        'critical': logging.CRITICAL
-    }
     LOG_PATH = None
+    DEBUG = logging.DEBUG
+    INFO = logging.INFO
+    WARNING = logging.WARNING
+    ERROR = logging.ERROR
+    CRITICAL = logging.CRITICAL
 
     @staticmethod
     def __check_path_create_dir(log_path: str):
@@ -56,6 +54,19 @@ class Logger:
 
         logger = Logger.get_logger()
         logger.setLevel(log_level)
+
+    @staticmethod
+    def set_handler_level(log_level=logging.INFO):
+        """
+        Set log level for all handlers attached to the logger.
+        Args:
+            log_level: Level of verbosity to set for the handlers.
+
+        """
+
+        logger = Logger.get_logger()
+        for handler in logger.handlers:
+            handler.setLevel(log_level)
 
     @staticmethod
     def get_logger():
@@ -87,7 +98,6 @@ class Logger:
         Logger.__check_path_create_dir(Logger.LOG_PATH)
 
         fh = logging.FileHandler(log_name)
-        fh.setLevel(logging.DEBUG)
         logger.addHandler(fh)
 
         print(f'log file is in {log_name}')
@@ -167,8 +177,9 @@ def set_log_folder(folder: str, level: int = logging.INFO):
 
     Args:
         folder: Folder path to save the log file.
-        level: Level of verbosity to set to the logger.
+        level: Level of verbosity to set to the logger and handlers.
 
     """
     Logger.set_log_file(folder)
     Logger.set_logger_level(level)
+    Logger.set_handler_level(level)

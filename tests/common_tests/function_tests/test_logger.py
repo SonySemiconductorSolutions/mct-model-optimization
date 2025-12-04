@@ -16,7 +16,6 @@
 
 import unittest
 from unittest.mock import patch, MagicMock
-import logging
 from io import StringIO
 
 from model_compression_toolkit.logger import Logger, set_log_folder
@@ -25,7 +24,7 @@ from model_compression_toolkit.logger import Logger, set_log_folder
 class TestLogger(unittest.TestCase):
     def setUp(self):
         self.log_folder = "test_logs"
-        self.log_level = logging.DEBUG
+        self.log_level = Logger.DEBUG
         self.log_message = "Test message"
 
     @patch('pathlib.Path.mkdir')
@@ -42,6 +41,17 @@ class TestLogger(unittest.TestCase):
         Logger.set_logger_level(self.log_level)
         logger_mock.setLevel.assert_called_once_with(self.log_level)
 
+    @patch('model_compression_toolkit.logger.Logger.get_logger')
+    def test_set_handler_level(self, mock_get_logger):
+        logger_mock = MagicMock()
+        handler1_mock = MagicMock()
+        handler2_mock = MagicMock()
+        logger_mock.handlers = [handler1_mock, handler2_mock]
+        mock_get_logger.return_value = logger_mock
+        Logger.set_handler_level(self.log_level)
+        handler1_mock.setLevel.assert_called_once_with(self.log_level)
+        handler2_mock.setLevel.assert_called_once_with(self.log_level)
+
     @patch('model_compression_toolkit.logger.logging.getLogger')
     def test_get_logger(self, mock_get_logger):
         Logger.get_logger()
@@ -51,10 +61,14 @@ class TestLogger(unittest.TestCase):
     @patch('model_compression_toolkit.logger.logging.FileHandler')
     def test_set_log_file(self, mock_file_handler, mock_get_logger):
         logger_mock = MagicMock()
+        file_handler_mock = MagicMock()
+        mock_file_handler.return_value = file_handler_mock
         mock_get_logger.return_value = logger_mock
         Logger.set_log_file(self.log_folder)
         mock_file_handler.assert_called_once()
-        logger_mock.addHandler.assert_called_once()
+        logger_mock.addHandler.assert_called_once_with(file_handler_mock)
+        # Verify that setLevel is NOT called on the handler
+        file_handler_mock.setLevel.assert_not_called()
 
     @patch('model_compression_toolkit.logger.logging.shutdown')
     def test_shutdown(self, mock_shutdown):
@@ -101,10 +115,12 @@ class TestLogger(unittest.TestCase):
 
     @patch('model_compression_toolkit.logger.Logger.set_log_file')
     @patch('model_compression_toolkit.logger.Logger.set_logger_level')
-    def test_set_log_folder(self, mock_set_logger_level, mock_set_log_file):
+    @patch('model_compression_toolkit.logger.Logger.set_handler_level')
+    def test_set_log_folder(self, mock_set_handler_level, mock_set_logger_level, mock_set_log_file):
         set_log_folder(self.log_folder, self.log_level)
         mock_set_log_file.assert_called_once_with(self.log_folder)
         mock_set_logger_level.assert_called_once_with(self.log_level)
+        mock_set_handler_level.assert_called_once_with(self.log_level)
 
 
 if __name__ == '__main__':

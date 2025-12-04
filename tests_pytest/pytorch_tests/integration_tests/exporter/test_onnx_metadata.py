@@ -18,6 +18,7 @@ import torch
 import torch.nn as nn
 
 from mct_quantizers.pytorch.metadata import add_metadata, get_onnx_metadata
+from model_compression_toolkit.logger import Logger
 from model_compression_toolkit.core import QuantizationConfig
 from model_compression_toolkit.core.pytorch.back2framework.float_model_builder import FloatPyTorchModel
 from model_compression_toolkit.exporter.model_exporter.pytorch.pytorch_export_facade import pytorch_export_model
@@ -128,7 +129,6 @@ class TestONNXExporterMetadata(BaseTorchIntegrationTest):
                 target = getattr(pytorch_model, module) if module is not None else pytorch_model
                 self.add_metadata_to_model(target, metadata)
 
-        import logging
-        with caplog.at_level(logging.WARNING):
+        with caplog.at_level(Logger.WARNING):
             onnx_model = self.export_model(pytorch_model, save_model_path, data_generator)
         self.validate_metadata(onnx_model, metadatas, expected_metadatas, caplog)
