@@ -17,6 +17,9 @@ from model_compression_toolkit.target_platform_capabilities.schema.mct_current_s
 
 # TPC versions.
 V1_0 = '1.0'
+V4_0 = '4.0'
+V5_0 = '5.0'
+V6_0 = '6.0'
 
 
 def generate_imx500_tpc(tpc_version: str) -> TargetPlatformCapabilities:
@@ -32,7 +35,10 @@ def generate_imx500_tpc(tpc_version: str) -> TargetPlatformCapabilities:
 
     # Organize all tpc versions into tpcs_dict.
     tpcs_dict = {
-        V1_0: "model_compression_toolkit.target_platform_capabilities.tpc_models.imx500_tpc.v1_0.tpc"
+        V1_0: "model_compression_toolkit.target_platform_capabilities.tpc_models.imx500_tpc.v1_0.tpc",
+        V4_0: "model_compression_toolkit.target_platform_capabilities.tpc_models.imx500_tpc.v4_0.tpc",
+        V5_0: "model_compression_toolkit.target_platform_capabilities.tpc_models.imx500_tpc.v5_0.tpc",
+        V6_0: "model_compression_toolkit.target_platform_capabilities.tpc_models.imx500_tpc.v6_0.tpc"
     }
 
     msg = (f"Error: The specified tpc version '{tpc_version}' is not valid. "
