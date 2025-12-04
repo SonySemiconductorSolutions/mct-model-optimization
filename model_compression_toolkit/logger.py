@@ -76,6 +76,22 @@ class Logger:
         return logging.getLogger(LOGGER_NAME)
 
     @staticmethod
+    def set_stream_handler():
+        """
+        Add a StreamHandler to output logs to the console (stdout).
+        """
+        logger = Logger.get_logger()
+        
+        # Check if StreamHandler already exists
+        for handler in logger.handlers:
+            if isinstance(handler, logging.StreamHandler):
+                return
+        
+        # Add StreamHandler
+        sh = logging.StreamHandler()
+        logger.addHandler(sh)
+
+    @staticmethod
     def set_log_file(log_folder: str = None):
         """
         Setting the logger log file path. The method gets the folder for the log file.
@@ -180,6 +196,8 @@ def set_log_folder(folder: str, level: int = logging.INFO):
         level: Level of verbosity to set to the logger and handlers.
 
     """
+    
+    Logger.set_stream_handler()
     Logger.set_log_file(folder)
     Logger.set_logger_level(level)
     Logger.set_handler_level(level)

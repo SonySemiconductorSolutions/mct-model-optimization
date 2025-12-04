@@ -17,6 +17,7 @@
 import unittest
 from unittest.mock import patch, MagicMock
 from io import StringIO
+import logging
 
 from model_compression_toolkit.logger import Logger, set_log_folder
 
@@ -56,6 +57,33 @@ class TestLogger(unittest.TestCase):
     def test_get_logger(self, mock_get_logger):
         Logger.get_logger()
         mock_get_logger.assert_called_once_with('Model Compression Toolkit')
+
+    @patch('model_compression_toolkit.logger.Logger.get_logger')
+    @patch('model_compression_toolkit.logger.logging.StreamHandler')
+    def test_set_stream_handler(self, mock_stream_handler, mock_get_logger):
+        logger_mock = MagicMock()
+        stream_handler_mock = MagicMock()
+        mock_stream_handler.return_value = stream_handler_mock
+        mock_get_logger.return_value = logger_mock
+        logger_mock.handlers = []
+        
+        Logger.set_stream_handler()
+        
+        mock_stream_handler.assert_called_once()
+        logger_mock.addHandler.assert_called_once_with(stream_handler_mock)
+
+    @patch('model_compression_toolkit.logger.Logger.get_logger')
+    def test_set_stream_handler_already_exists(self, mock_get_logger):
+        logger_mock = MagicMock()
+        existing_handler = logging.StreamHandler()
+        mock_get_logger.return_value = logger_mock
+        logger_mock.handlers = [existing_handler]
+        
+        Logger.set_stream_handler()
+        
+        # Should not add a new handler if one already exists
+        # addHandler should not be called since handler already exists
+        logger_mock.addHandler.assert_not_called()
 
     @patch('model_compression_toolkit.logger.Logger.get_logger')
     @patch('model_compression_toolkit.logger.logging.FileHandler')
@@ -113,11 +141,17 @@ class TestLogger(unittest.TestCase):
         Logger.error(self.log_message)
         logger_mock.error.assert_called_once_with(self.log_message)
 
+    @patch('model_compression_toolkit.logger.Logger.set_stream_handler')
     @patch('model_compression_toolkit.logger.Logger.set_log_file')
     @patch('model_compression_toolkit.logger.Logger.set_logger_level')
     @patch('model_compression_toolkit.logger.Logger.set_handler_level')
-    def test_set_log_folder(self, mock_set_handler_level, mock_set_logger_level, mock_set_log_file):
+    def test_set_log_folder(self,
+                            mock_set_handler_level,
+                            mock_set_logger_level,
+                            mock_set_log_file,
+                            mock_set_stream_handler):
         set_log_folder(self.log_folder, self.log_level)
+        mock_set_stream_handler.assert_called_once()
         mock_set_log_file.assert_called_once_with(self.log_folder)
         mock_set_logger_level.assert_called_once_with(self.log_level)
         mock_set_handler_level.assert_called_once_with(self.log_level)
