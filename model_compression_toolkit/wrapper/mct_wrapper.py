@@ -308,10 +308,11 @@ class MCTWrapper:
             SDSP_VERSION: self.params[SDSP_VERSION]
         }
         self.tpc = self.get_target_platform_capabilities_sdsp(**params_TPC)
-     
-        
-        def get_target_platform_capabilities_sdsp():
-            return mct.get_target_platform_capabilities('tensorflow','default')
+
+    def get_target_platform_capabilities_sdsp(self, **params_TPC):
+        sdsp_version = params_TPC.get(SDSP_VERSION, '3.14')
+        return mct.get_target_platform_capabilities('tensorflow', 'default',
+                                                    sdsp_version)
 
     def _setting_PTQ_mixed_precision(self) -> Dict[str, Any]:
         """
