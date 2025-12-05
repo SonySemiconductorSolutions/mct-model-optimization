@@ -16,8 +16,10 @@
 """
 Test cases for MCTWrapper class from model_compression_toolkit.wrapper.mct_wrapper
 """
+
 import pytest
 from unittest.mock import Mock, patch
+from typing import Any, List, Tuple
 from model_compression_toolkit.core import QuantizationErrorMethod
 from model_compression_toolkit.wrapper.mct_wrapper import MCTWrapper
 
@@ -33,7 +35,7 @@ class TestMCTWrapper:
     Test Categories:
         - Input Validation: Testing _initialize_and_validate success cases
         - Parameter Management: Testing _modify_params functionality
-        - TPC Configuration: Testing _get_tpc with different TPC sources
+        - TPC Configuration: Testing _get_TPC 
         - Method Selection: Testing _select_method for different frameworks
         - Configuration Methods: Testing PTQ/GPTQ parameter generation
         - Export Functionality: Testing model export for different frameworks
@@ -51,13 +53,13 @@ class TestMCTWrapper:
         mock_model = Mock()
         mock_dataset = Mock()
         
-        wrapper._initialize_and_validate(float_model=mock_model, method='PTQ', framework='tensorflow', 
-                                         use_internal_tpc=True, use_mixed_precision=False, representative_dataset=mock_dataset)
+        wrapper._initialize_and_validate(
+            float_model=mock_model, method='PTQ', framework='tensorflow',
+            use_mixed_precision=False, representative_dataset=mock_dataset)
 
         assert wrapper.float_model == mock_model
         assert wrapper.method == 'PTQ'
         assert wrapper.framework == 'tensorflow'
-        assert wrapper.use_internal_tpc is True
         assert wrapper.use_mixed_precision is False
         assert wrapper.representative_dataset == mock_dataset
 
@@ -113,53 +115,28 @@ class TestMCTWrapper:
         assert 'another_fake_key' not in wrapper.params
 
     @patch('model_compression_toolkit.wrapper.mct_wrapper.mct.get_target_platform_capabilities')
-    def test_get_tpc_with_internal_tpc(self, mock_mct_get_tpc: Mock) -> None:
+    def test_get_TPC(self, mock_mct_get_tpc: Mock) -> None:
         """
-        Test _get_tpc method when using MCT TPC.
+        Test _get_tpc method.
         
-        Verifies that when use_internal_tpc is True, the wrapper correctly calls
+        Verifies that the wrapper correctly calls
         mct.get_target_platform_capabilities with expected parameters.
         
         Note: Patch targets mct.get_target_platform_capabilities because
         MCTWrapper imports 'model_compression_toolkit as mct'.
         """
         wrapper = MCTWrapper()
-        wrapper.use_internal_tpc = True
+        wrapper.framework = 'tensorflow'
+        wrapper.params['sdsp_version'] = '3.14'
         mock_tpc = Mock()
         mock_mct_get_tpc.return_value = mock_tpc
         
         wrapper._get_tpc()
         
         # Check if MCT get_target_platform_capabilities was called correctly
-        # These parameters match the default values in MCTWrapper.__init__()
-        expected_params = {
-            'fw_name': 'pytorch',
-            'target_platform_name': 'imx500',
-            'target_platform_version': 'v1'
-        }
-        mock_mct_get_tpc.assert_called_once_with(**expected_params)
+        mock_mct_get_tpc.assert_called_once_with('tensorflow', 'default',
+                                                 '3.14')
         assert wrapper.tpc == mock_tpc
-
-    def test_get_tpc_without_internal_tpc(self) -> None:
-        """
-        Test _get_tpc method when EdgeMDT TPC is not available.
-        
-        Verifies that when use_internal_tpc is False and edgemdt_tpc is not
-        available, an appropriate exception is raised.
-        """
-        # Patch FOUND_TPC to False to simulate edgemdt_tpc unavailability
-        with patch('model_compression_toolkit.verify_packages.FOUND_TPC',
-                   False):
-            wrapper = MCTWrapper()
-            wrapper.use_internal_tpc = False
-            
-            # Expect exception when EdgeMDT TPC is not available
-            with pytest.raises(Exception) as exc_info:
-                wrapper._get_tpc()
-
-            # Verify correct error message
-            expected_msg = "EdgeMDT TPC module is not available."
-            assert expected_msg in str(exc_info.value)
 
     @patch('model_compression_toolkit.core.keras_resource_utilization_data')
     @patch('model_compression_toolkit.ptq.keras_post_training_quantization')
@@ -169,7 +146,8 @@ class TestMCTWrapper:
     @patch('model_compression_toolkit.exporter.keras_export_model')
     def test_select_method_PTQ(
             self, mock_keras_export: Mock, mock_keras_gptq_config: Mock,
-            mock_keras_gptq: Mock, mock_keras_ptq: Mock, mock_keras_ru_data: Mock) -> None:
+            mock_keras_gptq: Mock, mock_keras_ptq: Mock,
+            mock_keras_ru_data: Mock) -> None:
         """
         Test _select_method method for TensorFlow framework with PTQ method.
         
@@ -245,11 +223,13 @@ class TestMCTWrapper:
             self, mock_resource_util: Mock, mock_core_config: Mock,
             mock_mixed_precision_config: Mock) -> None:
         """
-        Test _setting_PTQ_mixed_precision method for Mixed Precision PTQ configuration.
+        Test _setting_PTQ_mixed_precision method for Mixed Precision
+        PTQ configuration.
         
-        This test verifies that the _setting_PTQ_mixed_precision method correctly configures
-        mixed precision Post-Training Quantization parameters by properly setting
-        up configuration objects and resource utilization constraints.
+        This test verifies that the _setting_PTQ_mixed_precision
+        method correctly configures mixed precision Post-Training
+        Quantization parameters by properly setting up configuration
+        objects and resource utilization constraints.
         """
         wrapper = MCTWrapper()
         wrapper.float_model = Mock()
@@ -291,7 +271,8 @@ class TestMCTWrapper:
 
     @patch('model_compression_toolkit.core.QuantizationConfig')
     @patch('model_compression_toolkit.core.CoreConfig')
-    def test_setting_PTQ(self, mock_core_config: Mock, mock_quant_config: Mock) -> None:
+    def test_setting_PTQ(self, mock_core_config: Mock,
+                         mock_quant_config: Mock) -> None:
         """
         Test _Setting_PTQ method for standard Post-Training Quantization.
         
@@ -340,11 +321,13 @@ class TestMCTWrapper:
             mock_mixed_precision_config: Mock,
             mock_quant_config: Mock) -> None:
         """
-        Test _setting_GPTQ_mixed_precision method for Mixed Precision GPTQ configuration.
+        Test _setting_GPTQ_mixed_precision method for Mixed Precision
+        GPTQ configuration.
         
-        This test verifies that the _setting_GPTQ_mixed_precision method correctly
-        configures mixed precision Gradient Post-Training Quantization
-        parameters with proper configuration objects and resource utilization.
+        This test verifies that the _setting_GPTQ_mixed_precision
+        method correctly configures mixed precision Gradient
+        Post-Training Quantization parameters with proper configuration
+        objects and resource utilization.
         """
         wrapper = MCTWrapper()
         wrapper.float_model = Mock()
@@ -413,7 +396,8 @@ class TestMCTWrapper:
 
     def test_export_model(self) -> None:
         """
-        Test _export_model method for TensorFlow framework export functionality.
+        Test _export_model method for TensorFlow framework export
+        functionality.
         
         This test verifies that the _export_model method correctly exports
         quantized TensorFlow/Keras models to TensorFlow Lite format with
@@ -470,7 +454,6 @@ class TestMCTWrapperErrorHandling:
                 float_model=Mock(),
                 method='UNSUPPORTED_METHOD',
                 framework='tensorflow',
-                use_internal_tpc=True,
                 use_mixed_precision=False,
                 representative_dataset=Mock(),
                 param_items=[]
@@ -488,7 +471,6 @@ class TestMCTWrapperErrorHandling:
                 float_model=Mock(),
                 method='PTQ',
                 framework='unsupported',
-                use_internal_tpc=True,
                 use_mixed_precision=False,
                 representative_dataset=Mock(),
                 param_items=[]
