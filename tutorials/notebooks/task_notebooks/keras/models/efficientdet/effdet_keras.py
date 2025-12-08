@@ -27,6 +27,8 @@ from functools import partial
 from typing import List, Optional, Union, Tuple
 
 import tensorflow as tf
+import torch
+import torch.nn as nn
 
 
 gpus = tf.config.list_physical_devices('GPU')
@@ -42,17 +44,13 @@ if gpus:
         print(e)
 
 
-from effdet.anchors import Anchors, get_feat_sizes
+from effdet.anchors import get_feat_sizes
 from effdet.config import get_fpn_config, set_config_readonly
 from effdet.efficientdet import get_feature_info
 from models.efficientdet.effnet_keras import create_model, handle_name
 from models.efficientdet.effnet_blocks_keras import create_conv2d, create_pool2d
 from models.utils.torch2keras_weights_translation import load_state_dict
 
-from edgemdt_cl.keras.object_detection.ssd_post_process import SSDPostProcess
-from edgemdt_cl.keras.object_detection import ScoreConverter
-
-_DEBUG = False
 _USE_SCALE = False
 _ACT_LAYER = tf.nn.swish
 
@@ -653,16 +651,6 @@ class EfficientDetKeras:
         x_box = [tf.keras.layers.Reshape((-1, 4))(_x) for _x in x_box]
         x_box = tf.keras.layers.Concatenate(axis=1)(x_box)
 
-        """
-        anchors = tf.constant(Anchors.from_config(self.config).boxes.detach().cpu().numpy())
-        
-        ssd_pp = SSDPostProcess(anchors, [1, 1, 1, 1], [*self.config.image_size],
-                                ScoreConverter.SIGMOID, score_threshold=0.001, iou_threshold=0.5,
-                                max_detections=self.config.max_det_per_image)
-        outputs = ssd_pp((x_box, x_class))
-        
-        model = tf.keras.Model(inputs=_input, outputs=outputs)
-        """
         model = tf.keras.Model(inputs=_input, outputs=[x_class, x_box])
         if load_state_dict_to_model:
             load_state_dict(model, self.config.url)

@@ -60,59 +60,8 @@ def get_attn(attn_type):
     if attn_type:
         if isinstance(attn_type, str):
             raise NotImplemented
-            attn_type = attn_type.lower()
-            # Lightweight attention modules (channel and/or coarse spatial).
-            # Typically added to existing network architecture blocks in addition to existing convolutions.
-            if attn_type == 'se':
-                module_cls = SEModule
-            elif attn_type == 'ese':
-                module_cls = EffectiveSEModule
-            elif attn_type == 'eca':
-                module_cls = EcaModule
-            elif attn_type == 'ecam':
-                module_cls = partial(EcaModule, use_mlp=True)
-            elif attn_type == 'ceca':
-                module_cls = CecaModule
-            elif attn_type == 'ge':
-                module_cls = GatherExcite
-            elif attn_type == 'gc':
-                module_cls = GlobalContext
-            elif attn_type == 'gca':
-                module_cls = partial(GlobalContext, fuse_add=True, fuse_scale=False)
-            elif attn_type == 'cbam':
-                module_cls = CbamModule
-            elif attn_type == 'lcbam':
-                module_cls = LightCbamModule
-
-            # Attention / attention-like modules w/ significant params
-            # Typically replace some of the existing workhorse convs in a network architecture.
-            # All of these accept a stride argument and can spatially downsample the input.
-            elif attn_type == 'sk':
-                module_cls = SelectiveKernel
-            elif attn_type == 'splat':
-                module_cls = SplitAttn
-
-            # Self-attention / attention-like modules w/ significant compute and/or params
-            # Typically replace some of the existing workhorse convs in a network architecture.
-            # All of these accept a stride argument and can spatially downsample the input.
-            elif attn_type == 'lambda':
-                return LambdaLayer
-            elif attn_type == 'bottleneck':
-                return BottleneckAttn
-            elif attn_type == 'halo':
-                return HaloAttn
-            elif attn_type == 'nl':
-                module_cls = NonLocalAttn
-            elif attn_type == 'bat':
-                module_cls = BatNonLocalAttn
-
-            # Woops!
-            else:
-                assert False, "Invalid attn module (%s)" % attn_type
         elif isinstance(attn_type, bool):
             raise NotImplemented
-            if attn_type:
-                module_cls = SEModule
         else:
             module_cls = attn_type
     return module_cls
@@ -142,7 +91,6 @@ def create_pool2d(pool_type, kernel_size, stride=None, **kwargs):
     if is_dynamic:
         if pool_type == 'avg':
             raise NotImplemented
-            return AvgPool2dSame(kernel_size, stride=stride, **kwargs)
         elif pool_type == 'max':
             # return MaxPool2dSame(kernel_size, stride=stride, **kwargs)
             return tf.keras.layers.MaxPooling2D(kernel_size, strides=stride, padding=padding.lower())
@@ -150,12 +98,6 @@ def create_pool2d(pool_type, kernel_size, stride=None, **kwargs):
             assert False, f'Unsupported pool type {pool_type}'
     else:
         raise NotImplemented
-        if pool_type == 'avg':
-            return nn.AvgPool2d(kernel_size, stride=stride, padding=padding, **kwargs)
-        elif pool_type == 'max':
-            return nn.MaxPool2d(kernel_size, stride=stride, padding=padding, **kwargs)
-        else:
-            assert False, f'Unsupported pool type {pool_type}'
 
 
 def create_conv2d(in_channels, out_channels, kernel_size, **kwargs):
@@ -166,23 +108,12 @@ def create_conv2d(in_channels, out_channels, kernel_size, **kwargs):
     """
     if isinstance(kernel_size, list):
         raise NotImplemented
-        assert 'num_experts' not in kwargs  # MixNet + CondConv combo not supported currently
-        if 'groups' in kwargs:
-            groups = kwargs.pop('groups')
-            if groups == in_channels:
-                kwargs['depthwise'] = True
-            else:
-                assert groups == 1
-        # We're going to use only lists for defining the MixedConv2d kernel groups,
-        # ints, tuples, other iterables will continue to pass to normal conv and specify h, w.
-        m = MixedConv2d(in_channels, out_channels, kernel_size, **kwargs)
     else:
         depthwise = kwargs.pop('depthwise', False)
         # for DW out_channels must be multiple of in_channels as must have out_channels % groups == 0
         groups = in_channels if depthwise else kwargs.pop('groups', 1)
         if 'num_experts' in kwargs and kwargs['num_experts'] > 0:
             raise NotImplemented
-            m = CondConv2d(in_channels, out_channels, kernel_size, groups=groups, **kwargs)
         else:
             m = create_conv2d_pad(in_channels, out_channels, kernel_size, groups=groups, **kwargs)
     return m
@@ -510,30 +441,22 @@ def get_norm_act_layer(norm_layer, act_layer=None):
 
     if isinstance(norm_layer, str):
         raise NotImplemented
-        layer_name = norm_layer.replace('_', '').lower().split('-')[0]
-        norm_act_layer = _NORM_ACT_MAP.get(layer_name, None)
     elif norm_layer in _NORM_ACT_TYPES:
         norm_act_layer = norm_layer
     elif isinstance(norm_layer,  types.FunctionType):
         raise NotImplemented
-        # if function type, must be a lambda/fn that creates a norm_act layer
-        norm_act_layer = norm_layer
     else:
         type_name = norm_layer.__name__.lower()
         if type_name.startswith('batchnormalization'):
             norm_act_layer = BatchNormAct2d
         elif type_name.startswith('groupnorm'):
             raise NotImplemented
-            norm_act_layer = GroupNormAct
         elif type_name.startswith('groupnorm1'):
             raise NotImplemented
-            norm_act_layer = functools.partial(GroupNormAct, num_groups=1)
         elif type_name.startswith('layernorm2d'):
             raise NotImplemented
-            norm_act_layer = LayerNormAct2d
         elif type_name.startswith('layernorm'):
             raise NotImplemented
-            norm_act_layer = LayerNormAct
         else:
             assert False, f"No equivalent norm_act layer for {type_name}"
 

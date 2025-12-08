@@ -276,8 +276,6 @@ class EfficientNetFeatures:
         self.feature_hooks = None
         if feature_location != 'bottleneck':
             raise NotImplemented
-            hooks = self.feature_info.get_dicts(keys=('module', 'hook_type'))
-        #     self.feature_hooks = FeatureHooks(hooks, self.named_modules())
 
     def set_grad_checkpointing(self, enable=True):
         self.grad_checkpointing = enable
