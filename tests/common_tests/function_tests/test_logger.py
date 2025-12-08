@@ -58,9 +58,9 @@ class TestLogger(unittest.TestCase):
         Logger.get_logger()
         mock_get_logger.assert_called_once_with('Model Compression Toolkit')
 
-    @patch('model_compression_toolkit.logger.Logger.get_logger')
     @patch('model_compression_toolkit.logger.logging.StreamHandler')
-    def test_set_stream_handler(self, mock_stream_handler, mock_get_logger):
+    @patch('model_compression_toolkit.logger.Logger.get_logger')
+    def test_set_stream_handler(self, mock_get_logger, mock_stream_handler):
         logger_mock = MagicMock()
         stream_handler_mock = MagicMock()
         mock_stream_handler.return_value = stream_handler_mock
@@ -155,6 +155,53 @@ class TestLogger(unittest.TestCase):
         mock_set_log_file.assert_called_once_with(self.log_folder)
         mock_set_logger_level.assert_called_once_with(self.log_level)
         mock_set_handler_level.assert_called_once_with(self.log_level)
+
+    def test_log_level_changes(self):
+        """Test logging at different levels with level changes"""
+        # Capture logs
+        with self.assertLogs('Model Compression Toolkit', level='DEBUG') as cm:
+            # First: Log all levels with default settings
+            Logger.debug("DEBUG message 1")
+            Logger.info("INFO message 1")
+            Logger.warning("WARNING message 1")
+            Logger.error("ERROR message 1")
+            
+            # Second: Set log level to WARNING
+            Logger.set_logger_level(Logger.WARNING)
+            Logger.set_handler_level(Logger.WARNING)
+            Logger.debug("DEBUG message 2 (should not appear)")
+            Logger.info("INFO message 2 (should not appear)")
+            Logger.warning("WARNING message 2")
+            Logger.error("ERROR message 2")
+            
+            # Third: Set log level to INFO
+            Logger.set_logger_level(Logger.INFO)
+            Logger.set_handler_level(Logger.INFO)
+            Logger.debug("DEBUG message 3 (should not appear)")
+            Logger.info("INFO message 3")
+            Logger.warning("WARNING message 3")
+            Logger.error("ERROR message 3")
+        
+        # Verify the captured logs
+        log_output = '\n'.join(cm.output)
+        
+        # First set of logs (all should appear)
+        self.assertIn("DEBUG message 1", log_output)
+        self.assertIn("INFO message 1", log_output)
+        self.assertIn("WARNING message 1", log_output)
+        self.assertIn("ERROR message 1", log_output)
+        
+        # Second set (only WARNING and ERROR should appear)
+        self.assertNotIn("DEBUG message 2", log_output)
+        self.assertNotIn("INFO message 2", log_output)
+        self.assertIn("WARNING message 2", log_output)
+        self.assertIn("ERROR message 2", log_output)
+        
+        # Third set (INFO, WARNING, ERROR should appear, not DEBUG)
+        self.assertNotIn("DEBUG message 3", log_output)
+        self.assertIn("INFO message 3", log_output)
+        self.assertIn("WARNING message 3", log_output)
+        self.assertIn("ERROR message 3", log_output)
 
 
 if __name__ == '__main__':
