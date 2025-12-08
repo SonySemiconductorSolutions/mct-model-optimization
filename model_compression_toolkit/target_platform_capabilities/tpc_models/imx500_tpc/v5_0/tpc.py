@@ -31,7 +31,8 @@ def get_tpc() -> TargetPlatformCapabilities:
     (for tests, experiments, etc.), use this method implementation as a test-case, i.e., override the
     'get_op_quantization_configs' method and use its output to call 'generate_tpc' with your configurations.
 
-    Returns: A TargetPlatformCapabilities object.
+    Returns: 
+        None (TargetPlatformCapabilities): A TargetPlatformCapabilities object.
 
     """
     base_config, mixed_precision_cfg_list, default_config = get_op_quantization_configs()
@@ -47,7 +48,11 @@ def get_op_quantization_configs() -> Tuple[OpQuantizationConfig, List[OpQuantiza
     In addition, creates a default configuration objects list (with 8, 4 and 2 bit quantization) to be used as
     default configuration for mixed-precision quantization.
 
-    Returns: An OpQuantizationConfig config object and a list of OpQuantizationConfig objects.
+    Returns: 
+        linear_eight_bits (OpQuantizationConfig), 
+        mixed_precision_cfg_list (List[OpQuantizationConfig]), 
+        eight_bits_default (OpQuantizationConfig) 
+        : An OpQuantizationConfig object and a list of OpQuantizationConfig objects.
 
     """
 
@@ -137,14 +142,15 @@ def generate_tpc(default_config: OpQuantizationConfig,
     Generates TargetPlatformCapabilities with default defined Operators Sets, based on the given base configuration and
     mixed-precision configurations options list.
 
-    Args
-        default_config: A default OpQuantizationConfig to set as the TP model default configuration.
-        base_config: An OpQuantizationConfig to set as the TargetPlatformCapabilities base configuration for mixed-precision purposes only.
-        mixed_precision_cfg_list: A list of OpQuantizationConfig to be used as the TP model mixed-precision
-            quantization configuration options.
-        name: The name of the TargetPlatformCapabilities.
+    Args:
+        default_config (OpQuantizationConfig): A default OpQuantizationConfig to set as the TP model default configuration.
+        base_config (OpQuantizationConfig): An OpQuantizationConfig to set as the TargetPlatformCapabilities base configuration for mixed-precision purposes only.
+        mixed_precision_cfg_list (List[OpQuantizationConfig]): A list of OpQuantizationConfig to be used as the TP model mixed-precision
+                                                               quantization configuration options.
+        name (str): The name of the TargetPlatformCapabilities.
 
-    Returns: A TargetPlatformCapabilities object.
+    Returns: 
+        generated_tpc (TargetPlatformCapabilities): A TargetPlatformCapabilities object.
 
     """
     # Create a QuantizationConfigOptions, which defines a set

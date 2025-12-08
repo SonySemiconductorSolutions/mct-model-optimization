@@ -30,7 +30,7 @@ def generate_imx500_tpc(tpc_version: str) -> TargetPlatformCapabilities:
         tpc_version (str): The version of the TPC to use.
 
     Returns:
-        The TargetPlatformCapabilities object based on the specified version.
+        None (TargetPlatformCapabilities): The TargetPlatformCapabilities object based on the specified version.
     """
 
     # Organize all tpc versions into tpcs_dict.

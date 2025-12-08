@@ -67,17 +67,14 @@ def test_false_tpc_api():
     # TPC v1.8
     with pytest.raises(AssertionError, match="Error: The specified tpc version '1.8' is not valid. Available "
                                              "versions are: 1.0, 4.0, 5.0, 6.0. Please ensure you are using a supported tpc version."):
-        APITest(tpc_version='1.8', device_type='imx500').run_test(
-            expected_tpc_path='', expected_tpc_version='')
+        APITest(tpc_version='1.8', device_type='imx500').run_test(expected_tpc_path='', expected_tpc_version='')
 
     # TPC v3.0
     with pytest.raises(AssertionError, match="Error: The specified tpc version '3.0' is not valid. Available "
                                              "versions are: 1.0, 4.0, 5.0, 6.0. Please ensure you are using a supported tpc version."):
-        APITest(tpc_version='3.0', device_type='imx500').run_test(
-            expected_tpc_path='', expected_tpc_version='')
+        APITest(tpc_version='3.0', device_type='imx500').run_test(expected_tpc_path='', expected_tpc_version='')
 
     # Device type IMX400
     with pytest.raises(AssertionError, match="Error: The specified device type 'imx400' is not valid. Available "
                                              "devices are: imx500, tflite, qnnpack. Please ensure you are using a supported device."):
-        APITest(tpc_version='1.0', device_type='imx400').run_test(
-            expected_tpc_path='', expected_tpc_version='')
+        APITest(tpc_version='1.0', device_type='imx400').run_test(expected_tpc_path='', expected_tpc_version='')
