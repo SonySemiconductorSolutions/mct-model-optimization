@@ -94,12 +94,8 @@ class TestONNXExporterMetadata(BaseTorchIntegrationTest):
 
         # Check for multiple metadatas warning
         if len(metadatas) > 1:
-            metadata_warning = (
-                f"Attribute 'metadata' found in {len(metadatas)} places. "
-                "Only the first one was assigned to 'model.metadata'."
-            )
-            assert any(metadata_warning in msg for msg in messages), \
-                f"Expected warning not found: {messages}"
+            assert (f"Attribute 'metadata' found in {len(metadatas)} places. Only the first one was "
+            f"assigned to 'model.metadata'.") == messages[0]
 
         onnx_metadata = get_onnx_metadata(onnx_model)
 
@@ -124,6 +120,7 @@ class TestONNXExporterMetadata(BaseTorchIntegrationTest):
         save_model_path = tmp_path / "model.onnx"
         data_generator = self.representative_data_gen(num_inputs=1)
         pytorch_model = self.get_pytorch_model(model, data_generator, minimal_tpc)
+        Logger.set_logger_level(Logger.WARNING)
 
         pytorch_model = WrappedModel(pytorch_model)
 
