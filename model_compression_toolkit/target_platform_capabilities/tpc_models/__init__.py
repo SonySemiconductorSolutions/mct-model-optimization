@@ -28,7 +28,7 @@ def generate_tpc_func(device_type: str) -> Callable:
         device_type (str): The type of device for the target platform.
 
     Returns:
-        A function that generates target platform capabilities models.
+        device_type_dict[device_type] (Callable): A function that generates target platform capabilities models.
     """
 
     # Organize all device types into device_type_dict.

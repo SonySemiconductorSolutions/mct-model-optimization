@@ -27,7 +27,7 @@ def get_target_platform_capabilities(tpc_version: str = '1.0',
         device_type (str): The type of device for the target platform.
         
     Returns:
-        The TargetPlatformCapabilities object.
+        tpc (TargetPlatformCapabilities): The TargetPlatformCapabilities object.
     """
     # Generate a function containing tpc configurations for the specified device type.
     tpc_func = generate_tpc_func(device_type=device_type)
@@ -44,11 +44,11 @@ def get_tpc_model(name: str, tpc: TargetPlatformCapabilities):
     This is a utility method that just returns the TargetPlatformCapabilities that it receives, to support existing TPC API.
 
     Args:
-        name: the name of the TargetPlatformCapabilities (not used in this function).
-        tpc: a TargetPlatformCapabilities to return.
+        name (str): the name of the TargetPlatformCapabilities (not used in this function).
+        tpc (TargetPlatformCapabilities): a TargetPlatformCapabilities to return.
 
     Returns:
-        The given TargetPlatformCapabilities object.
+        tpc (TargetPlatformCapabilities): The given TargetPlatformCapabilities object.
 
     """
 
