@@ -94,6 +94,7 @@ class OperatorSetNames(str, Enum):
     SIN = "Sin"
     COS = "Cos"
     TAKE = "Take"
+    INDEX_SELECT = "IndexSelect"
 
     @classmethod
     def get_values(cls):
