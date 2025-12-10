@@ -1,0 +1,37 @@
+name: Run Network Deployment Tests
+
+on:
+  workflow_call:
+    inputs:
+      converter-version:
+        required: true
+        type: string
+      mct-version:
+        required: true
+        type: string
+      tpc-version:
+        required: true
+        type: string
+
+jobs:
+  run-tests:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install Python 3
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install model-compression-toolkit==${{inputs.mct-version}}
+          pip install imx500-converter[pt]==${{inputs.converter-version}}
+          pip install "torch<2.7" "torchvision<0.22" "onnx<1.18" "onnxruntime<1.22" "onnxruntime-extensions<0.14"
+          pip install pytest pytest-mock
+          pip check
+      - name: Run pytest
+        env:
+          TPC_VERSION: ${{inputs.tpc-version}}
+        run: |
+          pytest tests/network_deployment_tests.py
