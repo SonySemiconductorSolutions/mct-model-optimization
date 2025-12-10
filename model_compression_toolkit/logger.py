@@ -194,14 +194,14 @@ def set_log_folder(folder: str, level: int = logging.INFO):
     Args:
         folder: Folder path to save the log file.
         level: Level of verbosity to set to the logger and handlers.
-        
+
     Note:
         This is a convenience function that calls multiple Logger methods
         to set up logging.
 
         Don't use Python's original logger.
     """
-    
+
     Logger.set_stream_handler()
     Logger.set_log_file(folder)
     Logger.set_logger_level(level)
