@@ -26,8 +26,14 @@ from model_compression_toolkit.target_platform_capabilities.constants import IMX
 
 class NetworkDeploymentBaseTest:
 
-    def __init__(self, tpc_version, device_type=IMX500_TP_MODEL, save_folder='./',
-                 input_shape=(3, 224, 224), batch_size=1, num_calibration_iter=1, num_of_inputs=1):
+    def __init__(self, 
+                 tpc_version, 
+                 device_type=IMX500_TP_MODEL, 
+                 save_folder='./',
+                 input_shape=(3, 224, 224), 
+                 batch_size=1, 
+                 num_calibration_iter=1, 
+                 num_of_inputs=1):
         self.tpc_version = tpc_version
         self.device_type = device_type
         self.save_folder = save_folder

@@ -33,7 +33,7 @@ def get_tpc() -> TargetPlatformCapabilities:
     'get_op_quantization_configs' method and use its output to call 'generate_tpc' with your configurations.
 
     Returns: 
-        None (TargetPlatformCapabilities): A TargetPlatformCapabilities object.
+        TargetPlatformCapabilities: A TargetPlatformCapabilities object.
 
     """
     base_config, mixed_precision_cfg_list, default_config = get_op_quantization_configs()
@@ -50,10 +50,8 @@ def get_op_quantization_configs() -> Tuple[OpQuantizationConfig, List[OpQuantiza
     default configuration for mixed-precision quantization.
 
     Returns:
-        linear_eight_bits (OpQuantizationConfig), 
-        mixed_precision_cfg_list (List[OpQuantizationConfig]), 
-        eight_bits_default (OpQuantizationConfig) 
-        : An OpQuantizationConfig config object and a list of OpQuantizationConfig objects.
+        Tuple[OpQuantizationConfig, List[OpQuantizationConfig], OpQuantizationConfig]: 
+        An OpQuantizationConfig config object and a list of OpQuantizationConfig objects.
 
     """
 
@@ -143,7 +141,7 @@ def generate_tpc(default_config: OpQuantizationConfig,
     Generates TargetPlatformCapabilities with default defined Operators Sets, based on the given base configuration and
     mixed-precision configurations options list.
 
-    Args
+    Args:
         default_config (OpQuantizationConfig): A default OpQuantizationConfig to set as the TP model default configuration.
         base_config (OpQuantizationConfig): An OpQuantizationConfig to set as the TargetPlatformCapabilities base configuration for mixed-precision purposes only.
         mixed_precision_cfg_list (List[OpQuantizationConfig]): A list of OpQuantizationConfig to be used as the TP model mixed-precision
@@ -151,7 +149,7 @@ def generate_tpc(default_config: OpQuantizationConfig,
         name (str): The name of the TargetPlatformCapabilities.
 
     Returns:
-        generated_tpc (TargetPlatformCapabilities): A TargetPlatformCapabilities object.
+        TargetPlatformCapabilities: A TargetPlatformCapabilities object.
 
     """
     # Create a QuantizationConfigOptions, which defines a set

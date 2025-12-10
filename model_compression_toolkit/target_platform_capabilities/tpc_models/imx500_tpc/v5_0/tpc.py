@@ -32,7 +32,7 @@ def get_tpc() -> TargetPlatformCapabilities:
     'get_op_quantization_configs' method and use its output to call 'generate_tpc' with your configurations.
 
     Returns: 
-        None (TargetPlatformCapabilities): A TargetPlatformCapabilities object.
+        TargetPlatformCapabilities: A TargetPlatformCapabilities object.
 
     """
     base_config, mixed_precision_cfg_list, default_config = get_op_quantization_configs()
@@ -49,10 +49,8 @@ def get_op_quantization_configs() -> Tuple[OpQuantizationConfig, List[OpQuantiza
     default configuration for mixed-precision quantization.
 
     Returns: 
-        linear_eight_bits (OpQuantizationConfig), 
-        mixed_precision_cfg_list (List[OpQuantizationConfig]), 
-        eight_bits_default (OpQuantizationConfig) 
-        : An OpQuantizationConfig object and a list of OpQuantizationConfig objects.
+        Tuple[OpQuantizationConfig, List[OpQuantizationConfig], OpQuantizationConfig]: 
+        An OpQuantizationConfig config object and a list of OpQuantizationConfig objects.
 
     """
 
@@ -150,7 +148,7 @@ def generate_tpc(default_config: OpQuantizationConfig,
         name (str): The name of the TargetPlatformCapabilities.
 
     Returns: 
-        generated_tpc (TargetPlatformCapabilities): A TargetPlatformCapabilities object.
+        TargetPlatformCapabilities: A TargetPlatformCapabilities object.
 
     """
     # Create a QuantizationConfigOptions, which defines a set
