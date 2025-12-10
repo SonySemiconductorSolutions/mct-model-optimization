@@ -128,7 +128,7 @@ def generate_tpc(default_config: OpQuantizationConfig,
     Generates TargetPlatformCapabilities with default defined Operators Sets, based on the given base configuration and
     mixed-precision configurations options list.
 
-    Args
+    Args:
         default_config (OpQuantizationConfig): A default OpQuantizationConfig to set as the TP model default configuration.
         base_config (OpQuantizationConfig): An OpQuantizationConfig to set as the TargetPlatformCapabilities base configuration for mixed-precision purposes only.
         mixed_precision_cfg_list (List[OpQuantizationConfig]): A list of OpQuantizationConfig to be used as the TP model mixed-precision
