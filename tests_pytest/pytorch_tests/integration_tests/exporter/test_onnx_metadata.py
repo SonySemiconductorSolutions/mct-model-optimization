@@ -95,7 +95,7 @@ class TestONNXExporterMetadata(BaseTorchIntegrationTest):
         # Check for multiple metadatas warning
         if len(metadatas) > 1:
             assert (f"Attribute 'metadata' found in {len(metadatas)} places. Only the first one was "
-            f"assigned to 'model.metadata'.") == messages[0]
+                    f"assigned to 'model.metadata'.") == messages[0]
 
         onnx_metadata = get_onnx_metadata(onnx_model)
 
