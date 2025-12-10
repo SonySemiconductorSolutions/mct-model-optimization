@@ -11,7 +11,7 @@ concurrency:
 
 jobs:
   run-tests:
-    uses: ./.github/workflows/network_deployment_tests.yml
+    uses: ./.github/workflows/run_network_deployment_tests.yml
     with:
       converter-version: "3.14.*"
       mct-version: "2.3.*"
