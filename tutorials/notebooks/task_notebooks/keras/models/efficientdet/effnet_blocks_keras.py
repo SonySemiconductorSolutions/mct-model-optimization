@@ -19,6 +19,7 @@
 #   * Torch layers replaced with Keras layers
 #   * removed class inheritance from torch.nn.Module
 #   * changed "forward" class methods with "__call__"
+#   * removed processes unused in effdet tutorial.
 # ==============================================================================
 
 import types
@@ -28,7 +29,7 @@ import tensorflow as tf
 from timm.layers import DropPath, make_divisible
 
 __all__ = [
-    'SqueezeExcite', 'ConvBnAct', 'DepthwiseSeparableConv', 'InvertedResidual', 'CondConvResidual', 'EdgeResidual']
+    'DepthwiseSeparableConv', 'InvertedResidual']
 
 
 def handle_name(_name):
@@ -44,26 +45,12 @@ def num_groups(group_size, channels):
         return channels // group_size
 
 
-def create_act_layer(act_name, **kwargs):
-    if isinstance(act_name, str):
-        raise NotImplemented
-    elif isinstance(act_name, tf.keras.layers.Layer):
-        return act_name(**kwargs)
-    else:
-        return act_name
-
-
 def get_attn(attn_type):
     if isinstance(attn_type, tf.keras.layers.Layer):
         return attn_type
     module_cls = None
     if attn_type:
-        if isinstance(attn_type, str):
-            raise NotImplemented
-        elif isinstance(attn_type, bool):
-            raise NotImplemented
-        else:
-            module_cls = attn_type
+        module_cls = attn_type
     return module_cls
 
 
@@ -87,17 +74,12 @@ def create_conv2d_pad(in_chs, out_chs, kernel_size, **kwargs):
 def create_pool2d(pool_type, kernel_size, stride=None, **kwargs):
     stride = stride or kernel_size
     padding = kwargs.pop('padding', '')
-    padding, is_dynamic = padding.lower(), True
-    if is_dynamic:
-        if pool_type == 'avg':
-            raise NotImplemented
-        elif pool_type == 'max':
-            # return MaxPool2dSame(kernel_size, stride=stride, **kwargs)
-            return tf.keras.layers.MaxPooling2D(kernel_size, strides=stride, padding=padding.lower())
-        else:
-            assert False, f'Unsupported pool type {pool_type}'
+    padding  = padding.lower()
+    if pool_type == 'max':
+        # return MaxPool2dSame(kernel_size, stride=stride, **kwargs)
+        return tf.keras.layers.MaxPooling2D(kernel_size, strides=stride, padding=padding.lower())
     else:
-        raise NotImplemented
+        assert False, f'Unsupported pool type {pool_type}'
 
 
 def create_conv2d(in_channels, out_channels, kernel_size, **kwargs):
@@ -106,83 +88,12 @@ def create_conv2d(in_channels, out_channels, kernel_size, **kwargs):
 
     Used extensively by EfficientNet, MobileNetv3 and related networks.
     """
-    if isinstance(kernel_size, list):
-        raise NotImplemented
-    else:
-        depthwise = kwargs.pop('depthwise', False)
-        # for DW out_channels must be multiple of in_channels as must have out_channels % groups == 0
-        groups = in_channels if depthwise else kwargs.pop('groups', 1)
-        if 'num_experts' in kwargs and kwargs['num_experts'] > 0:
-            raise NotImplemented
-        else:
-            m = create_conv2d_pad(in_channels, out_channels, kernel_size, groups=groups, **kwargs)
+    depthwise = kwargs.pop('depthwise', False)
+    # for DW out_channels must be multiple of in_channels as must have out_channels % groups == 0
+    groups = in_channels if depthwise else kwargs.pop('groups', 1)
+    m = create_conv2d_pad(in_channels, out_channels, kernel_size, groups=groups, **kwargs)
     return m
 
-
-class SqueezeExcite:
-    """ Squeeze-and-Excitation w/ specific features for EfficientNet/MobileNet family
-
-    Args:
-        in_chs (int): input channels to layer
-        rd_ratio (float): ratio of squeeze reduction
-        act_layer (nn.Module): activation layer of containing block
-        gate_layer (Callable): attention gate function
-        force_act_layer (nn.Module): override block's activation fn if this is set/bound
-        rd_round_fn (Callable): specify a fn to calculate rounding of reduced chs
-    """
-
-    def __init__(
-            self, in_chs, rd_ratio=0.25, rd_channels=None, act_layer=tf.keras.layers.ReLU,
-            gate_layer=tf.sigmoid, force_act_layer=None, rd_round_fn=None, name=None):
-        name = handle_name(name)
-        if rd_channels is None:
-            rd_round_fn = rd_round_fn or round
-            rd_channels = rd_round_fn(in_chs * rd_ratio)
-        act_layer = force_act_layer or act_layer
-        # self.conv_reduce = nn.Conv2d(in_chs, rd_channels, 1, bias=True)
-        self.conv_reduce = tf.keras.layers.Conv2D(rd_channels, 1, name=name + 'conv_reduce')
-        self.act1 = create_act_layer(act_layer, name=name + 'act1')
-        # self.conv_expand = nn.Conv2d(rd_channels, in_chs, 1, bias=True)
-        self.conv_expand = tf.keras.layers.Conv2D(in_chs, 1, name=name + 'conv_expand')
-        self.gate = create_act_layer(gate_layer)
-
-    def __call__(self, x):
-        x_se = x.mean((2, 3), keepdim=True)
-        x_se = self.conv_reduce(x_se)
-        x_se = self.act1(x_se)
-        x_se = self.conv_expand(x_se)
-        return x * self.gate(x_se)
-
-
-class ConvBnAct:
-    """ Conv + Norm Layer + Activation w/ optional skip connection
-    """
-    def __init__(
-            self, in_chs, out_chs, kernel_size, stride=1, dilation=1, group_size=0, pad_type='',
-            skip=False, act_layer=tf.keras.layers.ReLU, norm_layer=tf.keras.layers.BatchNormalization,
-            drop_path_rate=0., name=None):
-        norm_act_layer = get_norm_act_layer(norm_layer, act_layer)
-        groups = num_groups(group_size, in_chs)
-        self.has_skip = skip and stride == 1 and in_chs == out_chs
-
-        self.conv = create_conv2d(
-            in_chs, out_chs, kernel_size, stride=stride, dilation=dilation, groups=groups, padding=pad_type)
-        self.bn1 = norm_act_layer(out_chs, inplace=True)
-        self.drop_path = DropPath(drop_path_rate) if drop_path_rate else nn.Identity()
-
-    def feature_info(self, location):
-        if location == 'expansion':  # output of conv after act, same as block coutput
-            return dict(module='bn1', hook_type='forward', num_chs=self.conv.filters)
-        else:  # location == 'bottleneck', block output
-            return dict(module='', num_chs=self.conv.filters)
-
-    def __call__(self, x):
-        shortcut = x
-        x = self.conv(x)
-        x = self.bn1(x)
-        if self.has_skip:
-            x = self.drop_path(x) + shortcut
-        return x
 
 
 class DepthwiseSeparableConv:
@@ -295,99 +206,6 @@ class InvertedResidual:
         return x
 
 
-class CondConvResidual(InvertedResidual):
-    """ Inverted residual block w/ CondConv routing"""
-
-    def __init__(
-            self, in_chs, out_chs, dw_kernel_size=3, stride=1, dilation=1, group_size=1, pad_type='',
-            noskip=False, exp_ratio=1.0, exp_kernel_size=1, pw_kernel_size=1, act_layer=tf.keras.layers.ReLU,
-            norm_layer=tf.keras.layers.BatchNormalization, se_layer=None, num_experts=0, drop_path_rate=0.,
-            name=None):
-
-        self.num_experts = num_experts
-        conv_kwargs = dict(num_experts=self.num_experts)
-
-        super(CondConvResidual, self).__init__(
-            in_chs, out_chs, dw_kernel_size=dw_kernel_size, stride=stride, dilation=dilation, group_size=group_size,
-            pad_type=pad_type, act_layer=act_layer, noskip=noskip, exp_ratio=exp_ratio, exp_kernel_size=exp_kernel_size,
-            pw_kernel_size=pw_kernel_size, se_layer=se_layer, norm_layer=norm_layer, conv_kwargs=conv_kwargs,
-            drop_path_rate=drop_path_rate)
-
-        # self.routing_fn = nn.Linear(in_chs, self.num_experts)
-        self.routing_fn = tf.keras.layers.Dense(self.num_experts)
-
-    def __call__(self, x):
-        shortcut = x
-        pooled_inputs = F.adaptive_avg_pool2d(x, 1).flatten(1)  # CondConv routing
-        routing_weights = torch.sigmoid(self.routing_fn(pooled_inputs))
-        x = self.conv_pw(x, routing_weights)
-        x = self.bn1(x)
-        x = self.conv_dw(x, routing_weights)
-        x = self.bn2(x)
-        x = self.se(x)
-        x = self.conv_pwl(x, routing_weights)
-        x = self.bn3(x)
-        if self.has_skip:
-            x = self.drop_path(x) + shortcut
-        return x
-
-
-class EdgeResidual:
-    """ Residual block with expansion convolution followed by pointwise-linear w/ stride
-
-    Originally introduced in `EfficientNet-EdgeTPU: Creating Accelerator-Optimized Neural Networks with AutoML`
-        - https://ai.googleblog.com/2019/08/efficientnet-edgetpu-creating.html
-
-    This layer is also called FusedMBConv in the MobileDet, EfficientNet-X, and EfficientNet-V2 papers
-      * MobileDet - https://arxiv.org/abs/2004.14525
-      * EfficientNet-X - https://arxiv.org/abs/2102.05610
-      * EfficientNet-V2 - https://arxiv.org/abs/2104.00298
-    """
-
-    def __init__(
-            self, in_chs, out_chs, exp_kernel_size=3, stride=1, dilation=1, group_size=0, pad_type='',
-            force_in_chs=0, noskip=False, exp_ratio=1.0, pw_kernel_size=1, act_layer=tf.keras.layers.ReLU,
-            norm_layer=tf.keras.layers.BatchNormalization, se_layer=None, drop_path_rate=0.,
-            name=None):
-        norm_act_layer = get_norm_act_layer(norm_layer, act_layer)
-        if force_in_chs > 0:
-            mid_chs = make_divisible(force_in_chs * exp_ratio)
-        else:
-            mid_chs = make_divisible(in_chs * exp_ratio)
-        groups = num_groups(group_size, in_chs)
-        self.has_skip = (in_chs == out_chs and stride == 1) and not noskip
-
-        # Expansion convolution
-        self.conv_exp = create_conv2d(
-            in_chs, mid_chs, exp_kernel_size, stride=stride, dilation=dilation, groups=groups, padding=pad_type)
-        self.bn1 = norm_act_layer(mid_chs, inplace=True)
-
-        # Squeeze-and-excitation
-        self.se = se_layer(mid_chs, act_layer=act_layer) if se_layer else nn.Identity()
-
-        # Point-wise linear projection
-        self.conv_pwl = create_conv2d(mid_chs, out_chs, pw_kernel_size, padding=pad_type)
-        self.bn2 = norm_act_layer(out_chs, apply_act=False)
-        self.drop_path = DropPath(drop_path_rate) if drop_path_rate else nn.Identity()
-
-    def feature_info(self, location):
-        if location == 'expansion':  # after SE, before PWL
-            return dict(module='conv_pwl', hook_type='forward_pre', num_chs=self.conv_pwl.in_channels)
-        else:  # location == 'bottleneck', block output
-            return dict(module='', num_chs=self.conv_pwl.filters)
-
-    def __call__(self, x):
-        shortcut = x
-        x = self.conv_exp(x)
-        x = self.bn1(x)
-        x = self.se(x)
-        x = self.conv_pwl(x)
-        x = self.bn2(x)
-        if self.has_skip:
-            x = self.drop_path(x) + shortcut
-        return x
-
-
 class BatchNormAct2d:
     """BatchNorm + Activation
 
@@ -424,11 +242,6 @@ class BatchNormAct2d:
         return x
 
 
-_NORM_ACT_MAP = dict(batchnorm=BatchNormAct2d)
-_NORM_ACT_TYPES = {m for n, m in _NORM_ACT_MAP.items()}
-_NORM_ACT_REQUIRES_ARG = {BatchNormAct2d}
-
-
 def get_norm_act_layer(norm_layer, act_layer=None):
     assert isinstance(norm_layer, (type, str,  types.FunctionType, partial))
     # assert act_layer is None or isinstance(act_layer, (type, str, types.FunctionType, partial))
@@ -439,31 +252,10 @@ def get_norm_act_layer(norm_layer, act_layer=None):
         norm_act_kwargs.update(norm_layer.keywords)
         norm_layer = norm_layer.func
 
-    if isinstance(norm_layer, str):
-        raise NotImplemented
-    elif norm_layer in _NORM_ACT_TYPES:
-        norm_act_layer = norm_layer
-    elif isinstance(norm_layer,  types.FunctionType):
-        raise NotImplemented
-    else:
-        type_name = norm_layer.__name__.lower()
-        if type_name.startswith('batchnormalization'):
-            norm_act_layer = BatchNormAct2d
-        elif type_name.startswith('groupnorm'):
-            raise NotImplemented
-        elif type_name.startswith('groupnorm1'):
-            raise NotImplemented
-        elif type_name.startswith('layernorm2d'):
-            raise NotImplemented
-        elif type_name.startswith('layernorm'):
-            raise NotImplemented
-        else:
-            assert False, f"No equivalent norm_act layer for {type_name}"
+    type_name = norm_layer.__name__.lower() 
+    if type_name.startswith('batchnormalization'): 
+        norm_act_layer = BatchNormAct2d 
 
-    if norm_act_layer in _NORM_ACT_REQUIRES_ARG:
-        # pass `act_layer` through for backwards compat where `act_layer=None` implies no activation.
-        # In the future, may force use of `apply_act` with `act_layer` arg bound to relevant NormAct types
-        norm_act_kwargs.setdefault('act_layer', act_layer)
-    if norm_act_kwargs:
-        norm_act_layer = partial(norm_act_layer, **norm_act_kwargs)  # bind/rebind args
+    norm_act_kwargs.setdefault('act_layer', act_layer)
+    norm_act_layer = partial(norm_act_layer, **norm_act_kwargs)  # bind/rebind args
     return norm_act_layer

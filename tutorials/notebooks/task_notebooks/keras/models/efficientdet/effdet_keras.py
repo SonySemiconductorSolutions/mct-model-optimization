@@ -19,16 +19,14 @@
 #   * Torch layers replaced with Keras layers
 #   * removed class inheritance from torch.nn.Module
 #   * changed "forward" class methods with "__call__"
+#   * removed processes unused in effdet tutorial.
 # ==============================================================================
 
 import logging
-from collections import OrderedDict
 from functools import partial
 from typing import List, Optional, Union, Tuple
 
 import tensorflow as tf
-import torch
-import torch.nn as nn
 
 
 gpus = tf.config.list_physical_devices('GPU')
@@ -51,7 +49,6 @@ from models.efficientdet.effnet_keras import create_model, handle_name
 from models.efficientdet.effnet_blocks_keras import create_conv2d, create_pool2d
 from models.utils.torch2keras_weights_translation import load_state_dict
 
-_USE_SCALE = False
 _ACT_LAYER = tf.nn.swish
 
 # #######################################################################################
@@ -257,29 +254,17 @@ class ResampleFeatureMap:
             if downsample in ('max', 'avg'):
                 stride_size_h = int((input_size[0] - 1) // output_size[0] + 1)
                 stride_size_w = int((input_size[1] - 1) // output_size[1] + 1)
-                if stride_size_h == stride_size_w:
-                    kernel_size = stride_size_h + 1
-                    stride = stride_size_h
-                else:
-                    # FIXME need to support tuple kernel / stride input to padding fns
-                    kernel_size = (stride_size_h + 1, stride_size_w + 1)
-                    stride = (stride_size_h, stride_size_w)
+                assert stride_size_h == stride_size_w
+                kernel_size = stride_size_h + 1
+                stride = stride_size_h
                 down_inst = create_pool2d(downsample, kernel_size=kernel_size, stride=stride, padding=pad_type,
                                           name=name + '/downsample')
             else:
-                if _USE_SCALE:  # FIXME not sure if scale vs size is better, leaving both in to test for now
-                    scale = (output_size[0] / input_size[0], output_size[1] / input_size[1])
-                    down_inst = Interpolate2d(scale_factor=scale, mode=downsample)
-                else:
-                    down_inst = Interpolate2d(size=output_size, mode=downsample, name=name)
+                down_inst = Interpolate2d(size=output_size, mode=downsample, name=name)
             self.layers.append(down_inst)
         else:
             if input_size[0] < output_size[0] or input_size[1] < output_size[1]:
-                if _USE_SCALE:
-                    scale = (output_size[0] / input_size[0], output_size[1] / input_size[1])
-                    self.add_module('upsample', Interpolate2d(scale_factor=scale, mode=upsample))
-                else:
-                    self.layers.append(Interpolate2d(size=output_size, mode=upsample))  # 'upsample'
+                self.layers.append(Interpolate2d(size=output_size, mode=upsample))  # 'upsample'
 
     def __call__(self, x: tf.Tensor) -> List[tf.Tensor]:
         for module in self.layers:
@@ -300,7 +285,7 @@ class FpnCombine:
             norm_layer=tf.keras.layers.BatchNormalization,
             apply_resample_bn=False,
             redundant_bias=False,
-            weight_method='attn',
+            weight_method='sum',
             name=None
     ):
         name = handle_name(name)
@@ -323,30 +308,14 @@ class FpnCombine:
                 name = name + f'/resample/{offset}'
             ))
 
-        if weight_method == 'attn' or weight_method == 'fastattn':
-            self.edge_weights = nn.Parameter(torch.ones(len(inputs_offsets)), requires_grad=True)  # WSM
-        else:
-            self.edge_weights = None
-
     def __call__(self, x: List[tf.Tensor]):
-        dtype = x[0].dtype
         nodes = []
         for offset, resample in zip(self.inputs_offsets, self.resample):
             input_node = x[offset]
             input_node = resample(input_node)
             nodes.append(input_node)
 
-        if self.weight_method == 'attn':
-            normalized_weights = torch.softmax(self.edge_weights.to(dtype=dtype), dim=0)
-            out = torch.stack(nodes, dim=-1) * normalized_weights
-            out = torch.sum(out, dim=-1)
-        elif self.weight_method == 'fastattn':
-            edge_weights = nn.functional.relu(self.edge_weights.to(dtype=dtype))
-            weights_sum = torch.sum(edge_weights)
-            out = torch.stack(
-                [(nodes[i] * edge_weights[i]) / (weights_sum + 0.0001) for i in range(len(nodes))], dim=-1)
-            out = torch.sum(out, dim=-1)
-        elif self.weight_method == 'sum':
+        if self.weight_method == 'sum':
             out = tf.keras.layers.Add()(nodes[:2])
             for i in range(2, len(nodes)):
                 out = tf.keras.layers.Add()([out, nodes[i]])
@@ -516,7 +485,6 @@ class HeadNet:
 
     def __init__(self, config, num_outputs, name):
         self.num_levels = config.num_levels
-        self.bn_level_first = getattr(config, 'head_bn_level_first', False)
         norm_layer = config.norm_layer or tf.keras.layers.BatchNormalization
         if config.norm_kwargs:
             norm_kwargs = {**config.norm_kwargs}
@@ -544,13 +512,8 @@ class HeadNet:
         # This can be organized with repeats first or feature levels first in module lists, the original models
         # and weights were setup with repeats first, levels first is required for efficient torchscript usage.
         self.bn_rep = []  # nn.ModuleList()
-        if self.bn_level_first:
-            for _ in range(self.num_levels):
-                self.bn_rep.append([
-                    norm_layer(config.fpn_channels, name=f'{name}/bn_rep/{_}/', ) for _ in range(config.box_class_repeats)])
-        else:
-            for _ in range(config.box_class_repeats):
-                self.bn_rep.append([norm_layer(name=f'{name}/bn_rep/{_}/{_level}/bn') for _level in range(self.num_levels)])
+        for _ in range(config.box_class_repeats):
+            self.bn_rep.append([norm_layer(name=f'{name}/bn_rep/{_}/{_level}/bn') for _level in range(self.num_levels)])
 
         self.act = act_layer
 
@@ -568,25 +531,6 @@ class HeadNet:
         )
         self.predict = conv_fn(**predict_kwargs)
 
-    def toggle_bn_level_first(self):
-        """ Toggle the batchnorm layers between feature level first vs repeat first access pattern
-        Limitations in torchscript require feature levels to be iterated over first.
-
-        This function can be used to allow loading weights in the original order, and then toggle before
-        jit scripting the model.
-        """
-        new_bn_rep = []  # nn.ModuleList()
-        for i in range(len(self.bn_rep[0])):
-            bn_first = []  # nn.ModuleList()
-            for r in self.bn_rep.children():
-                m = r[i]
-                # NOTE original rep first model def has extra Sequential container with 'bn', this was
-                # flattened in the level first definition.
-                bn_first.append(m[0] if isinstance(m, nn.Sequential) else nn.Sequential(OrderedDict([('bn', m)])))
-            new_bn_rep.append(bn_first)
-        self.bn_level_first = not self.bn_level_first
-        self.bn_rep = new_bn_rep
-
     def _forward(self, x: List[tf.Tensor]) -> List[tf.Tensor]:
         outputs = []
         for level in range(self.num_levels):
@@ -598,22 +542,8 @@ class HeadNet:
             outputs.append(self.predict(x_level))
         return outputs
 
-    def _forward_level_first(self, x: List[tf.Tensor]) -> List[tf.Tensor]:
-        outputs = []
-        for level, bn_rep in enumerate(self.bn_rep):  # iterating over first bn dim first makes TS happy
-            x_level = x[level]
-            for conv, bn in zip(self.conv_rep, bn_rep):
-                x_level = conv(x_level)
-                x_level = bn(x_level)
-                x_level = self.act()(x_level)
-            outputs.append(self.predict(x_level))
-        return outputs
-
     def __call__(self, x: List[tf.Tensor]) -> List[tf.Tensor]:
-        if self.bn_level_first:
-            return self._forward_level_first(x)
-        else:
-            return self._forward(x)
+        return self._forward(x)
 
 
 class EfficientDetKeras:
@@ -632,12 +562,6 @@ class EfficientDetKeras:
         self.fpn = BiFpn(self.config, feature_info, 'fpn')
         self.class_net = HeadNet(self.config, num_outputs=self.config.num_classes, name='class_net')
         self.box_net = HeadNet(self.config, num_outputs=4, name='box_net')
-
-    def toggle_head_bn_level_first(self):
-        """ Toggle the head batchnorm layers between being access with feature_level first vs repeat
-        """
-        self.class_net.toggle_bn_level_first()
-        self.box_net.toggle_bn_level_first()
 
     def get_model(self, input_shape, load_state_dict_to_model=True):
         _input = tf.keras.layers.Input(shape=input_shape)

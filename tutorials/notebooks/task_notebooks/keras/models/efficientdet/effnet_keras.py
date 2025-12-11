@@ -19,18 +19,18 @@
 #   * Torch layers replaced with Keras layers
 #   * removed class inheritance from torch.nn.Module
 #   * changed "forward" class methods with "__call__"
+#   * removed processes unused in effdet tutorial.
 # ==============================================================================
 
 from functools import partial
 from typing import Any, Dict, Optional, Union, List
 import tensorflow as tf
-from timm.models import parse_model_name, split_model_name_tag, is_model, build_model_with_cfg, FeatureInfo
+from timm.models import parse_model_name, split_model_name_tag, build_model_with_cfg, FeatureInfo
 from timm.models._efficientnet_builder import BN_EPS_TF_DEFAULT, decode_arch_def, round_channels
 from timm.models._builder import pretrained_cfg_for_features
 
-from models.efficientdet.effnet_blocks_keras import create_conv2d, SqueezeExcite, get_attn, \
-    handle_name, get_norm_act_layer, CondConvResidual, InvertedResidual, DepthwiseSeparableConv, EdgeResidual, \
-    ConvBnAct
+from models.efficientdet.effnet_blocks_keras import create_conv2d, get_attn, \
+    handle_name, get_norm_act_layer, InvertedResidual, DepthwiseSeparableConv
 
 
 __all__ = ["EfficientNetBuilder", "decode_arch_def", "efficientnet_init_weights",
@@ -41,11 +41,6 @@ __all__ = ["EfficientNetBuilder", "decode_arch_def", "efficientnet_init_weights"
 # This file generates the Keras model. It's based on the EfficientNet code in the timm
 # repository, and switched the Torch Modules with Keras layers
 # #######################################################################################
-
-
-def _log_info_if(_str, _versbose):
-    if _versbose:
-        print(_str)
 
 
 class EfficientNetBuilder:
@@ -65,20 +60,15 @@ class EfficientNetBuilder:
         self.se_from_exp = se_from_exp  # calculate se channel reduction from expanded (mid) chs
         self.act_layer = act_layer
         self.norm_layer = norm_layer
-        self.se_layer = get_attn(se_layer)
-        try:
-            self.se_layer(8, rd_ratio=1.0)  # test if attn layer accepts rd_ratio arg
-            self.se_has_ratio = True
-        except TypeError:
-            self.se_has_ratio = False
+        self.se_layer = get_attn(se_layer) 
+        try: 
+            self.se_layer(8, rd_ratio=1.0)  # test if attn layer accepts rd_ratio arg 
+            self.se_has_ratio = True 
+        except TypeError: 
+            self.se_has_ratio = False 
         self.drop_path_rate = drop_path_rate
-        if feature_location == 'depthwise':
-            # old 'depthwise' mode renamed 'expansion' to match TF impl, old expansion mode didn't make sense
-            # _logger.warning("feature_location=='depthwise' is deprecated, using 'expansion'")
-            feature_location = 'expansion'
         self.feature_location = feature_location
         assert feature_location in ('bottleneck', 'expansion', '')
-        self.verbose = False
 
         # state updated during build, consumed by model
         self.in_chs = None
@@ -90,40 +80,19 @@ class EfficientNetBuilder:
         ba['name'] = name
         ba['in_chs'] = self.in_chs
         ba['out_chs'] = self.round_chs_fn(ba['out_chs'])
-        if 'force_in_chs' in ba and ba['force_in_chs']:
-            # NOTE this is a hack to work around mismatch in TF EdgeEffNet impl
-            ba['force_in_chs'] = self.round_chs_fn(ba['force_in_chs'])
         ba['pad_type'] = self.pad_type
         # block act fn overrides the model default
         ba['act_layer'] = ba['act_layer'] if ba['act_layer'] is not None else self.act_layer
         assert ba['act_layer'] is not None
         ba['norm_layer'] = self.norm_layer
         ba['drop_path_rate'] = drop_path_rate
-        if bt != 'cn':
-            se_ratio = ba.pop('se_ratio')
-            if se_ratio and self.se_layer is not None:
-                if not self.se_from_exp:
-                    # adjust se_ratio by expansion ratio if calculating se channels from block input
-                    se_ratio /= ba.get('exp_ratio', 1.0)
-                if self.se_has_ratio:
-                    ba['se_layer'] = partial(self.se_layer, rd_ratio=se_ratio)
-                else:
-                    ba['se_layer'] = self.se_layer
+        if bt != 'cn': 
+            ba.pop('se_ratio') 
 
-        if bt == 'ir':
-            if self.verbose:
-                print('  InvertedResidual {}, Args: {}'.format(block_idx, str(ba)))
-            block = CondConvResidual(**ba) if ba.get('num_experts', 0) else InvertedResidual(**ba)
+        if bt == 'ir': 
+            block = InvertedResidual(**ba) 
         elif bt == 'ds' or bt == 'dsa':
-            if self.verbose:
-                print('  DepthwiseSeparable {}, Args: {}'.format(block_idx, str(ba)))
             block = DepthwiseSeparableConv(**ba)
-        elif bt == 'er':
-            _log_info_if('  EdgeResidual {}, Args: {}'.format(block_idx, str(ba)), self.verbose)
-            block = EdgeResidual(**ba)
-        elif bt == 'cn':
-            _log_info_if('  ConvBnAct {}, Args: {}'.format(block_idx, str(ba)), self.verbose)
-            block = ConvBnAct(**ba)
         else:
             assert False, 'Uknkown block type (%s) while building model.' % bt
 
@@ -140,33 +109,21 @@ class EfficientNetBuilder:
              List of block stacks (each stack wrapped in nn.Sequential)
         """
         name = handle_name(name)
-        if self.verbose:
-            print('Building model trunk with %d stages...' % len(model_block_args))
         self.in_chs = in_chs
         total_block_count = sum([len(x) for x in model_block_args])
         total_block_idx = 0
         current_stride = 2
         current_dilation = 1
         stages = []
-        if model_block_args[0][0]['stride'] > 1:
-            # if the first block starts with a stride, we need to extract first level feat from stem
-            feature_info = dict(module='bn1', num_chs=in_chs, stage=0, reduction=current_stride)
-            self.features.append(feature_info)
 
         # outer list of block_args defines the stacks
         for stack_idx, stack_args in enumerate(model_block_args):
-            last_stack = stack_idx + 1 == len(model_block_args)
-            if self.verbose:
-                print('Stack: {}'.format(stack_idx))
             assert isinstance(stack_args, list)
 
             blocks = []
             # each stack (stage of blocks) contains a list of block arguments
             for block_idx, block_args in enumerate(stack_args):
                 last_block = block_idx + 1 == len(stack_args)
-                if self.verbose:
-                    print(' Block: {}'.format(block_idx))
-
                 assert block_args['stride'] in (1, 2)
                 if block_idx >= 1:   # only the first block in any stack can have a stride > 1
                     block_args['stride'] = 1
@@ -180,14 +137,7 @@ class EfficientNetBuilder:
                 next_dilation = current_dilation
                 if block_args['stride'] > 1:
                     next_output_stride = current_stride * block_args['stride']
-                    if next_output_stride > self.output_stride:
-                        next_dilation = current_dilation * block_args['stride']
-                        block_args['stride'] = 1
-                        if self.verbose:
-                            print('  Converting stride to dilation to maintain output_stride=={}'.format(
-                            self.output_stride))
-                    else:
-                        current_stride = next_output_stride
+                    current_stride = next_output_stride
                 block_args['dilation'] = current_dilation
                 if next_dilation != current_dilation:
                     current_dilation = next_dilation
@@ -203,12 +153,7 @@ class EfficientNetBuilder:
                         reduction=current_stride,
                         **block.feature_info(self.feature_location),
                     )
-                    leaf_name = feature_info.get('module', '')
-                    if leaf_name:
-                        feature_info['module'] = '/'.join([f'blocks.{stack_idx}.{block_idx}', leaf_name])
-                    else:
-                        assert last_block
-                        feature_info['module'] = f'blocks.{stack_idx}'
+                    feature_info['module'] = f'blocks.{stack_idx}'
                     self.features.append(feature_info)
 
                 total_block_idx += 1  # incr global block idx (across all stacks)
@@ -245,13 +190,11 @@ class EfficientNetFeatures:
         act_layer = act_layer or tf.keras.layers.ReLU
         norm_layer = norm_layer or tf.keras.layers.BatchNormalization
         norm_act_layer = get_norm_act_layer(norm_layer, act_layer)
-        se_layer = se_layer or SqueezeExcite
+        se_layer = se_layer
         self.drop_rate = drop_rate
         self.grad_checkpointing = False
 
         # Stem
-        if not fix_stem:
-            stem_size = round_chs_fn(stem_size)
         self.conv_stem = create_conv2d(in_chans, stem_size, 3, stride=2, padding=pad_type, name=name + '/conv_stem')
         self.bn1 = norm_act_layer(stem_size, name=name + '/bn1')
 
@@ -274,45 +217,33 @@ class EfficientNetFeatures:
 
         # Register feature extraction hooks with FeatureHooks helper
         self.feature_hooks = None
-        if feature_location != 'bottleneck':
-            raise NotImplemented
-
-    def set_grad_checkpointing(self, enable=True):
-        self.grad_checkpointing = enable
 
     def __call__(self, x) -> List[tf.Tensor]:
         x = self.conv_stem(x)
         x = self.bn1(x)
-        if self.feature_hooks is None:
-            features = []
-            if 0 in self._stage_out_idx:
-                features.append(x)  # add stem out
-            for i, b in enumerate(self.blocks):
-                for bb in b:
-                    # print(i, type(b), type(bb))
-                    x = bb(x)
-                if i + 1 in self._stage_out_idx:
-                    features.append(x)
-            return features
-        else:
-            self.blocks(x)
-            out = self.feature_hooks.get_output(x.device)
-            return list(out.values())
+        features = []
+        for i, b in enumerate(self.blocks):
+            for bb in b:
+                # print(i, type(b), type(bb))
+                x = bb(x)
+            if i + 1 in self._stage_out_idx:
+                features.append(x)
+        return features
 
 
 def _create_effnet(variant, pretrained=False, **kwargs):
-    features_mode = ''
-    model_cls = None  # EfficientNet
-    kwargs_filter = None
-    if kwargs.pop('features_only', False):
-        if 'feature_cfg' in kwargs:
-            features_mode = 'cfg'
-        else:
-            kwargs_filter = ('num_classes', 'num_features', 'head_conv', 'global_pool')
-            model_cls = EfficientNetFeatures
-            features_mode = 'cls'
-    else:
-        raise NotImplemented
+    features_mode = '' 
+    model_cls = None  # EfficientNet 
+    kwargs_filter = None 
+    if kwargs.pop('features_only', False): 
+        if 'feature_cfg' in kwargs: 
+            features_mode = 'cfg' 
+        else: 
+            kwargs_filter = ('num_classes', 'num_features', 'head_conv', 'global_pool') 
+            model_cls = EfficientNetFeatures 
+            features_mode = 'cls' 
+    else: 
+        raise NotImplemented 
 
     model = build_model_with_cfg(
         model_cls,
@@ -323,16 +254,12 @@ def _create_effnet(variant, pretrained=False, **kwargs):
         kwargs_filter=kwargs_filter,
         **kwargs,
     )
-    if features_mode == 'cls':
-        model.pretrained_cfg = model.default_cfg = pretrained_cfg_for_features(model.pretrained_cfg)
+    model.pretrained_cfg = model.default_cfg = pretrained_cfg_for_features(model.pretrained_cfg)
     return model
 
 
 def resolve_bn_args(kwargs):
     bn_args = {}
-    bn_momentum = kwargs.pop('bn_momentum', None)
-    if bn_momentum is not None:
-        bn_args['momentum'] = bn_momentum
     bn_eps = kwargs.pop('bn_eps', None)
     if bn_eps is not None:
         bn_args['epsilon'] = bn_eps
@@ -464,20 +391,12 @@ def create_model(
     kwargs = {k: v for k, v in kwargs.items() if v is not None}
 
     model_source, model_name = parse_model_name(model_name)
-    if model_source == 'hf-hub':
-        assert not pretrained_cfg, 'pretrained_cfg should not be set when sourcing model from Hugging Face Hub.'
-        # For model names specified in the form `hf-hub:path/architecture_name@revision`,
-        # load model weights + pretrained_cfg from Hugging Face hub.
-        raise NotImplemented
-        # pretrained_cfg, model_name = load_model_config_from_hf(model_name)
-    else:
-        model_name, pretrained_tag = split_model_name_tag(model_name)
-        if pretrained_tag and not pretrained_cfg:
-            # a valid pretrained_cfg argument takes priority over tag in model name
-            pretrained_cfg = pretrained_tag
+    model_name, pretrained_tag = split_model_name_tag(model_name)
+    if pretrained_tag and not pretrained_cfg:
+        # a valid pretrained_cfg argument takes priority over tag in model name
+        pretrained_cfg = pretrained_tag
 
-    if not is_model(model_name):
-        raise RuntimeError('Unknown model (%s)' % model_name)
+    model_name, pretrained_tag = split_model_name_tag(model_name) 
 
     create_fn = model_entrypoints[model_name]
     # with set_layer_config(scriptable=scriptable, exportable=exportable, no_jit=no_jit):
