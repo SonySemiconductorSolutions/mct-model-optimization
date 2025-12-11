@@ -39,6 +39,34 @@ def get_target_platform_capabilities(tpc_version: str = '1.0',
     return tpc
 
 
+def get_target_platform_capabilities_sdsp(sdsp_version: str = '3.14') -> TargetPlatformCapabilities:
+    """
+    Retrieves target platform capabilities model based on sdsp converter version.
+
+    Args:
+        sdsp_version (str): Sdsp converter version.
+        
+    Returns:
+        TargetPlatformCapabilities: The TargetPlatformCapabilities object.
+    """
+    sdsp_version = str(sdsp_version)
+    # Get the corresponding tpc version from sdsp converter version.
+    sdsp_to_tpc_version = {
+        '3.14': '1.0',
+        '3.16': '4.0',
+        '3.17': '5.0',
+    }
+
+    msg = (f"Error: The specified sdsp converter version '{sdsp_version}' is not valid. "
+        f"Available versions are: {', '.join(sdsp_to_tpc_version.keys())}. "
+        "Please ensure you are using a supported sdsp converter version.")
+    assert sdsp_version in sdsp_to_tpc_version, msg
+
+    tpc_version = sdsp_to_tpc_version.get(sdsp_version)
+
+    return get_target_platform_capabilities(tpc_version)
+
+
 def get_tpc_model(name: str, tpc: TargetPlatformCapabilities):
     """
     This is a utility method that just returns the TargetPlatformCapabilities that it receives, to support existing TPC API.
