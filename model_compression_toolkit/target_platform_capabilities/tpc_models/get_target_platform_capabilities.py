@@ -15,6 +15,12 @@
 from model_compression_toolkit.target_platform_capabilities.constants import IMX500_TP_MODEL
 from model_compression_toolkit.target_platform_capabilities.schema.mct_current_schema import TargetPlatformCapabilities
 from model_compression_toolkit.target_platform_capabilities.tpc_models import generate_tpc_func
+from model_compression_toolkit.target_platform_capabilities.tpc_models.imx500_tpc import V1_0, V4_0, V5_0
+
+# SDSP converter versions
+SDSP_V3_14 = '3.14'
+SDSP_V3_16 = '3.16'
+SDSP_V3_17 = '3.17'
 
 
 def get_target_platform_capabilities(tpc_version: str = '1.0',
@@ -52,9 +58,9 @@ def get_target_platform_capabilities_sdsp(sdsp_version: str = '3.14') -> TargetP
     sdsp_version = str(sdsp_version)
     # Get the corresponding tpc version from sdsp converter version.
     sdsp_to_tpc_version = {
-        '3.14': '1.0',
-        '3.16': '4.0',
-        '3.17': '5.0',
+        SDSP_V3_14: V1_0,
+        SDSP_V3_16: V4_0,
+        SDSP_V3_17: V5_0,
     }
 
     msg = (f"Error: The specified sdsp converter version '{sdsp_version}' is not valid. "
