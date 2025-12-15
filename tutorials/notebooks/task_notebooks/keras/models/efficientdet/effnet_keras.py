@@ -19,7 +19,7 @@
 #   * Torch layers replaced with Keras layers
 #   * removed class inheritance from torch.nn.Module
 #   * changed "forward" class methods with "__call__"
-#   * removed processes unused in effdet tutorial.
+#   * removed processes unused in tutorial(example_effdet_keras_mixed_precision_ptq.ipynb).
 # ==============================================================================
 
 from functools import partial
@@ -35,12 +35,6 @@ from models.efficientdet.effnet_blocks_keras import create_conv2d, get_attn, \
 
 __all__ = ["EfficientNetBuilder", "decode_arch_def", "efficientnet_init_weights",
            'resolve_bn_args', 'resolve_act_layer', 'round_channels', 'BN_MOMENTUM_TF_DEFAULT', 'BN_EPS_TF_DEFAULT']
-
-
-# #######################################################################################
-# This file generates the Keras model. It's based on the EfficientNet code in the timm
-# repository, and switched the Torch Modules with Keras layers
-# #######################################################################################
 
 
 class EfficientNetBuilder:

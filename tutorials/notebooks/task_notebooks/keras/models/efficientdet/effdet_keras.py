@@ -19,7 +19,7 @@
 #   * Torch layers replaced with Keras layers
 #   * removed class inheritance from torch.nn.Module
 #   * changed "forward" class methods with "__call__"
-#   * removed processes unused in effdet tutorial.
+#   * removed processes unused in tutorial(example_effdet_keras_mixed_precision_ptq.ipynb).
 # ==============================================================================
 
 import logging
@@ -51,11 +51,6 @@ from models.utils.torch2keras_weights_translation import load_state_dict
 
 _ACT_LAYER = tf.nn.swish
 
-# #######################################################################################
-# This file generates the Keras model. It's based on the EfficientDet repository in
-# https://github.com/rwightman/efficientdet-pytorch, and switched the Torch Modules
-# with Keras layers
-# #######################################################################################
 
 def get_act_layer(act_type):
     if act_type == 'relu6':

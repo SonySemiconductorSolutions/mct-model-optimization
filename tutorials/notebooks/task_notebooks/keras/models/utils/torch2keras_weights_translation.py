@@ -13,10 +13,12 @@
 # limitations under the License.
 # ==============================================================================
 
+
 from typing import Dict
 import tensorflow as tf
 import torch
 import numpy as np
+
 
 def weight_translation(keras_name: str, pytorch_weights_dict: Dict[str, np.ndarray],
                        layer: tf.keras.layers.Layer) -> np.ndarray:
@@ -66,6 +68,7 @@ def load_state_dict(model: tf.keras.Model, state_dict_url: str = None,
                     state_dict_torch: Dict = None):
     """
     Assign a Keras model weights according to a state_dict from the equivalent Torch model.
+
     Args:
         model (tf.keras.Model): A Keras model
         state_dict_url (str): the Torch model state_dict location

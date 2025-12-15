@@ -19,7 +19,7 @@
 #   * Torch layers replaced with Keras layers
 #   * removed class inheritance from torch.nn.Module
 #   * changed "forward" class methods with "__call__"
-#   * removed processes unused in effdet tutorial.
+#   * removed processes unused in tutorial(example_effdet_keras_mixed_precision_ptq.ipynb).
 # ==============================================================================
 
 import types
