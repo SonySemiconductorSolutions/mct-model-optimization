@@ -75,7 +75,7 @@ def load_state_dict(model: tf.keras.Model, state_dict_url: str = None,
         state_dict_torch(Dict[str, np.ndarray]): Torch model state_dict. If not None, will be used instead of state_dict_url
 
     Returns:
-        tf.keras.Model: The same model object after assigning the weights(model)
+        tf.keras.Model: Input Keras model after assigning the weights.
 
     """
     if state_dict_torch is None:
@@ -84,7 +84,8 @@ def load_state_dict(model: tf.keras.Model, state_dict_url: str = None,
                                                               map_location='cpu')
     state_dict = {k: v.numpy() for k, v in state_dict_torch.items()}
 
-    for layer in model.layers:
+    model_copy = tf.keras.models.clone_model(model)
+    for layer in model_copy.layers:
         for w in layer.weights:
             w.assign(weight_translation(w.name, state_dict, layer))
 
@@ -93,3 +94,5 @@ def load_state_dict(model: tf.keras.Model, state_dict_url: str = None,
         if 'num_batches_tracked' in k:
             continue
         print(f'  WARNING: {k} not assigned to keras model !!!')
+    
+    return model_copy

@@ -572,5 +572,5 @@ class EfficientDetKeras:
 
         model = tf.keras.Model(inputs=_input, outputs=[x_class, x_box])
         if load_state_dict_to_model:
-            load_state_dict(model, self.config.url)
+            model = load_state_dict(model, self.config.url)
         return model
