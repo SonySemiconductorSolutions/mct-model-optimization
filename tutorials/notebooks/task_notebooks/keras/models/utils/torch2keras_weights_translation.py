@@ -20,8 +20,8 @@ import torch
 import numpy as np
 
 
-def weight_translation(keras_name: str, pytorch_weights_dict: Dict[str, np.ndarray],
-                       layer: tf.keras.layers.Layer) -> np.ndarray:
+def weight_translation(keras_name: str, 
+                       pytorch_weights_dict: Dict[str, np.ndarray]) -> np.ndarray:
     """
     Convert a keras weight name format to torch naming format, so the value of the weight can be
     retrieved from the Torch model state_dict.
@@ -34,7 +34,6 @@ def weight_translation(keras_name: str, pytorch_weights_dict: Dict[str, np.ndarr
     Args:
         keras_name (str): keras weight name
         pytorch_weights_dict (Dict[str, np.ndarray]): the Torch model state_dict, as {name_str: weight value as numpy array}
-        layer (tf.keras.layers.Layer): the Keras layer of the weight
 
     Returns:
         np.ndarray: the weight value as a numpy array
@@ -87,7 +86,7 @@ def load_state_dict(model: tf.keras.Model, state_dict_url: str = None,
     model_copy = tf.keras.models.clone_model(model)
     for layer in model_copy.layers:
         for w in layer.weights:
-            w.assign(weight_translation(w.name, state_dict, layer))
+            w.assign(weight_translation(w.name, state_dict))
 
     # look for variables not assigned in torch state dict
     for k in state_dict:
