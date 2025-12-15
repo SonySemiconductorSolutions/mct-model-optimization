@@ -14,9 +14,7 @@
 # ==============================================================================
 import importlib
 from model_compression_toolkit.target_platform_capabilities.schema.mct_current_schema import TargetPlatformCapabilities
-
-# TPC versions.
-V1_0 = '1.0'
+from model_compression_toolkit.target_platform_capabilities.constants import TPC_V1_0
 
 
 def generate_tflite_tpc(tpc_version: str) -> TargetPlatformCapabilities:
@@ -32,7 +30,7 @@ def generate_tflite_tpc(tpc_version: str) -> TargetPlatformCapabilities:
 
     # Organize all tpc versions into tpcs_dict.
     tpcs_dict = {
-        V1_0: "model_compression_toolkit.target_platform_capabilities.tpc_models.tflite_tpc.v1_0.tpc"
+        TPC_V1_0: "model_compression_toolkit.target_platform_capabilities.tpc_models.tflite_tpc.v1_0.tpc"
     }
 
     msg = (f"Error: The specified tpc version '{tpc_version}' is not valid. "

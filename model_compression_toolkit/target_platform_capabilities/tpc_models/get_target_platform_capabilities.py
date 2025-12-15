@@ -12,18 +12,13 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 # ==============================================================================
-from model_compression_toolkit.target_platform_capabilities.constants import IMX500_TP_MODEL
+from model_compression_toolkit.target_platform_capabilities.constants import IMX500_TP_MODEL, TPC_V1_0, TPC_V4_0, TPC_V5_0, \
+    SDSP_V3_14, SDSP_V3_16, SDSP_V3_17
 from model_compression_toolkit.target_platform_capabilities.schema.mct_current_schema import TargetPlatformCapabilities
 from model_compression_toolkit.target_platform_capabilities.tpc_models import generate_tpc_func
-from model_compression_toolkit.target_platform_capabilities.tpc_models.imx500_tpc import V1_0, V4_0, V5_0
-
-# SDSP converter versions
-SDSP_V3_14 = '3.14'
-SDSP_V3_16 = '3.16'
-SDSP_V3_17 = '3.17'
 
 
-def get_target_platform_capabilities(tpc_version: str = '1.0',
+def get_target_platform_capabilities(tpc_version: str = TPC_V1_0,
                                      device_type: str = IMX500_TP_MODEL) -> TargetPlatformCapabilities:
     """
     Retrieves target platform capabilities model based on tpc version and the specified device type.
@@ -45,7 +40,7 @@ def get_target_platform_capabilities(tpc_version: str = '1.0',
     return tpc
 
 
-def get_target_platform_capabilities_sdsp(sdsp_version: str = '3.14') -> TargetPlatformCapabilities:
+def get_target_platform_capabilities_sdsp(sdsp_version: str = SDSP_V3_14) -> TargetPlatformCapabilities:
     """
     Retrieves target platform capabilities model based on sdsp converter version.
 
@@ -58,9 +53,9 @@ def get_target_platform_capabilities_sdsp(sdsp_version: str = '3.14') -> TargetP
     sdsp_version = str(sdsp_version)
     # Get the corresponding tpc version from sdsp converter version.
     sdsp_to_tpc_version = {
-        SDSP_V3_14: V1_0,
-        SDSP_V3_16: V4_0,
-        SDSP_V3_17: V5_0,
+        SDSP_V3_14: TPC_V1_0,
+        SDSP_V3_16: TPC_V4_0,
+        SDSP_V3_17: TPC_V5_0,
     }
 
     msg = (f"Error: The specified sdsp converter version '{sdsp_version}' is not valid. "
