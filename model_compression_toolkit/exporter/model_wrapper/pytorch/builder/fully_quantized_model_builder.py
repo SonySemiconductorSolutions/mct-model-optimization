@@ -114,8 +114,8 @@ if FOUND_TORCH:
 
         Logger.info("\nPlease run your accuracy evaluation on the exported quantized model to verify it's accuracy.\n"
                     "Checkout the FAQ and Troubleshooting pages for resolving common issues and improving the quantized model accuracy:\n"
-                    "FAQ: https://github.com/sony/model_optimization/tree/main/FAQ.md\n"
-                    "Quantization Troubleshooting: https://github.com/sony/model_optimization/tree/main/quantization_troubleshooting.md")
+                    "FAQ: https://github.com/SonySemiconductorSolutions/mct-model-optimization/tree/main/FAQ.md\n"
+                    "Quantization Troubleshooting: https://github.com/SonySemiconductorSolutions/mct-model-optimization/tree/main/quantization_troubleshooting.md")
 
         return exportable_model, user_info
 

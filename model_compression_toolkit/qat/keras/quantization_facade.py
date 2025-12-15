@@ -167,13 +167,13 @@ if FOUND_TF:
 
              >>> quantized_model = tf.keras.models.load_model(model_file, custom_objects=custom_objects)
 
-             For more configuration options, please take a look at our `API documentation <https://sony.github.io/model_optimization/api/api_docs/modules/mixed_precision_quantization_config.html>`_.
+             For more configuration options, please take a look at our `API documentation <https://sonysemiconductorsolutions.github.io/mct-model-optimization/api/api_docs/classes/MixedPrecisionQuantizationConfig.html>`_.
 
          """
 
         Logger.warning(f"keras_quantization_aware_training_init_experimental is experimental and is subject to future changes."
                        f"If you encounter an issue, please open an issue in our GitHub "
-                       f"project https://github.com/sony/model_optimization")
+                       f"project https://github.com/SonySemiconductorSolutions/mct-model-optimization")
 
         KerasModelValidation(model=in_model,
                              fw_info=DEFAULT_KERAS_INFO).validate()
@@ -274,7 +274,7 @@ if FOUND_TF:
         Logger.warning(
             f"keras_quantization_aware_training_finalize_experimental is experimental and is subject to future changes."
             f"If you encounter an issue, please open an issue in our GitHub "
-            f"project https://github.com/sony/model_optimization")
+            f"project https://github.com/SonySemiconductorSolutions/mct-model-optimization")
 
         def _export(layer):
             if isinstance(layer, KerasTrainableQuantizationWrapper):

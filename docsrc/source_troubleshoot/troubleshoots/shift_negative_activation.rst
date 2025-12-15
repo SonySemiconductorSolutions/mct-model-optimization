@@ -48,4 +48,4 @@ Set ``shift_negative_activation_correction`` to True in the ``QuantizationConfig
 .. note::
   
   After activating this flag, you have a few more tweaks to its operation that you can control with the ``shift_negative_ratio``, ``shift_negative_threshold_recalculation`` & ``shift_negative_params_search`` flags. 
-  Read all about them in the `quantization configuration <https://github.com/SonySemiconductorSolutions/mct-model-optimization/blob/v2.4.2/model_compression_toolkit/core/common/quantization/quantization_config.py#L97-L99>`_ class description.
+  Read all about them in the `quantization configuration <https://github.com/SonySemiconductorSolutions/mct-model-optimization/tree/main/model_compression_toolkit/core/common/quantization/quantization_config.py>`_ class description.

@@ -48,6 +48,6 @@ If quantization accuracy of your model does not improve after reading Judgeable 
 
 References
 ============================================
-[1] `Quantization Troubleshooting for MCT <https://github.com/SonySemiconductorSolutions/mct-model-optimization/blob/v2.4.2/quantization_troubleshooting.md>`_
+[1] `Quantization Troubleshooting for MCT <https://github.com/SonySemiconductorSolutions/mct-model-optimization/tree/main/quantization_troubleshooting.md>`_
 
 [2] `PyTorch documentation (v2.5) <https://docs.pytorch.org/docs/2.5/index.html>`_

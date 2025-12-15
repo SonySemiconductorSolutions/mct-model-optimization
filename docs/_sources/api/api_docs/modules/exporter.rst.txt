@@ -8,7 +8,7 @@ exporter Module
 =================================
 
 Allows to export a quantized model in different serialization formats and quantization formats.
-For more details about the export formats and options, please refer to the project's GitHub `README file <https://github.com/sony/model_optimization/tree/main/model_compression_toolkit/exporter>`_.
+For more details about the export formats and options, please refer to the project's GitHub `README file <https://github.com/SonySemiconductorSolutions/mct-model-optimization/tree/main/model_compression_toolkit/exporter>`_.
 If you have any questions or issues, please open an issue in this GitHub repository.
 
 

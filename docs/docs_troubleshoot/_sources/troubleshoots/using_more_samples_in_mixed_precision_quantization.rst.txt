@@ -8,7 +8,7 @@ Using more samples in Mixed Precision quantization
 ===================================================
 In Mixed Precision quantization, MCT will assign a different bit width to each weight in the model, depending on the weight's layer sensitivity and a resource constraint defined by the user, such as target model size.
 
-Check out the `mixed precision tutorial <https://github.com/SonySemiconductorSolutions/mct-model-optimization/blob/v2.4.2/tutorials/notebooks/mct_features_notebooks/pytorch/example_pytorch_mixed_precision_ptq.ipynb>`_ for more information.
+Check out the `mixed precision tutorial <https://github.com/SonySemiconductorSolutions/mct-model-optimization/tree/main/tutorials/notebooks/mct_features_notebooks/pytorch/example_pytorch_mixed_precision_ptq.ipynb>`_ for more information.
 
 Overview
 ==============================

@@ -13,7 +13,7 @@ When PTQ (either with or without Mixed Precision) fails to deliver the required 
 
 In GPTQ, MCT will finetune the model's weights and quantization parameters for improved accuracy. The finetuning process will only use the label-less representative dataset.
 
-Check out the `GPTQ tutorial <https://github.com/SonySemiconductorSolutions/mct-model-optimization/blob/v2.4.2/tutorials/notebooks/mct_features_notebooks/pytorch/example_pytorch_mobilenet_gptq.ipynb>`_ for more information and an implementation example.
+Check out the `GPTQ tutorial <https://github.com/SonySemiconductorSolutions/mct-model-optimization/tree/main/tutorials/notebooks/mct_features_notebooks/pytorch/example_pytorch_mobilenet_gptq.ipynb>`_ for more information and an implementation example.
 
 Solution
 =================================

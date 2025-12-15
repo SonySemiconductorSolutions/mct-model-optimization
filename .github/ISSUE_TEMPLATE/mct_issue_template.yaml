@@ -29,7 +29,6 @@ body:
       options:
         - source
         - pip (model-compression-toolkit)
-        - pip (mct-nightly)
     validations:
       required: true
   - type: input
@@ -53,7 +52,7 @@ body:
     attributes:
       label: Python version
       description:
-      placeholder: e.g., 3.9
+      placeholder: e.g., 3.11
     validations:
       required: false
   - type: textarea
