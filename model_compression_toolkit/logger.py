@@ -19,9 +19,38 @@ import os
 from datetime import datetime
 from pathlib import Path
 import importlib.util
+import inspect
+import sys
 
 LOGGER_NAME = 'Model Compression Toolkit'
 
+
+class CallerFormatter(logging.Formatter):
+    """Custom formatter to retrieve caller's file information"""
+    def format(self, record):
+        # Get the caller's frame by skipping the Logger class to find the original code
+        frame = inspect.currentframe()
+        
+        # Find the actual caller by traversing beyond the logging system and Logger class
+        while frame:
+            # フレーム情報を表示
+            # print(f"Inspecting frame: {frame.f_code.co_filename}, line {frame.f_lineno}")
+            
+            frame_info = inspect.getframeinfo(frame)
+            # Find a frame that is not inside the Logger class
+            if 'logger.py' not in frame_info.filename and 'logging' not in frame_info.filename:
+                caller_frame = frame
+                break
+            frame = frame.f_back
+        
+
+        # Fallback: extract from file path
+        file_path = caller_frame.f_code.co_filename
+        parts = file_path.replace(os.sep, '/').split('/')
+        record.caller_module = parts[-2] if len(parts) > 1 else 'unknown'
+        record.caller_filename = os.path.basename(caller_frame.f_code.co_filename)
+        record.caller_lineno = caller_frame.f_lineno
+        return super().format(record)
 
 class Logger:
     # Logger has levels of verbosity.
@@ -74,7 +103,19 @@ class Logger:
         """
         Returns: An instance of the logger.
         """
-        return logging.getLogger(LOGGER_NAME)
+        logger = logging.getLogger(LOGGER_NAME)
+        
+        # Configure logging only once
+        if not logger.handlers:
+            handler = logging.StreamHandler()
+            formatter = CallerFormatter(
+                '%(caller_module)s - %(caller_filename)s:%(caller_lineno)d - %(message)s'
+            )
+            handler.setFormatter(formatter)
+            logger.addHandler(handler)
+            logger.setLevel(logging.INFO)
+        
+        return logger
 
     @staticmethod
     def set_stream_handler():
@@ -85,11 +126,15 @@ class Logger:
         
         # Check if StreamHandler already exists
         for handler in logger.handlers:
-            if isinstance(handler, logging.StreamHandler):
+            if isinstance(handler, logging.StreamHandler) and not isinstance(handler, logging.FileHandler):
                 return
         
         # Add StreamHandler
         sh = logging.StreamHandler()
+        formatter = CallerFormatter(
+            '%(caller_module)s - %(caller_filename)s:%(caller_lineno)d - %(message)s'
+        )
+        sh.setFormatter(formatter)
         logger.addHandler(sh)
 
     @staticmethod
@@ -115,6 +160,10 @@ class Logger:
         Logger.__check_path_create_dir(Logger.LOG_PATH)
 
         fh = logging.FileHandler(log_name)
+        formatter = CallerFormatter(
+            '%(caller_module)s - %(caller_filename)s:%(caller_lineno)d - %(message)s'
+        )
+        fh.setFormatter(formatter)
         logger.addHandler(fh)
 
         print(f'log file is in {log_name}')
@@ -208,6 +257,8 @@ def set_log_folder(folder: str, level: int = logging.INFO):
     Logger.set_logger_level(level)
     Logger.set_handler_level(level)
 
+    return
+
     # Check if mct-quantizers is installed
     if importlib.util.find_spec("mct_quantizers") is not None:
         # Create _MCTQ folder
@@ -215,8 +266,20 @@ def set_log_folder(folder: str, level: int = logging.INFO):
         
         # Call set_log_folder from mct-quantizers
         try:
-            # Import from installed mct-quantizers package
-            from mct_quantizers import logger as mct_quantizers_logger
+            # Check if using local mct-quantizers
+            is_local_mctq = os.environ.get('USE_LOCAL_MCTQ', 'False').lower() == 'true'
+            is_local_mctq = True
+  
+            if is_local_mctq:
+                # Import from local mct-quantization-layers
+                local_mctq_path = os.path.expanduser("~/wrapper/sonyfork/mct-quantization-layers")
+                sys.path.insert(0, local_mctq_path)
+                from mct_quantizers import logger as mct_quantizers_logger
+                sys.path.pop(0)
+            else:
+                # Import from installed mct-quantizers package
+                from mct_quantizers import logger as mct_quantizers_logger
+            
             mct_quantizers_logger.set_log_folder(mctq_folder, level)
         except Exception as e:
             Logger.warning(f"Failed to import set_log_folder from mct-quantizers: {e}")
