@@ -27,7 +27,6 @@ import tensorflow as tf
 from mct_quantizers import QuantizationMethod
 from mct_quantizers.keras.quantizers import WeightsLUTSymmetricInferableQuantizer
 from tests.common_tests.helpers.generate_test_tpc import generate_test_tpc
-from model_compression_toolkit.target_platform_capabilities.tpc_models.imx500_tpc.latest import generate_keras_tpc
 from tests.keras_tests.exporter_tests.keras_fake_quant.keras_fake_quant_exporter_base_test import \
     KerasFakeQuantExporterBaseTest, get_minmax_from_qparams
 
@@ -38,8 +37,8 @@ class TestConv2DKerasFQExporter(KerasFakeQuantExporterBaseTest):
 
     def get_tpc(self):
         tp = generate_test_tpc({'weights_n_bits': 2,
-                                     'activation_n_bits': 2})
-        return generate_keras_tpc(name="test_conv2d_2bit_fq_weight", tpc=tp)
+                                'activation_n_bits': 2})
+        return tp
 
     def get_model(self):
         inputs = Input(shape=self.get_input_shape()[0])
@@ -114,8 +113,8 @@ class TestCon2DWeightsLUTKerasFQExporter(KerasFakeQuantExporterBaseTest):
 
     def get_tpc(self):
         tp = generate_test_tpc({'weights_n_bits': 2,
-                                     'weights_quantization_method': QuantizationMethod.LUT_SYM_QUANTIZER})
-        return generate_keras_tpc(name="test_conv2d_2bit_lut_fq_weight", tpc=tp)
+                                'weights_quantization_method': QuantizationMethod.LUT_SYM_QUANTIZER})
+        return tp
 
     def get_model(self):
         inputs = Input(shape=self.get_input_shape()[0])

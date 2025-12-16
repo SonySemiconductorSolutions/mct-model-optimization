@@ -18,12 +18,10 @@ from keras.layers import Conv2D
 import numpy as np
 import tests.keras_tests.exporter_tests.constants as constants
 
-
 from tests.keras_tests.exporter_tests.tflite_fake_quant.tflite_fake_quant_exporter_base_test import \
     TFLiteFakeQuantExporterBaseTest
 
 from tests.common_tests.helpers.generate_test_tpc import generate_test_tpc
-from model_compression_toolkit.target_platform_capabilities.tpc_models.imx500_tpc.latest import generate_keras_tpc
 
 
 class TestConv2DTFLiteFQExporter(TFLiteFakeQuantExporterBaseTest):
@@ -33,7 +31,7 @@ class TestConv2DTFLiteFQExporter(TFLiteFakeQuantExporterBaseTest):
 
     def get_tpc(self):
         tp = generate_test_tpc({'weights_n_bits': 2})
-        return generate_keras_tpc(name="test_conv2d_2bit_fq_weight", tpc=tp)
+        return tp
 
     def get_model(self):
         inputs = Input(shape=self.get_input_shape()[0])
@@ -69,7 +67,7 @@ class TestConv2DReusedTFLiteFQExporter(TFLiteFakeQuantExporterBaseTest):
 
     def get_tpc(self):
         tp = generate_test_tpc({'weights_n_bits': 2})
-        return generate_keras_tpc(name="test_conv2d_2bit_reused_weight", tpc=tp)
+        return tp
 
     def get_model(self):
         conv = Conv2D(3,3)
