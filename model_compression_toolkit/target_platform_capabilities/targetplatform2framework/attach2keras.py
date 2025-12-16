@@ -105,6 +105,7 @@ class AttachTpcToKeras(AttachTpcToFramework):
             OperatorSetNames.SIN: [tf.math.sin],
             OperatorSetNames.COS: [tf.math.cos],
             OperatorSetNames.TAKE: [],  # no such operator in tensorflow
+            OperatorSetNames.INDEX_SELECT: [],  # no such operator in tensorflow
         }
 
         self._opset2attr_mapping = {
