@@ -246,30 +246,3 @@ def set_log_folder(folder: str, level: int = logging.INFO):
     Logger.set_log_file(folder)
     Logger.set_logger_level(level)
     Logger.set_handler_level(level)
-
-    return
-
-    # Check if mct-quantizers is installed
-    if importlib.util.find_spec("mct_quantizers") is not None:
-        # Create _MCTQ folder
-        mctq_folder = os.path.join(folder, "_MCTQ")
-        
-        # Call set_log_folder from mct-quantizers
-        try:
-            # Check if using local mct-quantizers
-            is_local_mctq = os.environ.get('USE_LOCAL_MCTQ', 'False').lower() == 'true'
-            is_local_mctq = True
-  
-            if is_local_mctq:
-                # Import from local mct-quantization-layers
-                local_mctq_path = os.path.expanduser("~/wrapper/sonyfork/mct-quantization-layers")
-                sys.path.insert(0, local_mctq_path)
-                from mct_quantizers import logger as mct_quantizers_logger
-                sys.path.pop(0)
-            else:
-                # Import from installed mct-quantizers package
-                from mct_quantizers import logger as mct_quantizers_logger
-            
-            mct_quantizers_logger.set_log_folder(mctq_folder, level)
-        except Exception as e:
-            Logger.warning(f"Failed to import set_log_folder from mct-quantizers: {e}")
