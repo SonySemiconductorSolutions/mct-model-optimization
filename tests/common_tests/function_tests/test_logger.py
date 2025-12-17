@@ -70,16 +70,10 @@ class TestLogger(unittest.TestCase):
         mock_stream_handler.assert_called_once()
         logger_mock.addHandler.assert_called_once_with(stream_handler_mock)
 
-    @patch('model_compression_toolkit.logger.isinstance')
     @patch('model_compression_toolkit.logger.Logger.get_logger')
-    def test_set_stream_handler_already_exists(
-            self,
-            mock_get_logger,
-            mock_isinstance):
+    def test_set_stream_handler_already_exists(self, mock_get_logger):
         logger_mock = MagicMock()
-        existing_handler = MagicMock()
-        # Mock isinstance to return True, indicating handler exists
-        mock_isinstance.return_value = True
+        existing_handler = logging.StreamHandler()
         mock_get_logger.return_value = logger_mock
         logger_mock.handlers = [existing_handler]
         
