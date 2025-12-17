@@ -183,6 +183,17 @@ class Logger:
         raise Exception(msg)
 
     @staticmethod
+    def exception(msg: str):
+        """
+        Log a message at 'exception' severity and raise an exception.
+        Args:
+            msg: Message to log.
+
+        """
+        Logger.get_logger().exception(msg)
+        raise Exception(msg)
+
+    @staticmethod
     def debug(msg: str):
         """
         Log a message at 'debug' severity.

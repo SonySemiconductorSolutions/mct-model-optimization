@@ -113,6 +113,15 @@ class TestLogger(unittest.TestCase):
         logger_mock.critical.assert_called_once_with(self.log_message)
 
     @patch('model_compression_toolkit.logger.Logger.get_logger')
+    def test_exception(self, mock_get_logger):
+        logger_mock = MagicMock()
+        mock_get_logger.return_value = logger_mock
+        with self.assertRaises(Exception) as context:
+            Logger.exception(self.log_message)
+        self.assertTrue(self.log_message in str(context.exception))
+        logger_mock.exception.assert_called_once_with(self.log_message)
+
+    @patch('model_compression_toolkit.logger.Logger.get_logger')
     def test_debug(self, mock_get_logger):
         logger_mock = MagicMock()
         mock_get_logger.return_value = logger_mock
