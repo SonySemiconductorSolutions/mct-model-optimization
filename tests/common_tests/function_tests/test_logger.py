@@ -15,6 +15,7 @@
 
 
 import unittest
+import logging
 from unittest.mock import patch, MagicMock
 
 from model_compression_toolkit.logger import Logger, set_log_folder
