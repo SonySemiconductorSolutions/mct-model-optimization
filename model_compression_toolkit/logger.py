@@ -23,6 +23,7 @@ import inspect
 import sys
 
 LOGGER_NAME = 'Model Compression Toolkit'
+LOG_FORMAT = '%(caller_module)s - %(caller_filename)s:%(caller_lineno)d - %(message)s'
 
 
 class CallerFormatter(logging.Formatter):
@@ -40,14 +41,19 @@ class CallerFormatter(logging.Formatter):
             # Find a frame that is not inside the Logger class
             if 'logger.py' not in frame_info.filename and 'logging' not in frame_info.filename:
                 caller_frame = frame
+                
+                # Get package information from the caller frame
+                caller_module = inspect.getmodule(caller_frame)
+                if caller_module:
+                    record.caller_module = caller_module.__package__ if hasattr(caller_module, '__package__') else None
+                else:
+                    # Fallback: extract from file path
+                    file_path = caller_frame.f_code.co_filename
+                    parts = file_path.replace(os.sep, '/').split('/')
+                    record.caller_module = parts[-2] if len(parts) > 1 else 'unknown'                    
                 break
             frame = frame.f_back
-        
 
-        # Fallback: extract from file path
-        file_path = caller_frame.f_code.co_filename
-        parts = file_path.replace(os.sep, '/').split('/')
-        record.caller_module = parts[-2] if len(parts) > 1 else 'unknown'
         record.caller_filename = os.path.basename(caller_frame.f_code.co_filename)
         record.caller_lineno = caller_frame.f_lineno
         return super().format(record)
@@ -103,20 +109,8 @@ class Logger:
         """
         Returns: An instance of the logger.
         """
-        logger = logging.getLogger(LOGGER_NAME)
+        return logging.getLogger(LOGGER_NAME)
         
-        # Configure logging only once
-        if not logger.handlers:
-            handler = logging.StreamHandler()
-            formatter = CallerFormatter(
-                '%(caller_module)s - %(caller_filename)s:%(caller_lineno)d - %(message)s'
-            )
-            handler.setFormatter(formatter)
-            logger.addHandler(handler)
-            logger.setLevel(logging.INFO)
-        
-        return logger
-
     @staticmethod
     def set_stream_handler():
         """
@@ -131,9 +125,7 @@ class Logger:
         
         # Add StreamHandler
         sh = logging.StreamHandler()
-        formatter = CallerFormatter(
-            '%(caller_module)s - %(caller_filename)s:%(caller_lineno)d - %(message)s'
-        )
+        formatter = CallerFormatter(LOG_FORMAT)
         sh.setFormatter(formatter)
         logger.addHandler(sh)
 
@@ -160,9 +152,7 @@ class Logger:
         Logger.__check_path_create_dir(Logger.LOG_PATH)
 
         fh = logging.FileHandler(log_name)
-        formatter = CallerFormatter(
-            '%(caller_module)s - %(caller_filename)s:%(caller_lineno)d - %(message)s'
-        )
+        formatter = CallerFormatter(LOG_FORMAT)
         fh.setFormatter(formatter)
         logger.addHandler(fh)
 
