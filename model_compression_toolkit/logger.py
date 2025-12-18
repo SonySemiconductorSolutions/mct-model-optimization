@@ -19,44 +19,9 @@ import os
 from datetime import datetime
 from pathlib import Path
 import importlib.util
-import inspect
-import sys
 
 LOGGER_NAME = 'Model Compression Toolkit'
-LOG_FORMAT = '%(caller_module)s - %(caller_filename)s:%(caller_lineno)d - %(message)s'
 
-
-class CallerFormatter(logging.Formatter):
-    """Custom formatter to retrieve caller's file information"""
-    def format(self, record):
-        # Get the caller's frame by skipping the Logger class to find the original code
-        frame = inspect.currentframe()
-        
-        # Find the actual caller by traversing beyond the logging system and Logger class
-        while frame:
-            # フレーム情報を表示
-            # print(f"Inspecting frame: {frame.f_code.co_filename}, line {frame.f_lineno}")
-            
-            frame_info = inspect.getframeinfo(frame)
-            # Find a frame that is not inside the Logger class
-            if 'logger.py' not in frame_info.filename and 'logging' not in frame_info.filename:
-                caller_frame = frame
-                
-                # Get package information from the caller frame
-                caller_module = inspect.getmodule(caller_frame)
-                if caller_module:
-                    record.caller_module = caller_module.__package__ if hasattr(caller_module, '__package__') else None
-                else:
-                    # Fallback: extract from file path
-                    file_path = caller_frame.f_code.co_filename
-                    parts = file_path.replace(os.sep, '/').split('/')
-                    record.caller_module = parts[-2] if len(parts) > 1 else 'unknown'                    
-                break
-            frame = frame.f_back
-
-        record.caller_filename = os.path.basename(caller_frame.f_code.co_filename)
-        record.caller_lineno = caller_frame.f_lineno
-        return super().format(record)
 
 class Logger:
     # Logger has levels of verbosity.
@@ -110,7 +75,7 @@ class Logger:
         Returns: An instance of the logger.
         """
         return logging.getLogger(LOGGER_NAME)
-        
+
     @staticmethod
     def set_stream_handler():
         """
@@ -125,8 +90,6 @@ class Logger:
         
         # Add StreamHandler
         sh = logging.StreamHandler()
-        formatter = CallerFormatter(LOG_FORMAT)
-        sh.setFormatter(formatter)
         logger.addHandler(sh)
 
     @staticmethod
@@ -152,8 +115,6 @@ class Logger:
         Logger.__check_path_create_dir(Logger.LOG_PATH)
 
         fh = logging.FileHandler(log_name)
-        formatter = CallerFormatter(LOG_FORMAT)
-        fh.setFormatter(formatter)
         logger.addHandler(fh)
 
         print(f'log file is in {log_name}')
@@ -257,3 +218,16 @@ def set_log_folder(folder: str, level: int = logging.INFO):
     Logger.set_log_file(folder)
     Logger.set_logger_level(level)
     Logger.set_handler_level(level)
+
+    # Check if mct-quantizers is installed
+    if importlib.util.find_spec("mct_quantizers") is not None:
+        # Create _MCTQ folder
+        mctq_folder = os.path.join(folder, "_MCTQ")
+        
+        # Call set_log_folder from mct-quantizers
+        try:
+            # Import from installed mct-quantizers package
+            from mct_quantizers import logger as mct_quantizers_logger
+            mct_quantizers_logger.set_log_folder(mctq_folder, level)
+        except Exception as e:
+            Logger.warning(f"Failed to import set_log_folder from mct-quantizers: {e}")
