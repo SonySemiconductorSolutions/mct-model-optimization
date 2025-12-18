@@ -33,4 +33,4 @@ jobs:
         env:
           TPC_VERSION: ${{inputs.tpc-version}}
         run: |
-          pytest tests_network_deployment/test_run_mct.py
+          pytest tests_pytest/network_deployment_tests/test_run_mct.py

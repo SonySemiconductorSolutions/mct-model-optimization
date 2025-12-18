@@ -13,6 +13,7 @@
 # limitations under the License.
 # ==============================================================================
 import os
+import shutil
 import numpy as np
 from torchvision.models import mobilenet_v2
 
@@ -60,6 +61,8 @@ class MCTTest:
 
         mct.exporter.pytorch_export_model(quantized_model, save_model_path=onnx_path,
                                           repr_dataset=self.representative_data_gen)
+        
+        shutil.rmtree(self.save_folder)
 
 
 def test_run_mct():
