@@ -35,8 +35,9 @@ from model_compression_toolkit.core.pytorch.utils import to_torch_tensor
 from model_compression_toolkit.qat.pytorch.quantizer.base_pytorch_qat_weight_quantizer import \
     BasePytorchQATWeightTrainableQuantizer
 from model_compression_toolkit.core.common.quantization.quantization_config import CustomOpsetLayers
-from model_compression_toolkit.target_platform_capabilities.tpc_models.imx500_tpc.latest import generate_pytorch_tpc, \
-    get_op_quantization_configs
+from model_compression_toolkit.target_platform_capabilities.tpc_models.get_target_platform_capabilities import \
+    get_tpc_model as generate_pytorch_tpc
+from model_compression_toolkit.target_platform_capabilities.tpc_models.imx500_tpc.latest import get_op_quantization_configs
 from model_compression_toolkit.trainable_infrastructure import TrainingMethod
 from model_compression_toolkit.trainable_infrastructure.common.base_trainable_quantizer import VariableGroup
 from model_compression_toolkit.trainable_infrastructure.pytorch.activation_quantizers.base_activation_quantizer import \

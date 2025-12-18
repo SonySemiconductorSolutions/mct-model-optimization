@@ -14,7 +14,8 @@
 # ==============================================================================
 import torch
 from tests.pytorch_tests.model_tests.base_pytorch_test import BasePytorchTest
-from model_compression_toolkit.target_platform_capabilities.tpc_models.imx500_tpc.latest import generate_pytorch_tpc
+from model_compression_toolkit.target_platform_capabilities.tpc_models.get_target_platform_capabilities import \
+    get_tpc_model as generate_pytorch_tpc
 from tests.common_tests.helpers.generate_test_tpc import generate_test_tpc
 
 """

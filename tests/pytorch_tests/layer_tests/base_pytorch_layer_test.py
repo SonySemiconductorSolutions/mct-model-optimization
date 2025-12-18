@@ -34,7 +34,8 @@ from torch.nn import Module
 from model_compression_toolkit.core import FrameworkInfo
 from model_compression_toolkit.ptq import pytorch_post_training_quantization
 from model_compression_toolkit.core.common.framework_implementation import FrameworkImplementation
-from model_compression_toolkit.target_platform_capabilities.tpc_models.imx500_tpc.latest import generate_pytorch_tpc
+from model_compression_toolkit.target_platform_capabilities.tpc_models.get_target_platform_capabilities import \
+    get_tpc_model as generate_pytorch_tpc
 from model_compression_toolkit.core.pytorch.constants import CALL_FUNCTION, OUTPUT, CALL_METHOD, PLACEHOLDER
 from model_compression_toolkit.core.pytorch.reader.node_holders import DummyPlaceHolder
 from model_compression_toolkit.core.pytorch.utils import torch_tensor_to_numpy, to_torch_tensor

@@ -16,7 +16,8 @@ from model_compression_toolkit.gptq.common.gradual_activation_quantization impor
     GradualActivationQuantizerWrapper
 from model_compression_toolkit.target_platform_capabilities.targetplatform2framework.attach2pytorch import \
     AttachTpcToPytorch
-from model_compression_toolkit.target_platform_capabilities.tpc_models.imx500_tpc.latest import generate_pytorch_tpc
+from model_compression_toolkit.target_platform_capabilities.tpc_models.get_target_platform_capabilities import \
+    get_tpc_model as generate_pytorch_tpc
 from model_compression_toolkit.trainable_infrastructure import TrainingMethod
 from model_compression_toolkit.trainable_infrastructure.common.base_trainable_quantizer import VariableGroup
 from model_compression_toolkit.trainable_infrastructure.pytorch.activation_quantizers import \

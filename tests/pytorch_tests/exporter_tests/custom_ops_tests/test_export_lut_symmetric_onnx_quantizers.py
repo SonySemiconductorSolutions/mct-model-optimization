@@ -16,8 +16,8 @@
 import numpy as np
 import torch
 from mct_quantizers import QuantizationMethod
-from model_compression_toolkit.target_platform_capabilities.tpc_models.imx500_tpc.latest import \
-    generate_pytorch_tpc
+from model_compression_toolkit.target_platform_capabilities.tpc_models.get_target_platform_capabilities import \
+    get_tpc_model as generate_pytorch_tpc
 from tests.common_tests.helpers.generate_test_tpc import generate_test_tpc
 from tests.pytorch_tests.exporter_tests.base_pytorch_onnx_export_test import BasePytorchONNXCustomOpsExportTest
 from tests.pytorch_tests.exporter_tests.custom_ops_tests.test_export_pot_onnx_quantizers import OneLayer

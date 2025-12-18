@@ -12,27 +12,17 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 # ==============================================================================
-
-import tempfile
-import unittest
-
 import numpy as np
 import torch
-from torchvision.models.mobilenetv2 import mobilenet_v2
 
-import mct_quantizers
-import model_compression_toolkit as mct
 from mct_quantizers import QuantizationMethod
-from model_compression_toolkit.verify_packages import FOUND_ONNXRUNTIME, FOUND_ONNX
 from model_compression_toolkit.exporter.model_exporter.pytorch.pytorch_export_facade import DEFAULT_ONNX_OPSET_VERSION
 
-from model_compression_toolkit.target_platform_capabilities.tpc_models.imx500_tpc.latest import \
-    generate_pytorch_tpc
+from model_compression_toolkit.target_platform_capabilities.tpc_models.get_target_platform_capabilities import \
+    get_tpc_model as generate_pytorch_tpc
 from tests.common_tests.helpers.generate_test_tpc import generate_test_tpc
 from tests.pytorch_tests.exporter_tests.base_pytorch_onnx_export_test import BasePytorchONNXCustomOpsExportTest
 from tests.pytorch_tests.exporter_tests.custom_ops_tests.test_export_pot_onnx_quantizers import OneLayer
-from tests.pytorch_tests.model_tests.feature_models.qat_test import dummy_train
-import onnx
 
 
 class TestExportONNXWeightSymmetric2BitsQuantizers(BasePytorchONNXCustomOpsExportTest):
