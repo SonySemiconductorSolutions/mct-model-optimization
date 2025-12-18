@@ -6,7 +6,8 @@ from mct_quantizers import KerasActivationQuantizationHolder
 
 from model_compression_toolkit.trainable_infrastructure import KerasTrainableQuantizationWrapper
 from model_compression_toolkit.ptq import keras_post_training_quantization
-from model_compression_toolkit.target_platform_capabilities.tpc_models.imx500_tpc.latest import generate_keras_tpc
+from model_compression_toolkit.target_platform_capabilities.tpc_models.get_target_platform_capabilities import \
+    get_tpc_model as generate_keras_tpc
 from tests.common_tests.helpers.generate_test_tpc import generate_test_tpc
 from tests.keras_tests.tpc_keras import get_quantization_disabled_keras_tpc
 from packaging import version

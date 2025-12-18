@@ -12,8 +12,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 # ==============================================================================
-
-
 from packaging import version
 import tensorflow as tf
 if version.parse(tf.__version__) >= version.parse("2.13"):
@@ -21,7 +19,8 @@ if version.parse(tf.__version__) >= version.parse("2.13"):
 else:
     from keras.layers.core import TFOpLambda
 
-from model_compression_toolkit.target_platform_capabilities.tpc_models.imx500_tpc.latest import generate_keras_tpc
+from model_compression_toolkit.target_platform_capabilities.tpc_models.get_target_platform_capabilities import \
+    get_tpc_model as generate_keras_tpc
 import model_compression_toolkit as mct
 
 from tests.common_tests.helpers.generate_test_tpc import generate_test_tpc

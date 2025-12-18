@@ -27,7 +27,8 @@ import tensorflow as tf
 from mct_quantizers import QuantizationMethod
 from mct_quantizers.keras.quantizers import WeightsLUTSymmetricInferableQuantizer
 from tests.common_tests.helpers.generate_test_tpc import generate_test_tpc
-from model_compression_toolkit.target_platform_capabilities.tpc_models.imx500_tpc.latest import generate_keras_tpc
+from model_compression_toolkit.target_platform_capabilities.tpc_models.get_target_platform_capabilities import \
+    get_tpc_model as generate_keras_tpc
 from tests.keras_tests.exporter_tests.keras_fake_quant.keras_fake_quant_exporter_base_test import \
     KerasFakeQuantExporterBaseTest, get_minmax_from_qparams
 

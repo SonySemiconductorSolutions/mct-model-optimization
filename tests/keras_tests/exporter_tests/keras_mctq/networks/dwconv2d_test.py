@@ -29,7 +29,9 @@ import numpy as np
 import tensorflow as tf
 
 from tests.common_tests.helpers.generate_test_tpc import generate_test_tpc
-from model_compression_toolkit.target_platform_capabilities.tpc_models.imx500_tpc.latest import generate_keras_tpc
+from model_compression_toolkit.target_platform_capabilities.tpc_models.get_target_platform_capabilities import \
+    get_tpc_model as generate_keras_tpc
+
 
 class TestDWConv2DKerasMCTQExporter(TestKerasMCTQExport):
 

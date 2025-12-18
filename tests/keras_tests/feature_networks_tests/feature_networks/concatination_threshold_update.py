@@ -12,16 +12,10 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 # ==============================================================================
-
-
 import tensorflow as tf
 
-from model_compression_toolkit.core.keras.constants import THRESHOLD
 from tests.keras_tests.feature_networks_tests.base_keras_feature_test import BaseKerasFeatureNetworkTest
-from tests.keras_tests.utils import get_layers_from_model_by_type
-from model_compression_toolkit.target_platform_capabilities.tpc_models.imx500_tpc.latest import generate_keras_tpc
 from model_compression_toolkit.core import QuantizationConfig
-import numpy as np
 
 """
 this checks that thresold prior to concat have been updated correctly.

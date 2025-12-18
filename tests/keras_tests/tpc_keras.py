@@ -16,9 +16,6 @@ from packaging import version
 import tensorflow as tf
 
 from mct_quantizers import QuantizationMethod
-from model_compression_toolkit.defaultdict import DefaultDict
-from model_compression_toolkit.target_platform_capabilities.constants import KERNEL_ATTR, KERAS_KERNEL, BIAS_ATTR, BIAS, \
-    KERAS_DEPTHWISE_KERNEL
 
 if version.parse(tf.__version__) >= version.parse("2.13"):
     from keras.src.layers import InputLayer, DepthwiseConv2D, Dense
@@ -31,8 +28,8 @@ import model_compression_toolkit as mct
 
 from tests.common_tests.helpers.generate_test_tpc import generate_test_tpc, \
     generate_mixed_precision_test_tpc, generate_tpc_with_activation_mp
-from model_compression_toolkit.target_platform_capabilities.tpc_models.imx500_tpc.latest import generate_keras_tpc
-
+from model_compression_toolkit.target_platform_capabilities.tpc_models.get_target_platform_capabilities import \
+    get_tpc_model as generate_keras_tpc
 
 
 def get_tpc(name, weight_bits=8, activation_bits=8,
