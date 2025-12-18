@@ -33,5 +33,4 @@ jobs:
         env:
           TPC_VERSION: ${{inputs.tpc-version}}
         run: |
-          python -c 'import model_compression_toolkit; print("MCT version:", model_compression_toolkit.__version__)'
           pytest tests_network_deployment/test_run_mct.py
