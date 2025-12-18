@@ -6,7 +6,7 @@ The notebooks in this section demonstrate how to use MCT for various tasks and m
 
   | Model                                                                      | Task                      | Notes                                                                                        |
   |----------------------------------------------------------------------------|---------------------------|----------------------------------------------------------------------------------------------|
-  | TBD                                                                        |                           |                                                                                              |
+  | [EfficientDet](keras/example_effdet_keras_mixed_precision_ptq.ipynb)       | Object Detection          | use [CustomLayer](https://github.com/SonySemiconductorSolutions/aitrios-edge-mdt-cl/tree/main)    |
 
 ### Pytorch Tutorials
 
