@@ -19,9 +19,6 @@ jobs:
         uses: actions/setup-python@v5
         with:
           python-version: "3.11"
-      - name: Remove MCT code
-        run: |
-          rm -rf model_compression_toolkit
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
