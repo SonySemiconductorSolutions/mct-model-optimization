@@ -19,7 +19,7 @@ from mct_quantizers import KerasActivationQuantizationHolder
 from model_compression_toolkit.constants import SHIFT_NEGATIVE_NON_LINEAR_NUM_BITS
 from model_compression_toolkit.core.common.network_editors import EditRule, node_filters, actions
 from model_compression_toolkit.core.keras.default_framework_info import DEFAULT_KERAS_INFO
-from model_compression_toolkit.target_platform_capabilities.tpc_models.imx500_tpc.latest import get_keras_tpc_latest
+from model_compression_toolkit.target_platform_capabilities.tpc_models.imx500_tpc.v1_0.tpc import get_tpc as get_tpc_v1_0
 from tests.keras_tests.tpc_keras import get_16bit_tpc
 from packaging import version
 
@@ -121,7 +121,7 @@ class ShiftNegActivationPostAddTest(ShiftNegActivationTest):
         self.post_add_nbits = post_add_nbits
 
     def get_tpc(self):
-        return get_keras_tpc_latest()
+        return get_tpc_v1_0()
 
     def get_debug_config(self):
         return mct.core.DebugConfig(network_editor=[EditRule(filter=node_filters.NodeNameScopeFilter('activation'),

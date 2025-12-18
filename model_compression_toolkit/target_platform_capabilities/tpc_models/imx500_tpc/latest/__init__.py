@@ -16,10 +16,8 @@ from model_compression_toolkit.verify_packages import FOUND_TORCH, FOUND_TF
 from model_compression_toolkit.target_platform_capabilities.tpc_models.imx500_tpc.v1_0.tpc import get_tpc, generate_tpc, \
     get_op_quantization_configs
 if FOUND_TF:
-    from model_compression_toolkit.target_platform_capabilities.tpc_models.imx500_tpc.v1_0.tpc import get_tpc as get_keras_tpc_latest
     from model_compression_toolkit.target_platform_capabilities.tpc_models.get_target_platform_capabilities import \
         get_tpc_model as generate_keras_tpc
 if FOUND_TORCH:
-    from model_compression_toolkit.target_platform_capabilities.tpc_models.imx500_tpc.v1_0.tpc import get_tpc as get_pytorch_tpc_latest
     from model_compression_toolkit.target_platform_capabilities.tpc_models.get_target_platform_capabilities import \
         get_tpc_model as generate_pytorch_tpc
