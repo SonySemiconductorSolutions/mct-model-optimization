@@ -62,8 +62,6 @@ class MCTTest:
         mct.exporter.pytorch_export_model(quantized_model, save_model_path=onnx_path,
                                           repr_dataset=self.representative_data_gen)
         
-        shutil.rmtree(self.save_folder)
-
 
 def test_run_mct():
 

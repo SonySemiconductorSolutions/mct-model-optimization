@@ -35,7 +35,7 @@ class ConverterTest:
             raise SystemExit("Stopping execution: IMX500 Converter is not installed.")
 
     def run_converter(self):
-        # os.makedirs(self.save_folder, exist_ok=True)
+        assert os.path.exists(os.path.join(self.save_folder, 'qmodel.onnx')), f'Onnx model not found in {self.save_folder}.'
         onnx_path = os.path.join(self.save_folder, 'qmodel.onnx')
 
         # Check if Java and IMX500 Converter is installed
