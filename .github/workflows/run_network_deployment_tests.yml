@@ -9,6 +9,9 @@ on:
       tpc-version:
         required: true
         type: string
+      converter-mctq-version:
+        required: true
+        type: string
 
 jobs:
   run-tests:
