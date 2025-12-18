@@ -25,7 +25,7 @@ jobs:
           pip install -r requirements.txt          
           pip install torch==${{ inputs.torch-version }} torchvision onnx onnxruntime "onnxruntime-extensions<0.14"
           pip install pytest pytest-mock
-          pip check
+          pip list
       - name: Run pytest
         run: |
           pytest tests_pytest/pytorch_tests -s
