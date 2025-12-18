@@ -85,7 +85,7 @@ class Logger:
         
         # Check if StreamHandler already exists
         for handler in logger.handlers:
-            if isinstance(handler, logging.StreamHandler) and not isinstance(handler, logging.FileHandler):
+            if isinstance(handler, logging.StreamHandler):
                 return
         
         # Add StreamHandler
