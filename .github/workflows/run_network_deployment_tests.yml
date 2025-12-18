@@ -28,7 +28,7 @@ jobs:
           pip install -r requirements.txt
           pip install "torch<2.7" "torchvision<0.22" "onnx<1.18" "onnxruntime<1.22" "onnxruntime-extensions<0.14"
           pip install pytest pytest-mock
-          pip check
+          pip list
       - name: Run pytest
         env:
           TPC_VERSION: ${{inputs.tpc-version}}
