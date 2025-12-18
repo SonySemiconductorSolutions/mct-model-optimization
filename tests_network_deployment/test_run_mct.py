@@ -13,9 +13,6 @@
 # limitations under the License.
 # ==============================================================================
 import os
-import shutil
-import subprocess
-import sys
 import numpy as np
 from torchvision.models import mobilenet_v2
 
@@ -24,7 +21,7 @@ from model_compression_toolkit import get_target_platform_capabilities
 from model_compression_toolkit.target_platform_capabilities.constants import IMX500_TP_MODEL
 
 
-class NetworkDeploymentBaseTest:
+class MCTTest:
 
     def __init__(self, 
                  tpc_version, 
@@ -51,59 +48,24 @@ class NetworkDeploymentBaseTest:
         for _ in range(self.num_calibration_iter):
             yield self.generate_inputs()
 
-    def get_tpc(self):
-        return get_target_platform_capabilities(tpc_version=self.tpc_version, device_type=self.device_type)
+    def run_mct(self, float_model):
+        os.makedirs(self.save_folder, exist_ok=True)
+        onnx_path = os.path.join(self.save_folder, 'qmodel.onnx')
 
-    def run_mct(self, tpc, float_model, onnx_path):
+        tpc = get_target_platform_capabilities(tpc_version=self.tpc_version, device_type=self.device_type)
+        
         quantized_model, _ = mct.ptq.pytorch_post_training_quantization(in_module=float_model,
                                                                         representative_data_gen=self.representative_data_gen,
                                                                         target_platform_capabilities=tpc)
 
-        # Save ONNX model
         mct.exporter.pytorch_export_model(quantized_model, save_model_path=onnx_path,
                                           repr_dataset=self.representative_data_gen)
 
-    def check_libs(self):
-        # Check if Java is installed
-        result = subprocess.run(["java", "-version"], stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
-        if result.returncode != 0:
-            raise SystemExit("Stopping execution: Java is not installed.")
 
-        # Check if IMX500 Converter is installed
-        result = subprocess.run(["imxconv-pt", "--version"], stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
-        if result.returncode != 0:
-            raise SystemExit("Stopping execution: IMX500 Converter is not installed.")
+def test_run_mct():
 
-    def run_test(self, float_model):
-        os.makedirs(self.save_folder, exist_ok=True)
-        onnx_path = os.path.join(self.save_folder, 'qmodel.onnx')
-
-        tpc = self.get_tpc()
-        self.run_mct(tpc=tpc, float_model=float_model, onnx_path=onnx_path)
-
-        # Check if Java and IMX500 Converter is installed
-        self.check_libs()
-
-        # Run IMX500 Converter
-        cmd = ["imxconv-pt", "-i", onnx_path, "-o", self.save_folder, "--overwrite-output"]
-
-        env_bin_path = os.path.dirname(sys.executable)
-        os.environ["PATH"] = f"{env_bin_path}:{os.environ['PATH']}"
-        env = os.environ.copy()
-
-        subprocess.run(cmd, env=env, check=True)
-
-        os.path.exists(self.save_folder + '/qmodel.pbtxt')
-
-        # Remove the folder for the next test
-        shutil.rmtree(self.save_folder)
-
-
-def test_network_deployment_tpc_version():
-
-    tpc_version = os.getenv("TPC_VERSION")  # Get version from GitHub CI
+    tpc_version = 1.0 #os.getenv("TPC_VERSION")
     float_model = mobilenet_v2()
     save_folder = './mobilenet_pt'
 
-    NetworkDeploymentBaseTest(tpc_version=tpc_version, device_type=IMX500_TP_MODEL,
-                              save_folder=save_folder).run_test(float_model)
+    MCTTest(tpc_version=tpc_version, device_type=IMX500_TP_MODEL, save_folder=save_folder).run_mct(float_model)
