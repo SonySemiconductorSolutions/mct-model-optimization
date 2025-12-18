@@ -6,9 +6,6 @@ on:
       converter-version:
         required: true
         type: string
-      mct-version:
-        required: true
-        type: string
       tpc-version:
         required: true
         type: string
