@@ -221,8 +221,8 @@ def set_log_folder(folder: str, level: int = logging.INFO):
 
     # Check if mct-quantizers is installed
     if importlib.util.find_spec("mct_quantizers") is not None:
-        # Create _MCTQ folder
-        mctq_folder = os.path.join(folder, "_MCTQ")
+        # Create _MCTQ folder (append suffix directly without separator)
+        mctq_folder = folder + "_MCTQ"
         
         # Call set_log_folder from mct-quantizers
         try:
