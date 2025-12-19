@@ -16,10 +16,6 @@
 # TP Model constants
 OPS_SET_LIST = 'ops_set_list'
 
-# Version
-LATEST = 'latest'
-
-
 # Supported TP models names:
 IMX500_TP_MODEL = 'imx500'
 TFLITE_TP_MODEL = 'tflite'

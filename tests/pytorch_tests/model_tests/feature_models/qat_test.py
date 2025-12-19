@@ -28,7 +28,6 @@ from mct_quantizers import PytorchActivationQuantizationHolder, QuantizationTarg
 from mct_quantizers.common.base_inferable_quantizer import QuantizerID
 from mct_quantizers.common.get_all_subclasses import get_all_subclasses
 from mct_quantizers.pytorch.quantizers import BasePyTorchInferableQuantizer
-from model_compression_toolkit.core import CoreConfig, QuantizationConfig
 from model_compression_toolkit.core.pytorch.pytorch_device_config import get_working_device
 from model_compression_toolkit.core.pytorch.reader.node_holders import DummyPlaceHolder
 from model_compression_toolkit.core.pytorch.utils import to_torch_tensor
@@ -37,7 +36,7 @@ from model_compression_toolkit.qat.pytorch.quantizer.base_pytorch_qat_weight_qua
 from model_compression_toolkit.core.common.quantization.quantization_config import CustomOpsetLayers
 from model_compression_toolkit.target_platform_capabilities.tpc_models.get_target_platform_capabilities import \
     get_tpc_model as generate_pytorch_tpc
-from model_compression_toolkit.target_platform_capabilities.tpc_models.imx500_tpc.latest import get_op_quantization_configs
+from model_compression_toolkit.target_platform_capabilities.tpc_models.imx500_tpc.v1_0.tpc import get_op_quantization_configs
 from model_compression_toolkit.trainable_infrastructure import TrainingMethod
 from model_compression_toolkit.trainable_infrastructure.common.base_trainable_quantizer import VariableGroup
 from model_compression_toolkit.trainable_infrastructure.pytorch.activation_quantizers.base_activation_quantizer import \

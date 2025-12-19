@@ -24,7 +24,7 @@ from model_compression_toolkit.core.common.quantization.quantization_params_gene
 from model_compression_toolkit.core.common.quantization.quantizers.uniform_quantizers import power_of_two_quantizer
 from model_compression_toolkit.core.keras.constants import KERNEL, BIAS
 from model_compression_toolkit.target_platform_capabilities.schema.mct_current_schema import AttributeQuantizationConfig
-from model_compression_toolkit.target_platform_capabilities.tpc_models.imx500_tpc.latest import get_op_quantization_configs
+from model_compression_toolkit.target_platform_capabilities.tpc_models.imx500_tpc.v1_0.tpc import get_op_quantization_configs
 
 
 class TestNodeQuantizationConfigurations(unittest.TestCase):

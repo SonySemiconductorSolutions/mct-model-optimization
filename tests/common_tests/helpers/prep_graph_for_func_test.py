@@ -24,7 +24,7 @@ from model_compression_toolkit.core.common.visualization.tensorboard_writer impo
 from model_compression_toolkit.core.graph_prep_runner import graph_preparation_runner
 from model_compression_toolkit.core.quantization_prep_runner import quantization_preparation_runner
 
-from model_compression_toolkit.target_platform_capabilities.tpc_models.imx500_tpc.latest import generate_tpc, \
+from model_compression_toolkit.target_platform_capabilities.tpc_models.imx500_tpc.v1_0.tpc import generate_tpc, \
     get_op_quantization_configs
 
 

@@ -25,7 +25,7 @@ from model_compression_toolkit.target_platform_capabilities.schema.mct_current_s
     QuantizationConfigOptions
 from model_compression_toolkit.target_platform_capabilities.targetplatform2framework import \
     FrameworkQuantizationCapabilities
-from model_compression_toolkit.target_platform_capabilities.tpc_models.imx500_tpc.latest import get_op_quantization_configs, generate_tpc
+from model_compression_toolkit.target_platform_capabilities.tpc_models.imx500_tpc.v1_0.tpc import get_op_quantization_configs, generate_tpc
 
 
 DEFAULT_WEIGHT_ATTR_CONFIG = 'default_weight_attr_config'

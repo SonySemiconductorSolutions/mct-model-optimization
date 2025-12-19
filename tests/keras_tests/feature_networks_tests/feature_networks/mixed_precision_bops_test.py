@@ -19,7 +19,7 @@ from keras.layers import Conv2D, Conv2DTranspose, DepthwiseConv2D, Dense, BatchN
 
 from model_compression_toolkit.core.common.quantization.quantization_config import CustomOpsetLayers
 from tests.keras_tests.feature_networks_tests.base_keras_feature_test import BaseKerasFeatureNetworkTest
-from model_compression_toolkit.target_platform_capabilities.tpc_models.imx500_tpc.latest import get_op_quantization_configs
+from model_compression_toolkit.target_platform_capabilities.tpc_models.imx500_tpc.v1_0.tpc import get_op_quantization_configs
 import tensorflow as tf
 
 from tests.keras_tests.tpc_keras import get_tpc_with_activation_mp_keras

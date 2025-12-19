@@ -37,7 +37,7 @@ from model_compression_toolkit.core.keras.keras_implementation import KerasImple
 from model_compression_toolkit.target_platform_capabilities.constants import KERNEL_ATTR
 from model_compression_toolkit.target_platform_capabilities.targetplatform2framework.attach2keras import \
     AttachTpcToKeras
-from model_compression_toolkit.target_platform_capabilities.tpc_models.imx500_tpc.latest import \
+from model_compression_toolkit.target_platform_capabilities.tpc_models.imx500_tpc.v1_0.tpc import \
     get_op_quantization_configs
 from tests.keras_tests.tpc_keras import get_weights_only_mp_tpc_keras
 

@@ -19,7 +19,7 @@ from torch.nn import Conv2d
 from model_compression_toolkit.core import ResourceUtilization
 from model_compression_toolkit.core.common.mixed_precision import MpDistanceWeighting
 from model_compression_toolkit.core.common.user_info import UserInformation
-from model_compression_toolkit.target_platform_capabilities.tpc_models.imx500_tpc.latest import get_tpc, \
+from model_compression_toolkit.target_platform_capabilities.tpc_models.imx500_tpc.v1_0.tpc import get_tpc, \
     get_op_quantization_configs
 from tests.common_tests.helpers.generate_test_tpc import generate_mixed_precision_test_tpc
 from tests.pytorch_tests.tpc_pytorch import get_pytorch_test_tpc_dict

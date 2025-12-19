@@ -17,7 +17,7 @@ import torch
 
 import model_compression_toolkit as mct
 from model_compression_toolkit.core.pytorch.utils import to_torch_tensor
-from model_compression_toolkit.target_platform_capabilities.tpc_models.imx500_tpc.latest import get_tpc
+from model_compression_toolkit.target_platform_capabilities.tpc_models.imx500_tpc.v1_0.tpc import get_tpc
 from tests.pytorch_tests.model_tests.base_pytorch_test import BasePytorchTest
 from tests.pytorch_tests.tpc_pytorch import get_pytorch_test_tpc_dict
 

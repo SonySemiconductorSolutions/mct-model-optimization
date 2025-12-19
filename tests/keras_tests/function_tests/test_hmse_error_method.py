@@ -37,11 +37,10 @@ from model_compression_toolkit.target_platform_capabilities.targetplatform2frame
     AttachTpcToKeras
 from model_compression_toolkit.core.keras.default_framework_info import DEFAULT_KERAS_INFO
 from model_compression_toolkit.core.keras.keras_implementation import KerasImplementation
-from model_compression_toolkit.target_platform_capabilities.tpc_models.imx500_tpc.latest import \
+from model_compression_toolkit.target_platform_capabilities.tpc_models.imx500_tpc.v1_0.tpc import \
     get_op_quantization_configs
 from tests.common_tests.helpers.generate_test_tpc import generate_test_tpc
 from tests.common_tests.helpers.prep_graph_for_func_test import prepare_graph_with_configs
-
 
 
 def model_gen():
