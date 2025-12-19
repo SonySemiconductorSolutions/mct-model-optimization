@@ -28,17 +28,18 @@ jobs:
           pip install -r requirements.txt
           pip install "torch<2.7" "torchvision<0.22" "onnx<1.18" "onnxruntime<1.22" "onnxruntime-extensions<0.14"
           pip install pytest pytest-mock
-          pip list
+          pip list | grep mct
       - name: Run MCT test
         env:
-          TPC_VERSION: ${{inputs.tpc-version}}
+          TPC_VERSION: ${{ inputs.tpc-version }}
         run: |
-          pytest tests_pytest/network_deployment_tests/test_run_mct.py
-      - name: Set up converter environment
+          pytest network_deployment_tests/test_run_mct.py
+      - name: Setup converter environment
         run: |
           pip uninstall -y mct-quantizers
-          pip install mct-quantizers==${{inputs.converter-mctq-version}}
-          pip install imx500-converter[pt]==${{inputs.converter-version}}
+          pip install mct-quantizers==${{ inputs.converter-mctq-version }}
+          pip install imx500-converter[pt]==${{ inputs.converter-version }}
+          pip list | grep -e mct -e imx500
       - name: Run Converter test
         run: |
-          pytest tests_pytest/network_deployment_tests/test_run_converter.py
+          pytest network_deployment_tests/test_run_converter.py
