@@ -302,6 +302,8 @@ def generate_tpc(default_config: OpQuantizationConfig,
     operator_set.append(schema.OperatorsSet(name=schema.OperatorSetNames.TRANSPOSE, qc_options=dim_manipulation_config))
     # Add quantization config for torch.take
     operator_set.append(schema.OperatorsSet(name=schema.OperatorSetNames.TAKE, qc_options=dim_manipulation_config))
+    # Add quantization config for torch.index_select
+    operator_set.append(schema.OperatorsSet(name=schema.OperatorSetNames.INDEX_SELECT, qc_options=dim_manipulation_config))
 
     operator_set.append(
         schema.OperatorsSet(name=schema.OperatorSetNames.GATHER, qc_options=qpreserving_const_config_options))
