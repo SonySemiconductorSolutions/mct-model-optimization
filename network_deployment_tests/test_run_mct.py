@@ -31,13 +31,15 @@ class MCTTest:
                  input_shape=(3, 224, 224), 
                  batch_size=1, 
                  num_calibration_iter=1, 
-                 num_of_inputs=1):
+                 num_of_inputs=1,
+                 onnx_opset_version=20):
         self.tpc_version = tpc_version
         self.device_type = device_type
         self.save_folder = save_folder
         self.input_shape = (batch_size,) + input_shape
         self.num_calibration_iter = num_calibration_iter
         self.num_of_inputs = num_of_inputs
+        self.onnx_opset_version = onnx_opset_version
 
     def get_input_shapes(self):
         return [self.input_shape for _ in range(self.num_of_inputs)]
@@ -60,13 +62,18 @@ class MCTTest:
                                                                         target_platform_capabilities=tpc)
 
         mct.exporter.pytorch_export_model(quantized_model, save_model_path=onnx_path,
-                                          repr_dataset=self.representative_data_gen)
+                                          repr_dataset=self.representative_data_gen,
+                                          onnx_opset_version=self.onnx_opset_version)
         
 
 def test_run_mct():
 
-    tpc_version = 1.0 #os.getenv("TPC_VERSION")
+    tpc_version = os.getenv("TPC_VERSION")
+    print(tpc_version)
+    onnx_opset_version = os.getenv("ONNX_OPSET_VERSION")
+    print(onnx_opset_version)
     float_model = mobilenet_v2()
     save_folder = './mobilenet_pt'
 
-    MCTTest(tpc_version=tpc_version, device_type=IMX500_TP_MODEL, save_folder=save_folder).run_mct(float_model)
+    MCTTest(tpc_version=tpc_version, device_type=IMX500_TP_MODEL, save_folder=save_folder, 
+            onnx_opset_version=int(onnx_opset_version)).run_mct(float_model)
