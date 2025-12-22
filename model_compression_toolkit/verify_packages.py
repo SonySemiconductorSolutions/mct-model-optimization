@@ -30,3 +30,4 @@ FOUND_TORCH = importlib.util.find_spec("torch") is not None
 FOUND_TORCHVISION = importlib.util.find_spec("torchvision") is not None
 FOUND_ONNX = importlib.util.find_spec("onnx") is not None
 FOUND_ONNXRUNTIME = importlib.util.find_spec("onnxruntime") is not None
+FOUND_TPC = importlib.util.find_spec("edgemdt_tpc") is not None
