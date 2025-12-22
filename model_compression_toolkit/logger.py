@@ -39,7 +39,7 @@ class Logger:
         Create a path if not exist. Otherwise, do nothing.
 
         Args:
-            log_path: Path to create or verify that exists.
+            log_path (str): Path to create or verify that exists.
         """
 
         if not os.path.exists(log_path):
@@ -51,7 +51,7 @@ class Logger:
         Set log level to determine the logger verbosity.
 
         Args:
-            log_level: Level of verbosity to set for the logger.
+            log_level (int): Level of verbosity to set for the logger.
         """
 
         logger = Logger.get_logger()
@@ -63,7 +63,7 @@ class Logger:
         Set log level for all handlers attached to the logger.
 
         Args:
-            log_level: Level of verbosity to set for the handlers.
+            log_level (int): Level of verbosity to set for the handlers.
         """
 
         logger = Logger.get_logger()
@@ -100,7 +100,7 @@ class Logger:
         In that folder, it creates a log file according to the timestamp.
 
         Args:
-            log_folder: Folder path to hold the log file.
+            log_folder (Optional[str]): Folder path to hold the log file.
         """
 
         logger = Logger.get_logger()
@@ -138,7 +138,7 @@ class Logger:
         Log a message at 'critical' severity and raise an exception.
 
         Args:
-            msg: Message to log.
+            msg (str): Message to log.
         """
         Logger.get_logger().critical(msg)
         raise Exception(msg)
@@ -149,7 +149,7 @@ class Logger:
         Log a message at 'exception' severity and raise an exception.
 
         Args:
-            msg: Message to log.
+            msg (str): Message to log.
         """
         Logger.get_logger().exception(msg)
         raise Exception(msg)
@@ -160,7 +160,7 @@ class Logger:
         Log a message at 'debug' severity.
 
         Args:
-            msg: Message to log.
+            msg (str): Message to log.
         """
         Logger.get_logger().debug(msg)
 
@@ -170,7 +170,7 @@ class Logger:
         Log a message at 'info' severity.
 
         Args:
-            msg: Message to log.
+            msg (str): Message to log.
         """
         Logger.get_logger().info(msg)
 
@@ -180,7 +180,7 @@ class Logger:
         Log a message at 'warning' severity.
 
         Args:
-            msg: Message to log.
+            msg (str): Message to log.
         """
         Logger.get_logger().warning(msg)
 
@@ -190,7 +190,7 @@ class Logger:
         Log a message at 'error' severity and raise an exception.
 
         Args:
-            msg: Message to log.
+            msg (str): Message to log.
         """
         Logger.get_logger().error(msg)
 
@@ -200,8 +200,8 @@ def set_log_folder(folder: str, level: int = logging.INFO) -> None:
     Set a directory path for saving a log file.
 
     Args:
-        folder: Folder path to save the log file.
-        level: Level of verbosity to set to the logger and handlers.
+        folder (str): Folder path to save the log file.
+        level (int): Level of verbosity to set to the logger and handlers.
 
     Note:
         This is a convenience function that calls multiple Logger methods
