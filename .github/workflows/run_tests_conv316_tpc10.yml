@@ -15,4 +15,3 @@ jobs:
     with:
       converter-version: "3.16.*"
       tpc-version: "1.0"
-      onnx-opset-version: "15"
