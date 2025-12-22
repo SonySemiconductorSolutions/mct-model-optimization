@@ -18,6 +18,7 @@ import logging
 import os
 from datetime import datetime
 from pathlib import Path
+from typing import Optional
 from model_compression_toolkit.verify_packages import FOUND_MCTQ
 
 
@@ -34,7 +35,7 @@ class Logger:
     CRITICAL = logging.CRITICAL
 
     @staticmethod
-    def __check_path_create_dir(log_path: str):
+    def __check_path_create_dir(log_path: str) -> None:
         """
         Create a path if not exist. Otherwise, do nothing.
 
@@ -46,7 +47,7 @@ class Logger:
             Path(log_path).mkdir(parents=True, exist_ok=True)
 
     @staticmethod
-    def set_logger_level(log_level=logging.INFO):
+    def set_logger_level(log_level: int = logging.INFO) -> None:
         """
         Set log level to determine the logger verbosity.
 
@@ -58,7 +59,7 @@ class Logger:
         logger.setLevel(log_level)
 
     @staticmethod
-    def set_handler_level(log_level=logging.INFO):
+    def set_handler_level(log_level: int = logging.INFO) -> None:
         """
         Set log level for all handlers attached to the logger.
 
@@ -71,14 +72,14 @@ class Logger:
             handler.setLevel(log_level)
 
     @staticmethod
-    def get_logger():
+    def get_logger() -> logging.Logger:
         """
         Returns: An instance of the logger.
         """
         return logging.getLogger(LOGGER_NAME)
 
     @staticmethod
-    def set_stream_handler():
+    def set_stream_handler() -> None:
         """
         Add a StreamHandler to output logs to the console (stdout).
         """
@@ -94,7 +95,7 @@ class Logger:
         logger.addHandler(sh)
 
     @staticmethod
-    def set_log_file(log_folder: str = None):
+    def set_log_file(log_folder: Optional[str] = None) -> None:
         """
         Setting the logger log file path. The method gets the folder for the log file.
         In that folder, it creates a log file according to the timestamp.
@@ -121,7 +122,7 @@ class Logger:
         print(f'log file is in {log_name}')
 
     @staticmethod
-    def shutdown():
+    def shutdown() -> None:
         """
         An orderly command to shutdown by flushing and closing all logging handlers.
         """
@@ -133,7 +134,7 @@ class Logger:
     ########################################
 
     @staticmethod
-    def critical(msg: str):
+    def critical(msg: str) -> None:
         """
         Log a message at 'critical' severity and raise an exception.
 
@@ -144,7 +145,7 @@ class Logger:
         raise Exception(msg)
 
     @staticmethod
-    def exception(msg: str):
+    def exception(msg: str) -> None:
         """
         Log a message at 'exception' severity and raise an exception.
 
@@ -155,7 +156,7 @@ class Logger:
         raise Exception(msg)
 
     @staticmethod
-    def debug(msg: str):
+    def debug(msg: str) -> None:
         """
         Log a message at 'debug' severity.
 
@@ -165,7 +166,7 @@ class Logger:
         Logger.get_logger().debug(msg)
 
     @staticmethod
-    def info(msg: str):
+    def info(msg: str) -> None:
         """
         Log a message at 'info' severity.
 
@@ -175,7 +176,7 @@ class Logger:
         Logger.get_logger().info(msg)
 
     @staticmethod
-    def warning(msg: str):
+    def warning(msg: str) -> None:
         """
         Log a message at 'warning' severity.
 
@@ -185,7 +186,7 @@ class Logger:
         Logger.get_logger().warning(msg)
 
     @staticmethod
-    def error(msg: str):
+    def error(msg: str) -> None:
         """
         Log a message at 'error' severity and raise an exception.
 
@@ -195,7 +196,7 @@ class Logger:
         Logger.get_logger().error(msg)
 
 
-def set_log_folder(folder: str, level: int = logging.INFO):
+def set_log_folder(folder: str, level: int = logging.INFO) -> None:
     """
     Set a directory path for saving a log file.
 
