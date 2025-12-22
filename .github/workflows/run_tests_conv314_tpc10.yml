@@ -1,0 +1,18 @@
+name: Converter 3.14, TPC 1.0
+on:
+  workflow_dispatch: # Allow manual triggers
+  schedule:
+    - cron: 0 0 * * *
+  pull_request:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: ${{ github.ref != 'refs/heads/main' }}
+
+jobs:
+  run-tests:
+    uses: ./.github/workflows/run_network_deployment_tests.yml
+    with:
+      converter-version: "3.14.*"
+      tpc-version: "1.0"
+      onnx-opset-version: "15"
