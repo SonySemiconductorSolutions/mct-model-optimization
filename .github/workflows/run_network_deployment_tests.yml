@@ -39,7 +39,7 @@ jobs:
           ONNX_OPSET_VERSION: ${{ inputs.onnx-opset-version }}
         run: |
           pytest network_deployment_tests/test_run_mct.py -s
-      - name: Unistall MCTQ and CustomLayer
+      - name: Uninstall MCTQ and CustomLayer
         run: |
           pip uninstall -y mct-quantizers edge-mdt-cl
           pip list | grep -e mct -e edge
