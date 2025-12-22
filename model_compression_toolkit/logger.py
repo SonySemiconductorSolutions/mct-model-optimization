@@ -19,7 +19,6 @@ import os
 from datetime import datetime
 from pathlib import Path
 from typing import Optional
-from model_compression_toolkit.verify_packages import FOUND_MCTQ
 
 
 LOGGER_NAME = 'Model Compression Toolkit'
@@ -216,15 +215,13 @@ def set_log_folder(folder: str, level: int = logging.INFO) -> None:
     Logger.set_logger_level(level)
     Logger.set_handler_level(level)
 
-    # Check if mct-quantizers is installed
-    if FOUND_MCTQ:
-        # Create _MCTQ folder (append suffix directly without separator)
-        mctq_folder = folder + "_MCTQ"
-        
-        # Call set_log_folder from mct-quantizers
-        try:
-            # Import from installed mct-quantizers package
-            from mct_quantizers import logger as mct_quantizers_logger
-            mct_quantizers_logger.set_log_folder(mctq_folder, level)
-        except Exception as e:
-            Logger.warning(f"Failed to import set_log_folder from mct-quantizers: {e}")
+    # Create _MCTQ folder (append suffix directly without separator)
+    mctq_folder = folder + "_MCTQ"
+    
+    # Call set_log_folder from mct-quantizers
+    try:
+        # Import from installed mct-quantizers package
+        from mct_quantizers import logger as mct_quantizers_logger
+        mct_quantizers_logger.set_log_folder(mctq_folder, level)
+    except Exception as e:
+        Logger.warning(f"Failed to import set_log_folder from mct-quantizers: {e}")
