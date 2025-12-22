@@ -42,7 +42,6 @@ jobs:
       - name: Uninstall MCTQ and CustomLayer
         run: |
           pip uninstall -y mct-quantizers edge-mdt-cl
-          pip list | grep -e mct -e edge
       - name: Setup Converter environment
         run: |
           pip install mct-quantizers==${{ inputs.converter-mctq-version }}
