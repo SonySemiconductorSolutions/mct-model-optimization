@@ -9,9 +9,6 @@ on:
       tpc-version:
         required: true
         type: string
-      converter-mctq-version:
-        required: true
-        type: string
       onnx-opset-version:
         required: false
         type: string
@@ -44,7 +41,6 @@ jobs:
           pip uninstall -y mct-quantizers edge-mdt-cl
       - name: Setup Converter environment
         run: |
-          pip install mct-quantizers==${{ inputs.converter-mctq-version }}
           pip install imx500-converter[pt]==${{ inputs.converter-version }}
           pip list | grep -e mct -e edge -e onnx -e imx500
       - name: Run Converter test

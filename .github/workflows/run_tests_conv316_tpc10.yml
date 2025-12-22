@@ -15,5 +15,4 @@ jobs:
     with:
       converter-version: "3.16.*"
       tpc-version: "1.0"
-      converter-mctq-version: "1.5.2"
       onnx-opset-version: "15"
