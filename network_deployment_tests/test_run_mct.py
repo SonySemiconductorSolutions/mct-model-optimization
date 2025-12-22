@@ -13,7 +13,6 @@
 # limitations under the License.
 # ==============================================================================
 import os
-import shutil
 import numpy as np
 from torchvision.models import mobilenet_v2
 
@@ -69,9 +68,8 @@ class MCTTest:
 def test_run_mct():
 
     tpc_version = os.getenv("TPC_VERSION")
-    print(tpc_version)
     onnx_opset_version = os.getenv("ONNX_OPSET_VERSION")
-    print(onnx_opset_version)
+    
     float_model = mobilenet_v2()
     save_folder = './mobilenet_pt'
 
