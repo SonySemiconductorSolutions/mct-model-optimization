@@ -12,9 +12,13 @@ on:
       converter-mctq-version:
         required: true
         type: string
+      converter-cl-version:
+        required: false
+        default: null
       onnx-opset-version:
-        required: true
+        required: false
         type: string
+        default: "20"
 
 jobs:
   run-tests:
