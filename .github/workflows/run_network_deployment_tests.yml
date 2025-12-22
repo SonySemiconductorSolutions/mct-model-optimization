@@ -38,12 +38,16 @@ jobs:
           TPC_VERSION: ${{ inputs.tpc-version }}
           ONNX_OPSET_VERSION: ${{ inputs.onnx-opset-version }}
         run: |
-          pytest network_deployment_tests/test_run_mct.py
-      - name: Setup converter environment
+          pytest network_deployment_tests/test_run_mct.py -s
+      - name: Unistall MCTQ and CustomLayer
+        run: |
+          pip uninstall -y mct-quantizers edge-mdt-cl
+          pip list | grep -e mct -e edge
+      - name: Setup Converter environment
         run: |
           pip install mct-quantizers==${{ inputs.converter-mctq-version }}
           pip install imx500-converter[pt]==${{ inputs.converter-version }}
           pip list | grep -e mct -e edge -e onnx -e imx500
-      - name: Run converter test
+      - name: Run Converter test
         run: |
-          pytest network_deployment_tests/test_run_converter.py
+          pytest network_deployment_tests/test_run_converter.py -s
