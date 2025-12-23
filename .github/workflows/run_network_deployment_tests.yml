@@ -35,7 +35,7 @@ jobs:
           TPC_VERSION: ${{ inputs.tpc-version }}
           ONNX_OPSET_VERSION: ${{ inputs.onnx-opset-version }}
         run: |
-          pytest network_deployment_tests/test_run_mct.py
+          pytest network_deployment_tests/test_run_mct.py -s
       - name: Uninstall MCTQ and CustomLayer
         run: |
           pip uninstall -y mct-quantizers edge-mdt-cl
@@ -45,4 +45,4 @@ jobs:
           pip list | grep -e mct -e edge -e onnx -e imx500
       - name: Run Converter test
         run: |
-          pytest network_deployment_tests/test_run_converter.py
+          pytest network_deployment_tests/test_run_converter.py -s

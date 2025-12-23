@@ -68,7 +68,9 @@ class MCTTest:
 def test_run_mct():
 
     tpc_version = os.getenv("TPC_VERSION")
+    print(f"TPC VERSION: {tpc_version}")
     onnx_opset_version = os.getenv("ONNX_OPSET_VERSION")
+    print(f"ONNX OPSET VERSION: {onnx_opset_version}")
     
     float_model = mobilenet_v2()
     save_folder = './mobilenet_pt'
