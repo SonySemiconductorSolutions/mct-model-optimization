@@ -25,6 +25,7 @@ jobs:
           pip install -r requirements.txt
           pip install tensorflow==${{ inputs.tf-version }}
           pip install pytest pytest-mock
+          pip list | grep -e tensorflow -e numpy
           pip check
       - name: Run pytest
         run: |
