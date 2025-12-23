@@ -17,6 +17,9 @@ jobs:
       fail-fast: false
       matrix:
         np_ver: [ "<2.4", "2.4" ]
+        exclude:
+          - np_ver: "2.4"
+            python-version: "3.10"  # Numpy 2.4 is not supported on Python 3.10
     steps:
       - uses: actions/checkout@v4
       - name: Install Python 3
@@ -28,9 +31,6 @@ jobs:
           python -m pip install --upgrade pip
           pip install -r requirements.txt          
           pip install torch==${{ inputs.torch-version }} torchvision onnx onnxruntime "onnxruntime-extensions<0.14"
-          if [ ${{ matrix.np_ver }} == "<2.4" ] && [ ${{ inputs.python-version }} != "3.10" ]; then
-            pip install "numpy<2.4"
-          fi
           pip install pytest pytest-mock
           pip list | grep -e torch -e onnx -e numpy
           pip check
