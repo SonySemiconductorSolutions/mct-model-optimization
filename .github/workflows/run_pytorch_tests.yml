@@ -16,6 +16,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
+        python-version: [ "${{ inputs.python-version }}" ]
         np_ver: [ "<2.4", "2.4" ]
         exclude:
           - np_ver: "2.4"
