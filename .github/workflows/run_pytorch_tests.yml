@@ -34,9 +34,9 @@ jobs:
           pip list | grep numpy
           pip install torch==${{ inputs.torch-version }} torchvision onnx onnxruntime "onnxruntime-extensions<0.14"
           if [ ${{ matrix.np_ver }} == "<2.4" ]; then
-            echo "Installing numpy version less than 2.4"
             extra_req='numpy<2.4'
           fi
+          echo "pip install numpy $extra_req"
           pip install numpy $extra_req
           pip install pytest pytest-mock
           pip list | grep -e torch -e onnx -e numpy
