@@ -13,6 +13,16 @@ on:
 jobs:
   run-pytorch-tests:
     runs-on: ubuntu-latest
+    #  Testing was performed on combinations of Python (3.10, 3.11, 3.12), Pytorch (2.3, 2.4, 2.5, 2.6),
+    #  and NumPy (<2.4 or 2.4) versions
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: [ "${{ inputs.python-version }}" ]
+        np_ver: [ "<2.4", "2.4" ]
+        exclude:
+          - np_ver: "2.4"
+            python-version: "3.10"  # Numpy 2.4 is not supported on Python 3.10
     steps:
       - uses: actions/checkout@v4
       - name: Install Python 3
@@ -24,7 +34,12 @@ jobs:
           python -m pip install --upgrade pip
           pip install -r requirements.txt          
           pip install torch==${{ inputs.torch-version }} torchvision onnx onnxruntime "onnxruntime-extensions<0.14"
+          if [[ "${{ matrix.np_ver }}" == "<2.4" ]]; then
+            extra_req='numpy<2.4'
+          fi
+          pip install numpy $extra_req
           pip install pytest pytest-mock
+          pip list | grep -e torch -e onnx -e numpy
           pip check
       - name: Run pytest
         run: |
