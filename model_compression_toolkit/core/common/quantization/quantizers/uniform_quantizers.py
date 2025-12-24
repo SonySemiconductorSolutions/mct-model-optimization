@@ -26,7 +26,8 @@ def threshold_is_power_of_two(threshold: np.ndarray, per_channel: bool) -> bool:
         thresholds_per_channel = threshold.flatten()
         return (np.log2(thresholds_per_channel) == list(map(int, np.log2(thresholds_per_channel)))).all()
 
-    return np.log2(threshold) == int(np.log2(threshold))
+    # Conversion of an array with ndim > 0 to a scalar was deprecated in NumPy1.25, and raised error in NumPy2.4.
+    return np.log2(threshold) == int(np.log2(threshold).item())
 
 
 def power_of_two_quantizer(tensor_data: np.ndarray,
