@@ -14,9 +14,7 @@
 #  ==============================================================================
 
 import os
-import tempfile
 import shutil
-import pytest
 
 from model_compression_toolkit.logger import Logger, set_log_folder
 from mct_quantizers import logger as mct_quantizers_logger
