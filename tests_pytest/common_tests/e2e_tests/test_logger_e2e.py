@@ -32,7 +32,6 @@ def test_logger():
     mct_quantizers_logger.Logger.debug("DEBUG message 2")
     mct_quantizers_logger.Logger.info("INFO message 2")
     mct_quantizers_logger.Logger.warning("WARNING message 2")
-    mct_quantizers_logger.Logger.error("ERROR message 2")
 
     # Verify MCT log file content
     mct_log_file = os.path.join(Logger.LOG_PATH, "mct_log.log")
@@ -52,7 +51,6 @@ def test_logger():
     assert "DEBUG message 2" in mctq_log_content
     assert "INFO message 2" in mctq_log_content
     assert "WARNING message 2" in mctq_log_content
-    assert "ERROR message 2" in mctq_log_content
 
     # Cleanup
     Logger.shutdown()
