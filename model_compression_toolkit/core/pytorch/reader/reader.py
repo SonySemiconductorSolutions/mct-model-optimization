@@ -14,7 +14,7 @@
 # ==============================================================================
 
 import torch
-import logging
+from model_compression_toolkit.logger import Logger
 from typing import Callable, Dict, Union, Any
 from torch.fx.passes.shape_prop import ShapeProp
 from torch.fx import Tracer, GraphModule, symbolic_trace
@@ -170,7 +170,7 @@ def model_reader(model: torch.nn.Module,
     Returns:
         Base graph of the Pytorch model.
     """
-    logging.info("Start Model Reading...")
+    Logger.info("Start Model Reading...")
     fx_model = fx_graph_module_generation(model, representative_data_gen, to_tensor)
     graph = build_graph(fx_model, to_numpy)
     disconnected_inputs = [n.name for n in graph.get_inputs() if not graph.out_edges(n)]
