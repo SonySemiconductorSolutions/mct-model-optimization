@@ -37,7 +37,7 @@ jobs:
           python -m pip install --upgrade pip
           pip install -r requirements.txt          
           pip install torch==${{ inputs.torch-version }} torchvision onnx onnxruntime "onnxruntime-extensions<0.14"
-          if [[ "${{ matrix.np_ver }}" == "<2.4" and "${{ matrix.python-version }}" != "3.10" ]]; then
+          if [ "${{ matrix.np_ver }}" == "<2.4" ] && [ "${{ matrix.python-version }}" != "3.10" ]; then
             echo "Installing numpy<2.4"
             pip install numpy 'numpy<2.4'
           fi
