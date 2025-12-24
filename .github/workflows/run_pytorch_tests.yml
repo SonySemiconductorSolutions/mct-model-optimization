@@ -12,9 +12,10 @@ on:
 
 jobs:
   run-pytorch-tests:
+    #  Regression testing for Numpy 2.4.
+    #  It was performed on combinations of Python (3.10, 3.11, 3.12), Pytorch (2.3, 2.4, 2.5, 2.6),
+    #  and NumPy (<2.4 or 2.4) versions.
     runs-on: ubuntu-latest
-    #  Testing was performed on combinations of Python (3.10, 3.11, 3.12), Pytorch (2.3, 2.4, 2.5, 2.6),
-    #  and NumPy (<2.4 or 2.4) versions
     strategy:
       fail-fast: false
       matrix:
