@@ -29,9 +29,8 @@ jobs:
           python -m pip install --upgrade pip
           pip install -r requirements.txt 
           if [[ "${{ matrix.np_ver }}" == "<2.4" ]]; then
-            extra_req='numpy<2.4'
+            pip install numpy 'numpy<2.4'
           fi
-          pip install numpy $extra_req
           pip install pytest pytest-mock
           pip list | grep numpy
           pip check
