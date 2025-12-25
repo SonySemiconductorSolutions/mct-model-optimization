@@ -12,6 +12,8 @@ on:
 
 jobs:
   run-tensorflow-tests:
+    #  Tensorflow uses Numpy<2,
+    #  so it does not support testing by Numpy version (<2.4 or 2.4) as seen in Pytorch (run_pytorch_tests.yml).
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -25,6 +27,7 @@ jobs:
           pip install -r requirements.txt
           pip install tensorflow==${{ inputs.tf-version }}
           pip install pytest pytest-mock
+          pip list | grep -e tensorflow -e numpy
           pip check
       - name: Run pytest
         run: |
