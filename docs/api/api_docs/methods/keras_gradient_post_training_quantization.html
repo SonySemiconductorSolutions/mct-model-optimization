@@ -58,11 +58,8 @@ Then, the quantized weights are optimized using gradient based post
 training quantization by comparing points between the float and quantized models, and minimizing the observed
 loss.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-data docutils literal notranslate"><span class="pre">Tuple</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Model</span></code>, <code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">UserInformation</span></code>]]</span></p>
-</dd>
-<dt class="field-even">Parameters<span class="colon">:</span></dt>
-<dd class="field-even"><ul class="simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
 <li><p><strong>in_model</strong> (<em>Model</em>) – Keras model to quantize.</p></li>
 <li><p><strong>representative_data_gen</strong> (<em>Callable</em>) – Dataset used for calibration.</p></li>
 <li><p><strong>gptq_config</strong> (<a class="reference internal" href="../classes/GradientPTQConfig.html#model_compression_toolkit.gptq.GradientPTQConfig" title="model_compression_toolkit.gptq.GradientPTQConfig"><em>GradientPTQConfig</em></a>) – Configuration for using gptq (e.g. optimizer).</p></li>
@@ -72,8 +69,8 @@ loss.</p>
 <li><p><strong>target_platform_capabilities</strong> (<em>Union</em><em>[</em><a class="reference internal" href="../modules/target_platform_capabilities.html#model_compression_toolkit.target_platform_capabilities.schema.mct_current_schema.TargetPlatformCapabilities" title="model_compression_toolkit.target_platform_capabilities.schema.mct_current_schema.TargetPlatformCapabilities"><em>TargetPlatformCapabilities</em></a><em>, </em><em>str</em><em>]</em>) – TargetPlatformCapabilities to optimize the Keras model according to.</p></li>
 </ul>
 </dd>
-<dt class="field-odd">Returns<span class="colon">:</span></dt>
-<dd class="field-odd"><p>A quantized model and information the user may need to handle the quantized model.</p>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>A quantized model and information the user may need to handle the quantized model.</p>
 </dd>
 </dl>
 <p class="rubric">Examples</p>
@@ -116,6 +113,11 @@ while the bias will not):</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">quantized_model</span><span class="p">,</span> <span class="n">quantization_info</span> <span class="o">=</span> <span class="n">mct</span><span class="o">.</span><span class="n">gptq</span><span class="o">.</span><span class="n">keras_gradient_post_training_quantization</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">repr_datagen</span><span class="p">,</span> <span class="n">gptq_config</span><span class="p">,</span> <span class="n">target_resource_utilization</span><span class="o">=</span><span class="n">ru</span><span class="p">,</span> <span class="n">core_config</span><span class="o">=</span><span class="n">config</span><span class="p">)</span>
 </pre></div>
 </div>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><code class="xref py py-data docutils literal notranslate"><span class="pre">Tuple</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Model</span></code>, <code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">UserInformation</span></code>]]</p>
+</dd>
+</dl>
 </dd></dl>
 
 </section>

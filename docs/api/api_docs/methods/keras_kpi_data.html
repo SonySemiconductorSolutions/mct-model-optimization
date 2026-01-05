@@ -48,19 +48,16 @@ for mixed-precision quantization.
 Builds the computation graph from the given model and hw modeling, and uses it to compute the
 resource utilization data.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><a class="reference internal" href="../classes/ResourceUtilization.html#model_compression_toolkit.core.ResourceUtilization" title="model_compression_toolkit.core.common.mixed_precision.resource_utilization_tools.resource_utilization.ResourceUtilization"><code class="xref py py-class docutils literal notranslate"><span class="pre">ResourceUtilization</span></code></a></span></p>
-</dd>
-<dt class="field-even">Parameters<span class="colon">:</span></dt>
-<dd class="field-even"><ul class="simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
 <li><p><strong>in_model</strong> (<em>Model</em>) – Keras model to quantize.</p></li>
 <li><p><strong>representative_data_gen</strong> (<em>Callable</em>) – Dataset used for calibration.</p></li>
 <li><p><strong>core_config</strong> (<a class="reference internal" href="../modules/core_config.html#model_compression_toolkit.core.CoreConfig" title="model_compression_toolkit.core.CoreConfig"><em>CoreConfig</em></a>) – CoreConfig containing parameters for quantization and mixed precision of how the model should be quantized.</p></li>
 <li><p><strong>target_platform_capabilities</strong> (<em>Union</em><em>[</em><a class="reference internal" href="../modules/target_platform_capabilities.html#model_compression_toolkit.target_platform_capabilities.schema.mct_current_schema.TargetPlatformCapabilities" title="model_compression_toolkit.target_platform_capabilities.schema.mct_current_schema.TargetPlatformCapabilities"><em>TargetPlatformCapabilities</em></a><em>, </em><em>str</em><em>]</em>) – FrameworkQuantizationCapabilities to optimize the Keras model according to.</p></li>
 </ul>
 </dd>
-<dt class="field-odd">Returns<span class="colon">:</span></dt>
-<dd class="field-odd"><p>A ResourceUtilization object with total weights parameters sum and max activation tensor.</p>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>A ResourceUtilization object with total weights parameters sum and max activation tensor.</p>
 </dd>
 </dl>
 <p class="rubric">Examples</p>
@@ -79,6 +76,11 @@ resource utilization data.</p>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">ru_data</span> <span class="o">=</span> <span class="n">mct</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">keras_resource_utilization_data</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">repr_datagen</span><span class="p">)</span>
 </pre></div>
 </div>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference internal" href="../classes/ResourceUtilization.html#model_compression_toolkit.core.ResourceUtilization" title="model_compression_toolkit.core.common.mixed_precision.resource_utilization_tools.resource_utilization.ResourceUtilization"><code class="xref py py-class docutils literal notranslate"><span class="pre">ResourceUtilization</span></code></a></p>
+</dd>
+</dl>
 </dd></dl>
 
 </section>

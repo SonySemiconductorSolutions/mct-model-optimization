@@ -45,14 +45,11 @@
 <span class="sig-prename descclassname"><span class="pre">model_compression_toolkit.qat.</span></span><span class="sig-name descname"><span class="pre">keras_quantization_aware_training_finalize_experimental</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">in_model</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#model_compression_toolkit.qat.keras_quantization_aware_training_finalize_experimental" title="Link to this definition">¶</a></dt>
 <dd><p>Convert a model fine-tuned by the user (Trainable quantizers) to a model with Inferable quantizers.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">Model</span></code></span></p>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>in_model</strong> (<em>Model</em>) – Keras model to replace TrainableQuantizer with InferableQuantizer</p>
 </dd>
-<dt class="field-even">Parameters<span class="colon">:</span></dt>
-<dd class="field-even"><p><strong>in_model</strong> (<em>Model</em>) – Keras model to replace TrainableQuantizer with InferableQuantizer</p>
-</dd>
-<dt class="field-odd">Returns<span class="colon">:</span></dt>
-<dd class="field-odd"><p>A quantized model with Inferable quantizers</p>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>A quantized model with Inferable quantizers</p>
 </dd>
 </dl>
 <p class="rubric">Examples</p>
@@ -96,6 +93,11 @@ quantized model:</p>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">quantized_model</span> <span class="o">=</span> <span class="n">mct</span><span class="o">.</span><span class="n">qat</span><span class="o">.</span><span class="n">keras_quantization_aware_training_finalize_experimental</span><span class="p">(</span><span class="n">quantized_model</span><span class="p">)</span>
 </pre></div>
 </div>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">Model</span></code></p>
+</dd>
+</dl>
 </dd></dl>
 
 </section>

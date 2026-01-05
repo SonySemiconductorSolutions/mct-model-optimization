@@ -78,11 +78,8 @@ The model will be saved to the path in save_model_path.
 Models that are exported to .keras format can use quantization_format of QuantizationFormat.MCTQ or QuantizationFormat.FAKELY_QUANT.
 Models that are exported to .tflite format can use quantization_format of QuantizationFormat.INT8 or QuantizationFormat.FAKELY_QUANT.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">Dict</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">type</span></code>]</span></p>
-</dd>
-<dt class="field-even">Parameters<span class="colon">:</span></dt>
-<dd class="field-even"><ul class="simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
 <li><p><strong>model</strong> – Model to export.</p></li>
 <li><p><strong>save_model_path</strong> – Path to save the model.</p></li>
 <li><p><strong>is_layer_exportable_fn</strong> – Callable to check whether a layer can be exported or not.</p></li>
@@ -90,8 +87,11 @@ Models that are exported to .tflite format can use quantization_format of Quanti
 <li><p><strong>quantization_format</strong> – Format of how quantizers are exported (MCTQ quantizers, by default).</p></li>
 </ul>
 </dd>
-<dt class="field-odd">Returns<span class="colon">:</span></dt>
-<dd class="field-odd"><p>Custom objects dictionary needed to load the model.</p>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Custom objects dictionary needed to load the model.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">Dict</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">type</span></code>]</p>
 </dd>
 </dl>
 </dd></dl>
@@ -160,11 +160,8 @@ and activations are float fakely-quantized values) and PytorchExportSerializatio
 (where the model will be saved to TorchScript model) or PytorchExportSerializationFormat.ONNX
 (where the model will be saved to ONNX model).</p>
 <dl class="field-list simple">
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></span></p>
-</dd>
-<dt class="field-even">Parameters<span class="colon">:</span></dt>
-<dd class="field-even"><ul class="simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
 <li><p><strong>model</strong> (<em>Module</em>) – Model to export.</p></li>
 <li><p><strong>save_model_path</strong> (<em>str</em>) – Path to save the model.</p></li>
 <li><p><strong>repr_dataset</strong> (<em>Callable</em>) – Representative dataset for tracing the pytorch model (mandatory for exporting it).</p></li>
@@ -174,6 +171,9 @@ and activations are float fakely-quantized values) and PytorchExportSerializatio
 <li><p><strong>onnx_opset_version</strong> (<em>int</em>) – ONNX opset version to use for exported ONNX model.</p></li>
 <li><p><strong>output_names</strong> (<em>Optional</em><em>[</em><em>List</em><em>[</em><em>str</em><em>]</em><em>]</em>) – Optional list of output node names for export compatibility. This argument is relevant only when using PytorchExportSerializationFormat.ONNX.</p></li>
 </ul>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></p>
 </dd>
 </dl>
 </dd></dl>

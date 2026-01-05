@@ -231,11 +231,8 @@ Target Platform Capabilities (TPC) setup.</p>
 <span class="sig-name descname"><span class="pre">quantize_and_export</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">float_model</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">representative_dataset</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">method</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'PTQ'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">framework</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'pytorch'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">use_internal_tpc</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">use_mixed_precision</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">param_items</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#model_compression_toolkit.wrapper.mct_wrapper.MCTWrapper.quantize_and_export" title="Link to this definition">¶</a></dt>
 <dd><p>Main function to perform model quantization and export.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-data docutils literal notranslate"><span class="pre">Tuple</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code>, <code class="xref py py-data docutils literal notranslate"><span class="pre">Any</span></code>]</span></p>
-</dd>
-<dt class="field-even">Parameters<span class="colon">:</span></dt>
-<dd class="field-even"><ul class="simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
 <li><p><strong>float_model</strong> – The float model to be quantized.</p></li>
 <li><p><strong>representative_dataset</strong> (<em>Callable</em><em>, </em><em>np.array</em><em>, </em><em>tf.Tensor</em>) – Representative dataset for calibration.</p></li>
 <li><p><strong>method</strong> (<em>str</em>) – Quantization method, e.g., ‘PTQ’ or ‘GPTQ’.
@@ -250,8 +247,8 @@ quantization. Default: False</p></li>
 [[key,value],…]. Default: None</p></li>
 </ul>
 </dd>
-<dt class="field-odd">Returns<span class="colon">:</span></dt>
-<dd class="field-odd"><p>tuple (quantization success flag, quantized model)</p>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>tuple (quantization success flag, quantized model)</p>
 </dd>
 </dl>
 <p class="rubric">Examples</p>
@@ -291,6 +288,11 @@ quantization. Default: False</p></li>
 <span class="gp">... </span><span class="p">)</span>
 </pre></div>
 </div>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><code class="xref py py-data docutils literal notranslate"><span class="pre">Tuple</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code>, <code class="xref py py-data docutils literal notranslate"><span class="pre">Any</span></code>]</p>
+</dd>
+</dl>
 </dd></dl>
 
 </dd></dl>

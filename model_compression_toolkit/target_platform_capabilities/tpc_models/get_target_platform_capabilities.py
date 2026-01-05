@@ -28,7 +28,7 @@ def get_target_platform_capabilities(tpc_version: str = TPC_V1_0,
         device_type (str): The type of device for the target platform.
         
     Returns:
-        TargetPlatformCapabilities: The TargetPlatformCapabilities object.
+        The TargetPlatformCapabilities object matching the tpc version.
     """
     # Generate a function containing tpc configurations for the specified device type.
     tpc_func = generate_tpc_func(device_type=device_type)
@@ -48,7 +48,7 @@ def get_target_platform_capabilities_sdsp(sdsp_version: str = SDSP_V3_14) -> Tar
         sdsp_version (str): Sdsp converter version.
         
     Returns:
-        TargetPlatformCapabilities: The TargetPlatformCapabilities object.
+        The TargetPlatformCapabilities object matching the sdsp converter version.
     """
     sdsp_version = str(sdsp_version)
     # Get the corresponding tpc version from sdsp converter version.
@@ -77,7 +77,7 @@ def get_tpc_model(name: str, tpc: TargetPlatformCapabilities):
         tpc (TargetPlatformCapabilities): a TargetPlatformCapabilities to return.
 
     Returns:
-        TargetPlatformCapabilities: The given TargetPlatformCapabilities object.
+        The given TargetPlatformCapabilities object.
 
     """
 
