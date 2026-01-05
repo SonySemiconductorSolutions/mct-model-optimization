@@ -16,7 +16,7 @@
 
 from copy import copy
 
-import logging
+from model_compression_toolkit.logger import Logger
 import tensorflow as tf
 from tensorflow.keras import Model
 from tensorflow.python.util.object_identity import Reference as TFReference
@@ -178,6 +178,6 @@ def model_reader(keras_model: Model) -> Graph:
     Returns:
         Base graph of the Keras model.
     """
-    logging.info("Start Model Reading...")
+    Logger.info("Start Model Reading...")
     graph = parse_model(keras_model)
     return graph

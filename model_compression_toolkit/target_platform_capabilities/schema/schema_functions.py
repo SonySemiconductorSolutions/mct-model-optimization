@@ -12,9 +12,9 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 # ==============================================================================
-from logging import Logger
 from typing import Optional
 
+from model_compression_toolkit.logger import Logger
 from model_compression_toolkit.target_platform_capabilities.schema.mct_current_schema import OpQuantizationConfig, \
     TargetPlatformCapabilities, QuantizationConfigOptions, OperatorsSetBase
 
