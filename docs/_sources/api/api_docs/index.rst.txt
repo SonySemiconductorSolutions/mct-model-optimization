@@ -109,7 +109,8 @@ keras_load_quantized_model
 target_platform_capabilities
 ==============================
 - :ref:`target_platform_capabilities<ug-target_platform_capabilities>`: Module to create and model hardware-related settings to optimize the model according to, by the hardware the optimized model will use during inference.
-- :ref:`get_target_platform_capabilities<ug-get_target_platform_capabilities>`: A function to get a target platform model for Tensorflow and Pytorch.
+- :ref:`get_target_platform_capabilities<ug-get_target_platform_capabilities>`: A function to get a TargetPlatformCapabilities for tpc version and device type.
+- :ref:`get_target_platform_capabilities_sdsp<ug-get_target_platform_capabilities_sdsp>`: A function to get a TargetPlatformCapabilities for sdsp converter version.
 - :ref:`DefaultDict<ug-DefaultDict>`: Util class for creating a TargetPlatformCapabilities.
 
 wrapper

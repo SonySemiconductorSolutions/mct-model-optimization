@@ -6,12 +6,12 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>Pytorch Structured Pruning &#8212; MCT Documentation: ver 2.5.0</title>
+    <title>Pytorch Structured Pruning &#8212; MCT Documentation: ver 2.5.1</title>
     <link rel="stylesheet" type="text/css" href="../../../static/pygments.css?v=03e43079" />
     <link rel="stylesheet" type="text/css" href="../../../static/bizstyle.css?v=5283bb3d" />
     <link rel="stylesheet" type="text/css" href="../../../static/css/custom.css?v=01243f34" />
     
-    <script src="../../../static/documentation_options.js?v=3c4615cf"></script>
+    <script src="../../../static/documentation_options.js?v=983e91d6"></script>
     <script src="../../../static/doctools.js?v=9bcbadda"></script>
     <script src="../../../static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../../static/bizstyle.js"></script>
@@ -28,7 +28,7 @@
         <li class="right" style="margin-right: 10px">
           <a href="../../../genindex.html" title="General Index"
              accesskey="I">index</a></li>
-        <li class="nav-item nav-item-0"><a href="../../../index.html">MCT Documentation: ver 2.5.0</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">MCT Documentation: ver 2.5.1</a> &#187;</li>
         <li class="nav-item nav-item-this"><a href="">Pytorch Structured Pruning</a></li> 
       </ul>
     </div>  
@@ -42,7 +42,7 @@
 <span id="ug-pytorch-pruning-experimental"></span><h1>Pytorch Structured Pruning<a class="headerlink" href="#pytorch-structured-pruning" title="Link to this heading">¶</a></h1>
 <dl class="py function">
 <dt class="sig sig-object py" id="model_compression_toolkit.pruning.pytorch_pruning_experimental">
-<span class="sig-prename descclassname"><span class="pre">model_compression_toolkit.pruning.</span></span><span class="sig-name descname"><span class="pre">pytorch_pruning_experimental</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">model</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">target_resource_utilization</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">representative_data_gen</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pruning_config</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">PruningConfig()</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">target_platform_capabilities</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">DEFAULT_PYOTRCH_TPC</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#model_compression_toolkit.pruning.pytorch_pruning_experimental" title="Link to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">model_compression_toolkit.pruning.</span></span><span class="sig-name descname"><span class="pre">pytorch_pruning_experimental</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">model</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">target_resource_utilization</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">representative_data_gen</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pruning_config</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">PruningConfig()</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">target_platform_capabilities</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">DEFAULT_PYTORCH_TPC</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#model_compression_toolkit.pruning.pytorch_pruning_experimental" title="Link to this definition">¶</a></dt>
 <dd><p>Perform structured pruning on a Pytorch model to meet a specified target resource utilization.
 This function prunes the provided model according to the target resource utilization by grouping and pruning
 channels based on each layer’s SIMD configuration in the Target Platform Capabilities (TPC).
@@ -151,7 +151,7 @@ extends the duration of the pruning process:</p>
         <li class="right" style="margin-right: 10px">
           <a href="../../../genindex.html" title="General Index"
              >index</a></li>
-        <li class="nav-item nav-item-0"><a href="../../../index.html">MCT Documentation: ver 2.5.0</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">MCT Documentation: ver 2.5.1</a> &#187;</li>
         <li class="nav-item nav-item-this"><a href="">Pytorch Structured Pruning</a></li> 
       </ul>
     </div>

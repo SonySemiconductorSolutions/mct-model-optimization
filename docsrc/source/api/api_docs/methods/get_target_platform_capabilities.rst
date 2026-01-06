@@ -3,9 +3,9 @@
 .. _ug-get_target_platform_capabilities:
 
 
-=======================================
-Get FrameworkQuantizationCapabilities
-=======================================
+=====================================================
+Get TargetPlatformCapabilities for tpc version
+=====================================================
 
 .. autofunction:: model_compression_toolkit.get_target_platform_capabilities
 
