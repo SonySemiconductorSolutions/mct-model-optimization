@@ -27,9 +27,9 @@ One may view the full default target-platform model and its parameters [here](./
 
 ## Usage
 
-The simplest way to initiate a TPC and use it in MCT is by using the function [get_target_platform_capabilities](https://sonysemiconductorsolutions.github.io/mct-model-optimization/api/api_docs/methods/get_target_platform_capabilities.html#ug-get-target-platform-capabilities). 
+The simplest way to initiate a TPC and use it in MCT is by using the function [get_target_platform_capabilities](https://sonysemiconductorsolutions.github.io/mct-model-optimization/api/api_docs/methods/get_target_platform_capabilities.html#ug-get-target-platform-capabilities).
 
-This function gets a TPC object matching the tpc version and device type. For IMX500, the version can be set to '1.0', '4.0', or '5.0'. For TFLite and QNNPACK, this can only be set to '1.0'.
+This function gets a TPC object matching the tpc version and device type. Please check [here](../../README.md#supported-versions) for supported versions.
 
 For example:
 
@@ -45,7 +45,7 @@ quantized_model, quantization_info = mct.ptq.keras_post_training_quantization(in
                                                                               target_platform_capabilities=tpc)
 ```
 
-You can also get a TPC for IMX500 using the function [get_target_platform_capabilities_sdsp](../../docs/api/api_docs/methods/get_target_platform_capabilities_sdsp.html#ug-get-target-platform-capabilities_sdsp) that specifies the sdsp converter version. The version can be set to '3.14', '3.16', or '3.17'.
+You can also get a TPC for IMX500 using the function [get_target_platform_capabilities_sdsp](../../docs/api/api_docs/methods/get_target_platform_capabilities_sdsp.html#ug-get-target-platform-capabilities_sdsp) that specifies the sdsp converter version. Please check [here](../../README.md#supported-versions) for supported versions.
 
 For example:
 
