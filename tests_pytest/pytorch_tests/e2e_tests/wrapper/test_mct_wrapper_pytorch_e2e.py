@@ -149,9 +149,9 @@ def test_quantization(
         Returns:
             tuple: (success_flag, quantized_model)
         """
-        # Configure quantization method and framework settings
-        method = 'PTQ'
+        # Configure quantization framework and method settings
         framework = 'pytorch'
+        method = 'PTQ'
         use_mixed_precision = False  # Disable mixed precision for standard PTQ
 
         # Define quantization parameters for optimal model performance
@@ -168,7 +168,7 @@ def test_quantization(
         # Execute quantization using MCTWrapper and export to ONNX
         wrapper = mct.wrapper.mct_wrapper.MCTWrapper()
         flag, quantized_model = wrapper.quantize_and_export(
-            float_model, representative_dataset_gen, method, framework, use_mixed_precision,
+            float_model, representative_dataset_gen, framework, method, use_mixed_precision,
             param_items)
         return flag, quantized_model
 
@@ -191,8 +191,8 @@ def test_quantization(
             tuple: (success_flag, quantized_model)
         """
         # Configure quantization method with mixed precision enabled
-        method = 'PTQ'
         framework = 'pytorch'
+        method = 'PTQ'
         use_mixed_precision = True      # Enable mixed precision optimization
 
         # Define mixed precision quantization parameters
@@ -207,7 +207,7 @@ def test_quantization(
         # Execute mixed precision quantization and export to ONNX
         wrapper = mct.wrapper.mct_wrapper.MCTWrapper()
         flag, quantized_model = wrapper.quantize_and_export(
-            float_model, representative_dataset_gen, method, framework, use_mixed_precision,
+            float_model, representative_dataset_gen, framework, method, use_mixed_precision,
             param_items)
         return flag, quantized_model
 
@@ -231,8 +231,8 @@ def test_quantization(
             tuple: (success_flag, quantized_model)
         """
         # Configure gradient-based quantization method
-        method = 'GPTQ'
         framework = 'pytorch'
+        method = 'GPTQ'
         use_mixed_precision = False     # Disable mixed precision for standard GPTQ
 
         # Define GPTQ-specific parameters for gradient-based optimization
@@ -246,7 +246,7 @@ def test_quantization(
         # Execute gradient-based quantization and export to ONNX
         wrapper = mct.wrapper.mct_wrapper.MCTWrapper()
         flag, quantized_model = wrapper.quantize_and_export(
-            float_model, representative_dataset_gen, method, framework, use_mixed_precision,
+            float_model, representative_dataset_gen, framework, method, use_mixed_precision,
             param_items)
         return flag, quantized_model
 
@@ -269,8 +269,8 @@ def test_quantization(
             tuple: (success_flag, quantized_model)
         """
         # Configure gradient-based quantization with mixed precision
-        method = 'GPTQ'
         framework = 'pytorch'
+        method = 'GPTQ'
         use_mixed_precision = True      # Enable mixed precision for optimal accuracy
 
         # Define GPTQ mixed precision parameters for advanced optimization
@@ -287,7 +287,7 @@ def test_quantization(
         # Execute advanced GPTQ with mixed precision and export to ONNX
         wrapper = mct.wrapper.mct_wrapper.MCTWrapper()
         flag, quantized_model = wrapper.quantize_and_export(
-            float_model, representative_dataset_gen, method, framework, use_mixed_precision,
+            float_model, representative_dataset_gen, framework, method, use_mixed_precision,
             param_items)
         return flag, quantized_model
 

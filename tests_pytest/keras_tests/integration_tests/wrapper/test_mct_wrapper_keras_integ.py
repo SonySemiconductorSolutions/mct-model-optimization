@@ -98,8 +98,8 @@ class TestMCTWrapperIntegration:
         # Call the method
         success, result_model = wrapper.quantize_and_export(
             float_model=mock_float_model,
-            method='PTQ',
             framework='tensorflow',
+            method='PTQ',
             use_mixed_precision=False,
             representative_dataset=mock_representative_dataset,
             param_items=param_items
@@ -154,8 +154,8 @@ class TestMCTWrapperIntegration:
         # Call the method
         success, result_model = wrapper.quantize_and_export(
             float_model=mock_float_model,
-            method='GPTQ',
             framework='tensorflow',
+            method='GPTQ',
             use_mixed_precision=True,
             representative_dataset=mock_representative_dataset,
             param_items=[]
@@ -188,8 +188,8 @@ class TestMCTWrapperIntegration:
         # Call the method
         success, result_model = wrapper.quantize_and_export(
             float_model=mock_float_model,
-            method='LQPTQ',
             framework='tensorflow',
+            method='LQPTQ',
             use_mixed_precision=False,
             representative_dataset=mock_representative_dataset,
             param_items=[]

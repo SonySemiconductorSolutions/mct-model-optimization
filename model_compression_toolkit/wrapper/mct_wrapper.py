@@ -129,8 +129,8 @@ class MCTWrapper:
 
     def _initialize_and_validate(self, float_model: Any,
                                  representative_dataset: Optional[Any],
-                                 method: str,
                                  framework: str,
+                                 method: str,
                                  use_mixed_precision: bool
                                  ) -> None:
         """
@@ -139,8 +139,8 @@ class MCTWrapper:
         Args:
             float_model: The float model to be quantized.
             representative_dataset (Callable, np.array, tf.Tensor): Representative dataset for calibration.
-            method (str): Quantization method ('PTQ', 'GPTQ', 'LQPTQ').
             framework (str): Target framework ('tensorflow', 'pytorch').
+            method (str): Quantization method ('PTQ', 'GPTQ', 'LQPTQ').
             use_mixed_precision (bool): Whether to use mixed-precision quantization.
 
         Raises:
@@ -307,12 +307,7 @@ class MCTWrapper:
         params_TPC = {
             SDSP_VERSION: self.params[SDSP_VERSION]
         }
-        self.tpc = self.get_target_platform_capabilities_sdsp(**params_TPC)
-
-    def get_target_platform_capabilities_sdsp(self, **params_TPC):
-        sdsp_version = params_TPC.get(SDSP_VERSION, '3.14')
-        return mct.get_target_platform_capabilities('tensorflow', 'default',
-                                                    sdsp_version)
+        self.tpc = mct.get_target_platform_capabilities_sdsp(**params_TPC)
 
     def _setting_PTQ_mixed_precision(self) -> Dict[str, Any]:
         """
@@ -493,8 +488,8 @@ class MCTWrapper:
 
     def quantize_and_export(self, float_model: Any,
                             representative_dataset: Any,
-                            method: str = 'PTQ',
                             framework: str = 'pytorch',
+                            method: str = 'PTQ',
                             use_mixed_precision: bool = False,
                             param_items: Optional[List[List[Any]]] = None
                             ) -> Tuple[bool, Any]:
@@ -505,10 +500,10 @@ class MCTWrapper:
             float_model: The float model to be quantized.
             representative_dataset (Callable, np.array, tf.Tensor):
                 Representative dataset for calibration.
-            method (str): Quantization method, e.g., 'PTQ' or 'GPTQ'.
-                Default: 'PTQ'
             framework (str): 'tensorflow' or 'pytorch'.
                 Default: 'pytorch'
+            method (str): Quantization method, e.g., 'PTQ' or 'GPTQ'.
+                Default: 'PTQ'
             use_mixed_precision (bool): Whether to use mixed-precision
                 quantization. Default: False
             param_items (list): List of parameter settings.
@@ -532,10 +527,10 @@ class MCTWrapper:
 
             >>> wrapper = mct.MCTWrapper()
 
-            set method, framework, and other parameters
+            set framework, method, and other parameters
 
-            >>> method = 'PTQ'
             >>> framework = 'tensorflow'
+            >>> method = 'PTQ'
             >>> use_mixed_precision = False
 
             set parameters if needed
@@ -547,8 +542,8 @@ class MCTWrapper:
             >>> flag, quantized_model = wrapper.quantize_and_export(
             ...     float_model=float_model,
             ...     representative_dataset=representative_dataset,
-            ...     method=method,
             ...     framework=framework,
+            ...     method=method,
             ...     use_mixed_precision=use_mixed_precision,
             ...     param_items=param_items
             ... )
@@ -557,7 +552,7 @@ class MCTWrapper:
         try:
             # Step 1: Initialize and validate all input parameters
             self._initialize_and_validate( float_model, representative_dataset, 
-                                          method, framework, use_mixed_precision)
+                                          framework, method, use_mixed_precision)
 
             # Step 2: Apply custom parameter modifications
             self._modify_params(param_items)

@@ -128,8 +128,8 @@ def test_quantization(
         predefined target platform capabilities for optimal quantization settings.
         """
         # Quantization method configuration
-        method = 'PTQ'
         framework = 'tensorflow'
+        method = 'PTQ'
         use_mixed_precision = False
 
         # Configure quantization parameters for optimal model performance
@@ -145,7 +145,7 @@ def test_quantization(
 
         # Execute quantization using MCTWrapper
         wrapper = mct.wrapper.mct_wrapper.MCTWrapper()
-        flag, quantized_model = wrapper.quantize_and_export(float_model, representative_dataset_gen, method, framework, use_mixed_precision, param_items)
+        flag, quantized_model = wrapper.quantize_and_export(float_model, representative_dataset_gen, framework, method, use_mixed_precision, param_items)
         return flag, quantized_model
 
     #########################################################################
@@ -159,8 +159,8 @@ def test_quantization(
         optimizing the trade-off between model size and accuracy.
         """
         # Quantization method configuration
-        method = 'PTQ'
         framework = 'tensorflow'
+        method = 'PTQ'
         use_mixed_precision = True
 
         # Configure mixed precision parameters for optimal compression
@@ -174,7 +174,7 @@ def test_quantization(
 
         # Execute quantization with mixed precision using MCTWrapper
         wrapper = mct.wrapper.mct_wrapper.MCTWrapper()
-        flag, quantized_model = wrapper.quantize_and_export(float_model, representative_dataset_gen, method, framework, use_mixed_precision, param_items)
+        flag, quantized_model = wrapper.quantize_and_export(float_model, representative_dataset_gen, framework, method, use_mixed_precision, param_items)
         return flag, quantized_model
 
     #########################################################################
@@ -188,8 +188,8 @@ def test_quantization(
         resulting in better model accuracy compared to standard PTQ.
         """
         # Quantization method configuration
-        method = 'GPTQ'
         framework = 'tensorflow'
+        method = 'GPTQ'
         use_mixed_precision = False
 
         # Configure GPTQ-specific parameters for gradient-based optimization
@@ -202,15 +202,15 @@ def test_quantization(
 
         # Execute gradient-based quantization using MCTWrapper
         wrapper = mct.wrapper.mct_wrapper.MCTWrapper()
-        flag, quantized_model = wrapper.quantize_and_export(float_model, representative_dataset_gen, method, framework, use_mixed_precision, param_items)
+        flag, quantized_model = wrapper.quantize_and_export(float_model, representative_dataset_gen, framework, method, use_mixed_precision, param_items)
         return flag, quantized_model
 
     #########################################################################
     # Run GPTQ + Mixed Precision Quantization (mixed_precision) with Keras
     @decorator
     def GPTQ_Keras_mixed_precision(float_model: keras.Model) -> Tuple[bool, keras.Model]:
-        method = 'GPTQ'
         framework = 'tensorflow'
+        method = 'GPTQ'
         use_mixed_precision = True
 
         param_items = [
@@ -224,15 +224,15 @@ def test_quantization(
         ]
 
         wrapper = mct.wrapper.mct_wrapper.MCTWrapper()
-        flag, quantized_model = wrapper.quantize_and_export(float_model, representative_dataset_gen, method, framework, use_mixed_precision, param_items)
+        flag, quantized_model = wrapper.quantize_and_export(float_model, representative_dataset_gen, framework, method, use_mixed_precision, param_items)
         return flag, quantized_model
 
     #########################################################################
     # Run LQPTQ (Low-bit Quantizer PTQ) with Keras
     @decorator
     def LQPTQ_Keras(float_model: keras.Model) -> Tuple[bool, keras.Model]:
-        method = 'LQPTQ'
         framework = 'tensorflow'
+        method = 'LQPTQ'
         use_mixed_precision = False
 
         param_items = [
@@ -242,7 +242,7 @@ def test_quantization(
         ]
 
         wrapper = mct.wrapper.mct_wrapper.MCTWrapper()
-        flag, quantized_model = wrapper.quantize_and_export(float_model, representative_dataset_gen, method, framework, use_mixed_precision, param_items)
+        flag, quantized_model = wrapper.quantize_and_export(float_model, representative_dataset_gen, framework, method, use_mixed_precision, param_items)
         return flag, quantized_model
 
     # Execute the selected quantization method

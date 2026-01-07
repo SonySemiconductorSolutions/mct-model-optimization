@@ -51,7 +51,7 @@ class TestMCTWrapper:
         mock_model = Mock()
         mock_dataset = Mock()
         
-        wrapper._initialize_and_validate(float_model=mock_model, method='PTQ', framework='pytorch', 
+        wrapper._initialize_and_validate(float_model=mock_model, framework='pytorch', method='PTQ', 
                                          use_mixed_precision=False, representative_dataset=mock_dataset)
 
         assert wrapper.float_model == mock_model
@@ -111,28 +111,27 @@ class TestMCTWrapper:
         assert 'non_existing_key' not in wrapper.params
         assert 'another_fake_key' not in wrapper.params
 
-    @patch('model_compression_toolkit.wrapper.mct_wrapper.mct.get_target_platform_capabilities')
-    def test_get_tpc_with_internal_tpc(self, mock_mct_get_tpc: Mock) -> None:
+    @patch('model_compression_toolkit.wrapper.mct_wrapper.mct.get_target_platform_capabilities_sdsp')
+    def test_get_tpc(self, mock_mct_get_tpc_sdsp: Mock) -> None:
         """
         Test _get_tpc method.
         
         Verifies that the wrapper correctly calls
-        mct.get_target_platform_capabilities with expected parameters.
+        mct.get_target_platform_capabilities_sdsp with expected parameters.
         
-        Note: Patch targets mct.get_target_platform_capabilities because
+        Note: Patch targets mct.get_target_platform_capabilities_sdsp because
         MCTWrapper imports 'model_compression_toolkit as mct'.
         """
         wrapper = MCTWrapper()
         wrapper.framework = 'tensorflow'
         wrapper.params['sdsp_version'] = '3.14'
         mock_tpc = Mock()
-        mock_mct_get_tpc.return_value = mock_tpc
+        mock_mct_get_tpc_sdsp.return_value = mock_tpc
         
         wrapper._get_tpc()
         
-        # Check if MCT get_target_platform_capabilities was called correctly
-        mock_mct_get_tpc.assert_called_once_with('tensorflow', 'default',
-                                                 '3.14')
+        # Check if MCT get_target_platform_capabilities_sdsp was called correctly
+        mock_mct_get_tpc_sdsp.assert_called_once_with(sdsp_version='3.14')
         assert wrapper.tpc == mock_tpc
 
     @patch('model_compression_toolkit.core.pytorch_resource_utilization_data')
@@ -448,8 +447,8 @@ class TestMCTWrapperErrorHandling:
         with pytest.raises(Exception) as exc_info:
             wrapper.quantize_and_export(
                 float_model=Mock(),
-                method='UNSUPPORTED_METHOD',
                 framework='pytorch',
+                method='UNSUPPORTED_METHOD',
                 use_mixed_precision=False,
                 representative_dataset=Mock(),
                 param_items=[]
@@ -465,8 +464,8 @@ class TestMCTWrapperErrorHandling:
         with pytest.raises(Exception) as exc_info:
             wrapper.quantize_and_export(
                 float_model=Mock(),
-                method='LQPTQ',
                 framework='pytorch',
+                method='LQPTQ',
                 use_mixed_precision=False,
                 representative_dataset=Mock(),
                 param_items=[]
@@ -482,8 +481,8 @@ class TestMCTWrapperErrorHandling:
         with pytest.raises(Exception) as exc_info:
             wrapper.quantize_and_export(
                 float_model=Mock(),
-                method='PTQ',
                 framework='unsupported',
+                method='PTQ',
                 use_mixed_precision=False,
                 representative_dataset=Mock(),
                 param_items=[]
