@@ -23,7 +23,7 @@ activations and symmetric threshold for weights.
 For mixed-precision quantization it uses either 2, 4, or 8 bits for quantizing the operators.
 One may view the full default target-platform model and its parameters [here](./tpc_models/imx500_tpc/v1_0/tpc.py).
 
-[TFLite](./tpc_models/tflite_tpc/v1_0/tpc.py) and [QNNPACK](./tpc_models/qnnpack_tpc/v1_0/tpc.py) models were created similarly and were used to create two TPCs: One for Keras TPC and one for PyTorch TPC (for each model, this 8 in total).
+[TFLite](./tpc_models/tflite_tpc/v1_0/tpc.py) and [QNNPACK](./tpc_models/qnnpack_tpc/v1_0/tpc.py) models were created similarly.
 
 ## Usage
 
