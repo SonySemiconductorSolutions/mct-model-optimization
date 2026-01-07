@@ -145,8 +145,7 @@ class TestMCTWrapper:
     @patch('model_compression_toolkit.exporter.keras_export_model')
     def test_select_method_PTQ(
             self, mock_keras_export: Mock, mock_keras_gptq_config: Mock,
-            mock_keras_gptq: Mock, mock_keras_ptq: Mock,
-            mock_keras_ru_data: Mock) -> None:
+            mock_keras_gptq: Mock, mock_keras_ptq: Mock, mock_keras_ru_data: Mock) -> None:
         """
         Test _select_method method for TensorFlow framework with PTQ method.
         
@@ -222,13 +221,11 @@ class TestMCTWrapper:
             self, mock_resource_util: Mock, mock_core_config: Mock,
             mock_mixed_precision_config: Mock) -> None:
         """
-        Test _setting_PTQ_mixed_precision method for Mixed Precision
-        PTQ configuration.
+        Test _setting_PTQ_mixed_precision method for Mixed Precision PTQ configuration.
         
-        This test verifies that the _setting_PTQ_mixed_precision
-        method correctly configures mixed precision Post-Training
-        Quantization parameters by properly setting up configuration
-        objects and resource utilization constraints.
+        This test verifies that the _setting_PTQ_mixed_precision method correctly configures
+        mixed precision Post-Training Quantization parameters by properly setting
+        up configuration objects and resource utilization constraints.
         """
         wrapper = MCTWrapper()
         wrapper.float_model = Mock()
