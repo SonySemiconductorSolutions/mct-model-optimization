@@ -27,16 +27,16 @@ One may view the full default target-platform model and its parameters [here](./
 
 ## Usage
 
-The simplest way to initiate a TPC and use it in MCT is by using the function [get_target_platform_capabilities](https://sonysemiconductorsolutions.github.io/mct-model-optimization/api/api_docs/methods/get_target_platform_capabilities.html#ug-get-target-platform-capabilities).
+The simplest way to initiate a TPC and use it in MCT is by using the function [get_target_platform_capabilities](https://sonysemiconductorsolutions.github.io/mct-model-optimization/api/api_docs/methods/get_target_platform_capabilities.html#ug-get-target-platform-capabilities). 
+
+This function gets a TPC object matching the tpc version and device type. For IMX500, the version can be set to '1.0', '4.0', or '5.0'. For TFLite and QNNPACK, the version can only be set to '1.0'.
 
 For example:
 
 ```python
 import model_compression_toolkit as mct
 
-# Get a TPC object matching the tpc version and device type.
-# For IMX500, you can set the version to '1.0', '4.0', or '5.0'.
-# For TFLite and QNNPACK, you can set only '1.0'.
+# Get the TPC object for imx500 hardware with version 1.0.
 tpc = mct.get_target_platform_capabilities(tpc_version='1.0', device_type='imx500')
 
 # Apply MCT on TensorFlow pre-trained model using the TPC.
@@ -45,15 +45,14 @@ quantized_model, quantization_info = mct.ptq.keras_post_training_quantization(in
                                                                               target_platform_capabilities=tpc)
 ```
 
-You can also get a TPC for IMX500 using the function [get_target_platform_capabilities_sdsp](https://sonysemiconductorsolutions.github.io/mct-model-optimization/api/api_docs/methods/get_target_platform_capabilities_sdsp.html#ug-get-target-platform-capabilities_sdsp) that specifies the sdsp converter version.
+You can also get a TPC for IMX500 using the function [get_target_platform_capabilities_sdsp](../../docs/api/api_docs/methods/get_target_platform_capabilities_sdsp.html#ug-get-target-platform-capabilities_sdsp) that specifies the sdsp converter version. The version can be set to '3.14', '3.16', or '3.17'.
 
 For example:
 
 ```python
 import model_compression_toolkit as mct
 
-# Get a TPC object specified the sdsp converter version.
-# You can set the version to '3.14', '3.16', or '3.17'.
+# Get the TPC object specified the sdsp converter version 3.14.
 tpc = mct.get_target_platform_capabilities_sdsp(sdsp_version='3.14')
 
 # Apply MCT on PyTorch pre-trained model using the TPC.
