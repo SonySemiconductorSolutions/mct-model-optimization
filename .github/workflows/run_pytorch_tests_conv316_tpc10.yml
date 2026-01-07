@@ -1,4 +1,4 @@
-name: Converter 3.14, TPC 1.0
+name: Converter 3.16, TPC 1.0 (Pytorch)
 on:
   workflow_dispatch: # Allow manual triggers
   schedule:
@@ -11,8 +11,7 @@ concurrency:
 
 jobs:
   run-tests:
-    uses: ./.github/workflows/run_network_deployment_tests.yml
+    uses: ./.github/workflows/run_network_deployment_pytorch_tests.yml
     with:
-      converter-version: "3.14.*"
+      converter-version: "3.16.*"
       tpc-version: "1.0"
-      onnx-opset-version: "15"
