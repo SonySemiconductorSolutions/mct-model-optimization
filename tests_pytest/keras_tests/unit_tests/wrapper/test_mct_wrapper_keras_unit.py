@@ -267,8 +267,7 @@ class TestMCTWrapper:
 
     @patch('model_compression_toolkit.core.QuantizationConfig')
     @patch('model_compression_toolkit.core.CoreConfig')
-    def test_setting_PTQ(self, mock_core_config: Mock,
-                         mock_quant_config: Mock) -> None:
+    def test_setting_PTQ(self, mock_core_config: Mock, mock_quant_config: Mock) -> None:
         """
         Test _Setting_PTQ method for standard Post-Training Quantization.
         
@@ -317,13 +316,11 @@ class TestMCTWrapper:
             mock_mixed_precision_config: Mock,
             mock_quant_config: Mock) -> None:
         """
-        Test _setting_GPTQ_mixed_precision method for Mixed Precision
-        GPTQ configuration.
+        Test _setting_GPTQ_mixed_precision method for Mixed Precision GPTQ configuration.
         
-        This test verifies that the _setting_GPTQ_mixed_precision
-        method correctly configures mixed precision Gradient
-        Post-Training Quantization parameters with proper configuration
-        objects and resource utilization.
+        This test verifies that the _setting_GPTQ_mixed_precision method correctly
+        configures mixed precision Gradient Post-Training Quantization
+        parameters with proper configuration objects and resource utilization.
         """
         wrapper = MCTWrapper()
         wrapper.float_model = Mock()
@@ -392,8 +389,7 @@ class TestMCTWrapper:
 
     def test_export_model(self) -> None:
         """
-        Test _export_model method for TensorFlow framework export
-        functionality.
+        Test _export_model method for TensorFlow framework export functionality.
         
         This test verifies that the _export_model method correctly exports
         quantized TensorFlow/Keras models to TensorFlow Lite format with
