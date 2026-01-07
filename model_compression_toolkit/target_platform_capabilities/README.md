@@ -29,7 +29,7 @@ One may view the full default target-platform model and its parameters [here](./
 
 The simplest way to initiate a TPC and use it in MCT is by using the function [get_target_platform_capabilities](https://sonysemiconductorsolutions.github.io/mct-model-optimization/api/api_docs/methods/get_target_platform_capabilities.html#ug-get-target-platform-capabilities). 
 
-This function gets a TPC object matching the tpc version and device type. For IMX500, the version can be set to '1.0', '4.0', or '5.0'. For TFLite and QNNPACK, the version can only be set to '1.0'.
+This function gets a TPC object matching the tpc version and device type. For IMX500, the version can be set to '1.0', '4.0', or '5.0'. For TFLite and QNNPACK, this can only be set to '1.0'.
 
 For example:
 
