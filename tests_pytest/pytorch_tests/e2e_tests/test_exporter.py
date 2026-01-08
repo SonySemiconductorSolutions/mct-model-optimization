@@ -223,17 +223,17 @@ class TestExporter:
         assert len(output_names) == len(exported_output_names)
 
     def _assert_outputs_match(self, quantized_model, rep_dataset, quantization_format, tol=1e-8):
-        pass
-        # model_input = [i.astype(np.float32) for i in next(rep_dataset())]
-        # onnx_outputs = onnx_runner(self.onnx_file, model_input,
-        #                            is_mctq=quantization_format == QuantizationFormat.MCTQ)
-        # torch_outputs = quantized_model(*model_input)
-        # if not isinstance(torch_outputs, (list, tuple)):
-        #     torch_outputs = [torch_outputs]
-        # torch_outputs = [o.detach().cpu().numpy() for o in torch_outputs]
-        #
-        # assert np.all([np.isclose(rmse(onnx_output, torch_output), 0, atol=tol)
-        #                for onnx_output, torch_output in zip(onnx_outputs, torch_outputs)])
+        # pass
+        model_input = [i.astype(np.float32) for i in next(rep_dataset())]
+        onnx_outputs = onnx_runner(self.onnx_file, model_input,
+                                   is_mctq=quantization_format == QuantizationFormat.MCTQ)
+        torch_outputs = quantized_model(*model_input)
+        if not isinstance(torch_outputs, (list, tuple)):
+            torch_outputs = [torch_outputs]
+        torch_outputs = [o.detach().cpu().numpy() for o in torch_outputs]
+        
+        assert np.all([np.isclose(rmse(onnx_output, torch_output), 0, atol=tol)
+                       for onnx_output, torch_output in zip(onnx_outputs, torch_outputs)])
 
     def _assert_quant_params_match(self, quantized_model, onnx_model_dict, a_qmethod, w_qmethod=mctq.QuantizationMethod.POWER_OF_TWO):
         assert quantized_model.x_activation_holder_quantizer.activation_holder_quantizer.num_bits == \
