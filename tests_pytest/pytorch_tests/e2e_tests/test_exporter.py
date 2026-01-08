@@ -231,7 +231,7 @@ class TestExporter:
         # if not isinstance(torch_outputs, (list, tuple)):
         #     torch_outputs = [torch_outputs]
         # torch_outputs = [o.detach().cpu().numpy() for o in torch_outputs]
-        
+        #
         # assert np.all([np.isclose(rmse(onnx_output, torch_output), 0, atol=tol)
         #                for onnx_output, torch_output in zip(onnx_outputs, torch_outputs)])
 
