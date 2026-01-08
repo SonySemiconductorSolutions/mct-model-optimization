@@ -475,8 +475,6 @@ class MCTWrapper:
             params_export = {
                 'model': quantized_model,
                 'save_model_path': self.params['save_model_path'],
-                'serialization_format': (mct.exporter.KerasExportSerializationFormat.KERAS),
-                'quantization_format': (mct.exporter.QuantizationFormat.FAKELY_QUANT)
             }
         elif self.framework == 'pytorch':
             params_export = {
