@@ -51,8 +51,8 @@ class TestMCTWrapper:
         mock_model = Mock()
         mock_dataset = Mock()
         
-        wrapper._initialize_and_validate(float_model=mock_model, framework='pytorch', method='PTQ', 
-                                         use_mixed_precision=False, representative_dataset=mock_dataset)
+        wrapper._initialize_and_validate(float_model=mock_model, representative_dataset=mock_dataset,
+                                         framework='pytorch', method='PTQ', use_mixed_precision=False)
 
         assert wrapper.float_model == mock_model
         assert wrapper.method == 'PTQ'
@@ -219,13 +219,11 @@ class TestMCTWrapper:
             self, mock_mixed_precision_config: Mock, mock_core_config: Mock,
             mock_resource_util: Mock) -> None:
         """
-        Test _setting_PTQ_mixed_precision method for Mixed Precision
-        PTQ configuration.
+        Test _setting_PTQ_mixed_precision method for Mixed Precision PTQ configuration.
         
-        This test verifies that the _setting_PTQ_mixed_precision
-        method correctly configures mixed precision Post-Training
-        Quantization parameters by properly setting up configuration
-        objects and resource utilization constraints.
+        This test verifies that the _setting_PTQ_mixed_precision method correctly configures
+        mixed precision Post-Training Quantization parameters by properly setting
+        up configuration objects and resource utilization constraints.
         """
         wrapper = MCTWrapper()
         wrapper.float_model = Mock()
@@ -317,13 +315,11 @@ class TestMCTWrapper:
             mock_mixed_precision_config: Mock,
             mock_quant_config: Mock) -> None:
         """
-        Test _setting_GPTQ_mixed_precision method for Mixed Precision
-        GPTQ configuration.
+        Test _setting_GPTQ_mixed_precision method for Mixed Precision GPTQ configuration.
         
-        This test verifies that the _setting_GPTQ_mixed_precision
-        method correctly configures mixed precision Gradient
-        Post-Training Quantization parameters with proper configuration
-        objects and resource utilization.
+        This test verifies that the _setting_GPTQ_mixed_precision method correctly
+        configures mixed precision Gradient Post-Training Quantization
+        parameters with proper configuration objects and resource utilization.
         """
         wrapper = MCTWrapper()
         wrapper.float_model = Mock()

@@ -53,9 +53,8 @@ class TestMCTWrapper:
         mock_model = Mock()
         mock_dataset = Mock()
         
-        wrapper._initialize_and_validate(
-            float_model=mock_model, framework='tensorflow', method='PTQ',
-            use_mixed_precision=False, representative_dataset=mock_dataset)
+        wrapper._initialize_and_validate(foat_model=mock_model, representative_dataset=mock_dataset,
+                                         framework='tensorflow', method='PTQ', use_mixed_precision=False)
 
         assert wrapper.float_model == mock_model
         assert wrapper.method == 'PTQ'
