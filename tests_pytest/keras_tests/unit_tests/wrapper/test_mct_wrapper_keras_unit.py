@@ -16,10 +16,8 @@
 """
 Test cases for MCTWrapper class from model_compression_toolkit.wrapper.mct_wrapper
 """
-
 import pytest
 from unittest.mock import Mock, patch
-from typing import Any, List, Tuple
 from model_compression_toolkit.core import QuantizationErrorMethod
 from model_compression_toolkit.wrapper.mct_wrapper import MCTWrapper
 
@@ -35,7 +33,7 @@ class TestMCTWrapper:
     Test Categories:
         - Input Validation: Testing _initialize_and_validate success cases
         - Parameter Management: Testing _modify_params functionality
-        - TPC Configuration: Testing _get_TPC 
+        - TPC Configuration: Testing _get_tpc with different TPC sources
         - Method Selection: Testing _select_method for different frameworks
         - Configuration Methods: Testing PTQ/GPTQ parameter generation
         - Export Functionality: Testing model export for different frameworks
@@ -53,12 +51,13 @@ class TestMCTWrapper:
         mock_model = Mock()
         mock_dataset = Mock()
         
-        wrapper._initialize_and_validate(float_model=mock_model, representative_dataset=mock_dataset,
-                                         framework='tensorflow', method='PTQ', use_mixed_precision=False)
+        wrapper._initialize_and_validate(float_model=mock_model, method='PTQ', framework='tensorflow', 
+                                         use_internal_tpc=True, use_mixed_precision=False, representative_dataset=mock_dataset)
 
         assert wrapper.float_model == mock_model
         assert wrapper.method == 'PTQ'
         assert wrapper.framework == 'tensorflow'
+        assert wrapper.use_internal_tpc is True
         assert wrapper.use_mixed_precision is False
         assert wrapper.representative_dataset == mock_dataset
 
@@ -113,28 +112,54 @@ class TestMCTWrapper:
         assert 'non_existing_key' not in wrapper.params
         assert 'another_fake_key' not in wrapper.params
 
-    @patch('model_compression_toolkit.wrapper.mct_wrapper.mct.get_target_platform_capabilities_sdsp')
-    def test_get_TPC(self, mock_mct_get_tpc_sdsp: Mock) -> None:
+    @patch('model_compression_toolkit.wrapper.mct_wrapper.mct.get_target_platform_capabilities')
+    def test_get_tpc_with_internal_tpc(self, mock_mct_get_tpc: Mock) -> None:
         """
-        Test _get_tpc method.
+        Test _get_tpc method when using MCT TPC.
         
-        Verifies that the wrapper correctly calls
-        mct.get_target_platform_capabilities_sdsp with expected parameters.
+        Verifies that when use_internal_tpc is True, the wrapper correctly calls
+        mct.get_target_platform_capabilities with expected parameters.
         
-        Note: Patch targets mct.get_target_platform_capabilities_sdsp because
+        Note: Patch targets mct.get_target_platform_capabilities because
         MCTWrapper imports 'model_compression_toolkit as mct'.
         """
         wrapper = MCTWrapper()
-        wrapper.framework = 'tensorflow'
-        wrapper.params['sdsp_version'] = '3.14'
+        wrapper.use_internal_tpc = True
         mock_tpc = Mock()
-        mock_mct_get_tpc_sdsp.return_value = mock_tpc
+        mock_mct_get_tpc.return_value = mock_tpc
         
         wrapper._get_tpc()
         
-        # Check if MCT get_target_platform_capabilities_sdsp was called correctly
-        mock_mct_get_tpc_sdsp.assert_called_once_with(sdsp_version='3.14')
+        # Check if MCT get_target_platform_capabilities was called correctly
+        # These parameters match the default values in MCTWrapper.__init__()
+        expected_params = {
+            'fw_name': 'pytorch',
+            'target_platform_name': 'imx500',
+            'target_platform_version': 'v1'
+        }
+        mock_mct_get_tpc.assert_called_once_with(**expected_params)
         assert wrapper.tpc == mock_tpc
+
+    def test_get_tpc_without_internal_tpc(self) -> None:
+        """
+        Test _get_tpc method when EdgeMDT TPC is not available.
+        
+        Verifies that when use_internal_tpc is False and edgemdt_tpc is not
+        available, an appropriate exception is raised.
+        """
+        # Patch FOUND_TPC to False to simulate edgemdt_tpc unavailability
+        with patch('model_compression_toolkit.verify_packages.FOUND_TPC',
+                   False):
+            wrapper = MCTWrapper()
+            wrapper.use_internal_tpc = False
+            
+            # Expect exception when EdgeMDT TPC is not available
+            with pytest.raises(Exception) as exc_info:
+                wrapper._get_tpc()
+
+            # Verify correct error message
+            expected_msg = "EdgeMDT TPC module is not available."
+            assert expected_msg in str(exc_info.value)
 
     @patch('model_compression_toolkit.core.keras_resource_utilization_data')
     @patch('model_compression_toolkit.ptq.keras_post_training_quantization')
@@ -445,6 +470,7 @@ class TestMCTWrapperErrorHandling:
                 float_model=Mock(),
                 method='UNSUPPORTED_METHOD',
                 framework='tensorflow',
+                use_internal_tpc=True,
                 use_mixed_precision=False,
                 representative_dataset=Mock(),
                 param_items=[]
@@ -462,6 +488,7 @@ class TestMCTWrapperErrorHandling:
                 float_model=Mock(),
                 method='PTQ',
                 framework='unsupported',
+                use_internal_tpc=True,
                 use_mixed_precision=False,
                 representative_dataset=Mock(),
                 param_items=[]
