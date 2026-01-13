@@ -16,10 +16,8 @@
 from typing import Dict, Any, List, Optional, Tuple
 import model_compression_toolkit as mct
 from model_compression_toolkit.logger import Logger
-from model_compression_toolkit.verify_packages import FOUND_TPC
 from model_compression_toolkit.wrapper.constants import (
-    REPRESENTATIVE_DATA_GEN, CORE_CONFIG, FW_NAME, TARGET_PLATFORM_VERSION,
-    TARGET_PLATFORM_NAME, TPC_VERSION, DEVICE_TYPE, EXTENDED_VERSION,
+    REPRESENTATIVE_DATA_GEN, CORE_CONFIG, FW_NAME, SDSP_VERSION,
     NUM_OF_IMAGES, USE_HESSIAN_BASED_SCORES, IN_MODEL, IN_MODULE, MODEL,
     TARGET_PLATFORM_CAPABILITIES, TARGET_RESOURCE_UTILIZATION,
     ACTIVATION_ERROR_METHOD, WEIGHTS_ERROR_METHOD, WEIGHTS_BIAS_CORRECTION,
@@ -56,8 +54,6 @@ class MCTWrapper:
            :header: "Parameter Key", "Default Value", "Description"
            :widths: 30, 30, 40
 
-           "target_platform_version", "'v1'", "Target platform version (use_internal_tpc=True)"
-           "tpc_version", "'5.0'", "TPC version (use_internal_tpc=False)"
            "activation_error_method", "mct.core.QuantizationErrorMethod.MSE", "Activation quantization error method"
            "weights_bias_correction", "True", "Enable weights bias correction"
            "z_threshold", "float('inf')", "Z-threshold for quantization"
@@ -71,8 +67,6 @@ class MCTWrapper:
            :header: "Parameter Key", "Default Value", "Description"
            :widths: 30, 30, 40
 
-           "target_platform_version", "'v1'", "Target platform version (use_internal_tpc=True)"
-           "tpc_version", "'5.0'", "TPC version (use_internal_tpc=False)"
            "num_of_images", "5", "Number of images for mixed precision"
            "use_hessian_based_scores", "False", "Use Hessian-based scores for mixed precision"
            "weights_compression_ratio", "None", "Weights compression ratio for resource util"
@@ -84,8 +78,6 @@ class MCTWrapper:
            :header: "Parameter Key", "Default Value", "Description"
            :widths: 30, 30, 40
 
-           "target_platform_version", "'v1'", "Target platform version (use_internal_tpc=True)"
-           "tpc_version", "'5.0'", "TPC version (use_internal_tpc=False)"
            "n_epochs", "5", "Number of training epochs for GPTQ"
            "optimizer", "None", "Optimizer for GPTQ training"
            "save_model_path", "'./qmodel.keras' / './qmodel.onnx'", "Path to save quantized model (Keras/Pytorch)"
@@ -96,8 +88,6 @@ class MCTWrapper:
            :header: "Parameter Key", "Default Value", "Description"
            :widths: 30, 30, 40
 
-           "target_platform_version", "'v1'", "Target platform version (use_internal_tpc=True)"
-           "tpc_version", "'5.0'", "TPC version (use_internal_tpc=False)"
            "n_epochs", "5", "Number of training epochs for GPTQ"
            "optimizer", "None", "Optimizer for GPTQ training"
            "num_of_images", "5", "Number of images for mixed precision"
@@ -109,8 +99,7 @@ class MCTWrapper:
         self.params: Dict[str, Any] = {
             # TPC
             FW_NAME: 'pytorch',
-            TARGET_PLATFORM_VERSION: 'v1',
-            TPC_VERSION: '5.0',
+            SDSP_VERSION: '3.14',
 
             # QuantizationConfig
             ACTIVATION_ERROR_METHOD: mct.core.QuantizationErrorMethod.MSE,
@@ -140,9 +129,8 @@ class MCTWrapper:
 
     def _initialize_and_validate(self, float_model: Any,
                                  representative_dataset: Optional[Any],
-                                 method: str,
                                  framework: str,
-                                 use_internal_tpc: bool,
+                                 method: str,
                                  use_mixed_precision: bool
                                  ) -> None:
         """
@@ -151,9 +139,8 @@ class MCTWrapper:
         Args:
             float_model: The float model to be quantized.
             representative_dataset (Callable, np.array, tf.Tensor): Representative dataset for calibration.
-            method (str): Quantization method ('PTQ', 'GPTQ', 'LQPTQ').
             framework (str): Target framework ('tensorflow', 'pytorch').
-            use_internal_tpc (bool): Whether to use MCT's built-in TPC.
+            method (str): Quantization method ('PTQ', 'GPTQ', 'LQPTQ').
             use_mixed_precision (bool): Whether to use mixed-precision quantization.
 
         Raises:
@@ -172,29 +159,25 @@ class MCTWrapper:
         self.representative_dataset = representative_dataset
         self.method = method
         self.framework = framework
-        self.use_internal_tpc = use_internal_tpc
         self.use_mixed_precision = use_mixed_precision
 
         # Keep only the parameters you need for the quantization mode
         if method == 'PTQ':
             if not use_mixed_precision:
-                allowed_keys = [ FW_NAME, TARGET_PLATFORM_VERSION, TPC_VERSION, 
-                                 ACTIVATION_ERROR_METHOD, WEIGHTS_BIAS_CORRECTION, 
+                allowed_keys = [ FW_NAME, SDSP_VERSION, ACTIVATION_ERROR_METHOD, WEIGHTS_BIAS_CORRECTION, 
                                  Z_THRESHOLD, LINEAR_COLLAPSING, RESIDUAL_COLLAPSING,
                                  SAVE_MODEL_PATH ]
             else:
-                allowed_keys = [ FW_NAME, TARGET_PLATFORM_VERSION, TPC_VERSION, 
-                                 NUM_OF_IMAGES, USE_HESSIAN_BASED_SCORES, 
+                allowed_keys = [ FW_NAME, SDSP_VERSION, NUM_OF_IMAGES, USE_HESSIAN_BASED_SCORES, 
                                  WEIGHTS_COMPRESSION_RATIO, SAVE_MODEL_PATH ]
         else:
             if not use_mixed_precision:
-                allowed_keys = [ FW_NAME, TARGET_PLATFORM_VERSION, TPC_VERSION, 
-                                 N_EPOCHS, OPTIMIZER, SAVE_MODEL_PATH ]
+                allowed_keys = [FW_NAME, SDSP_VERSION, N_EPOCHS, OPTIMIZER,
+                                SAVE_MODEL_PATH]
             else:
-                allowed_keys = [ FW_NAME, TARGET_PLATFORM_VERSION, TPC_VERSION, 
-                                 N_EPOCHS, OPTIMIZER, NUM_OF_IMAGES, 
-                                 USE_HESSIAN_BASED_SCORES, WEIGHTS_COMPRESSION_RATIO, 
-                                 SAVE_MODEL_PATH ]
+                allowed_keys = [FW_NAME, SDSP_VERSION, N_EPOCHS, OPTIMIZER,
+                                NUM_OF_IMAGES, USE_HESSIAN_BASED_SCORES,
+                                WEIGHTS_COMPRESSION_RATIO, SAVE_MODEL_PATH]
                      
         self.params = { k: v for k, v in self.params.items() if k in allowed_keys }
 
@@ -313,36 +296,18 @@ class MCTWrapper:
 
     def _get_tpc(self) -> None:
         """
-        Configure Target Platform Capabilities (TPC) based on selected option.
+        Configure Target Platform Capabilities (TPC).
 
-        Sets up either MCT's built-in TPC or external EdgeMDT TPC configuration
-        for the IMX500 target platform.
+        Sets up TPC configuration for the target platform.
 
         Note:
             This method sets self.tpc attribute with the configured TPC object.
         """
-        if self.use_internal_tpc:
-            # Use MCT's built-in TPC configuration
-            params_TPC = {
-                FW_NAME: self.params[FW_NAME],
-                TARGET_PLATFORM_NAME: 'imx500',
-                TARGET_PLATFORM_VERSION: self.params[TARGET_PLATFORM_VERSION],
-            }
-            # Get TPC from MCT framework
-            self.tpc = mct.get_target_platform_capabilities_sdsp(sdsp_version="3.14")
-        else:
-            if FOUND_TPC:
-                import edgemdt_tpc
-                # Use external EdgeMDT TPC configuration
-                params_TPC = {
-                    TPC_VERSION: self.params[TPC_VERSION],
-                    DEVICE_TYPE: 'imx500',
-                    EXTENDED_VERSION: None
-                }
-                # Get TPC from EdgeMDT framework
-                self.tpc = edgemdt_tpc.get_target_platform_capabilities(**params_TPC)
-            else:
-                raise Exception("EdgeMDT TPC module is not available.")
+        # Get default TPC for the framework
+        params_TPC = {
+            SDSP_VERSION: self.params[SDSP_VERSION]
+        }
+        self.tpc = mct.get_target_platform_capabilities_sdsp(**params_TPC)
 
     def _setting_PTQ_mixed_precision(self) -> Dict[str, Any]:
         """
@@ -510,8 +475,6 @@ class MCTWrapper:
             params_export = {
                 'model': quantized_model,
                 'save_model_path': self.params['save_model_path'],
-                'serialization_format': (mct.exporter.KerasExportSerializationFormat.KERAS),
-                'quantization_format': (mct.exporter.QuantizationFormat.FAKELY_QUANT)
             }
         elif self.framework == 'pytorch':
             params_export = {
@@ -523,9 +486,8 @@ class MCTWrapper:
 
     def quantize_and_export(self, float_model: Any,
                             representative_dataset: Any,
-                            method: str = 'PTQ',
                             framework: str = 'pytorch',
-                            use_internal_tpc: bool = True,
+                            method: str = 'PTQ',
                             use_mixed_precision: bool = False,
                             param_items: Optional[List[List[Any]]] = None
                             ) -> Tuple[bool, Any]:
@@ -536,12 +498,10 @@ class MCTWrapper:
             float_model: The float model to be quantized.
             representative_dataset (Callable, np.array, tf.Tensor):
                 Representative dataset for calibration.
-            method (str): Quantization method, e.g., 'PTQ' or 'GPTQ'.
-                Default: 'PTQ'
             framework (str): 'tensorflow' or 'pytorch'.
                 Default: 'pytorch'
-            use_internal_tpc (bool): Whether to use internal_tpc.
-                Default: True
+            method (str): Quantization method, e.g., 'PTQ' or 'GPTQ'.
+                Default: 'PTQ'
             use_mixed_precision (bool): Whether to use mixed-precision
                 quantization. Default: False
             param_items (list): List of parameter settings.
@@ -565,11 +525,10 @@ class MCTWrapper:
 
             >>> wrapper = mct.MCTWrapper()
 
-            set method, framework, and other parameters
+            set framework, method, and other parameters
 
-            >>> method = 'PTQ'
             >>> framework = 'tensorflow'
-            >>> use_internal_tpc = True
+            >>> method = 'PTQ'
             >>> use_mixed_precision = False
 
             set parameters if needed
@@ -581,9 +540,8 @@ class MCTWrapper:
             >>> flag, quantized_model = wrapper.quantize_and_export(
             ...     float_model=float_model,
             ...     representative_dataset=representative_dataset,
-            ...     method=method,
             ...     framework=framework,
-            ...     use_internal_tpc=use_internal_tpc,
+            ...     method=method,
             ...     use_mixed_precision=use_mixed_precision,
             ...     param_items=param_items
             ... )
@@ -591,9 +549,8 @@ class MCTWrapper:
         """
         try:
             # Step 1: Initialize and validate all input parameters
-            self._initialize_and_validate(
-                float_model, representative_dataset, method, framework,
-                use_internal_tpc, use_mixed_precision)
+            self._initialize_and_validate( float_model, representative_dataset, 
+                                          framework, method, use_mixed_precision)
 
             # Step 2: Apply custom parameter modifications
             self._modify_params(param_items)
