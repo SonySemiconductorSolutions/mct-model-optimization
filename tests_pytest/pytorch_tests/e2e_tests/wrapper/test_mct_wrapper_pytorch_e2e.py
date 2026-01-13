@@ -149,15 +149,14 @@ def test_quantization(
         Returns:
             tuple: (success_flag, quantized_model)
         """
-        # Configure quantization method and framework settings
-        method = 'PTQ'
+        # Configure quantization framework and method settings
         framework = 'pytorch'
-        use_internal_tpc = True  # Use custom target platform capabilities
+        method = 'PTQ'
         use_mixed_precision = False  # Disable mixed precision for standard PTQ
 
         # Define quantization parameters for optimal model performance
         param_items = [
-            ['target_platform_version', 'v1'],  # The version of the TPC to use. 
+            ['sdsp_version', '3.14'],  # The version of the SDSP converter.
             ['activation_error_method', QuantizationErrorMethod.MSE],  # Error method
             ['weights_bias_correction', True],  # Enable bias correction
             ['z_threshold', float('inf')],  # Z threshold
@@ -169,7 +168,7 @@ def test_quantization(
         # Execute quantization using MCTWrapper and export to ONNX
         wrapper = mct.wrapper.mct_wrapper.MCTWrapper()
         flag, quantized_model = wrapper.quantize_and_export(
-            float_model, representative_dataset_gen, method, framework, use_internal_tpc, use_mixed_precision,
+            float_model, representative_dataset_gen, framework, method, use_mixed_precision,
             param_items)
         return flag, quantized_model
 
@@ -192,14 +191,13 @@ def test_quantization(
             tuple: (success_flag, quantized_model)
         """
         # Configure quantization method with mixed precision enabled
-        method = 'PTQ'
         framework = 'pytorch'
-        use_internal_tpc = True  # Use custom target platform capabilities
+        method = 'PTQ'
         use_mixed_precision = True      # Enable mixed precision optimization
 
         # Define mixed precision quantization parameters
         param_items = [
-            ['target_platform_version', 'v1'],  # The version of the TPC to use. 
+            ['sdsp_version', '3.14'],  # The version of the SDSP converter.
             ['num_of_images', 5],  # Number of images
             ['use_hessian_based_scores', False],  # Use Hessian scores
             ['weights_compression_ratio', 0.5],  # Compression ratio
@@ -209,7 +207,7 @@ def test_quantization(
         # Execute mixed precision quantization and export to ONNX
         wrapper = mct.wrapper.mct_wrapper.MCTWrapper()
         flag, quantized_model = wrapper.quantize_and_export(
-            float_model, representative_dataset_gen, method, framework, use_internal_tpc, use_mixed_precision,
+            float_model, representative_dataset_gen, framework, method, use_mixed_precision,
             param_items)
         return flag, quantized_model
 
@@ -233,14 +231,13 @@ def test_quantization(
             tuple: (success_flag, quantized_model)
         """
         # Configure gradient-based quantization method
-        method = 'GPTQ'
         framework = 'pytorch'
-        use_internal_tpc = True  # Use custom target platform capabilities
+        method = 'GPTQ'
         use_mixed_precision = False     # Disable mixed precision for standard GPTQ
 
         # Define GPTQ-specific parameters for gradient-based optimization
         param_items = [
-            ['target_platform_version', 'v1'],  # The version of the TPC to use.
+            ['sdsp_version', '3.14'],  # The version of the SDSP converter.
             ['n_epochs', 5],  # Number of training epochs
             ['optimizer', None],  # Optimizer for training
             ['save_model_path', './qmodel_GPTQ_Pytorch.onnx']  # Path to save the model.
@@ -249,7 +246,7 @@ def test_quantization(
         # Execute gradient-based quantization and export to ONNX
         wrapper = mct.wrapper.mct_wrapper.MCTWrapper()
         flag, quantized_model = wrapper.quantize_and_export(
-            float_model, representative_dataset_gen, method, framework, use_internal_tpc, use_mixed_precision,
+            float_model, representative_dataset_gen, framework, method, use_mixed_precision,
             param_items)
         return flag, quantized_model
 
@@ -272,14 +269,13 @@ def test_quantization(
             tuple: (success_flag, quantized_model)
         """
         # Configure gradient-based quantization with mixed precision
-        method = 'GPTQ'
         framework = 'pytorch'
-        use_internal_tpc = True  # Use custom target platform capabilities
+        method = 'GPTQ'
         use_mixed_precision = True      # Enable mixed precision for optimal accuracy
 
         # Define GPTQ mixed precision parameters for advanced optimization
         param_items = [
-            ['target_platform_version', 'v1'],  # The version of the TPC to use.
+            ['sdsp_version', '3.14'],  # The version of the SDSP converter.
             ['n_epochs', 5],  # Number of training epochs
             ['optimizer', None],  # Optimizer for training
             ['num_of_images', 5],  # Number of images
@@ -291,7 +287,7 @@ def test_quantization(
         # Execute advanced GPTQ with mixed precision and export to ONNX
         wrapper = mct.wrapper.mct_wrapper.MCTWrapper()
         flag, quantized_model = wrapper.quantize_and_export(
-            float_model, representative_dataset_gen, method, framework, use_internal_tpc, use_mixed_precision,
+            float_model, representative_dataset_gen, framework, method, use_mixed_precision,
             param_items)
         return flag, quantized_model
 
