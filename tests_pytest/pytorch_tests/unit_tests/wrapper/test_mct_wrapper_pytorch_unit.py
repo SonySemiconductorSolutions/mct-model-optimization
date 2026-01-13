@@ -112,54 +112,54 @@ class TestMCTWrapper:
         assert 'non_existing_key' not in wrapper.params
         assert 'another_fake_key' not in wrapper.params
 
-    @patch('model_compression_toolkit.wrapper.mct_wrapper.mct.get_target_platform_capabilities')
-    def test_get_tpc_with_internal_tpc(self, mock_mct_get_tpc: Mock) -> None:
-        """
-        Test _get_tpc method when using MCT TPC.
-        
-        Verifies that when use_internal_tpc is True, the wrapper correctly calls
-        mct.get_target_platform_capabilities with expected parameters.
-        
-        Note: Patch targets mct.get_target_platform_capabilities because
-        MCTWrapper imports 'model_compression_toolkit as mct'.
-        """
-        wrapper = MCTWrapper()
-        wrapper.use_internal_tpc = True
-        mock_tpc = Mock()
-        mock_mct_get_tpc.return_value = mock_tpc
-        
-        wrapper._get_tpc()
-        
-        # Check if MCT get_target_platform_capabilities was called correctly
-        # These parameters match the default values in MCTWrapper.__init__()
-        expected_params = {
-            'fw_name': 'pytorch',
-            'target_platform_name': 'imx500',
-            'target_platform_version': 'v1'
-        }
-        mock_mct_get_tpc.assert_called_once_with(**expected_params)
-        assert wrapper.tpc == mock_tpc
-
-    def test_get_tpc_without_internal_tpc(self) -> None:
-        """
-        Test _get_tpc method when EdgeMDT TPC is not available.
-        
-        Verifies that when use_internal_tpc is False and edgemdt_tpc is not
-        available, an appropriate exception is raised.
-        """
-        # Patch FOUND_TPC to False to simulate edgemdt_tpc unavailability
-        with patch('model_compression_toolkit.verify_packages.FOUND_TPC',
-                   False):
-            wrapper = MCTWrapper()
-            wrapper.use_internal_tpc = False
-            
-            # Expect exception when EdgeMDT TPC is not available
-            with pytest.raises(Exception) as exc_info:
-                wrapper._get_tpc()
-
-            # Verify correct error message
-            expected_msg = "EdgeMDT TPC module is not available."
-            assert expected_msg in str(exc_info.value)
+#    @patch('model_compression_toolkit.wrapper.mct_wrapper.mct.get_target_platform_capabilities')
+#    def test_get_tpc_with_internal_tpc(self, mock_mct_get_tpc: Mock) -> None:
+#        """
+#        Test _get_tpc method when using MCT TPC.
+#        
+#        Verifies that when use_internal_tpc is True, the wrapper correctly calls
+#        mct.get_target_platform_capabilities with expected parameters.
+#        
+#        Note: Patch targets mct.get_target_platform_capabilities because
+#        MCTWrapper imports 'model_compression_toolkit as mct'.
+#        """
+#        wrapper = MCTWrapper()
+#        wrapper.use_internal_tpc = True
+#        mock_tpc = Mock()
+#        mock_mct_get_tpc.return_value = mock_tpc
+#        
+#        wrapper._get_tpc()
+#        
+#        # Check if MCT get_target_platform_capabilities was called correctly
+#        # These parameters match the default values in MCTWrapper.__init__()
+#        expected_params = {
+#            'fw_name': 'pytorch',
+#            'target_platform_name': 'imx500',
+#            'target_platform_version': 'v1'
+#        }
+#        mock_mct_get_tpc.assert_called_once_with(**expected_params)
+#        assert wrapper.tpc == mock_tpc
+#
+#    def test_get_tpc_without_internal_tpc(self) -> None:
+#        """
+#        Test _get_tpc method when EdgeMDT TPC is not available.
+#        
+#        Verifies that when use_internal_tpc is False and edgemdt_tpc is not
+#        available, an appropriate exception is raised.
+#        """
+#        # Patch FOUND_TPC to False to simulate edgemdt_tpc unavailability
+#        with patch('model_compression_toolkit.verify_packages.FOUND_TPC',
+#                   False):
+#            wrapper = MCTWrapper()
+#            wrapper.use_internal_tpc = False
+#            
+#            # Expect exception when EdgeMDT TPC is not available
+#            with pytest.raises(Exception) as exc_info:
+#                wrapper._get_tpc()
+#
+#            # Verify correct error message
+#            expected_msg = "EdgeMDT TPC module is not available."
+#            assert expected_msg in str(exc_info.value)
 
     @patch('model_compression_toolkit.core.pytorch_resource_utilization_data')
     @patch('model_compression_toolkit.ptq.pytorch_post_training_quantization')

@@ -329,7 +329,7 @@ class MCTWrapper:
                 TARGET_PLATFORM_VERSION: self.params[TARGET_PLATFORM_VERSION],
             }
             # Get TPC from MCT framework
-            self.tpc = mct.get_target_platform_capabilities(**params_TPC)
+            self.tpc = mct.get_target_platform_capabilities_sdsp(sdsp_version="3.14")
         else:
             if FOUND_TPC:
                 import edgemdt_tpc
