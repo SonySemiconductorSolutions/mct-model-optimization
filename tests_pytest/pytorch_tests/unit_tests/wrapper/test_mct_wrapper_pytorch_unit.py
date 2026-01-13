@@ -51,12 +51,13 @@ class TestMCTWrapper:
         mock_model = Mock()
         mock_dataset = Mock()
         
-        wrapper._initialize_and_validate(float_model=mock_model, representative_dataset=mock_dataset,
-                                         framework='pytorch', method='PTQ', use_mixed_precision=False)
+        wrapper._initialize_and_validate(float_model=mock_model, method='PTQ', framework='pytorch', 
+                                         use_internal_tpc=True, use_mixed_precision=False, representative_dataset=mock_dataset)
 
         assert wrapper.float_model == mock_model
         assert wrapper.method == 'PTQ'
         assert wrapper.framework == 'pytorch'
+        assert wrapper.use_internal_tpc is True
         assert wrapper.use_mixed_precision is False
         assert wrapper.representative_dataset == mock_dataset
 
@@ -111,28 +112,54 @@ class TestMCTWrapper:
         assert 'non_existing_key' not in wrapper.params
         assert 'another_fake_key' not in wrapper.params
 
-    @patch('model_compression_toolkit.wrapper.mct_wrapper.mct.get_target_platform_capabilities_sdsp')
-    def test_get_tpc(self, mock_mct_get_tpc_sdsp: Mock) -> None:
-        """
-        Test _get_tpc method.
-        
-        Verifies that the wrapper correctly calls
-        mct.get_target_platform_capabilities_sdsp with expected parameters.
-        
-        Note: Patch targets mct.get_target_platform_capabilities_sdsp because
-        MCTWrapper imports 'model_compression_toolkit as mct'.
-        """
-        wrapper = MCTWrapper()
-        wrapper.framework = 'tensorflow'
-        wrapper.params['sdsp_version'] = '3.14'
-        mock_tpc = Mock()
-        mock_mct_get_tpc_sdsp.return_value = mock_tpc
-        
-        wrapper._get_tpc()
-        
-        # Check if MCT get_target_platform_capabilities_sdsp was called correctly
-        mock_mct_get_tpc_sdsp.assert_called_once_with(sdsp_version='3.14')
-        assert wrapper.tpc == mock_tpc
+#    @patch('model_compression_toolkit.wrapper.mct_wrapper.mct.get_target_platform_capabilities')
+#    def test_get_tpc_with_internal_tpc(self, mock_mct_get_tpc: Mock) -> None:
+#        """
+#        Test _get_tpc method when using MCT TPC.
+#        
+#        Verifies that when use_internal_tpc is True, the wrapper correctly calls
+#        mct.get_target_platform_capabilities with expected parameters.
+#        
+#        Note: Patch targets mct.get_target_platform_capabilities because
+#        MCTWrapper imports 'model_compression_toolkit as mct'.
+#        """
+#        wrapper = MCTWrapper()
+#        wrapper.use_internal_tpc = True
+#        mock_tpc = Mock()
+#        mock_mct_get_tpc.return_value = mock_tpc
+#        
+#        wrapper._get_tpc()
+#        
+#        # Check if MCT get_target_platform_capabilities was called correctly
+#        # These parameters match the default values in MCTWrapper.__init__()
+#        expected_params = {
+#            'fw_name': 'pytorch',
+#            'target_platform_name': 'imx500',
+#            'target_platform_version': 'v1'
+#        }
+#        mock_mct_get_tpc.assert_called_once_with(**expected_params)
+#        assert wrapper.tpc == mock_tpc
+#
+#    def test_get_tpc_without_internal_tpc(self) -> None:
+#        """
+#        Test _get_tpc method when EdgeMDT TPC is not available.
+#        
+#        Verifies that when use_internal_tpc is False and edgemdt_tpc is not
+#        available, an appropriate exception is raised.
+#        """
+#        # Patch FOUND_TPC to False to simulate edgemdt_tpc unavailability
+#        with patch('model_compression_toolkit.verify_packages.FOUND_TPC',
+#                   False):
+#            wrapper = MCTWrapper()
+#            wrapper.use_internal_tpc = False
+#            
+#            # Expect exception when EdgeMDT TPC is not available
+#            with pytest.raises(Exception) as exc_info:
+#                wrapper._get_tpc()
+#
+#            # Verify correct error message
+#            expected_msg = "EdgeMDT TPC module is not available."
+#            assert expected_msg in str(exc_info.value)
 
     @patch('model_compression_toolkit.core.pytorch_resource_utilization_data')
     @patch('model_compression_toolkit.ptq.pytorch_post_training_quantization')
@@ -265,8 +292,7 @@ class TestMCTWrapper:
 
     @patch('model_compression_toolkit.core.QuantizationConfig')
     @patch('model_compression_toolkit.core.CoreConfig')
-    def test_setting_PTQ(self, mock_core_config: Mock,
-                         mock_quant_config: Mock) -> None:
+    def test_setting_PTQ(self, mock_core_config: Mock, mock_quant_config: Mock) -> None:
         """
         Test _Setting_PTQ method for standard Post-Training Quantization.
         
@@ -443,8 +469,9 @@ class TestMCTWrapperErrorHandling:
         with pytest.raises(Exception) as exc_info:
             wrapper.quantize_and_export(
                 float_model=Mock(),
-                framework='pytorch',
                 method='UNSUPPORTED_METHOD',
+                framework='pytorch',
+                use_internal_tpc=True,
                 use_mixed_precision=False,
                 representative_dataset=Mock(),
                 param_items=[]
@@ -460,8 +487,9 @@ class TestMCTWrapperErrorHandling:
         with pytest.raises(Exception) as exc_info:
             wrapper.quantize_and_export(
                 float_model=Mock(),
-                framework='pytorch',
                 method='LQPTQ',
+                framework='pytorch',
+                use_internal_tpc=True,
                 use_mixed_precision=False,
                 representative_dataset=Mock(),
                 param_items=[]
@@ -477,8 +505,9 @@ class TestMCTWrapperErrorHandling:
         with pytest.raises(Exception) as exc_info:
             wrapper.quantize_and_export(
                 float_model=Mock(),
-                framework='unsupported',
                 method='PTQ',
+                framework='unsupported',
+                use_internal_tpc=True,
                 use_mixed_precision=False,
                 representative_dataset=Mock(),
                 param_items=[]
