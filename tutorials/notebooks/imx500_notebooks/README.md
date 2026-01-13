@@ -1,4 +1,4 @@
-# Task notebooks
+# IMX500 notebooks
 This set of tutorials provide how to quantize pre-trained models, especiallay for IMX500.
 
 #### Python Version Downgrade for Google Colab (as of December 2025)
