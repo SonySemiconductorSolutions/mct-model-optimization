@@ -13,10 +13,13 @@
 # limitations under the License.
 # ==============================================================================
 
-
 # TPC parameters
 FW_NAME = 'fw_name'
-SDSP_VERSION = 'sdsp_version'
+TARGET_PLATFORM_NAME = 'target_platform_name'
+TARGET_PLATFORM_VERSION = 'target_platform_version'
+TPC_VERSION = 'tpc_version'
+DEVICE_TYPE = 'device_type'
+EXTENDED_VERSION = 'extended_version'
 
 # MixedPrecisionQuantizationConfig parameters
 NUM_OF_IMAGES = 'num_of_images'
