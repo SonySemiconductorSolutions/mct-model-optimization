@@ -161,8 +161,8 @@ class MCTWrapper:
         # set parameters --------------------------
         self.float_model = float_model
         self.representative_dataset = representative_dataset
-        self.method = method
         self.framework = framework
+        self.method = method
         self.use_mixed_precision = use_mixed_precision
 
         # Keep only the parameters you need for the quantization mode
