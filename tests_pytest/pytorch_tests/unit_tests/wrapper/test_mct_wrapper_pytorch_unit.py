@@ -55,8 +55,8 @@ class TestMCTWrapper:
                                          framework='pytorch', method='PTQ', use_mixed_precision=False)
 
         assert wrapper.float_model == mock_model
-        assert wrapper.method == 'PTQ'
         assert wrapper.framework == 'pytorch'
+        assert wrapper.method == 'PTQ'
         assert wrapper.use_mixed_precision is False
         assert wrapper.representative_dataset == mock_dataset
 
