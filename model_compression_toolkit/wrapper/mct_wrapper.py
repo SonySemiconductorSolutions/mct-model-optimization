@@ -54,6 +54,7 @@ class MCTWrapper:
            :header: "Parameter Key", "Default Value", "Description"
            :widths: 30, 30, 40
 
+           "sdsp_version", "'3.14'", "SDSP version for TPC"
            "activation_error_method", "mct.core.QuantizationErrorMethod.MSE", "Activation quantization error method"
            "weights_bias_correction", "True", "Enable weights bias correction"
            "z_threshold", "float('inf')", "Z-threshold for quantization"
@@ -67,6 +68,7 @@ class MCTWrapper:
            :header: "Parameter Key", "Default Value", "Description"
            :widths: 30, 30, 40
 
+           "sdsp_version", "'3.14'", "SDSP version for TPC"
            "num_of_images", "5", "Number of images for mixed precision"
            "use_hessian_based_scores", "False", "Use Hessian-based scores for mixed precision"
            "weights_compression_ratio", "None", "Weights compression ratio for resource util"
@@ -78,6 +80,7 @@ class MCTWrapper:
            :header: "Parameter Key", "Default Value", "Description"
            :widths: 30, 30, 40
 
+           "sdsp_version", "'3.14'", "SDSP version for TPC"
            "n_epochs", "5", "Number of training epochs for GPTQ"
            "optimizer", "None", "Optimizer for GPTQ training"
            "save_model_path", "'./qmodel.keras' / './qmodel.onnx'", "Path to save quantized model (Keras/Pytorch)"
@@ -88,6 +91,7 @@ class MCTWrapper:
            :header: "Parameter Key", "Default Value", "Description"
            :widths: 30, 30, 40
 
+           "sdsp_version", "'3.14'", "SDSP version for TPC"
            "n_epochs", "5", "Number of training epochs for GPTQ"
            "optimizer", "None", "Optimizer for GPTQ training"
            "num_of_images", "5", "Number of images for mixed precision"

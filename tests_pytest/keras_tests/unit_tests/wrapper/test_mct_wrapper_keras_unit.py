@@ -443,10 +443,10 @@ class TestMCTWrapperErrorHandling:
         with pytest.raises(Exception) as exc_info:
             wrapper.quantize_and_export(
                 float_model=Mock(),
-                method='UNSUPPORTED_METHOD',
-                framework='tensorflow',
-                use_mixed_precision=False,
                 representative_dataset=Mock(),
+                framework='tensorflow',
+                method='UNSUPPORTED_METHOD',
+                use_mixed_precision=False,
                 param_items=[]
             )
         
@@ -460,10 +460,10 @@ class TestMCTWrapperErrorHandling:
         with pytest.raises(Exception) as exc_info:
             wrapper.quantize_and_export(
                 float_model=Mock(),
-                method='PTQ',
-                framework='unsupported',
-                use_mixed_precision=False,
                 representative_dataset=Mock(),
+                framework='unsupported',
+                method='PTQ',
+                use_mixed_precision=False,
                 param_items=[]
             )
         
