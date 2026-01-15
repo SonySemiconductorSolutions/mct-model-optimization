@@ -66,3 +66,6 @@ LEARNING_RATE = 'learning_rate'
 
 # Export parameters
 SAVE_MODEL_PATH = 'save_model_path'
+
+# default compression ratio
+DEFAULT_COMPRESSION_RATIO = 0.75

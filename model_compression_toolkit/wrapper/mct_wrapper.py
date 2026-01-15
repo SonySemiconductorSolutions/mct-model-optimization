@@ -23,7 +23,7 @@ from model_compression_toolkit.wrapper.constants import (
     USE_HESSIAN_BASED_SCORES, WEIGHTS_COMPRESSION_RATIO,
     IN_MODEL, REPRESENTATIVE_DATA_GEN, CORE_CONFIG, TARGET_PLATFORM_CAPABILITIES,
     TARGET_RESOURCE_UTILIZATION, IN_MODULE, GPTQ_CONFIG, MODEL,
-    N_EPOCHS, OPTIMIZER, LEARNING_RATE, CONVERTER_VER, SAVE_MODEL_PATH
+    N_EPOCHS, OPTIMIZER, LEARNING_RATE, CONVERTER_VER, SAVE_MODEL_PATH, DEFAULT_COMPRESSION_RATIO
 )
 
 
@@ -371,7 +371,7 @@ class MCTWrapper:
         }
         ru_data = self.resource_utilization_data(**params_RUDCfg)
         weights_compression_ratio = (
-            0.75 if self.params[WEIGHTS_COMPRESSION_RATIO] is None
+            DEFAULT_COMPRESSION_RATIO if self.params[WEIGHTS_COMPRESSION_RATIO] is None
             else self.params[WEIGHTS_COMPRESSION_RATIO])
         resource_utilization = mct.core.ResourceUtilization(
             ru_data.weights_memory * weights_compression_ratio)
@@ -454,7 +454,7 @@ class MCTWrapper:
         }
         ru_data = self.resource_utilization_data(**params_RUDCfg)
         weights_compression_ratio = (
-            0.75 if self.params[WEIGHTS_COMPRESSION_RATIO] is None
+            DEFAULT_COMPRESSION_RATIO if self.params[WEIGHTS_COMPRESSION_RATIO] is None
             else self.params[WEIGHTS_COMPRESSION_RATIO])
         resource_utilization = mct.core.ResourceUtilization(
             ru_data.weights_memory * weights_compression_ratio)
