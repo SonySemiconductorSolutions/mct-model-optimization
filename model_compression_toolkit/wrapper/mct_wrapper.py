@@ -74,7 +74,7 @@ class MCTWrapper:
            "z_threshold", "float('inf')", "Z-threshold for quantization (low priority)"
            "linear_collapsing", "True", "Enable linear layer collapsing (low priority)"
            "residual_collapsing", "True", "Enable residual connection collapsing (low priority)"
-           "distance_weighting_method", "None", "Distance weighting method for GPTQ (low priority)"
+           "distance_weighting_method", "None", "Distance weighting method for mixed precision (low priority)"
            "num_of_images", "5", "Number of images for mixed precision"
            "use_hessian_based_scores", "False", "Use Hessian-based scores for mixed precision (low priority)"
            "weights_compression_ratio", "None", "Weights compression ratio for resource util"
@@ -190,10 +190,10 @@ class MCTWrapper:
                                 Z_THRESHOLD, LINEAR_COLLAPSING, RESIDUAL_COLLAPSING,
                                 SAVE_MODEL_PATH]
             else:
-                allowed_keys = [FW_NAME, SDSP_VERSION, ACTIVATION_ERROR_METHOD, WEIGHTS_BIAS_CORRECTION, 
+                allowed_keys = [FW_NAME, SDSP_VERSION, ACTIVATION_ERROR_METHOD, WEIGHTS_BIAS_CORRECTION,
                                 Z_THRESHOLD, LINEAR_COLLAPSING, RESIDUAL_COLLAPSING,
-                                DISTANCE_WEIGHTING_METHOD, NUM_OF_IMAGES, USE_HESSIAN_BASED_SCORES, 
-                                WEIGHTS_COMPRESSION_RATIO, SAVE_MODEL_PATH ]
+                                DISTANCE_WEIGHTING_METHOD, NUM_OF_IMAGES, USE_HESSIAN_BASED_SCORES,
+                                WEIGHTS_COMPRESSION_RATIO, SAVE_MODEL_PATH]
         else:
             if not use_mixed_precision:
                 allowed_keys = [FW_NAME, SDSP_VERSION, ACTIVATION_ERROR_METHOD, WEIGHTS_BIAS_CORRECTION, 
@@ -459,11 +459,6 @@ class MCTWrapper:
         resource_utilization = mct.core.ResourceUtilization(
             ru_data.weights_memory * weights_compression_ratio)
 
-        core_config = mct.core.CoreConfig(
-            mixed_precision_config = mixed_precision_config,
-            quantization_config = q_config
-        )
-
         params_GPTQ = {
             self.argname_model: self.float_model,
             REPRESENTATIVE_DATA_GEN: self.representative_dataset,
@@ -489,10 +484,8 @@ class MCTWrapper:
             LINEAR_COLLAPSING: self.params[LINEAR_COLLAPSING],
             RESIDUAL_COLLAPSING: self.params[RESIDUAL_COLLAPSING]
         }
-        q_config = mct.core.QuantizationConfig(**params_QCfg)           
-        core_config = mct.core.CoreConfig(
-            quantization_config = q_config
-        )       
+        q_config = mct.core.QuantizationConfig(**params_QCfg)
+        core_config = mct.core.CoreConfig(quantization_config=q_config)
 
         params_GPTQCfg = {
             N_EPOCHS: self.params[N_EPOCHS],
