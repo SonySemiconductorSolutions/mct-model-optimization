@@ -186,13 +186,11 @@ class MCTWrapper:
         # Keep only the parameters you need for the quantization mode
         if method == 'PTQ':
             if not use_mixed_precision:
-                allowed_keys = [ FW_NAME, SDSP_VERSION, ACTIVATION_ERROR_METHOD, WEIGHTS_BIAS_CORRECTION, 
-                                 Z_THRESHOLD, LINEAR_COLLAPSING, RESIDUAL_COLLAPSING,
-                                 SAVE_MODEL_PATH ]
+                allowed_keys = [FW_NAME, SDSP_VERSION, ACTIVATION_ERROR_METHOD, WEIGHTS_BIAS_CORRECTION,
+                                Z_THRESHOLD, LINEAR_COLLAPSING, RESIDUAL_COLLAPSING,
+                                SAVE_MODEL_PATH]
             else:
-                allowed_keys = [ FW_NAME, SDSP_VERSION, ACTIVATION_ERROR_METHOD, WEIGHTS_BIAS_CORRECTION, 
-                                 Z_THRESHOLD, LINEAR_COLLAPSING, RESIDUAL_COLLAPSING,
-                                 DISTANCE_WEIGHTING_METHOD, NUM_OF_IMAGES, USE_HESSIAN_BASED_SCORES, 
+                allowed_keys = [ FW_NAME, SDSP_VERSION, NUM_OF_IMAGES, USE_HESSIAN_BASED_SCORES, 
                                  WEIGHTS_COMPRESSION_RATIO, SAVE_MODEL_PATH ]
         else:
             if not use_mixed_precision:
@@ -618,7 +616,7 @@ class MCTWrapper:
         """
         try:
             # Step 1: Initialize and validate all input parameters
-            self._initialize_and_validate( float_model, representative_dataset, 
+            self._initialize_and_validate(float_model, representative_dataset, 
                                           framework, method, use_mixed_precision)
 
             # Step 2: Apply custom parameter modifications

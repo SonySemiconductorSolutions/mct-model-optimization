@@ -123,7 +123,7 @@ class TestMCTWrapper:
         MCTWrapper imports 'model_compression_toolkit as mct'.
         """
         wrapper = MCTWrapper()
-        wrapper.framework = 'tensorflow'
+        wrapper.framework = 'pytorch'
         wrapper.params['sdsp_version'] = '3.14'
         mock_tpc = Mock()
         mock_mct_get_tpc_sdsp.return_value = mock_tpc
