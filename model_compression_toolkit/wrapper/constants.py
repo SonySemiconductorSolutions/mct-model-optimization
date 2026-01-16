@@ -13,7 +13,6 @@
 # limitations under the License.
 # ==============================================================================
 
-
 # TPC parameters
 FW_NAME = 'fw_name'
 SDSP_VERSION = 'sdsp_version'
