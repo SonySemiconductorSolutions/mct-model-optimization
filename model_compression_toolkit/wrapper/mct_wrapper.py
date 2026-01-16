@@ -190,19 +190,21 @@ class MCTWrapper:
                                 Z_THRESHOLD, LINEAR_COLLAPSING, RESIDUAL_COLLAPSING,
                                 SAVE_MODEL_PATH]
             else:
-                allowed_keys = [ FW_NAME, SDSP_VERSION, NUM_OF_IMAGES, USE_HESSIAN_BASED_SCORES, 
-                                 WEIGHTS_COMPRESSION_RATIO, SAVE_MODEL_PATH ]
+                allowed_keys = [FW_NAME, SDSP_VERSION, ACTIVATION_ERROR_METHOD, WEIGHTS_BIAS_CORRECTION, 
+                                Z_THRESHOLD, LINEAR_COLLAPSING, RESIDUAL_COLLAPSING,
+                                DISTANCE_WEIGHTING_METHOD, NUM_OF_IMAGES, USE_HESSIAN_BASED_SCORES, 
+                                WEIGHTS_COMPRESSION_RATIO, SAVE_MODEL_PATH ]
         else:
             if not use_mixed_precision:
-                allowed_keys = [ FW_NAME, SDSP_VERSION, ACTIVATION_ERROR_METHOD, WEIGHTS_BIAS_CORRECTION, 
-                                 Z_THRESHOLD, LINEAR_COLLAPSING, RESIDUAL_COLLAPSING,
-                                 N_EPOCHS, OPTIMIZER, SAVE_MODEL_PATH]
+                allowed_keys = [FW_NAME, SDSP_VERSION, ACTIVATION_ERROR_METHOD, WEIGHTS_BIAS_CORRECTION, 
+                                Z_THRESHOLD, LINEAR_COLLAPSING, RESIDUAL_COLLAPSING,
+                                N_EPOCHS, OPTIMIZER, SAVE_MODEL_PATH]
             else:
-                allowed_keys = [ FW_NAME, SDSP_VERSION, ACTIVATION_ERROR_METHOD, WEIGHTS_BIAS_CORRECTION, 
-                                 Z_THRESHOLD, LINEAR_COLLAPSING, RESIDUAL_COLLAPSING,
-                                 WEIGHTS_COMPRESSION_RATIO, N_EPOCHS, OPTIMIZER, DISTANCE_WEIGHTING_METHOD,
-                                 NUM_OF_IMAGES, USE_HESSIAN_BASED_SCORES,
-                                 SAVE_MODEL_PATH]
+                allowed_keys = [FW_NAME, SDSP_VERSION, ACTIVATION_ERROR_METHOD, WEIGHTS_BIAS_CORRECTION, 
+                                Z_THRESHOLD, LINEAR_COLLAPSING, RESIDUAL_COLLAPSING,
+                                WEIGHTS_COMPRESSION_RATIO, N_EPOCHS, OPTIMIZER, DISTANCE_WEIGHTING_METHOD,
+                                NUM_OF_IMAGES, USE_HESSIAN_BASED_SCORES,
+                                SAVE_MODEL_PATH]
                      
         self.params = { k: v for k, v in self.params.items() if k in allowed_keys }
 
