@@ -1,4 +1,8 @@
 name: Converter 3.17, TPC 4.0 (Pytorch)
+
+permissions:
+  contents: read
+
 on:
   workflow_dispatch: # Allow manual triggers
   schedule:
