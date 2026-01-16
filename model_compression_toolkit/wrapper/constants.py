@@ -43,14 +43,6 @@ TARGET_PLATFORM_CAPABILITIES = 'target_platform_capabilities'
 TARGET_RESOURCE_UTILIZATION = 'target_resource_utilization'
 IN_MODULE = 'in_module'
 
-# QuantizationConfig parameters
-ACTIVATION_ERROR_METHOD = 'activation_error_method'
-WEIGHTS_ERROR_METHOD = 'weights_error_method'
-WEIGHTS_BIAS_CORRECTION = 'weights_bias_correction'
-Z_THRESHOLD = 'z_threshold'
-LINEAR_COLLAPSING = 'linear_collapsing'
-RESIDUAL_COLLAPSING = 'residual_collapsing'
-
 # GPTQ specific parameters
 GPTQ_CONFIG = 'gptq_config'
 MODEL = 'model'
