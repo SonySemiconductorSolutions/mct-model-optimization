@@ -13,9 +13,7 @@
 # limitations under the License.
 # ==============================================================================
 from unittest.mock import Mock
-
 from pytest import fixture
-
 from model_compression_toolkit.core import FrameworkInfo, QuantizationConfig, QuantizationErrorMethod
 from model_compression_toolkit.core.common import Graph
 from model_compression_toolkit.core.common.framework_implementation import FrameworkImplementation
