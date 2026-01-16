@@ -443,7 +443,7 @@ class MCTWrapper:
         }
         mixed_precision_config = mct.core.MixedPrecisionQuantizationConfig(**params_MPCfg)
 
-        core_config = mct.core.CoreConfig(quantization_config=q_config, 
+        core_config = mct.core.CoreConfig(quantization_config=q_config,
                                           mixed_precision_config=mixed_precision_config)
 
         params_RUDCfg = {
