@@ -358,7 +358,7 @@ class MCTWrapper:
             NUM_OF_IMAGES: self.params[NUM_OF_IMAGES],
             USE_HESSIAN_BASED_SCORES: self.params[USE_HESSIAN_BASED_SCORES]
         }
-        mixed_precision_config = mct.core.MixedPrecisionQuantizationConfig(**params_MPCfg)        
+        mixed_precision_config = mct.core.MixedPrecisionQuantizationConfig(**params_MPCfg)
 
         core_config = mct.core.CoreConfig(quantization_config=q_config, 
                                           mixed_precision_config=mixed_precision_config)
