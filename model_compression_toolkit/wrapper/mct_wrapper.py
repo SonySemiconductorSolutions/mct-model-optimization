@@ -113,7 +113,7 @@ class MCTWrapper:
            "optimizer", "None", "Optimizer for GPTQ training (low priority)"
            "distance_weighting_method", "None", "Distance weighting method for GPTQ (low priority)"
            "num_of_images", "5", "Number of images for mixed precision"
-           "use_hessian_based_scores", "False", "Use Hessian-based scores for mixed precision"
+           "use_hessian_based_scores", "False", "Use Hessian-based scores for mixed precision (low priority)"
            "save_model_path", "'./qmodel.keras' / './qmodel.onnx'", "Path to save quantized model (Keras/Pytorch)"
 
         """

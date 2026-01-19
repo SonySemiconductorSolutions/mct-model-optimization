@@ -206,7 +206,7 @@ def test_quantization(
             ['distance_weighting_method', None],  # Distance weighting method for mixed precision (low priority).
             ['num_of_images', 5],  # Number of images for mixed precision.
             ['use_hessian_based_scores', False],  # Use Hessian-based sensitivity scores for layer importance (low priority).
-            ['weights_compression_ratio', 0.75],  # Target compression ratio for model weights (75% of original size.
+            ['weights_compression_ratio', 0.75],  # Target compression ratio for model weights (75% of original size).
             ['save_model_path', './qmodel_PTQ_Pytorch_mixed_precision.onnx']  # Path to save quantized model as ONNX.
         ]
 
@@ -297,7 +297,7 @@ def test_quantization(
             ['optimizer', None],  # Optimizer to use during fine-tuning (low priority).
             ['distance_weighting_method', None],  # Distance weighting method for GPTQ (low priority).
             ['num_of_images', 5],  # Number of images to use for calibration.
-            ['use_hessian_based_scores', False],  # Whether to use Hessian-based scores for layer importance.
+            ['use_hessian_based_scores', False],  # Whether to use Hessian-based scores for layer importance (low priority).
             ['save_model_path', './qmodel_GPTQ_Pytorch_mixed_precision.onnx']  # Path to save quantized model as ONNX.
         ]
 

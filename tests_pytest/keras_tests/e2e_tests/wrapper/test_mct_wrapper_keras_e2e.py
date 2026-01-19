@@ -174,7 +174,7 @@ def test_quantization(
             ['distance_weighting_method', None],  # Distance weighting method for mixed precision (low priority).
             ['num_of_images', 5],  # Number of images for mixed precision.
             ['use_hessian_based_scores', False],  # Use Hessian-based sensitivity scores for layer importance (low priority).
-            ['weights_compression_ratio', 0.75],  # Target compression ratio for model weights (75% of original size.
+            ['weights_compression_ratio', 0.75],  # Target compression ratio for model weights (75% of original size).
             ['save_model_path', './qmodel_PTQ_Keras_mixed_precision.keras']  # Path to save the quantized model.
         ]
 
@@ -244,12 +244,12 @@ def test_quantization(
             ['z_threshold', float('inf')],  # Threshold for zero-point quantization (low priority).
             ['linear_collapsing', True],  # Enable linear layer collapsing optimization (low priority).
             ['residual_collapsing', True],  # Enable residual connection collapsing (low priority).
-            ['weights_compression_ratio', 0.75],  # Compression ratio for weights.
             ['n_epochs', 5],  # Number of epochs for gradient-based fine-tuning.
             ['optimizer', None],  # Optimizer to use during fine-tuning (low priority).
             ['distance_weighting_method', None],  # Distance weighting method for GPTQ (low priority).
             ['num_of_images', 5],  # Number of images to use for calibration.
-            ['use_hessian_based_scores', False],  # Whether to use Hessian-based scores for layer importance.
+            ['use_hessian_based_scores', False],  # Whether to use Hessian-based scores for layer importance (low priority).
+            ['weights_compression_ratio', 0.75],  # Compression ratio for weights.
             ['save_model_path', './qmodel_GPTQ_Keras_mixed_precision.keras']  # Path to save the quantized model.
         ]
 

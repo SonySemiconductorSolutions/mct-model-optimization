@@ -269,9 +269,9 @@ class TestMCTWrapper:
     @patch('model_compression_toolkit.core.CoreConfig')
     def test_setting_PTQ(self, mock_core_config: Mock, mock_quant_config: Mock) -> None:
         """
-        Test _Setting_PTQ method for standard Post-Training Quantization.
+        Test _setting_PTQ method for standard Post-Training Quantization.
         
-        This test verifies that the _Setting_PTQ method correctly configures
+        This test verifies that the _setting_PTQ method correctly configures
         standard Post-Training Quantization parameters without mixed precision,
         focusing on fixed-precision quantization with comprehensive error
         minimization and optimization techniques.
