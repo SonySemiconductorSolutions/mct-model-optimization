@@ -220,19 +220,6 @@ def test_quantization(
     # Run GPTQ + Mixed Precision Quantization (mixed_precision) with Keras
     @decorator
     def GPTQ_Keras_mixed_precision(float_model: keras.Model) -> Tuple[bool, keras.Model]:
-        """
-        Perform Gradient-based Post-Training Quantization with Mixed Precision (GPTQ + mixed_precision).
-        
-        This combines the benefits of both techniques:
-        - GPTQ: Gradient-based optimization for better quantization accuracy
-        - Mixed Precision: Optimal bit-width allocation for size/accuracy trade-off
-        
-        Args:
-            float_model: Original floating-point Keras model
-        
-        Returns:
-            tuple: (success_flag, quantized_model)
-        """
         framework = 'tensorflow'
         method = 'GPTQ'
         use_mixed_precision = True
