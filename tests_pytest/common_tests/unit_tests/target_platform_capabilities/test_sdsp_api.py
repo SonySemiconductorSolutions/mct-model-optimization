@@ -56,5 +56,5 @@ def test_sdsp_api():
 def test_false_sdsp_api():
     # Sdsp converter v3.15
     with pytest.raises(AssertionError, match="Error: The specified sdsp converter version '3.15' is not valid. Available "
-                                             "versions are: 3.14, 3.16, 3.17. Please ensure you are using a supported sdsp converter version."):
+                                             "versions are: 3.14, 3.16, 3.17, 3.18. Please ensure you are using a supported sdsp converter version."):
         APITest(sdsp_version='3.15').run_test(expected_tpc_path='', expected_tpc_version='')
