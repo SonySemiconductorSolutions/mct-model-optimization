@@ -198,10 +198,16 @@ def test_quantization(
         # Define mixed precision quantization parameters
         param_items = [
             ['sdsp_version', '3.14'],  # The version of the SDSP converter.
-            ['num_of_images', 5],  # Number of images
-            ['use_hessian_based_scores', False],  # Use Hessian scores
-            ['weights_compression_ratio', 0.5],  # Compression ratio
-            ['save_model_path', './qmodel_PTQ_Pytorch_mixed_precision.onnx']  # Path to save the model.
+            ['activation_error_method', QuantizationErrorMethod.MSE],  # Error metric for activation (low priority).
+            ['weights_bias_correction', True],  # Enable bias correction for weights (low priority).
+            ['z_threshold', float('inf')],  # Threshold for zero-point quantization (low priority).
+            ['linear_collapsing', True],  # Enable linear layer collapsing optimization (low priority).
+            ['residual_collapsing', True],  # Enable residual connection collapsing (low priority).
+            ['distance_weighting_method', None],  # Distance weighting method for mixed precision (low priority).
+            ['num_of_images', 5],  # Number of images for mixed precision.
+            ['use_hessian_based_scores', False],  # Use Hessian-based sensitivity scores for layer importance (low priority).
+            ['weights_compression_ratio', 0.75],  # Target compression ratio for model weights (75% of original size).
+            ['save_model_path', './qmodel_PTQ_Pytorch_mixed_precision.onnx']  # Path to save quantized model as ONNX.
         ]
 
         # Execute mixed precision quantization and export to ONNX
@@ -238,9 +244,14 @@ def test_quantization(
         # Define GPTQ-specific parameters for gradient-based optimization
         param_items = [
             ['sdsp_version', '3.14'],  # The version of the SDSP converter.
-            ['n_epochs', 5],  # Number of training epochs
-            ['optimizer', None],  # Optimizer for training
-            ['save_model_path', './qmodel_GPTQ_Pytorch.onnx']  # Path to save the model.
+            ['activation_error_method', QuantizationErrorMethod.MSE],  # Error metric for activation (low priority).
+            ['weights_bias_correction', True],  # Enable bias correction for weights (low priority).
+            ['z_threshold', float('inf')],  # Threshold for zero-point quantization (low priority).
+            ['linear_collapsing', True],  # Enable linear layer collapsing optimization (low priority).
+            ['residual_collapsing', True],  # Enable residual connection collapsing (low priority).    
+            ['n_epochs', 5],  # Number of epochs for gradient-based fine-tuning.
+            ['optimizer', None],  # Optimizer to use during fine-tuning (low priority).
+            ['save_model_path', './qmodel_GPTQ_Pytorch.onnx']  # Path to save quantized model as ONNX.
         ]
 
         # Execute gradient-based quantization and export to ONNX
@@ -276,12 +287,18 @@ def test_quantization(
         # Define GPTQ mixed precision parameters for advanced optimization
         param_items = [
             ['sdsp_version', '3.14'],  # The version of the SDSP converter.
-            ['n_epochs', 5],  # Number of training epochs
-            ['optimizer', None],  # Optimizer for training
-            ['num_of_images', 5],  # Number of images
-            ['use_hessian_based_scores', False],  # Use Hessian scores
-            ['weights_compression_ratio', 0.5],  # Compression ratio
-            ['save_model_path', './qmodel_GPTQ_Pytorch_mixed_precision.onnx']  # Path to save the model.
+            ['activation_error_method', QuantizationErrorMethod.MSE],  # Error metric for activation (low priority).
+            ['weights_bias_correction', True],  # Enable bias correction for weights (low priority).
+            ['z_threshold', float('inf')],  # Threshold for zero-point quantization (low priority).
+            ['linear_collapsing', True],  # Enable linear layer collapsing optimization (low priority).
+            ['residual_collapsing', True],  # Enable residual connection collapsing (low priority).
+            ['weights_compression_ratio', 0.75],  # Compression ratio for weights.
+            ['n_epochs', 5],  # Number of epochs for gradient-based fine-tuning.
+            ['optimizer', None],  # Optimizer to use during fine-tuning (low priority).
+            ['distance_weighting_method', None],  # Distance weighting method for GPTQ (low priority).
+            ['num_of_images', 5],  # Number of images to use for calibration.
+            ['use_hessian_based_scores', False],  # Whether to use Hessian-based scores for layer importance (low priority).
+            ['save_model_path', './qmodel_GPTQ_Pytorch_mixed_precision.onnx']  # Path to save quantized model as ONNX.
         ]
 
         # Execute advanced GPTQ with mixed precision and export to ONNX
