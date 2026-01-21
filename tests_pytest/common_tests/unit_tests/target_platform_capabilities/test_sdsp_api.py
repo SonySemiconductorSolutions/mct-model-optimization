@@ -47,10 +47,14 @@ def test_sdsp_api():
     # Sdsp converter v3.17
     APITest(sdsp_version='3.17').run_test(
         expected_tpc_path='model_compression_toolkit.target_platform_capabilities.tpc_models.imx500_tpc.v5_0.tpc', expected_tpc_version='5.0')
+    
+    # Sdsp converter v3.18
+    APITest(sdsp_version='3.18').run_test(
+        expected_tpc_path='model_compression_toolkit.target_platform_capabilities.tpc_models.imx500_tpc.v5_0.tpc', expected_tpc_version='5.0')
 
 
 def test_false_sdsp_api():
     # Sdsp converter v3.15
     with pytest.raises(AssertionError, match="Error: The specified sdsp converter version '3.15' is not valid. Available "
-                                             "versions are: 3.14, 3.16, 3.17. Please ensure you are using a supported sdsp converter version."):
+                                             "versions are: 3.14, 3.16, 3.17, 3.18. Please ensure you are using a supported sdsp converter version."):
         APITest(sdsp_version='3.15').run_test(expected_tpc_path='', expected_tpc_version='')

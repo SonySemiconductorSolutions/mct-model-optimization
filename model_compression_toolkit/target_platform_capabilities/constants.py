@@ -31,6 +31,7 @@ TPC_V6_0 = '6.0'
 SDSP_V3_14 = '3.14'
 SDSP_V3_16 = '3.16'
 SDSP_V3_17 = '3.17'
+SDSP_V3_18 = '3.18'
 
 # TP Attributes
 KERNEL_ATTR = "kernel_attr"
