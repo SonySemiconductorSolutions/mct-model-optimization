@@ -47,6 +47,10 @@ def test_sdsp_api():
     # Sdsp converter v3.17
     APITest(sdsp_version='3.17').run_test(
         expected_tpc_path='model_compression_toolkit.target_platform_capabilities.tpc_models.imx500_tpc.v5_0.tpc', expected_tpc_version='5.0')
+    
+    # Sdsp converter v3.18
+    APITest(sdsp_version='3.18').run_test(
+        expected_tpc_path='model_compression_toolkit.target_platform_capabilities.tpc_models.imx500_tpc.v5_0.tpc', expected_tpc_version='5.0')
 
 
 def test_false_sdsp_api():
