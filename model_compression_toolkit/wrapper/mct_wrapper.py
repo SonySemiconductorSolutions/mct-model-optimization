@@ -135,7 +135,7 @@ class MCTWrapper:
             USE_HESSIAN_BASED_SCORES: False,
 
             # ResourceUtilization
-            WEIGHTS_COMPRESSION_RATIO: None,
+            WEIGHTS_COMPRESSION_RATIO: DEFAULT_COMPRESSION_RATIO,
 
             # GradientPTQConfig
             N_EPOCHS: 5,
@@ -450,9 +450,7 @@ class MCTWrapper:
             TARGET_PLATFORM_CAPABILITIES: self.tpc
         }
         ru_data = self.resource_utilization_data(**params_RUDCfg)
-        weights_compression_ratio = (
-            DEFAULT_COMPRESSION_RATIO if self.params[WEIGHTS_COMPRESSION_RATIO] is None
-            else self.params[WEIGHTS_COMPRESSION_RATIO])
+        weights_compression_ratio = self.params[WEIGHTS_COMPRESSION_RATIO]
         resource_utilization = mct.core.ResourceUtilization(
             ru_data.weights_memory * weights_compression_ratio)
 
