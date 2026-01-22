@@ -17,9 +17,19 @@
 FW_NAME = 'fw_name'
 SDSP_VERSION = 'sdsp_version'
 
+# QuantizationConfig parameters
+ACTIVATION_ERROR_METHOD = 'activation_error_method'
+WEIGHTS_BIAS_CORRECTION = 'weights_bias_correction'
+Z_THRESHOLD = 'z_threshold'
+LINEAR_COLLAPSING = 'linear_collapsing'
+RESIDUAL_COLLAPSING = 'residual_collapsing'
+
 # MixedPrecisionQuantizationConfig parameters
+DISTANCE_WEIGHTING_METHOD = 'distance_weighting_method'
 NUM_OF_IMAGES = 'num_of_images'
 USE_HESSIAN_BASED_SCORES = 'use_hessian_based_scores'
+
+# ResourceUtilization parameters
 WEIGHTS_COMPRESSION_RATIO = 'weights_compression_ratio'
 
 # Resource utilization data parameters
@@ -32,14 +42,6 @@ TARGET_PLATFORM_CAPABILITIES = 'target_platform_capabilities'
 TARGET_RESOURCE_UTILIZATION = 'target_resource_utilization'
 IN_MODULE = 'in_module'
 
-# QuantizationConfig parameters
-ACTIVATION_ERROR_METHOD = 'activation_error_method'
-WEIGHTS_ERROR_METHOD = 'weights_error_method'
-WEIGHTS_BIAS_CORRECTION = 'weights_bias_correction'
-Z_THRESHOLD = 'z_threshold'
-LINEAR_COLLAPSING = 'linear_collapsing'
-RESIDUAL_COLLAPSING = 'residual_collapsing'
-
 # GPTQ specific parameters
 GPTQ_CONFIG = 'gptq_config'
 MODEL = 'model'
@@ -48,7 +50,12 @@ MODEL = 'model'
 N_EPOCHS = 'n_epochs'
 OPTIMIZER = 'optimizer'
 
-# Export parameters
+# low_bit_quantizer_ptq
 CONVERTER_VER = 'converter_ver'
 LEARNING_RATE = 'learning_rate'
+
+# Export parameters
 SAVE_MODEL_PATH = 'save_model_path'
+
+# default compression ratio
+DEFAULT_COMPRESSION_RATIO = 0.75
