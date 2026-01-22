@@ -67,7 +67,7 @@ class TestMCTWrapperIntegration:
         Mocked Components:
             - _get_tpc: TPC configuration
             - _select_method: Framework-specific method selection
-            - _Setting_PTQ: PTQ parameter configuration
+            - _setting_PTQ: PTQ parameter configuration
             - _export_model: Model export functionality
             - _post_training_quantization: Actual quantization process
         
@@ -93,7 +93,7 @@ class TestMCTWrapperIntegration:
         
         mock_setting_ptq.return_value = {'mock': 'params'}
         
-        param_items = [('n_epochs', 10)]  # Number of epochs
+        param_items = [('sdsp_version', '3.14')]  # SDSP version for TPC
         
         # Call the method
         success, result_model = wrapper.quantize_and_export(
