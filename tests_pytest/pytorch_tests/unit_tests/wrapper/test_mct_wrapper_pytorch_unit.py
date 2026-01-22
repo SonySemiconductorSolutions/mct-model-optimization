@@ -294,7 +294,6 @@ class TestMCTWrapper:
         # Verify the method calls
         mock_quant_config.assert_called_with(
             activation_error_method=QuantizationErrorMethod.MSE,
-            weights_error_method=QuantizationErrorMethod.MSE,
             weights_bias_correction=True,
             z_threshold=float('inf'),
             linear_collapsing=True,

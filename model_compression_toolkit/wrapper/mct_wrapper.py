@@ -18,7 +18,7 @@ import model_compression_toolkit as mct
 from model_compression_toolkit.logger import Logger
 from model_compression_toolkit.wrapper.constants import (
     FW_NAME, SDSP_VERSION, ACTIVATION_ERROR_METHOD, WEIGHTS_BIAS_CORRECTION,
-    Z_THRESHOLD, LINEAR_COLLAPSING, RESIDUAL_COLLAPSING, WEIGHTS_ERROR_METHOD, 
+    Z_THRESHOLD, LINEAR_COLLAPSING, RESIDUAL_COLLAPSING, 
     DISTANCE_WEIGHTING_METHOD, NUM_OF_IMAGES, 
     USE_HESSIAN_BASED_SCORES, WEIGHTS_COMPRESSION_RATIO,
     IN_MODEL, REPRESENTATIVE_DATA_GEN, CORE_CONFIG, TARGET_PLATFORM_CAPABILITIES,
@@ -345,7 +345,6 @@ class MCTWrapper:
         """
         params_QCfg = {
             ACTIVATION_ERROR_METHOD: self.params[ACTIVATION_ERROR_METHOD],
-            WEIGHTS_ERROR_METHOD: mct.core.QuantizationErrorMethod.MSE,
             WEIGHTS_BIAS_CORRECTION: self.params[WEIGHTS_BIAS_CORRECTION],
             Z_THRESHOLD: self.params[Z_THRESHOLD],
             LINEAR_COLLAPSING: self.params[LINEAR_COLLAPSING],
@@ -394,7 +393,6 @@ class MCTWrapper:
         """
         params_QCfg = {
             ACTIVATION_ERROR_METHOD: self.params[ACTIVATION_ERROR_METHOD],
-            WEIGHTS_ERROR_METHOD: mct.core.QuantizationErrorMethod.MSE,
             WEIGHTS_BIAS_CORRECTION: self.params[WEIGHTS_BIAS_CORRECTION],
             Z_THRESHOLD: self.params[Z_THRESHOLD],
             LINEAR_COLLAPSING: self.params[LINEAR_COLLAPSING],
@@ -422,7 +420,6 @@ class MCTWrapper:
         """
         params_QCfg = {
             ACTIVATION_ERROR_METHOD: self.params[ACTIVATION_ERROR_METHOD],
-            WEIGHTS_ERROR_METHOD: mct.core.QuantizationErrorMethod.MSE,
             WEIGHTS_BIAS_CORRECTION: self.params[WEIGHTS_BIAS_CORRECTION],
             Z_THRESHOLD: self.params[Z_THRESHOLD],
             LINEAR_COLLAPSING: self.params[LINEAR_COLLAPSING],
@@ -478,7 +475,6 @@ class MCTWrapper:
         """
         params_QCfg = {
             ACTIVATION_ERROR_METHOD: self.params[ACTIVATION_ERROR_METHOD],
-            WEIGHTS_ERROR_METHOD: mct.core.QuantizationErrorMethod.MSE,
             WEIGHTS_BIAS_CORRECTION: self.params[WEIGHTS_BIAS_CORRECTION],
             Z_THRESHOLD: self.params[Z_THRESHOLD],
             LINEAR_COLLAPSING: self.params[LINEAR_COLLAPSING],

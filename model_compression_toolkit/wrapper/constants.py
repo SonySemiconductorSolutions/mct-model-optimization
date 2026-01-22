@@ -23,7 +23,6 @@ WEIGHTS_BIAS_CORRECTION = 'weights_bias_correction'
 Z_THRESHOLD = 'z_threshold'
 LINEAR_COLLAPSING = 'linear_collapsing'
 RESIDUAL_COLLAPSING = 'residual_collapsing'
-WEIGHTS_ERROR_METHOD = 'weights_error_method'
 
 # MixedPrecisionQuantizationConfig parameters
 DISTANCE_WEIGHTING_METHOD = 'distance_weighting_method'
