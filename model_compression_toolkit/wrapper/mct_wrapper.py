@@ -49,7 +49,7 @@ class MCTWrapper:
         .. note::
            Users can update the following parameters in param_items. 
            The low priority variable can be left at its default value, so there is no need to specify it. 
-           Specify it as necessary, for example, if you receive a warning from the `XQuant extension tool <file://wsl.localhost/Ubuntu-22.04/home/ubuntu/wrapper/sonyfork/mct-model-optimization/docs/guidelines/XQuant_Extension_Tool.html>`_.
+           Specify it as necessary, for example, if you receive a warning from the `XQuant extension tool <https://sonysemiconductorsolutions.github.io/mct-model-optimization/guidelines/XQuant_Extension_Tool.html>`_.
 
         **PTQ**
 
