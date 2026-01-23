@@ -46,7 +46,10 @@ class MCTWrapper:
         """
         Initialize MCTWrapper with default parameters.
         
-        Users can update the following parameters in param_items:
+        .. note::
+           Users can update the following parameters in param_items. 
+           The low priority variable can be left at its default value, so there is no need to specify it. 
+           Specify it as necessary, for example, if you receive a warning from the `XQuant extension tool <https://sonysemiconductorsolutions.github.io/mct-model-optimization/guidelines/XQuant_Extension_Tool.html>`_.
 
         **PTQ**
 
@@ -75,7 +78,7 @@ class MCTWrapper:
            "linear_collapsing", "True", "Enable linear layer collapsing (low priority)"
            "residual_collapsing", "True", "Enable residual connection collapsing (low priority)"
            "distance_weighting_method", "See `MixedPrecisionQuantizationConfig <https://sonysemiconductorsolutions.github.io/mct-model-optimization/api/api_docs/classes/MixedPrecisionQuantizationConfig.html>`_", "Distance weighting method for mixed precision (low priority)"
-           "num_of_images", "5", "Number of images for mixed precision"
+           "num_of_images", "32", "Number of images for mixed precision"
            "use_hessian_based_scores", "False", "Use Hessian-based scores for mixed precision (low priority)"
            "weights_compression_ratio", "0.75", "Weights compression ratio for resource util (0.0～1.0)"
            "save_model_path", "'./qmodel.keras' / './qmodel.onnx'", "Path to save quantized model (Keras/Pytorch)"
@@ -112,7 +115,7 @@ class MCTWrapper:
            "n_epochs", "5", "Number of training epochs for GPTQ"
            "optimizer", "default of `get_keras_gptq_config <https://sonysemiconductorsolutions.github.io/mct-model-optimization/api/api_docs/methods/get_keras_gptq_config.html#model_compression_toolkit.gptq.get_keras_gptq_config>`_ or `get_pytorch_gptq_config <https://sonysemiconductorsolutions.github.io/mct-model-optimization/api/api_docs/methods/get_pytroch_gptq_config.html#model_compression_toolkit.gptq.get_pytorch_gptq_config>`_", "Optimizer for GPTQ training (low priority)"
            "distance_weighting_method", "See `MixedPrecisionQuantizationConfig <https://sonysemiconductorsolutions.github.io/mct-model-optimization/api/api_docs/classes/MixedPrecisionQuantizationConfig.html>`_", "Distance weighting method for mixed precision (low priority)"
-           "num_of_images", "5", "Number of images for mixed precision"
+           "num_of_images", "32", "Number of images for mixed precision"
            "use_hessian_based_scores", "False", "Use Hessian-based scores for mixed precision (low priority)"
            "save_model_path", "'./qmodel.keras' / './qmodel.onnx'", "Path to save quantized model (Keras/Pytorch)"
 
@@ -131,7 +134,7 @@ class MCTWrapper:
 
             # MixedPrecisionQuantizationConfig
             DISTANCE_WEIGHTING_METHOD: None,
-            NUM_OF_IMAGES: 5,
+            NUM_OF_IMAGES: 32,
             USE_HESSIAN_BASED_SCORES: False,
 
             # ResourceUtilization
