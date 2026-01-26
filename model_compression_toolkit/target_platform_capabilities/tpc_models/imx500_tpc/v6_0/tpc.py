@@ -346,9 +346,9 @@ def generate_tpc(default_config: OpQuantizationConfig,
     gelu = schema.OperatorsSet(name=schema.OperatorSetNames.GELU, qc_options=default_config_options_16bit)
     tanh = schema.OperatorsSet(name=schema.OperatorSetNames.TANH, qc_options=default_config_options_16bit)
     hard_tanh = schema.OperatorsSet(name=schema.OperatorSetNames.HARD_TANH, qc_options=default_config_options_16bit)
-    exp = schema.OperatorsSet(name=schema.OperatorSetNames.EXP, qc_options=const_configuration_options_inout16)
-    sin = schema.OperatorsSet(name=schema.OperatorSetNames.SIN, qc_options=const_configuration_options_inout16)
-    cos = schema.OperatorsSet(name=schema.OperatorSetNames.COS, qc_options=const_configuration_options_inout16)
+    exp = schema.OperatorsSet(name=schema.OperatorSetNames.EXP, qc_options=default_config_options_16bit)
+    sin = schema.OperatorsSet(name=schema.OperatorSetNames.SIN, qc_options=default_config_options_16bit)
+    cos = schema.OperatorsSet(name=schema.OperatorSetNames.COS, qc_options=default_config_options_16bit)
 
     operator_set.extend(
         [conv, conv_transpose, depthwise_conv, fc, relu, relu6, leaky_relu, add, sub, mul, div, prelu, swish, hardswish,
