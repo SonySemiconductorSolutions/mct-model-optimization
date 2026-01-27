@@ -41,85 +41,9 @@ class MCTWrapper:
     quantized model export, handling framework-specific configurations and
     Target Platform Capabilities (TPC) setup.
     """
-
+    
     def __init__(self):
-        """
-        Initialize MCTWrapper with default parameters.
-        
-        .. note::
-           Users can update the following parameters in param_items. 
-           The low priority variable can be left at its default value, so there is no need to specify it. 
-           Specify it as necessary, for example, if you receive a warning from the `XQuant extension tool <https://sonysemiconductorsolutions.github.io/mct-model-optimization/guidelines/XQuant_Extension_Tool.html>`_.
-
-        **PTQ**
-
-        .. csv-table::
-           :header: "Parameter Key", "Default Value", "Description"
-           :widths: 30, 30, 40
-
-           "sdsp_version", "'3.14'", "SDSP version for TPC"
-           "activation_error_method", "mct.core.QuantizationErrorMethod.MSE", "Activation quantization error method (low priority)"
-           "weights_bias_correction", "True", "Enable weights bias correction (low priority)"
-           "z_threshold", "float('inf')", "Z-threshold for quantization (low priority)"
-           "linear_collapsing", "True", "Enable linear layer collapsing (low priority)"
-           "residual_collapsing", "True", "Enable residual connection collapsing (low priority)"
-           "save_model_path", "'./qmodel.keras' / './qmodel.onnx'", "Path to save quantized model (Keras/Pytorch)"
-
-        **PTQ, mixed_precision**
-
-        .. csv-table::
-           :header: "Parameter Key", "Default Value", "Description"
-           :widths: 30, 30, 40
-
-           "sdsp_version", "'3.14'", "SDSP version for TPC"
-           "activation_error_method", "mct.core.QuantizationErrorMethod.MSE", "Activation quantization error method (low priority)"
-           "weights_bias_correction", "True", "Enable weights bias correction (low priority)"
-           "z_threshold", "float('inf')", "Z-threshold for quantization (low priority)"
-           "linear_collapsing", "True", "Enable linear layer collapsing (low priority)"
-           "residual_collapsing", "True", "Enable residual connection collapsing (low priority)"
-           "distance_weighting_method", "See `MixedPrecisionQuantizationConfig <https://sonysemiconductorsolutions.github.io/mct-model-optimization/api/api_docs/classes/MixedPrecisionQuantizationConfig.html>`_", "Distance weighting method for mixed precision (low priority)"
-           "num_of_images", "32", "Number of images for mixed precision"
-           "use_hessian_based_scores", "False", "Use Hessian-based scores for mixed precision (low priority)"
-           "weights_compression_ratio", "0.75", "Weights compression ratio for resource util (0.0～1.0)"
-           "save_model_path", "'./qmodel.keras' / './qmodel.onnx'", "Path to save quantized model (Keras/Pytorch)"
-
-        **GPTQ**
-
-        .. csv-table::
-           :header: "Parameter Key", "Default Value", "Description"
-           :widths: 30, 30, 40
-
-           "sdsp_version", "'3.14'", "SDSP version for TPC"
-           "activation_error_method", "mct.core.QuantizationErrorMethod.MSE", "Activation quantization error method (low priority)"
-           "weights_bias_correction", "True", "Enable weights bias correction (low priority)"
-           "z_threshold", "float('inf')", "Z-threshold for quantization (low priority)"
-           "linear_collapsing", "True", "Enable linear layer collapsing (low priority)"
-           "residual_collapsing", "True", "Enable residual connection collapsing (low priority)"
-           "n_epochs", "5", "Number of training epochs for GPTQ"
-           "optimizer", "default of `get_keras_gptq_config <https://sonysemiconductorsolutions.github.io/mct-model-optimization/api/api_docs/methods/get_keras_gptq_config.html#model_compression_toolkit.gptq.get_keras_gptq_config>`_ or `get_pytorch_gptq_config <https://sonysemiconductorsolutions.github.io/mct-model-optimization/api/api_docs/methods/get_pytroch_gptq_config.html#model_compression_toolkit.gptq.get_pytorch_gptq_config>`_", "Optimizer for GPTQ training (low priority)"
-           "save_model_path", "'./qmodel.keras' / './qmodel.onnx'", "Path to save quantized model (Keras/Pytorch)"
-
-        **GPTQ, mixed_precision**
-
-        .. csv-table::
-           :header: "Parameter Key", "Default Value", "Description"
-           :widths: 30, 30, 40
-
-           "sdsp_version", "'3.14'", "SDSP version for TPC"
-           "activation_error_method", "mct.core.QuantizationErrorMethod.MSE", "Activation quantization error method (low priority)"
-           "weights_bias_correction", "True", "Enable weights bias correction (low priority)"
-           "z_threshold", "float('inf')", "Z-threshold for quantization (low priority)"
-           "linear_collapsing", "True", "Enable linear layer collapsing (low priority)"
-           "residual_collapsing", "True", "Enable residual connection collapsing (low priority)"
-           "weights_compression_ratio", "0.75", "Weights compression ratio for resource util (0.0～1.0)"           
-           "n_epochs", "5", "Number of training epochs for GPTQ"
-           "optimizer", "default of `get_keras_gptq_config <https://sonysemiconductorsolutions.github.io/mct-model-optimization/api/api_docs/methods/get_keras_gptq_config.html#model_compression_toolkit.gptq.get_keras_gptq_config>`_ or `get_pytorch_gptq_config <https://sonysemiconductorsolutions.github.io/mct-model-optimization/api/api_docs/methods/get_pytroch_gptq_config.html#model_compression_toolkit.gptq.get_pytorch_gptq_config>`_", "Optimizer for GPTQ training (low priority)"
-           "distance_weighting_method", "See `MixedPrecisionQuantizationConfig <https://sonysemiconductorsolutions.github.io/mct-model-optimization/api/api_docs/classes/MixedPrecisionQuantizationConfig.html>`_", "Distance weighting method for mixed precision (low priority)"
-           "num_of_images", "32", "Number of images for mixed precision"
-           "use_hessian_based_scores", "False", "Use Hessian-based scores for mixed precision (low priority)"
-           "save_model_path", "'./qmodel.keras' / './qmodel.onnx'", "Path to save quantized model (Keras/Pytorch)"
-
-        """
+        """Initialize MCTWrapper with default parameters."""
         self.params: Dict[str, Any] = {
             # TPC
             FW_NAME: 'pytorch',
@@ -550,6 +474,8 @@ class MCTWrapper:
                             ) -> Tuple[bool, Any]:
         """
         Main function to perform model quantization and export.
+        The wrapper manages the complete quantization pipeline from model input to quantized model export, 
+        handling framework-specific configurations and Target Platform Capabilities (TPC) setup.
 
         Args:
             float_model: The float model to be quantized.
@@ -602,6 +528,84 @@ class MCTWrapper:
             ...     use_mixed_precision=use_mixed_precision,
             ...     param_items=param_items
             ... )
+
+
+
+        **Parameters**
+    
+        Users can update the following parameters in param_items.
+    
+        .. note::
+           The low priority variable can be left at its default value, so there is no need to specify it.
+           Specify it as necessary, for example, if you receive a warning from the `XQuant extension tool <https://sonysemiconductorsolutions.github.io/mct-model-optimization/guidelines/XQuant_Extension_Tool.html>`_.
+    
+        **PTQ**
+    
+        .. csv-table::
+           :header: "Parameter Key", "Default Value", "Description"
+           :widths: 30, 30, 40
+    
+           "sdsp_version", "'3.14'", "By specifying the SDSP converter version, you can select the optimal quantization settings for IMX500.Here, we use the settings for SDSP Converter 3.14. For other settings, please see `here <https://sonysemiconductorsolutions.github.io/mct-model-optimization/api/api_docs/modules/target_platform_capabilities.html#ug-target-platform-capabilities>`_"
+           "save_model_path", "'./qmodel.keras' / './qmodel.onnx'", "Path to save quantized model (Keras/Pytorch)"
+           "activation_error_method", "mct.core.QuantizationErrorMethod.MSE", "Activation quantization error method **(low priority)**"
+           "weights_bias_correction", "True", "Enable weights bias correction **(low priority)**"
+           "z_threshold", "float('inf')", "Z-threshold for quantization **(low priority)**"
+           "linear_collapsing", "True", "Enable linear layer collapsing **(low priority)**"
+           "residual_collapsing", "True", "Enable residual connection collapsing **(low priority)**"
+    
+        **PTQ, mixed_precision**
+    
+        .. csv-table::
+           :header: "Parameter Key", "Default Value", "Description"
+           :widths: 30, 30, 40
+    
+           "sdsp_version", "'3.14'", "By specifying the SDSP converter version, you can select the optimal quantization settings for IMX500.Here, we use the settings for SDSP Converter 3.14. For other settings, please see `here <https://sonysemiconductorsolutions.github.io/mct-model-optimization/api/api_docs/modules/target_platform_capabilities.html#ug-target-platform-capabilities>`_"
+           "save_model_path", "'./qmodel.keras' / './qmodel.onnx'", "Path to save quantized model (Keras/Pytorch)"
+           "num_of_images", "32", "Number of images for mixed precision"
+           "weights_compression_ratio", "0.75", "Weights compression ratio for mixed precision for resource util (0.0～1.0)"
+           "activation_error_method", "mct.core.QuantizationErrorMethod.MSE", "Activation quantization error method **(low priority)**"
+           "weights_bias_correction", "True", "Enable weights bias correction **(low priority)**"
+           "z_threshold", "float('inf')", "Z-threshold for quantization **(low priority)**"
+           "linear_collapsing", "True", "Enable linear layer collapsing **(low priority)**"
+           "residual_collapsing", "True", "Enable residual connection collapsing **(low priority)**"
+           "distance_weighting_method", "default of `MixedPrecisionQuantizationConfig <https://sonysemiconductorsolutions.github.io/mct-model-optimization/api/api_docs/classes/MixedPrecisionQuantizationConfig.html#mpdistanceweighting>`_", "Distance weighting method for mixed precision **(low priority)**"
+           "use_hessian_based_scores", "False", "Use Hessian-based scores for mixed precision **(low priority)**"
+    
+        **GPTQ**
+    
+        .. csv-table::
+           :header: "Parameter Key", "Default Value", "Description"
+           :widths: 30, 30, 40
+    
+           "sdsp_version", "'3.14'", "By specifying the SDSP converter version, you can select the optimal quantization settings for IMX500.Here, we use the settings for SDSP Converter 3.14. For other settings, please see `here <https://sonysemiconductorsolutions.github.io/mct-model-optimization/api/api_docs/modules/target_platform_capabilities.html#ug-target-platform-capabilities>`_"
+           "save_model_path", "'./qmodel.keras' / './qmodel.onnx'", "Path to save quantized model (Keras/Pytorch)"
+           "n_epochs", "5", "Number of training epochs for GPTQ"
+           "activation_error_method", "mct.core.QuantizationErrorMethod.MSE", "Activation quantization error method **(low priority)**"
+           "weights_bias_correction", "True", "Enable weights bias correction **(low priority)**"
+           "z_threshold", "float('inf')", "Z-threshold for quantization **(low priority)**"
+           "linear_collapsing", "True", "Enable linear layer collapsing **(low priority)**"
+           "residual_collapsing", "True", "Enable residual connection collapsing **(low priority)**"
+           "optimizer", "default of `get_keras_gptq_config <https://sonysemiconductorsolutions.github.io/mct-model-optimization/api/api_docs/methods/get_keras_gptq_config.html#model_compression_toolkit.gptq.get_keras_gptq_config>`_ or `get_pytorch_gptq_config <https://sonysemiconductorsolutions.github.io/mct-model-optimization/api/api_docs/methods/get_pytroch_gptq_config.html#model_compression_toolkit.gptq.get_pytorch_gptq_config>`_", "Optimizer for GPTQ **(low priority)**"
+    
+        **GPTQ, mixed_precision**
+    
+        .. csv-table::
+           :header: "Parameter Key", "Default Value", "Description"
+           :widths: 30, 30, 40
+    
+           "sdsp_version", "'3.14'", "By specifying the SDSP converter version, you can select the optimal quantization settings for IMX500.Here, we use the settings for SDSP Converter 3.14. For other settings, please see `here <https://sonysemiconductorsolutions.github.io/mct-model-optimization/api/api_docs/modules/target_platform_capabilities.html#ug-target-platform-capabilities>`_"
+           "save_model_path", "'./qmodel.keras' / './qmodel.onnx'", "Path to save quantized model (Keras/Pytorch)"
+           "num_of_images", "32", "Number of images for mixed precision"
+           "weights_compression_ratio", "0.75", "Weights compression ratio for mixed precision for resource util (0.0～1.0)"
+           "n_epochs", "5", "Number of training epochs for GPTQ"
+           "activation_error_method", "mct.core.QuantizationErrorMethod.MSE", "Activation quantization error method **(low priority)**"
+           "weights_bias_correction", "True", "Enable weights bias correction **(low priority)**"
+           "z_threshold", "float('inf')", "Z-threshold for quantization **(low priority)**"
+           "linear_collapsing", "True", "Enable linear layer collapsing **(low priority)**"
+           "residual_collapsing", "True", "Enable residual connection collapsing **(low priority)**"
+           "distance_weighting_method", "default of `MixedPrecisionQuantizationConfig <https://sonysemiconductorsolutions.github.io/mct-model-optimization/api/api_docs/classes/MixedPrecisionQuantizationConfig.html#mpdistanceweighting>`_", "Distance weighting method for mixed precision **(low priority)**"
+           "use_hessian_based_scores", "False", "Use Hessian-based scores for mixed precision **(low priority)**"
+           "optimizer", "default of `get_keras_gptq_config <https://sonysemiconductorsolutions.github.io/mct-model-optimization/api/api_docs/methods/get_keras_gptq_config.html#model_compression_toolkit.gptq.get_keras_gptq_config>`_ or `get_pytorch_gptq_config <https://sonysemiconductorsolutions.github.io/mct-model-optimization/api/api_docs/methods/get_pytroch_gptq_config.html#model_compression_toolkit.gptq.get_pytorch_gptq_config>`_", "Optimizer for GPTQ **(low priority)**"
 
         """
         try:
