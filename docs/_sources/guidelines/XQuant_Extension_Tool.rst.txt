@@ -3,11 +3,11 @@ XQuant Extension Tool
 ===============================
 About XQuant Extension Tool
 ==============================
-| This tool calculates the quantization error for each layer by comparing the float model and quantized model, using both models along with the quantization log.
-| And, it identifies the causes of the detected errors and recommends appropriate improvement measures for each cause. 
-| The results are presented in reports.
+This tool calculates the quantization error for each layer by comparing the float model and quantized model, using both models along with the quantization log.
+And, it identifies the causes of the detected errors and recommends appropriate improvement measures for each cause. 
+The results are presented in reports.
 
-| The following are the main components of the XQuant functional extension tool.
+The following are the main components of the XQuant functional extension tool.
 
 * `XQuant Extension Tool <https://sonysemiconductorsolutions.github.io/mct-model-optimization/api/api_docs/methods/xquant_report_troubleshoot_pytorch_experimental.html>`_
 
@@ -41,10 +41,11 @@ Please refer to the `Troubleshooting Manual <https://sonysemiconductorsolutions.
 How to Run
 ===============
 
-| This XQuant Extension Tool was created based on xquant, as shown in the link below.
-| In addition to the conventional xquant functions, it judges degradation causes and links to a troubleshooting manual that provides appropriate countermeasures for each cause of degradation.
-| It can suggest more specific countermeasures than conventional tools and provides manuals that are easy to understand even for users who are not familiar with quantization.
-| When runnnig the tool, replace **xquant_report_pytorch_experimental** in the code with **xquant_report_troubleshoot_pytorch_experimental** in the `tutorial of XQuant <https://github.com/SonySemiconductorSolutions/mct-model-optimization/tree/main/tutorials/notebooks/mct_features_notebooks/pytorch/example_pytorch_xquant.ipynb>`_. 
+This XQuant Extension Tool was created based on xquant, as shown in the link below.
+In addition to the conventional xquant functions, it judges degradation causes and links to a troubleshooting manual that provides appropriate countermeasures for each cause of degradation.
+It can suggest more specific countermeasures than conventional tools and provides manuals that are easy to understand even for users who are not familiar with quantization.
+
+When runnnig the tool, replace **xquant_report_pytorch_experimental** in the code with **xquant_report_troubleshoot_pytorch_experimental** in the `tutorial of XQuant <https://github.com/SonySemiconductorSolutions/mct-model-optimization/tree/main/tutorials/notebooks/mct_features_notebooks/pytorch/example_pytorch_xquant.ipynb>`_. 
 
 .. code-block:: python
 
@@ -59,7 +60,7 @@ How to Run
             )
 
 
-| To be more specific, execute the following steps: 
+To be more specific, execute the following steps: 
 
 1. Set log folder by mct.set_log_folder
 2. Do PTQ by mct.ptq.pytorch_post_training_quantization
@@ -84,7 +85,7 @@ How to Run
                 xquant_config
             )
 
-| The log for TensorBoard is generated in the folder path set by *mct.set_log_folder*. 
+The log for TensorBoard is generated in the folder path set by *mct.set_log_folder*. 
 
 .. note::
 
@@ -146,11 +147,13 @@ For other parameters, see `API Document <https://sonysemiconductorsolutions.gith
 Understanding the Quantization Error Graph
 =============================================================
 
-| Six quantization error graphs are generated: three metrics (MSE, cosine similarity, SQNR) × two datasets (representative, validation).
-| Quantization error represents the differences of layer outputs between float and quantized models. These graphs are saved in the directory specified by the XQuantConfig's report_dir.
-| On the horizontal axis, layer names are arranged from the input side.
-| On the vertical axis, quantization errors of their layers are plotted.
-| Comparing each quantization error with threshold_quantize_error to identify layers with significant behavior changes after quantization.
+Six quantization error graphs are generated: three metrics (MSE, cosine similarity, SQNR) × two datasets (representative, validation).
+Quantization error represents the differences of layer outputs between float and quantized models. These graphs are saved in the directory specified by the XQuantConfig's report_dir.
+
+On the horizontal axis, layer names are arranged from the input side.
+On the vertical axis, quantization errors of their layers are plotted.
+
+Comparing each quantization error with threshold_quantize_error to identify layers with significant behavior changes after quantization.
 
 .. image:: ../../images/quant_loss_mse_repr.png
 
@@ -159,8 +162,8 @@ Understanding the Quantization Error Graph
 * **Red dashed line**: Threshold for accuracy degradation as set in XQuantConfig
 * **Red circle**: Layers judged to have degraded accuracy
 
-| As an example, an output graph calculated using "mse" with a representative dataset is shown.
-| The initial threshold value of 0.1 is set, and layers exceeding this threshold are indicated with a red circle. In addition, the corresponding layer names on the X axis are highlighted in red. With this graph, layers with accuracy degradation can be visually confirmed.
+As an example, an output graph calculated using "mse" with a representative dataset is shown.
+The initial threshold value of 0.1 is set, and layers exceeding this threshold are indicated with a red circle. In addition, the corresponding layer names on the X axis are highlighted in red. With this graph, layers with accuracy degradation can be visually confirmed.
 
 .. note::
 
@@ -169,8 +172,9 @@ Understanding the Quantization Error Graph
 Understanding the Judgment of Degradation Causes
 =======================================================
 
-| For the identified degraded layers, judge if they fall into any of the following four causes.
-| Please refer to the respective Troubleshooting Manuals for details.
+For the identified degraded layers, judge if they fall into any of the following four causes.
+
+Please refer to the respective Troubleshooting Manuals for details.
 
 * `Outlier Removal <https://sonysemiconductorsolutions.github.io/mct-model-optimization/docs_troubleshoot/troubleshoots/outlier_removal.html#ug-outlier-removal>`_
 * `Shift Negative Activation <https://sonysemiconductorsolutions.github.io/mct-model-optimization/docs_troubleshoot/troubleshoots/shift_negative_activation.html#ug-shift-negative-activation>`_
@@ -180,5 +184,6 @@ Understanding the Judgment of Degradation Causes
 Understanding the General Troubleshoots
 ============================================
 
-| If no specific degradation causes are identified in the above judgment, or if accuracy does not improve after applying the proposed countermeasures, general improvement measures are suggested.
-| Please refer to the **2. General Troubleshoots** of `Troubleshooting Manuals <https://sonysemiconductorsolutions.github.io/mct-model-optimization/docs_troubleshoot/index.html>`_ for details.
+If no specific degradation causes are identified in the above judgment, or if accuracy does not improve after applying the proposed countermeasures, general improvement measures are suggested.
+
+Please refer to the **2. General Troubleshoots** of `Troubleshooting Manuals <https://sonysemiconductorsolutions.github.io/mct-model-optimization/docs_troubleshoot/index.html>`_ for details.

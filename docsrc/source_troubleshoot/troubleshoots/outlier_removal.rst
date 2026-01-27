@@ -35,8 +35,8 @@ Set ``z_threshold`` to a value. Typical value range is between 5.0 and 20.0.
 
 Appendix: How to Read the Outlier Histograms
 =======================================================
-| After execution XQuant Extension Tool, it makes the histograms for the degraded layers containing the detected outliers.
-| The histograms are saved in a directory named “outlier_histgrams” created in the path specified in XQuantConfig.report_dir.
+After execution XQuant Extension Tool, it makes the histograms for the degraded layers containing the detected outliers.
+The histograms are saved in a directory named “outlier_histgrams” created in the path specified in XQuantConfig.report_dir.
 
 .. image:: ../images/outlier.png
 
@@ -48,6 +48,6 @@ Appendix: How to Read the Outlier Histograms
   * **Lower zscore**: Indicates the maximum value on the lower side of the histogram.
   * **Upper zscore**: Indicates the maximum value on the upper side of the histogram.
 
-| An example of a histogram detected by Outlier Removal is shown.
-| In this example, outliers appear in the range from about 3.9 to 5.3 on the lower end of the z-score.
-| Therefore, setting the z-score threshold to 3.9 will allow these outliers to be removed.
+An example of a histogram detected by Outlier Removal is shown.
+In this example, outliers appear in the range from about 3.9 to 5.3 on the lower end of the z-score.
+Therefore, setting the z-score threshold to 3.9 will allow these outliers to be removed.
