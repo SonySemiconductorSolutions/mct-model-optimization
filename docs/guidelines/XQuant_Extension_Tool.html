@@ -67,9 +67,7 @@
 <ul class="simple">
 <li><p><a class="reference external" href="https://sonysemiconductorsolutions.github.io/mct-model-optimization/docs_troubleshoot/index.html">Troubleshooting Manual</a></p></li>
 </ul>
-<blockquote>
-<div><p>The documents of MCT, that outlines judgment methods and countermeasures for accuracy degradation, for judged causes at XQuant Extension Tool.</p>
-</div></blockquote>
+<p>The documents of MCT, that outlines judgment methods and countermeasures for accuracy degradation, for judged causes at XQuant Extension Tool.</p>
 </section>
 <section id="overall-process-flow">
 <h2>Overall Process Flow<a class="headerlink" href="#overall-process-flow" title="Link to this heading">¶</a></h2>
@@ -96,7 +94,7 @@
 <div class="line">This XQuant Extension Tool was created based on xquant, as shown in the link below.</div>
 <div class="line">In addition to the conventional xquant functions, it judges degradation causes and links to a troubleshooting manual that provides appropriate countermeasures for each cause of degradation.</div>
 <div class="line">It can suggest more specific countermeasures than conventional tools and provides manuals that are easy to understand even for users who are not familiar with quantization.</div>
-<div class="line">When runnnig the tool, replace <strong>xquant_report_pytorch_experimental</strong> in the code with <strong>xquant_report_troubleshoot_pytorch_experimental</strong> in the <a class="reference external" href="https://github.com/SonySemiconductorSolutions/mct-model-optimization/blob/main/tutorials/notebooks/mct_features_notebooks/pytorch/example_pytorch_xquant.ipynb">tutorial of XQuant</a>.</div>
+<div class="line">When runnnig the tool, replace <strong>xquant_report_pytorch_experimental</strong> in the code with <strong>xquant_report_troubleshoot_pytorch_experimental</strong> in the <a class="reference external" href="https://github.com/SonySemiconductorSolutions/mct-model-optimization/tree/main/tutorials/notebooks/mct_features_notebooks/pytorch/example_pytorch_xquant.ipynb">tutorial of XQuant</a>.</div>
 </div>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">model_compression_toolkit.xquant</span><span class="w"> </span><span class="kn">import</span> <span class="n">xquant_report_troubleshoot_pytorch_experimental</span>
 <span class="c1"># xquant_report_pytorch_experimental --&gt; xquant_report_troubleshoot_pytorch_experimental</span>

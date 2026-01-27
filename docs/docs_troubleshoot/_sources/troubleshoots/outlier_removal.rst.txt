@@ -34,7 +34,7 @@ Set ``z_threshold`` to a value. Typical value range is between 5.0 and 20.0.
     quantized_model, _ = mct.ptq.pytorch_post_training_quantization(..., core_config=core_config)
 
 Appendix: How to Read the Outlier Histograms
-=================================
+=======================================================
 | After execution XQuant Extension Tool, it makes the histograms for the degraded layers containing the detected outliers.
 | The histograms are saved in a directory named “outlier_histgrams” created in the path specified in XQuantConfig.report_dir.
 

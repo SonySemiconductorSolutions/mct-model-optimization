@@ -14,7 +14,8 @@ About XQuant Extension Tool
  The component of MCT, that detects degraded layers(layers having large quantization error) and judges degradation causes on the layers.
 
 * `Troubleshooting Manual <https://sonysemiconductorsolutions.github.io/mct-model-optimization/docs_troubleshoot/index.html>`_
- The documents of MCT, that outlines judgment methods and countermeasures for accuracy degradation, for judged causes at XQuant Extension Tool.
+
+The documents of MCT, that outlines judgment methods and countermeasures for accuracy degradation, for judged causes at XQuant Extension Tool.
 
 Overall Process Flow
 ============================
@@ -43,7 +44,7 @@ How to Run
 | This XQuant Extension Tool was created based on xquant, as shown in the link below.
 | In addition to the conventional xquant functions, it judges degradation causes and links to a troubleshooting manual that provides appropriate countermeasures for each cause of degradation.
 | It can suggest more specific countermeasures than conventional tools and provides manuals that are easy to understand even for users who are not familiar with quantization.
-| When runnnig the tool, replace **xquant_report_pytorch_experimental** in the code with **xquant_report_troubleshoot_pytorch_experimental** in the `tutorial of XQuant <https://github.com/SonySemiconductorSolutions/mct-model-optimization/blob/main/tutorials/notebooks/mct_features_notebooks/pytorch/example_pytorch_xquant.ipynb>`_. 
+| When runnnig the tool, replace **xquant_report_pytorch_experimental** in the code with **xquant_report_troubleshoot_pytorch_experimental** in the `tutorial of XQuant <https://github.com/SonySemiconductorSolutions/mct-model-optimization/tree/main/tutorials/notebooks/mct_features_notebooks/pytorch/example_pytorch_xquant.ipynb>`_. 
 
 .. code-block:: python
 
@@ -166,7 +167,7 @@ Understanding the Quantization Error Graph
   You can define new calculation methods. For details, see the `API Document <https://sonysemiconductorsolutions.github.io/mct-model-optimization/api/api_docs/classes/XQuantConfig.html#ug-xquantconfig>`_.
 
 Understanding the Judgment of Degradation Causes
-============================================
+=======================================================
 
 | For the identified degraded layers, judge if they fall into any of the following four causes.
 | Please refer to the respective Troubleshooting Manuals for details.
