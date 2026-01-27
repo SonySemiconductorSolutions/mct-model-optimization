@@ -68,35 +68,31 @@ Target Platform Capabilities (TPC) setup.</p>
 </tr>
 </thead>
 <tbody>
-<tr class="row-even"><td><p>target_platform_version</p></td>
-<td><p>‘v1’</p></td>
-<td><p>Target platform version (use_internal_tpc=True)</p></td>
+<tr class="row-even"><td><p>sdsp_version</p></td>
+<td><p>‘3.14’</p></td>
+<td><p>SDSP version for TPC</p></td>
 </tr>
-<tr class="row-odd"><td><p>tpc_version</p></td>
-<td><p>‘5.0’</p></td>
-<td><p>TPC version (use_internal_tpc=False)</p></td>
-</tr>
-<tr class="row-even"><td><p>activation_error_method</p></td>
+<tr class="row-odd"><td><p>activation_error_method</p></td>
 <td><p>mct.core.QuantizationErrorMethod.MSE</p></td>
 <td><p>Activation quantization error method</p></td>
 </tr>
-<tr class="row-odd"><td><p>weights_bias_correction</p></td>
+<tr class="row-even"><td><p>weights_bias_correction</p></td>
 <td><p>True</p></td>
 <td><p>Enable weights bias correction</p></td>
 </tr>
-<tr class="row-even"><td><p>z_threshold</p></td>
+<tr class="row-odd"><td><p>z_threshold</p></td>
 <td><p>float(‘inf’)</p></td>
 <td><p>Z-threshold for quantization</p></td>
 </tr>
-<tr class="row-odd"><td><p>linear_collapsing</p></td>
+<tr class="row-even"><td><p>linear_collapsing</p></td>
 <td><p>True</p></td>
 <td><p>Enable linear layer collapsing</p></td>
 </tr>
-<tr class="row-even"><td><p>residual_collapsing</p></td>
+<tr class="row-odd"><td><p>residual_collapsing</p></td>
 <td><p>True</p></td>
 <td><p>Enable residual connection collapsing</p></td>
 </tr>
-<tr class="row-odd"><td><p>save_model_path</p></td>
+<tr class="row-even"><td><p>save_model_path</p></td>
 <td><p>‘./qmodel.keras’ / ‘./qmodel.onnx’</p></td>
 <td><p>Path to save quantized model (Keras/Pytorch)</p></td>
 </tr>
@@ -116,27 +112,23 @@ Target Platform Capabilities (TPC) setup.</p>
 </tr>
 </thead>
 <tbody>
-<tr class="row-even"><td><p>target_platform_version</p></td>
-<td><p>‘v1’</p></td>
-<td><p>Target platform version (use_internal_tpc=True)</p></td>
+<tr class="row-even"><td><p>sdsp_version</p></td>
+<td><p>‘3.14’</p></td>
+<td><p>SDSP version for TPC</p></td>
 </tr>
-<tr class="row-odd"><td><p>tpc_version</p></td>
-<td><p>‘5.0’</p></td>
-<td><p>TPC version (use_internal_tpc=False)</p></td>
-</tr>
-<tr class="row-even"><td><p>num_of_images</p></td>
+<tr class="row-odd"><td><p>num_of_images</p></td>
 <td><p>5</p></td>
 <td><p>Number of images for mixed precision</p></td>
 </tr>
-<tr class="row-odd"><td><p>use_hessian_based_scores</p></td>
+<tr class="row-even"><td><p>use_hessian_based_scores</p></td>
 <td><p>False</p></td>
 <td><p>Use Hessian-based scores for mixed precision</p></td>
 </tr>
-<tr class="row-even"><td><p>weights_compression_ratio</p></td>
+<tr class="row-odd"><td><p>weights_compression_ratio</p></td>
 <td><p>None</p></td>
 <td><p>Weights compression ratio for resource util</p></td>
 </tr>
-<tr class="row-odd"><td><p>save_model_path</p></td>
+<tr class="row-even"><td><p>save_model_path</p></td>
 <td><p>‘./qmodel.keras’ / ‘./qmodel.onnx’</p></td>
 <td><p>Path to save quantized model (Keras/Pytorch)</p></td>
 </tr>
@@ -156,23 +148,19 @@ Target Platform Capabilities (TPC) setup.</p>
 </tr>
 </thead>
 <tbody>
-<tr class="row-even"><td><p>target_platform_version</p></td>
-<td><p>‘v1’</p></td>
-<td><p>Target platform version (use_internal_tpc=True)</p></td>
+<tr class="row-even"><td><p>sdsp_version</p></td>
+<td><p>‘3.14’</p></td>
+<td><p>SDSP version for TPC</p></td>
 </tr>
-<tr class="row-odd"><td><p>tpc_version</p></td>
-<td><p>‘5.0’</p></td>
-<td><p>TPC version (use_internal_tpc=False)</p></td>
-</tr>
-<tr class="row-even"><td><p>n_epochs</p></td>
+<tr class="row-odd"><td><p>n_epochs</p></td>
 <td><p>5</p></td>
 <td><p>Number of training epochs for GPTQ</p></td>
 </tr>
-<tr class="row-odd"><td><p>optimizer</p></td>
+<tr class="row-even"><td><p>optimizer</p></td>
 <td><p>None</p></td>
 <td><p>Optimizer for GPTQ training</p></td>
 </tr>
-<tr class="row-even"><td><p>save_model_path</p></td>
+<tr class="row-odd"><td><p>save_model_path</p></td>
 <td><p>‘./qmodel.keras’ / ‘./qmodel.onnx’</p></td>
 <td><p>Path to save quantized model (Keras/Pytorch)</p></td>
 </tr>
@@ -192,35 +180,31 @@ Target Platform Capabilities (TPC) setup.</p>
 </tr>
 </thead>
 <tbody>
-<tr class="row-even"><td><p>target_platform_version</p></td>
-<td><p>‘v1’</p></td>
-<td><p>Target platform version (use_internal_tpc=True)</p></td>
+<tr class="row-even"><td><p>sdsp_version</p></td>
+<td><p>‘3.14’</p></td>
+<td><p>SDSP version for TPC</p></td>
 </tr>
-<tr class="row-odd"><td><p>tpc_version</p></td>
-<td><p>‘5.0’</p></td>
-<td><p>TPC version (use_internal_tpc=False)</p></td>
-</tr>
-<tr class="row-even"><td><p>n_epochs</p></td>
+<tr class="row-odd"><td><p>n_epochs</p></td>
 <td><p>5</p></td>
 <td><p>Number of training epochs for GPTQ</p></td>
 </tr>
-<tr class="row-odd"><td><p>optimizer</p></td>
+<tr class="row-even"><td><p>optimizer</p></td>
 <td><p>None</p></td>
 <td><p>Optimizer for GPTQ training</p></td>
 </tr>
-<tr class="row-even"><td><p>num_of_images</p></td>
+<tr class="row-odd"><td><p>num_of_images</p></td>
 <td><p>5</p></td>
 <td><p>Number of images for mixed precision</p></td>
 </tr>
-<tr class="row-odd"><td><p>use_hessian_based_scores</p></td>
+<tr class="row-even"><td><p>use_hessian_based_scores</p></td>
 <td><p>False</p></td>
 <td><p>Use Hessian-based scores for mixed precision</p></td>
 </tr>
-<tr class="row-even"><td><p>weights_compression_ratio</p></td>
+<tr class="row-odd"><td><p>weights_compression_ratio</p></td>
 <td><p>None</p></td>
 <td><p>Weights compression ratio for resource util</p></td>
 </tr>
-<tr class="row-odd"><td><p>save_model_path</p></td>
+<tr class="row-even"><td><p>save_model_path</p></td>
 <td><p>‘./qmodel.keras’ / ‘./qmodel.onnx’</p></td>
 <td><p>Path to save quantized model (Keras/Pytorch)</p></td>
 </tr>
@@ -228,7 +212,7 @@ Target Platform Capabilities (TPC) setup.</p>
 </table>
 <dl class="py method">
 <dt class="sig sig-object py" id="model_compression_toolkit.wrapper.mct_wrapper.MCTWrapper.quantize_and_export">
-<span class="sig-name descname"><span class="pre">quantize_and_export</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">float_model</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">representative_dataset</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">method</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'PTQ'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">framework</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'pytorch'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">use_internal_tpc</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">use_mixed_precision</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">param_items</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#model_compression_toolkit.wrapper.mct_wrapper.MCTWrapper.quantize_and_export" title="Link to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">quantize_and_export</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">float_model</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">representative_dataset</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">framework</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'pytorch'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">method</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'PTQ'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">use_mixed_precision</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">param_items</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#model_compression_toolkit.wrapper.mct_wrapper.MCTWrapper.quantize_and_export" title="Link to this definition">¶</a></dt>
 <dd><p>Main function to perform model quantization and export.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
@@ -238,12 +222,10 @@ Target Platform Capabilities (TPC) setup.</p>
 <dd class="field-even"><ul class="simple">
 <li><p><strong>float_model</strong> – The float model to be quantized.</p></li>
 <li><p><strong>representative_dataset</strong> (<em>Callable</em><em>, </em><em>np.array</em><em>, </em><em>tf.Tensor</em>) – Representative dataset for calibration.</p></li>
-<li><p><strong>method</strong> (<em>str</em>) – Quantization method, e.g., ‘PTQ’ or ‘GPTQ’.
-Default: ‘PTQ’</p></li>
 <li><p><strong>framework</strong> (<em>str</em>) – ‘tensorflow’ or ‘pytorch’.
 Default: ‘pytorch’</p></li>
-<li><p><strong>use_internal_tpc</strong> (<em>bool</em>) – Whether to use internal_tpc.
-Default: True</p></li>
+<li><p><strong>method</strong> (<em>str</em>) – Quantization method, e.g., ‘PTQ’ or ‘GPTQ’.
+Default: ‘PTQ’</p></li>
 <li><p><strong>use_mixed_precision</strong> (<em>bool</em>) – Whether to use mixed-precision
 quantization. Default: False</p></li>
 <li><p><strong>param_items</strong> (<em>list</em>) – List of parameter settings.
@@ -268,10 +250,9 @@ quantization. Default: False</p></li>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">wrapper</span> <span class="o">=</span> <span class="n">mct</span><span class="o">.</span><span class="n">MCTWrapper</span><span class="p">()</span>
 </pre></div>
 </div>
-<p>set method, framework, and other parameters</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">method</span> <span class="o">=</span> <span class="s1">&#39;PTQ&#39;</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">framework</span> <span class="o">=</span> <span class="s1">&#39;tensorflow&#39;</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">use_internal_tpc</span> <span class="o">=</span> <span class="kc">True</span>
+<p>set framework, method, and other parameters</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">framework</span> <span class="o">=</span> <span class="s1">&#39;tensorflow&#39;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">method</span> <span class="o">=</span> <span class="s1">&#39;PTQ&#39;</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">use_mixed_precision</span> <span class="o">=</span> <span class="kc">False</span>
 </pre></div>
 </div>
@@ -283,9 +264,8 @@ quantization. Default: False</p></li>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">flag</span><span class="p">,</span> <span class="n">quantized_model</span> <span class="o">=</span> <span class="n">wrapper</span><span class="o">.</span><span class="n">quantize_and_export</span><span class="p">(</span>
 <span class="gp">... </span>    <span class="n">float_model</span><span class="o">=</span><span class="n">float_model</span><span class="p">,</span>
 <span class="gp">... </span>    <span class="n">representative_dataset</span><span class="o">=</span><span class="n">representative_dataset</span><span class="p">,</span>
-<span class="gp">... </span>    <span class="n">method</span><span class="o">=</span><span class="n">method</span><span class="p">,</span>
 <span class="gp">... </span>    <span class="n">framework</span><span class="o">=</span><span class="n">framework</span><span class="p">,</span>
-<span class="gp">... </span>    <span class="n">use_internal_tpc</span><span class="o">=</span><span class="n">use_internal_tpc</span><span class="p">,</span>
+<span class="gp">... </span>    <span class="n">method</span><span class="o">=</span><span class="n">method</span><span class="p">,</span>
 <span class="gp">... </span>    <span class="n">use_mixed_precision</span><span class="o">=</span><span class="n">use_mixed_precision</span><span class="p">,</span>
 <span class="gp">... </span>    <span class="n">param_items</span><span class="o">=</span><span class="n">param_items</span>
 <span class="gp">... </span><span class="p">)</span>

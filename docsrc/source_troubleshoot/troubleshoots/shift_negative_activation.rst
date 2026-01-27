@@ -23,7 +23,7 @@ The quantization accuracy may degrade when your model contains the following lay
 * torch.nn.SiLU / torch.nn.functional.silu
 * torch.nn.GELU / torch.nn.functional.gelu
 
-Example: `PReLU <https://docs.pytorch.org/docs/2.5/generated/torch.nn.PReLU.html>`_ [2]
+Example: `PReLU <https://docs.pytorch.org/docs/2.5/generated/torch.nn.PReLU.html>`_ [3]
 
 
 .. image:: ../images/PReLU.png

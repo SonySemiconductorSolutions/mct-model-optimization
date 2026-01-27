@@ -12,8 +12,9 @@ The Model Compression Toolkit (MCT) offers numerous functionalities to compress 
 
 Outlined below are a series of steps aimed at recovering lost accuracy resulting from compression with MCT. Some steps may be applicable to your model, while others may not.
 
+For ovewview of Xquant Extension Tool, see `About XQuant Extension Tool <https://sonysemiconductorsolutions.github.io/mct-model-optimization/guidelines/XQuant_Extension_Tool.html>`_[1].
 
-Quantization Troubleshooting for MCT[1]
+Quantization Troubleshooting for MCT[2]
 ============================================
 
 **1. Judgeable Troubleshoots**
@@ -48,6 +49,8 @@ If quantization accuracy of your model does not improve after reading Judgeable 
 
 References
 ============================================
-[1] `Quantization Troubleshooting for MCT <https://github.com/SonySemiconductorSolutions/mct-model-optimization/tree/main/quantization_troubleshooting.md>`_
+[1] `XQuant Extension (MCT Document) <https://sonysemiconductorsolutions.github.io/mct-model-optimization/guidelines/XQuant_Extension_Tool.html>`_
 
-[2] `PyTorch documentation (v2.5) <https://docs.pytorch.org/docs/2.5/index.html>`_
+[2] `Quantization Troubleshooting for MCT <https://github.com/SonySemiconductorSolutions/mct-model-optimization/tree/main/quantization_troubleshooting.md>`_
+
+[3] `PyTorch documentation (v2.5) <https://docs.pytorch.org/docs/2.5/index.html>`_
