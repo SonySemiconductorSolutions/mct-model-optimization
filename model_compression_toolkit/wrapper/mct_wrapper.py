@@ -41,9 +41,8 @@ class MCTWrapper:
     quantized model export, handling framework-specific configurations and
     Target Platform Capabilities (TPC) setup.
     """
-    
+
     def __init__(self):
-        """Initialize MCTWrapper with default parameters."""
         self.params: Dict[str, Any] = {
             # TPC
             FW_NAME: 'pytorch',
@@ -474,8 +473,6 @@ class MCTWrapper:
                             ) -> Tuple[bool, Any]:
         """
         Main function to perform model quantization and export.
-        The wrapper manages the complete quantization pipeline from model input to quantized model export, 
-        handling framework-specific configurations and Target Platform Capabilities (TPC) setup.
 
         Args:
             float_model: The float model to be quantized.
@@ -495,7 +492,7 @@ class MCTWrapper:
             
         Examples:
 
-            Import MCT:
+            Import MCT
 
             >>> import model_compression_toolkit as mct
             
@@ -508,13 +505,13 @@ class MCTWrapper:
 
             >>> wrapper = mct.MCTWrapper()
 
-            set framework, method, and other parameters
+            Set framework, method, and other parameters
 
             >>> framework = 'tensorflow'
             >>> method = 'PTQ'
             >>> use_mixed_precision = False
 
-            set parameters if needed
+            Set parameters if needed
 
             >>> param_items = [[key, value]...]
 
@@ -529,10 +526,8 @@ class MCTWrapper:
             ...     param_items=param_items
             ... )
 
+        **Initialize MCTWrapper with default parameters**
 
-
-        **Parameters**
-    
         Users can update the following parameters in param_items.
     
         .. note::
@@ -545,7 +540,7 @@ class MCTWrapper:
            :header: "Parameter Key", "Default Value", "Description"
            :widths: 30, 30, 40
     
-           "sdsp_version", "'3.14'", "By specifying the SDSP converter version, you can select the optimal quantization settings for IMX500.Here, we use the settings for SDSP Converter 3.14. For other settings, please see `here <https://sonysemiconductorsolutions.github.io/mct-model-optimization/api/api_docs/modules/target_platform_capabilities.html#ug-target-platform-capabilities>`_"
+           "sdsp_version", "'3.14'", "By specifying the SDSP converter version, you can select the `optimal quantization settings <https://sonysemiconductorsolutions.github.io/mct-model-optimization/api/api_docs/modules/target_platform_capabilities.html#ug-target-platform-capabilities>`_ for IMX500."
            "save_model_path", "'./qmodel.keras' / './qmodel.onnx'", "Path to save quantized model (Keras/Pytorch)"
            "activation_error_method", "mct.core.QuantizationErrorMethod.MSE", "Activation quantization error method **(low priority)**"
            "weights_bias_correction", "True", "Enable weights bias correction **(low priority)**"
@@ -559,7 +554,7 @@ class MCTWrapper:
            :header: "Parameter Key", "Default Value", "Description"
            :widths: 30, 30, 40
     
-           "sdsp_version", "'3.14'", "By specifying the SDSP converter version, you can select the optimal quantization settings for IMX500.Here, we use the settings for SDSP Converter 3.14. For other settings, please see `here <https://sonysemiconductorsolutions.github.io/mct-model-optimization/api/api_docs/modules/target_platform_capabilities.html#ug-target-platform-capabilities>`_"
+           "sdsp_version", "'3.14'", "By specifying the SDSP converter version, you can select the `optimal quantization settings <https://sonysemiconductorsolutions.github.io/mct-model-optimization/api/api_docs/modules/target_platform_capabilities.html#ug-target-platform-capabilities>`_ for IMX500."
            "save_model_path", "'./qmodel.keras' / './qmodel.onnx'", "Path to save quantized model (Keras/Pytorch)"
            "num_of_images", "32", "Number of images for mixed precision"
            "weights_compression_ratio", "0.75", "Weights compression ratio for mixed precision for resource util (0.0～1.0)"
@@ -577,7 +572,7 @@ class MCTWrapper:
            :header: "Parameter Key", "Default Value", "Description"
            :widths: 30, 30, 40
     
-           "sdsp_version", "'3.14'", "By specifying the SDSP converter version, you can select the optimal quantization settings for IMX500.Here, we use the settings for SDSP Converter 3.14. For other settings, please see `here <https://sonysemiconductorsolutions.github.io/mct-model-optimization/api/api_docs/modules/target_platform_capabilities.html#ug-target-platform-capabilities>`_"
+           "sdsp_version", "'3.14'", "By specifying the SDSP converter version, you can select the `optimal quantization settings <https://sonysemiconductorsolutions.github.io/mct-model-optimization/api/api_docs/modules/target_platform_capabilities.html#ug-target-platform-capabilities>`_ for IMX500."
            "save_model_path", "'./qmodel.keras' / './qmodel.onnx'", "Path to save quantized model (Keras/Pytorch)"
            "n_epochs", "5", "Number of training epochs for GPTQ"
            "activation_error_method", "mct.core.QuantizationErrorMethod.MSE", "Activation quantization error method **(low priority)**"
@@ -593,7 +588,7 @@ class MCTWrapper:
            :header: "Parameter Key", "Default Value", "Description"
            :widths: 30, 30, 40
     
-           "sdsp_version", "'3.14'", "By specifying the SDSP converter version, you can select the optimal quantization settings for IMX500.Here, we use the settings for SDSP Converter 3.14. For other settings, please see `here <https://sonysemiconductorsolutions.github.io/mct-model-optimization/api/api_docs/modules/target_platform_capabilities.html#ug-target-platform-capabilities>`_"
+           "sdsp_version", "'3.14'", "By specifying the SDSP converter version, you can select the `optimal quantization settings <https://sonysemiconductorsolutions.github.io/mct-model-optimization/api/api_docs/modules/target_platform_capabilities.html#ug-target-platform-capabilities>`_ for IMX500."
            "save_model_path", "'./qmodel.keras' / './qmodel.onnx'", "Path to save quantized model (Keras/Pytorch)"
            "num_of_images", "32", "Number of images for mixed precision"
            "weights_compression_ratio", "0.75", "Weights compression ratio for mixed precision for resource util (0.0～1.0)"

@@ -52,13 +52,10 @@ mixed-precision quantization.</p>
 <p>The wrapper manages the complete quantization pipeline from model input to
 quantized model export, handling framework-specific configurations and
 Target Platform Capabilities (TPC) setup.</p>
-<p>Initialize MCTWrapper with default parameters.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="model_compression_toolkit.wrapper.mct_wrapper.MCTWrapper.quantize_and_export">
 <span class="sig-name descname"><span class="pre">quantize_and_export</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">float_model</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">representative_dataset</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">framework</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'pytorch'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">method</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'PTQ'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">use_mixed_precision</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">param_items</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#model_compression_toolkit.wrapper.mct_wrapper.MCTWrapper.quantize_and_export" title="Link to this definition">¶</a></dt>
-<dd><p>Main function to perform model quantization and export.
-The wrapper manages the complete quantization pipeline from model input to quantized model export,
-handling framework-specific configurations and Target Platform Capabilities (TPC) setup.</p>
+<dd><p>Main function to perform model quantization and export.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
 <dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-data docutils literal notranslate"><span class="pre">Tuple</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code>, <code class="xref py py-data docutils literal notranslate"><span class="pre">Any</span></code>]</span></p>
@@ -82,7 +79,7 @@ quantization. Default: False</p></li>
 </dd>
 </dl>
 <p class="rubric">Examples</p>
-<p>Import MCT:</p>
+<p>Import MCT</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span><span class="w"> </span><span class="nn">model_compression_toolkit</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">mct</span>
 </pre></div>
 </div>
@@ -95,13 +92,13 @@ quantization. Default: False</p></li>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">wrapper</span> <span class="o">=</span> <span class="n">mct</span><span class="o">.</span><span class="n">MCTWrapper</span><span class="p">()</span>
 </pre></div>
 </div>
-<p>set framework, method, and other parameters</p>
+<p>Set framework, method, and other parameters</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">framework</span> <span class="o">=</span> <span class="s1">&#39;tensorflow&#39;</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">method</span> <span class="o">=</span> <span class="s1">&#39;PTQ&#39;</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">use_mixed_precision</span> <span class="o">=</span> <span class="kc">False</span>
 </pre></div>
 </div>
-<p>set parameters if needed</p>
+<p>Set parameters if needed</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">param_items</span> <span class="o">=</span> <span class="p">[[</span><span class="n">key</span><span class="p">,</span> <span class="n">value</span><span class="p">]</span><span class="o">...</span><span class="p">]</span>
 </pre></div>
 </div>
@@ -116,7 +113,7 @@ quantization. Default: False</p></li>
 <span class="gp">... </span><span class="p">)</span>
 </pre></div>
 </div>
-<p><strong>Parameters</strong></p>
+<p><strong>Initialize MCTWrapper with default parameters</strong></p>
 <p>Users can update the following parameters in param_items.</p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
@@ -139,7 +136,7 @@ Specify it as necessary, for example, if you receive a warning from the <a class
 <tbody>
 <tr class="row-even"><td><p>sdsp_version</p></td>
 <td><p>‘3.14’</p></td>
-<td><p>By specifying the SDSP converter version, you can select the optimal quantization settings for IMX500.Here, we use the settings for SDSP Converter 3.14. For other settings, please see <a class="reference external" href="https://sonysemiconductorsolutions.github.io/mct-model-optimization/api/api_docs/modules/target_platform_capabilities.html#ug-target-platform-capabilities">here</a></p></td>
+<td><p>By specifying the SDSP converter version, you can select the <a class="reference external" href="https://sonysemiconductorsolutions.github.io/mct-model-optimization/api/api_docs/modules/target_platform_capabilities.html#ug-target-platform-capabilities">optimal quantization settings</a> for IMX500.</p></td>
 </tr>
 <tr class="row-odd"><td><p>save_model_path</p></td>
 <td><p>‘./qmodel.keras’ / ‘./qmodel.onnx’</p></td>
@@ -183,7 +180,7 @@ Specify it as necessary, for example, if you receive a warning from the <a class
 <tbody>
 <tr class="row-even"><td><p>sdsp_version</p></td>
 <td><p>‘3.14’</p></td>
-<td><p>By specifying the SDSP converter version, you can select the optimal quantization settings for IMX500.Here, we use the settings for SDSP Converter 3.14. For other settings, please see <a class="reference external" href="https://sonysemiconductorsolutions.github.io/mct-model-optimization/api/api_docs/modules/target_platform_capabilities.html#ug-target-platform-capabilities">here</a></p></td>
+<td><p>By specifying the SDSP converter version, you can select the <a class="reference external" href="https://sonysemiconductorsolutions.github.io/mct-model-optimization/api/api_docs/modules/target_platform_capabilities.html#ug-target-platform-capabilities">optimal quantization settings</a> for IMX500.</p></td>
 </tr>
 <tr class="row-odd"><td><p>save_model_path</p></td>
 <td><p>‘./qmodel.keras’ / ‘./qmodel.onnx’</p></td>
@@ -243,7 +240,7 @@ Specify it as necessary, for example, if you receive a warning from the <a class
 <tbody>
 <tr class="row-even"><td><p>sdsp_version</p></td>
 <td><p>‘3.14’</p></td>
-<td><p>By specifying the SDSP converter version, you can select the optimal quantization settings for IMX500.Here, we use the settings for SDSP Converter 3.14. For other settings, please see <a class="reference external" href="https://sonysemiconductorsolutions.github.io/mct-model-optimization/api/api_docs/modules/target_platform_capabilities.html#ug-target-platform-capabilities">here</a></p></td>
+<td><p>By specifying the SDSP converter version, you can select the <a class="reference external" href="https://sonysemiconductorsolutions.github.io/mct-model-optimization/api/api_docs/modules/target_platform_capabilities.html#ug-target-platform-capabilities">optimal quantization settings</a> for IMX500.</p></td>
 </tr>
 <tr class="row-odd"><td><p>save_model_path</p></td>
 <td><p>‘./qmodel.keras’ / ‘./qmodel.onnx’</p></td>
@@ -295,7 +292,7 @@ Specify it as necessary, for example, if you receive a warning from the <a class
 <tbody>
 <tr class="row-even"><td><p>sdsp_version</p></td>
 <td><p>‘3.14’</p></td>
-<td><p>By specifying the SDSP converter version, you can select the optimal quantization settings for IMX500.Here, we use the settings for SDSP Converter 3.14. For other settings, please see <a class="reference external" href="https://sonysemiconductorsolutions.github.io/mct-model-optimization/api/api_docs/modules/target_platform_capabilities.html#ug-target-platform-capabilities">here</a></p></td>
+<td><p>By specifying the SDSP converter version, you can select the <a class="reference external" href="https://sonysemiconductorsolutions.github.io/mct-model-optimization/api/api_docs/modules/target_platform_capabilities.html#ug-target-platform-capabilities">optimal quantization settings</a> for IMX500.</p></td>
 </tr>
 <tr class="row-odd"><td><p>save_model_path</p></td>
 <td><p>‘./qmodel.keras’ / ‘./qmodel.onnx’</p></td>
