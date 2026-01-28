@@ -142,10 +142,10 @@ Understanding the Quantization Error Graph
 Six quantization error graphs are generated: three metrics (MSE, cosine similarity, SQNR) × two datasets (representative, validation).
 Quantization error represents the differences of layer outputs between float and quantized models. These graphs are saved in the directory specified by the XQuantConfig's report_dir.
 
-On the horizontal axis, layer names are arranged from the input side.
-On the vertical axis, quantization errors of their layers are plotted.
-
 Comparing each quantization error with *threshold_quantize_error* to identify layers with significant behavior changes after quantization.
+
+As an example, an output graph calculated using "mse" with a representative dataset is shown.
+The initial threshold value of 0.1 is set, and layers exceeding this threshold are indicated with a red circle. In addition, the corresponding layer names on the X axis are highlighted in red. With this graph, layers with accuracy degradation can be visually confirmed.
 
 .. image:: ../../images/quant_loss_mse_repr.png
 
@@ -153,9 +153,6 @@ Comparing each quantization error with *threshold_quantize_error* to identify la
 * **Y-axis**: Quantization error
 * **Red dashed line**: Threshold for accuracy degradation as set in XQuantConfig
 * **Red circle**: Layers judged to have degraded accuracy
-
-As an example, an output graph calculated using "mse" with a representative dataset is shown.
-The initial threshold value of 0.1 is set, and layers exceeding this threshold are indicated with a red circle. In addition, the corresponding layer names on the X axis are highlighted in red. With this graph, layers with accuracy degradation can be visually confirmed.
 
 .. note::
 

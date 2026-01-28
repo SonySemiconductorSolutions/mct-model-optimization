@@ -189,9 +189,9 @@ _with_model_output_loss_objective</p></td>
 <h2>Understanding the Quantization Error Graph<a class="headerlink" href="#understanding-the-quantization-error-graph" title="Link to this heading">¶</a></h2>
 <p>Six quantization error graphs are generated: three metrics (MSE, cosine similarity, SQNR) × two datasets (representative, validation).
 Quantization error represents the differences of layer outputs between float and quantized models. These graphs are saved in the directory specified by the XQuantConfig’s report_dir.</p>
-<p>On the horizontal axis, layer names are arranged from the input side.
-On the vertical axis, quantization errors of their layers are plotted.</p>
 <p>Comparing each quantization error with <em>threshold_quantize_error</em> to identify layers with significant behavior changes after quantization.</p>
+<p>As an example, an output graph calculated using “mse” with a representative dataset is shown.
+The initial threshold value of 0.1 is set, and layers exceeding this threshold are indicated with a red circle. In addition, the corresponding layer names on the X axis are highlighted in red. With this graph, layers with accuracy degradation can be visually confirmed.</p>
 <img alt="../images/quant_loss_mse_repr.png" src="../images/quant_loss_mse_repr.png" />
 <ul class="simple">
 <li><p><strong>X-axis</strong>: Layer names (layers identified as degraded are highlighted in red)</p></li>
@@ -199,8 +199,6 @@ On the vertical axis, quantization errors of their layers are plotted.</p>
 <li><p><strong>Red dashed line</strong>: Threshold for accuracy degradation as set in XQuantConfig</p></li>
 <li><p><strong>Red circle</strong>: Layers judged to have degraded accuracy</p></li>
 </ul>
-<p>As an example, an output graph calculated using “mse” with a representative dataset is shown.
-The initial threshold value of 0.1 is set, and layers exceeding this threshold are indicated with a red circle. In addition, the corresponding layer names on the X axis are highlighted in red. With this graph, layers with accuracy degradation can be visually confirmed.</p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
 <p>You can define new calculation methods. For details, see the <a class="reference external" href="https://sonysemiconductorsolutions.github.io/mct-model-optimization/api/api_docs/classes/XQuantConfig.html#ug-xquantconfig">API Document</a>.</p>
