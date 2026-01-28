@@ -50,20 +50,22 @@
 <h1>XQuant Extension Tool<a class="headerlink" href="#xquant-extension-tool" title="Link to this heading">¶</a></h1>
 <section id="about-xquant-extension-tool">
 <h2>About XQuant Extension Tool<a class="headerlink" href="#about-xquant-extension-tool" title="Link to this heading">¶</a></h2>
-<p>This tool calculates the quantization error for each layer by comparing the float model and quantized model, using both models along with the quantization log.
+<p>This tool calculates the quantization error for each layer by comparing outputs between the float and quantized models using the quantization log.
 And, it identifies the causes of the detected errors and recommends appropriate improvement measures for each cause.
-The results are presented in reports.</p>
-<p>The following are the main components of the XQuant functional extension tool.</p>
+Finally, the results are presented in reports.</p>
+<p>The following are the main components of this tool.</p>
 <ul class="simple">
 <li><p><a class="reference external" href="https://sonysemiconductorsolutions.github.io/mct-model-optimization/api/api_docs/methods/xquant_report_troubleshoot_pytorch_experimental.html">XQuant Extension Tool</a></p></li>
 </ul>
 <blockquote>
-<div><p>The component of MCT, that detects degraded layers(layers having large quantization error) and judges degradation causes on the layers.</p>
+<div><p>The component of MCT detects degraded layers (layers having large quantization error) and judges the causes of degradation in those layers.</p>
 </div></blockquote>
 <ul class="simple">
 <li><p><a class="reference external" href="https://sonysemiconductorsolutions.github.io/mct-model-optimization/docs_troubleshoot/index.html">Troubleshooting Manual</a></p></li>
 </ul>
-<p>The documents of MCT, that outlines judgment methods and countermeasures for accuracy degradation, for judged causes at XQuant Extension Tool.</p>
+<blockquote>
+<div><p>The documents of MCT describe countermeasures for accuracy degradation based on the causes identified by the XQuant Extension Tool.</p>
+</div></blockquote>
 </section>
 <section id="overall-process-flow">
 <h2>Overall Process Flow<a class="headerlink" href="#overall-process-flow" title="Link to this heading">¶</a></h2>
@@ -72,16 +74,10 @@ The results are presented in reports.</p>
 <ol class="arabic simple">
 <li><p>Input the float model, quantized model, and quantization log.</p></li>
 <li><p>Detect layers that have large difference between float and quantized models.</p></li>
-<li><p>Judge degradation causes on the detected degraded layers.</p></li>
+<li><p>Judge degradation causes on the detected layers.</p></li>
 <li><p>Based on the judge results, individual countermeasure procedures or general improvement measures are proposed from the troubleshooting manual.</p></li>
+<li><p>Recommend general troubleshoots additionally when accuracy does not improve after steps 1-4.</p></li>
 </ol>
-<p>Additionally, in the following cases, general improvement measures will be suggested instead of specific countermeasures for each item judged.</p>
-<ul class="simple">
-<li><p>When no degraded layers can be found</p></li>
-<li><p>When the majority of layers are identified as degraded and the issue is judged not to be with individual layers</p></li>
-<li><p>When judging accuracy as degraded and none of the judge items apply</p></li>
-<li><p>When accuracy does not improve after applying the proposed judgment countermeasures</p></li>
-</ul>
 <p>Please refer to the <a class="reference external" href="https://sonysemiconductorsolutions.github.io/mct-model-optimization/docs_troubleshoot/index.html">Troubleshooting Manual</a> for the Judgeable Troubleshoots and General Troubleshoots in detail.</p>
 </section>
 <section id="how-to-run">
@@ -89,7 +85,7 @@ The results are presented in reports.</p>
 <p>This XQuant Extension Tool was created based on xquant, as shown in the link below.
 In addition to the conventional xquant functions, it judges degradation causes and links to a troubleshooting manual that provides appropriate countermeasures for each cause of degradation.
 It can suggest more specific countermeasures than conventional tools and provides manuals that are easy to understand even for users who are not familiar with quantization.</p>
-<p>When runnnig the tool, replace <strong>xquant_report_pytorch_experimental</strong> in the code with <strong>xquant_report_troubleshoot_pytorch_experimental</strong> in the <a class="reference external" href="https://github.com/SonySemiconductorSolutions/mct-model-optimization/tree/main/tutorials/notebooks/mct_features_notebooks/pytorch/example_pytorch_xquant.ipynb">tutorial of XQuant</a>.</p>
+<p>Please replace xquant_report_pytorch_experimental in <a class="reference external" href="https://github.com/SonySemiconductorSolutions/mct-model-optimization/tree/main/tutorials/notebooks/mct_features_notebooks/pytorch/example_pytorch_xquant.ipynb">the XQuant tutorial</a> with xquant_report_troubleshoot_pytorch_experimental.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">model_compression_toolkit.xquant</span><span class="w"> </span><span class="kn">import</span> <span class="n">xquant_report_troubleshoot_pytorch_experimental</span>
 <span class="c1"># xquant_report_pytorch_experimental --&gt; xquant_report_troubleshoot_pytorch_experimental</span>
 <span class="n">result</span> <span class="o">=</span> <span class="n">xquant_report_troubleshoot_pytorch_experimental</span><span class="p">(</span>
@@ -103,10 +99,10 @@ It can suggest more specific countermeasures than conventional tools and provide
 </div>
 <p>To be more specific, execute the following steps:</p>
 <ol class="arabic simple">
-<li><p>Set log folder by mct.set_log_folder</p></li>
-<li><p>Do PTQ by mct.ptq.pytorch_post_training_quantization</p></li>
-<li><p>Define XQuantConfig</p></li>
-<li><p>Execute XQuant Extension Tool by xquant_report_troubleshoot_pytorch_experimental</p></li>
+<li><p>Set log folder by <em>mct.set_log_folder</em></p></li>
+<li><p>Do PTQ by <em>mct.ptq.pytorch_post_training_quantization</em></p></li>
+<li><p>Define <em>XQuantConfig</em></p></li>
+<li><p>Execute XQuant Extension Tool by <em>xquant_report_troubleshoot_pytorch_experimental</em></p></li>
 </ol>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">mct</span><span class="o">.</span><span class="n">set_log_folder</span><span class="p">(</span><span class="s1">&#39;./log/dir/path&#39;</span><span class="p">)</span>
 
@@ -125,15 +121,14 @@ It can suggest more specific countermeasures than conventional tools and provide
         <span class="p">)</span>
 </pre></div>
 </div>
-<p>The log for TensorBoard is generated in the folder path set by <em>mct.set_log_folder</em>.</p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
-<p>If log for TensorBoard does not exist, the <em>Unbalanced Concatnation</em> described below will not be executed.</p>
+<p>If log of <em>mct.set_log_folder</em> does not exist, the <em>Unbalanced Concatnation</em> described below will not be executed.</p>
 </div>
 </section>
 <section id="xquantconfig-format-and-examples">
 <h2>XQuantConfig Format and Examples<a class="headerlink" href="#xquantconfig-format-and-examples" title="Link to this heading">¶</a></h2>
-<p>When running XQuant, set the following parameters.</p>
+<p>When running XQuant Extension Tool, set the following parameters.</p>
 <p>For other parameters, see <a class="reference external" href="https://sonysemiconductorsolutions.github.io/mct-model-optimization/api/api_docs/classes/XQuantConfig.html#ug-xquantconfig">API Document</a>.</p>
 <table class="docutils align-default" id="id4">
 <caption><span class="caption-text">XQuantConfig parameter</span><a class="headerlink" href="#id4" title="Link to this table">¶</a></caption>
@@ -159,7 +154,7 @@ It can suggest more specific countermeasures than conventional tools and provide
 <tr class="row-odd"><td><p>quantize_reported_dir</p></td>
 <td><p>str</p></td>
 <td><p>Directory where the the quantization log will be saved. If not specified, the path set with <em>mct.set_log_folder</em> will be used.</p></td>
-<td><p>Most recently set value in mct.set_log_folder</p></td>
+<td><p>Most recently set value in <em>mct.set_log_folder</em></p></td>
 </tr>
 <tr class="row-even"><td><p>threshold_quantize_error</p></td>
 <td><p>dict[str, float]</p></td>
@@ -196,7 +191,7 @@ _with_model_output_loss_objective</p></td>
 Quantization error represents the differences of layer outputs between float and quantized models. These graphs are saved in the directory specified by the XQuantConfig’s report_dir.</p>
 <p>On the horizontal axis, layer names are arranged from the input side.
 On the vertical axis, quantization errors of their layers are plotted.</p>
-<p>Comparing each quantization error with threshold_quantize_error to identify layers with significant behavior changes after quantization.</p>
+<p>Comparing each quantization error with <em>threshold_quantize_error</em> to identify layers with significant behavior changes after quantization.</p>
 <img alt="../images/quant_loss_mse_repr.png" src="../images/quant_loss_mse_repr.png" />
 <ul class="simple">
 <li><p><strong>X-axis</strong>: Layer names (layers identified as degraded are highlighted in red)</p></li>

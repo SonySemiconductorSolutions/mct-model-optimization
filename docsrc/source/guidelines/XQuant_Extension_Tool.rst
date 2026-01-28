@@ -3,19 +3,19 @@ XQuant Extension Tool
 ===============================
 About XQuant Extension Tool
 ==============================
-This tool calculates the quantization error for each layer by comparing the float model and quantized model, using both models along with the quantization log.
+This tool calculates the quantization error for each layer by comparing outputs between the float and quantized models using the quantization log.
 And, it identifies the causes of the detected errors and recommends appropriate improvement measures for each cause. 
-The results are presented in reports.
+Finally, the results are presented in reports.
 
-The following are the main components of the XQuant functional extension tool.
+The following are the main components of this tool.
 
 * `XQuant Extension Tool <https://sonysemiconductorsolutions.github.io/mct-model-optimization/api/api_docs/methods/xquant_report_troubleshoot_pytorch_experimental.html>`_
 
- The component of MCT, that detects degraded layers(layers having large quantization error) and judges degradation causes on the layers.
+ The component of MCT detects degraded layers (layers having large quantization error) and judges the causes of degradation in those layers.
 
 * `Troubleshooting Manual <https://sonysemiconductorsolutions.github.io/mct-model-optimization/docs_troubleshoot/index.html>`_
 
-The documents of MCT, that outlines judgment methods and countermeasures for accuracy degradation, for judged causes at XQuant Extension Tool.
+ The documents of MCT describe countermeasures for accuracy degradation based on the causes identified by the XQuant Extension Tool.
 
 Overall Process Flow
 ============================
@@ -26,15 +26,9 @@ The overall process follows the steps below:
 
 1. Input the float model, quantized model, and quantization log.
 2. Detect layers that have large difference between float and quantized models.
-3. Judge degradation causes on the detected degraded layers.
+3. Judge degradation causes on the detected layers.
 4. Based on the judge results, individual countermeasure procedures or general improvement measures are proposed from the troubleshooting manual.
-
-Additionally, in the following cases, general improvement measures will be suggested instead of specific countermeasures for each item judged.
-
-* When no degraded layers can be found
-* When the majority of layers are identified as degraded and the issue is judged not to be with individual layers
-* When judging accuracy as degraded and none of the judge items apply
-* When accuracy does not improve after applying the proposed judgment countermeasures
+5. Recommend general troubleshoots additionally when accuracy does not improve after steps 1-4.
 
 Please refer to the `Troubleshooting Manual <https://sonysemiconductorsolutions.github.io/mct-model-optimization/docs_troubleshoot/index.html>`_ for the Judgeable Troubleshoots and General Troubleshoots in detail.
 
@@ -45,7 +39,7 @@ This XQuant Extension Tool was created based on xquant, as shown in the link bel
 In addition to the conventional xquant functions, it judges degradation causes and links to a troubleshooting manual that provides appropriate countermeasures for each cause of degradation.
 It can suggest more specific countermeasures than conventional tools and provides manuals that are easy to understand even for users who are not familiar with quantization.
 
-When runnnig the tool, replace **xquant_report_pytorch_experimental** in the code with **xquant_report_troubleshoot_pytorch_experimental** in the `tutorial of XQuant <https://github.com/SonySemiconductorSolutions/mct-model-optimization/tree/main/tutorials/notebooks/mct_features_notebooks/pytorch/example_pytorch_xquant.ipynb>`_. 
+Please replace xquant_report_pytorch_experimental in `the XQuant tutorial <https://github.com/SonySemiconductorSolutions/mct-model-optimization/tree/main/tutorials/notebooks/mct_features_notebooks/pytorch/example_pytorch_xquant.ipynb>`_ with xquant_report_troubleshoot_pytorch_experimental.
 
 .. code-block:: python
 
@@ -62,10 +56,10 @@ When runnnig the tool, replace **xquant_report_pytorch_experimental** in the cod
 
 To be more specific, execute the following steps: 
 
-1. Set log folder by mct.set_log_folder
-2. Do PTQ by mct.ptq.pytorch_post_training_quantization
-3. Define XQuantConfig
-4. Execute XQuant Extension Tool by xquant_report_troubleshoot_pytorch_experimental
+1. Set log folder by *mct.set_log_folder*
+2. Do PTQ by *mct.ptq.pytorch_post_training_quantization*
+3. Define *XQuantConfig*
+4. Execute XQuant Extension Tool by *xquant_report_troubleshoot_pytorch_experimental*
 
 .. code-block:: python
 
@@ -85,16 +79,14 @@ To be more specific, execute the following steps:
                 xquant_config
             )
 
-The log for TensorBoard is generated in the folder path set by *mct.set_log_folder*. 
-
 .. note::
 
-  If log for TensorBoard does not exist, the *Unbalanced Concatnation* described below will not be executed.
+  If log of *mct.set_log_folder* does not exist, the *Unbalanced Concatnation* described below will not be executed.
 
 XQuantConfig Format and Examples
 ======================================
 
-When running XQuant, set the following parameters.
+When running XQuant Extension Tool, set the following parameters.
 
 For other parameters, see `API Document <https://sonysemiconductorsolutions.github.io/mct-model-optimization/api/api_docs/classes/XQuantConfig.html#ug-xquantconfig>`_.
 
@@ -115,7 +107,7 @@ For other parameters, see `API Document <https://sonysemiconductorsolutions.gith
    * - quantize_reported_dir
      - str
      - Directory where the the quantization log will be saved. If not specified, the path set with *mct.set_log_folder* will be used.
-     - Most recently set value in mct.set_log_folder
+     - Most recently set value in *mct.set_log_folder*
 
    * - threshold_quantize_error
      - dict[str, float]
@@ -153,7 +145,7 @@ Quantization error represents the differences of layer outputs between float and
 On the horizontal axis, layer names are arranged from the input side.
 On the vertical axis, quantization errors of their layers are plotted.
 
-Comparing each quantization error with threshold_quantize_error to identify layers with significant behavior changes after quantization.
+Comparing each quantization error with *threshold_quantize_error* to identify layers with significant behavior changes after quantization.
 
 .. image:: ../../images/quant_loss_mse_repr.png
 
