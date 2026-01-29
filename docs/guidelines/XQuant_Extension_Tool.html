@@ -123,7 +123,7 @@ It can suggest more specific countermeasures than conventional tools and provide
 </div>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
-<p>If log of <em>mct.set_log_folder</em> does not exist, the <em>Unbalanced Concatnation</em> described below will not be executed.</p>
+<p>If log of <em>mct.set_log_folder</em> does not exist, the <em>Unbalanced Concatenation</em> described below will not be executed.</p>
 </div>
 </section>
 <section id="xquantconfig-format-and-examples">
@@ -202,14 +202,33 @@ The initial threshold value of 0.1 is set, and layers exceeding this threshold a
 </section>
 <section id="understanding-the-judgeable-troubleshoots">
 <h2>Understanding the Judgeable Troubleshoots<a class="headerlink" href="#understanding-the-judgeable-troubleshoots" title="Link to this heading">¶</a></h2>
-<p>The following items are automatically identified by the XQuant Extension Tool.</p>
-<p>Please refer to the respective Troubleshooting Manuals for details.</p>
+<p>The following items are automatically identified by the XQuant Extension Tool.
+When this tool detects these issues, corresponding WARNING messages are displayed in your console.
+Please refer to the respective Troubleshooting Manuals and change the configuration as needed.</p>
 <ul class="simple">
 <li><p><a class="reference external" href="https://sonysemiconductorsolutions.github.io/mct-model-optimization/docs_troubleshoot/troubleshoots/outlier_removal.html#ug-outlier-removal">Outlier Removal</a></p></li>
+</ul>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">WARNING</span><span class="p">:</span><span class="n">Model</span> <span class="n">Compression</span> <span class="n">Toolkit</span><span class="p">:</span><span class="n">There</span> <span class="n">are</span> <span class="n">output</span> <span class="n">values</span> <span class="n">that</span> <span class="n">deviate</span> <span class="n">significantly</span> <span class="kn">from</span><span class="w"> </span><span class="nn">the</span> <span class="n">average</span><span class="o">.</span> <span class="n">Refer</span> <span class="n">to</span> <span class="n">the</span> <span class="n">following</span> <span class="n">images</span> <span class="ow">and</span> <span class="n">the</span> <span class="n">TroubleShooting</span> <span class="n">Documentation</span> <span class="p">(</span><span class="n">MCT</span> <span class="n">XQuant</span> <span class="n">Extension</span> <span class="n">Tool</span><span class="p">)</span> <span class="n">of</span> <span class="s1">&#39;Outlier Removal&#39;</span><span class="o">.</span>
+</pre></div>
+</div>
+<ul class="simple">
 <li><p><a class="reference external" href="https://sonysemiconductorsolutions.github.io/mct-model-optimization/docs_troubleshoot/troubleshoots/shift_negative_activation.html#ug-shift-negative-activation">Shift Negative Activation</a></p></li>
+</ul>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">WARNING</span><span class="p">:</span><span class="n">Model</span> <span class="n">Compression</span> <span class="n">Toolkit</span><span class="p">:</span><span class="n">There</span> <span class="n">are</span> <span class="n">activations</span> <span class="n">that</span> <span class="n">contain</span> <span class="n">negative</span> <span class="n">values</span><span class="o">.</span> <span class="n">Refer</span> <span class="n">to</span> <span class="n">the</span> <span class="n">troubleshooting</span> <span class="n">manual</span> <span class="n">of</span> <span class="s2">&quot;Shift Negative Activation&quot;</span><span class="o">.</span>
+</pre></div>
+</div>
+<ul class="simple">
 <li><p><a class="reference external" href="https://sonysemiconductorsolutions.github.io/mct-model-optimization/docs_troubleshoot/troubleshoots/unbalanced_concatenation.html#ug-unbalanced-concatenation">Unbalanced “concatenation”</a></p></li>
+</ul>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">WARNING</span><span class="p">:</span><span class="n">Model</span> <span class="n">Compression</span> <span class="n">Toolkit</span><span class="p">:</span><span class="n">There</span> <span class="n">are</span> <span class="n">unbalanced</span> <span class="nb">range</span> <span class="n">layers</span> <span class="n">concatnated</span><span class="o">.</span> <span class="n">Refer</span> <span class="n">to</span> <span class="n">the</span> <span class="n">troubleshooting</span> <span class="n">manual</span> <span class="n">of</span> <span class="s1">&#39;Unbalanced &quot;concatenation&quot;&#39;</span><span class="o">.</span>
+</pre></div>
+</div>
+<ul class="simple">
 <li><p><a class="reference external" href="https://sonysemiconductorsolutions.github.io/mct-model-optimization/docs_troubleshoot/troubleshoots/mixed_precision_with_model_output_loss_objective.html#ug-mixed-precision-with-model-output-loss-objective">Mixed Precision with model output loss objective</a></p></li>
 </ul>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">WARNING</span><span class="p">:</span><span class="n">Model</span> <span class="n">Compression</span> <span class="n">Toolkit</span><span class="p">:</span><span class="n">the</span> <span class="n">quantization</span> <span class="n">bitwidth</span> <span class="n">of</span> <span class="n">the</span> <span class="n">last</span> <span class="n">layer</span> <span class="ow">is</span> <span class="n">an</span> <span class="n">extremely</span> <span class="n">small</span> <span class="n">number</span><span class="o">.</span> <span class="n">Refer</span> <span class="n">to</span> <span class="n">the</span> <span class="n">troubleshooting</span> <span class="n">manual</span> <span class="n">of</span> <span class="s1">&#39;Mixed Precision with model output loss objective&#39;</span><span class="o">.</span>
+</pre></div>
+</div>
 </section>
 <section id="understanding-the-general-troubleshoots">
 <h2>Understanding the General Troubleshoots<a class="headerlink" href="#understanding-the-general-troubleshoots" title="Link to this heading">¶</a></h2>

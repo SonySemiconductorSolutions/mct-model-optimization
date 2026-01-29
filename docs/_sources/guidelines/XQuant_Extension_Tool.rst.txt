@@ -81,7 +81,7 @@ To be more specific, execute the following steps:
 
 .. note::
 
-  If log of *mct.set_log_folder* does not exist, the *Unbalanced Concatnation* described below will not be executed.
+  If log of *mct.set_log_folder* does not exist, the *Unbalanced Concatenation* described below will not be executed.
 
 XQuantConfig Format and Examples
 ======================================
@@ -158,13 +158,33 @@ Understanding the Judgeable Troubleshoots
 =======================================================
 
 The following items are automatically identified by the XQuant Extension Tool.
-
-Please refer to the respective Troubleshooting Manuals for details.
+When this tool detects these issues, corresponding WARNING messages are displayed in your console.
+Please refer to the respective Troubleshooting Manuals and change the configuration as needed.
 
 * `Outlier Removal <https://sonysemiconductorsolutions.github.io/mct-model-optimization/docs_troubleshoot/troubleshoots/outlier_removal.html#ug-outlier-removal>`_
+
+::
+
+    WARNING:Model Compression Toolkit:There are output values that deviate significantly from the average. Refer to the following images and the TroubleShooting Documentation (MCT XQuant Extension Tool) of 'Outlier Removal'.
+
+
 * `Shift Negative Activation <https://sonysemiconductorsolutions.github.io/mct-model-optimization/docs_troubleshoot/troubleshoots/shift_negative_activation.html#ug-shift-negative-activation>`_
+
+::
+
+    WARNING:Model Compression Toolkit:There are activations that contain negative values. Refer to the troubleshooting manual of "Shift Negative Activation".
+
 * `Unbalanced "concatenation" <https://sonysemiconductorsolutions.github.io/mct-model-optimization/docs_troubleshoot/troubleshoots/unbalanced_concatenation.html#ug-unbalanced-concatenation>`_
+
+::
+
+    WARNING:Model Compression Toolkit:There are unbalanced range layers concatnated. Refer to the troubleshooting manual of 'Unbalanced "concatenation"'.
+
 * `Mixed Precision with model output loss objective <https://sonysemiconductorsolutions.github.io/mct-model-optimization/docs_troubleshoot/troubleshoots/mixed_precision_with_model_output_loss_objective.html#ug-mixed-precision-with-model-output-loss-objective>`_
+
+::
+
+    WARNING:Model Compression Toolkit:the quantization bitwidth of the last layer is an extremely small number. Refer to the troubleshooting manual of 'Mixed Precision with model output loss objective'.
 
 Understanding the General Troubleshoots
 ============================================
