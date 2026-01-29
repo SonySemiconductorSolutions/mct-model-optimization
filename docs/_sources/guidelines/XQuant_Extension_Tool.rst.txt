@@ -30,7 +30,7 @@ The overall process follows the steps below:
 4. **[Judgeable Troubleshoots]** Based on the judge results, individual countermeasure procedures are suggested from the troubleshooting manual.
 5. **[General Troubleshoots]** When accuracy does not improve after steps 1-4, general improvement measures are suggested from the troubleshooting manual.
 
-Please refer to the `Troubleshooting Manual <https://sonysemiconductorsolutions.github.io/mct-model-optimization/docs_troubleshoot/index.html>`_ for the Judgeable Troubleshoots and General Troubleshoots in detail.
+Please refer to the `Troubleshooting Manual <https://sonysemiconductorsolutions.github.io/mct-model-optimization/docs_troubleshoot/index.html>`_ for the **Judgeable Troubleshoots** and **General Troubleshoots** in detail.
 
 How to Run
 ===============
@@ -116,7 +116,7 @@ For other parameters, see `API Document <https://sonysemiconductorsolutions.gith
 
    * - threshold_degrade_layer_ratio 
      - float
-     - If the number of layers detected as degraded is large, skips the judge degradation causes Specify the ratio here.
+     - If the number of layers detected as degraded is large, skips the judge degradation causes specify the ratio here.
      - 0.5
 
    * - threshold_zscore_outlier_removal
