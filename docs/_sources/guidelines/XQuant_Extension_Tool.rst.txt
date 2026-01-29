@@ -27,8 +27,8 @@ The overall process follows the steps below:
 1. Input the float model, quantized model, and quantization log.
 2. Detect layers that have large difference between float and quantized models.
 3. Judge degradation causes on the detected layers.
-4. [Judgeable Troubleshoots] Based on the judge results, individual countermeasure procedures from the troubleshooting manual.
-5. [General Troubleshoots] When accuracy does not improve after steps 1-4, general improvement measures from the troubleshooting manual.
+4. **[Judgeable Troubleshoots]** Based on the judge results, individual countermeasure procedures are suggested from the troubleshooting manual.
+5. **[General Troubleshoots]** When accuracy does not improve after steps 1-4, general improvement measures are suggested from the troubleshooting manual.
 
 Please refer to the `Troubleshooting Manual <https://sonysemiconductorsolutions.github.io/mct-model-optimization/docs_troubleshoot/index.html>`_ for the Judgeable Troubleshoots and General Troubleshoots in detail.
 
