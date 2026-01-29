@@ -526,15 +526,16 @@ class MCTWrapper:
             ...     param_items=param_items
             ... )
 
-        **Initialize MCTWrapper with default parameters**
+        **Parameters**
+        Initialize MCTWrapper with default parameters
 
         Users can update the following parameters in param_items.
     
         .. note::
            The low priority variable can be left at its default value, so there is no need to specify it.
-           Specify it as necessary, for example, if you receive a warning from the `XQuant extension tool <https://sonysemiconductorsolutions.github.io/mct-model-optimization/guidelines/XQuant_Extension_Tool.html>`_.
+           Specify it as necessary, for example, if you receive a warning from the `XQuant Extension Tool <https://sonysemiconductorsolutions.github.io/mct-model-optimization/guidelines/XQuant_Extension_Tool.html>`_.
     
-        **PTQ**
+        PTQ
     
         .. csv-table::
            :header: "Parameter Key", "Default Value", "Description"
@@ -548,7 +549,7 @@ class MCTWrapper:
            "linear_collapsing", "True", "Enable linear layer collapsing **(low priority)**"
            "residual_collapsing", "True", "Enable residual connection collapsing **(low priority)**"
     
-        **PTQ, mixed_precision**
+        PTQ, mixed_precision
     
         .. csv-table::
            :header: "Parameter Key", "Default Value", "Description"
@@ -566,7 +567,7 @@ class MCTWrapper:
            "distance_weighting_method", "default of `MixedPrecisionQuantizationConfig <https://sonysemiconductorsolutions.github.io/mct-model-optimization/api/api_docs/classes/MixedPrecisionQuantizationConfig.html#mpdistanceweighting>`_", "Distance weighting method for mixed precision **(low priority)**"
            "use_hessian_based_scores", "False", "Use Hessian-based scores for mixed precision **(low priority)**"
     
-        **GPTQ**
+        GPTQ
     
         .. csv-table::
            :header: "Parameter Key", "Default Value", "Description"
@@ -582,7 +583,7 @@ class MCTWrapper:
            "residual_collapsing", "True", "Enable residual connection collapsing **(low priority)**"
            "optimizer", "default of `get_keras_gptq_config <https://sonysemiconductorsolutions.github.io/mct-model-optimization/api/api_docs/methods/get_keras_gptq_config.html#model_compression_toolkit.gptq.get_keras_gptq_config>`_ or `get_pytorch_gptq_config <https://sonysemiconductorsolutions.github.io/mct-model-optimization/api/api_docs/methods/get_pytroch_gptq_config.html#model_compression_toolkit.gptq.get_pytorch_gptq_config>`_", "Optimizer for GPTQ **(low priority)**"
     
-        **GPTQ, mixed_precision**
+        GPTQ, mixed_precision
     
         .. csv-table::
            :header: "Parameter Key", "Default Value", "Description"
