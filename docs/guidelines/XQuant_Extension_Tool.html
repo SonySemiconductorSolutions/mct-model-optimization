@@ -58,13 +58,13 @@ Finally, the results are presented in reports.</p>
 <li><p><a class="reference external" href="https://sonysemiconductorsolutions.github.io/mct-model-optimization/api/api_docs/methods/xquant_report_troubleshoot_pytorch_experimental.html">XQuant Extension Tool</a></p></li>
 </ul>
 <blockquote>
-<div><p>The component of MCT detects degraded layers (layers having large quantization error) and judges the causes of degradation in those layers.</p>
+<div><p>This tool detects degraded layers (layers with large quantization errors) and identifies the causes of degradation within those layers.</p>
 </div></blockquote>
 <ul class="simple">
 <li><p><a class="reference external" href="https://sonysemiconductorsolutions.github.io/mct-model-optimization/docs_troubleshoot/index.html">Troubleshooting Manual</a></p></li>
 </ul>
 <blockquote>
-<div><p>The documents of MCT describe countermeasures for accuracy degradation based on the causes identified by the XQuant Extension Tool.</p>
+<div><p>This document describes countermeasures for accuracy degradation based on causes identified by the XQuant Extension Tool.</p>
 </div></blockquote>
 </section>
 <section id="overall-process-flow">
@@ -75,17 +75,17 @@ Finally, the results are presented in reports.</p>
 <li><p>Input the float model, quantized model, and quantization log.</p></li>
 <li><p>Detect layers that have large difference between float and quantized models.</p></li>
 <li><p>Judge degradation causes on the detected layers.</p></li>
-<li><p>Based on the judge results, individual countermeasure procedures or general improvement measures are proposed from the troubleshooting manual.</p></li>
-<li><p>Recommend general troubleshoots additionally when accuracy does not improve after steps 1-4.</p></li>
+<li><p>[Judgeable Troubleshoots] Based on the judge results, individual countermeasure procedures from the troubleshooting manual.</p></li>
+<li><p>[General Troubleshoots] When accuracy does not improve after steps 1-4, general improvement measures from the troubleshooting manual.</p></li>
 </ol>
 <p>Please refer to the <a class="reference external" href="https://sonysemiconductorsolutions.github.io/mct-model-optimization/docs_troubleshoot/index.html">Troubleshooting Manual</a> for the Judgeable Troubleshoots and General Troubleshoots in detail.</p>
 </section>
 <section id="how-to-run">
 <h2>How to Run<a class="headerlink" href="#how-to-run" title="Link to this heading">¶</a></h2>
-<p>This XQuant Extension Tool was created based on xquant, as shown in the link below.
-In addition to the conventional xquant functions, it judges degradation causes and links to a troubleshooting manual that provides appropriate countermeasures for each cause of degradation.
+<p>This XQuant Extension Tool was created based on XQuant, as shown in the link below.
+In addition to the conventional XQuant functions, it judges degradation causes and links to the Troubleshooting Manual that provides appropriate countermeasures for each cause of degradation.
 It can suggest more specific countermeasures than conventional tools and provides manuals that are easy to understand even for users who are not familiar with quantization.</p>
-<p>Please replace xquant_report_pytorch_experimental in <a class="reference external" href="https://github.com/SonySemiconductorSolutions/mct-model-optimization/tree/main/tutorials/notebooks/mct_features_notebooks/pytorch/example_pytorch_xquant.ipynb">the XQuant tutorial</a> with xquant_report_troubleshoot_pytorch_experimental.</p>
+<p>Please replace <em>xquant_report_pytorch_experimental</em> in <a class="reference external" href="https://github.com/SonySemiconductorSolutions/mct-model-optimization/tree/main/tutorials/notebooks/mct_features_notebooks/pytorch/example_pytorch_xquant.ipynb">the XQuant tutorial</a> with <em>xquant_report_troubleshoot_pytorch_experimental</em>.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">model_compression_toolkit.xquant</span><span class="w"> </span><span class="kn">import</span> <span class="n">xquant_report_troubleshoot_pytorch_experimental</span>
 <span class="c1"># xquant_report_pytorch_experimental --&gt; xquant_report_troubleshoot_pytorch_experimental</span>
 <span class="n">result</span> <span class="o">=</span> <span class="n">xquant_report_troubleshoot_pytorch_experimental</span><span class="p">(</span>
@@ -130,8 +130,8 @@ It can suggest more specific countermeasures than conventional tools and provide
 <h2>XQuantConfig Format and Examples<a class="headerlink" href="#xquantconfig-format-and-examples" title="Link to this heading">¶</a></h2>
 <p>When running XQuant Extension Tool, set the following parameters.</p>
 <p>For other parameters, see <a class="reference external" href="https://sonysemiconductorsolutions.github.io/mct-model-optimization/api/api_docs/classes/XQuantConfig.html#ug-xquantconfig">API Document</a>.</p>
-<table class="docutils align-default" id="id4">
-<caption><span class="caption-text">XQuantConfig parameter</span><a class="headerlink" href="#id4" title="Link to this table">¶</a></caption>
+<table class="docutils align-default" id="id3">
+<caption><span class="caption-text">XQuantConfig parameter</span><a class="headerlink" href="#id3" title="Link to this table">¶</a></caption>
 <colgroup>
 <col style="width: 15.0%" />
 <col style="width: 15.0%" />
@@ -199,14 +199,10 @@ The initial threshold value of 0.1 is set, and layers exceeding this threshold a
 <li><p><strong>Red dashed line</strong>: Threshold for accuracy degradation as set in XQuantConfig</p></li>
 <li><p><strong>Red circle</strong>: Layers judged to have degraded accuracy</p></li>
 </ul>
-<div class="admonition note">
-<p class="admonition-title">Note</p>
-<p>You can define new calculation methods. For details, see the <a class="reference external" href="https://sonysemiconductorsolutions.github.io/mct-model-optimization/api/api_docs/classes/XQuantConfig.html#ug-xquantconfig">API Document</a>.</p>
-</div>
 </section>
-<section id="understanding-the-judgment-of-degradation-causes">
-<h2>Understanding the Judgment of Degradation Causes<a class="headerlink" href="#understanding-the-judgment-of-degradation-causes" title="Link to this heading">¶</a></h2>
-<p>For the identified degraded layers, judge if they fall into any of the following four causes.</p>
+<section id="understanding-the-judgeable-troubleshoots">
+<h2>Understanding the Judgeable Troubleshoots<a class="headerlink" href="#understanding-the-judgeable-troubleshoots" title="Link to this heading">¶</a></h2>
+<p>The following items are automatically identified by the XQuant Extension Tool.</p>
 <p>Please refer to the respective Troubleshooting Manuals for details.</p>
 <ul class="simple">
 <li><p><a class="reference external" href="https://sonysemiconductorsolutions.github.io/mct-model-optimization/docs_troubleshoot/troubleshoots/outlier_removal.html#ug-outlier-removal">Outlier Removal</a></p></li>
@@ -238,7 +234,7 @@ The initial threshold value of 0.1 is set, and layers exceeding this threshold a
 <li><a class="reference internal" href="#how-to-run">How to Run</a></li>
 <li><a class="reference internal" href="#xquantconfig-format-and-examples">XQuantConfig Format and Examples</a></li>
 <li><a class="reference internal" href="#understanding-the-quantization-error-graph">Understanding the Quantization Error Graph</a></li>
-<li><a class="reference internal" href="#understanding-the-judgment-of-degradation-causes">Understanding the Judgment of Degradation Causes</a></li>
+<li><a class="reference internal" href="#understanding-the-judgeable-troubleshoots">Understanding the Judgeable Troubleshoots</a></li>
 <li><a class="reference internal" href="#understanding-the-general-troubleshoots">Understanding the General Troubleshoots</a></li>
 </ul>
 </li>

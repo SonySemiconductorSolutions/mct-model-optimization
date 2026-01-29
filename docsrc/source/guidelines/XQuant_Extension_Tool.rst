@@ -11,11 +11,11 @@ The following are the main components of this tool.
 
 * `XQuant Extension Tool <https://sonysemiconductorsolutions.github.io/mct-model-optimization/api/api_docs/methods/xquant_report_troubleshoot_pytorch_experimental.html>`_
 
- The component of MCT detects degraded layers (layers having large quantization error) and judges the causes of degradation in those layers.
+ This tool detects degraded layers (layers with large quantization errors) and identifies the causes of degradation within those layers.
 
 * `Troubleshooting Manual <https://sonysemiconductorsolutions.github.io/mct-model-optimization/docs_troubleshoot/index.html>`_
 
- The documents of MCT describe countermeasures for accuracy degradation based on the causes identified by the XQuant Extension Tool.
+ This document describes countermeasures for accuracy degradation based on causes identified by the XQuant Extension Tool.
 
 Overall Process Flow
 ============================
@@ -27,19 +27,19 @@ The overall process follows the steps below:
 1. Input the float model, quantized model, and quantization log.
 2. Detect layers that have large difference between float and quantized models.
 3. Judge degradation causes on the detected layers.
-4. Based on the judge results, individual countermeasure procedures or general improvement measures are proposed from the troubleshooting manual.
-5. Recommend general troubleshoots additionally when accuracy does not improve after steps 1-4.
+4. [Judgeable Troubleshoots] Based on the judge results, individual countermeasure procedures from the troubleshooting manual.
+5. [General Troubleshoots] When accuracy does not improve after steps 1-4, general improvement measures from the troubleshooting manual.
 
 Please refer to the `Troubleshooting Manual <https://sonysemiconductorsolutions.github.io/mct-model-optimization/docs_troubleshoot/index.html>`_ for the Judgeable Troubleshoots and General Troubleshoots in detail.
 
 How to Run
 ===============
 
-This XQuant Extension Tool was created based on xquant, as shown in the link below.
-In addition to the conventional xquant functions, it judges degradation causes and links to a troubleshooting manual that provides appropriate countermeasures for each cause of degradation.
+This XQuant Extension Tool was created based on XQuant, as shown in the link below.
+In addition to the conventional XQuant functions, it judges degradation causes and links to the Troubleshooting Manual that provides appropriate countermeasures for each cause of degradation.
 It can suggest more specific countermeasures than conventional tools and provides manuals that are easy to understand even for users who are not familiar with quantization.
 
-Please replace xquant_report_pytorch_experimental in `the XQuant tutorial <https://github.com/SonySemiconductorSolutions/mct-model-optimization/tree/main/tutorials/notebooks/mct_features_notebooks/pytorch/example_pytorch_xquant.ipynb>`_ with xquant_report_troubleshoot_pytorch_experimental.
+Please replace *xquant_report_pytorch_experimental* in `the XQuant tutorial <https://github.com/SonySemiconductorSolutions/mct-model-optimization/tree/main/tutorials/notebooks/mct_features_notebooks/pytorch/example_pytorch_xquant.ipynb>`_ with *xquant_report_troubleshoot_pytorch_experimental*.
 
 .. code-block:: python
 
@@ -154,14 +154,10 @@ The initial threshold value of 0.1 is set, and layers exceeding this threshold a
 * **Red dashed line**: Threshold for accuracy degradation as set in XQuantConfig
 * **Red circle**: Layers judged to have degraded accuracy
 
-.. note::
-
-  You can define new calculation methods. For details, see the `API Document <https://sonysemiconductorsolutions.github.io/mct-model-optimization/api/api_docs/classes/XQuantConfig.html#ug-xquantconfig>`_.
-
-Understanding the Judgment of Degradation Causes
+Understanding the Judgeable Troubleshoots
 =======================================================
 
-For the identified degraded layers, judge if they fall into any of the following four causes.
+The following items are automatically identified by the XQuant Extension Tool.
 
 Please refer to the respective Troubleshooting Manuals for details.
 
