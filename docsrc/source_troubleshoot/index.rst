@@ -12,7 +12,7 @@ The Model Compression Toolkit (MCT) offers numerous functionalities to compress 
 
 Outlined below are a series of steps aimed at recovering lost accuracy resulting from compression with MCT. Some steps may be applicable to your model, while others may not.
 
-For overview of XQuant Extension Tool, see `About XQuant Extension Tool <https://sonysemiconductorsolutions.github.io/mct-model-optimization/guidelines/XQuant_Extension_Tool.html>`_ [1].
+For the overview of XQuant Extension Tool, see `About XQuant Extension Tool <https://sonysemiconductorsolutions.github.io/mct-model-optimization/guidelines/XQuant_Extension_Tool.html>`_ [1].
 
 Quantization Troubleshooting for MCT
 ============================================
