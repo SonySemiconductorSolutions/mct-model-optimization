@@ -50,18 +50,21 @@
 <h1>XQuant Extension Tool<a class="headerlink" href="#xquant-extension-tool" title="Link to this heading">¶</a></h1>
 <section id="about-xquant-extension-tool">
 <h2>About XQuant Extension Tool<a class="headerlink" href="#about-xquant-extension-tool" title="Link to this heading">¶</a></h2>
-<p>This tool calculates the error for each layer by comparing the float model and quantized model, using both models along with the quantization log. The results are presented in reports. It identifies the causes of the detected errors and recommends appropriate improvement measures for each cause. The following are the main components of the XQuant functional extension tool.</p>
+<p>This tool calculates the quantization error for each layer by comparing outputs between the float and quantized models using the quantization log.
+And, it identifies the causes of the detected errors and recommends appropriate improvement measures for each cause.
+Finally, the results are presented in reports.</p>
+<p>The following are the main components of this tool.</p>
 <ul class="simple">
-<li><p>Troubleshooting Manual</p></li>
+<li><p><a class="reference external" href="https://sonysemiconductorsolutions.github.io/mct-model-optimization/api/api_docs/methods/xquant_report_troubleshoot_pytorch_experimental.html">XQuant Extension Tool</a></p></li>
 </ul>
 <blockquote>
-<div><p>A document that outlines judgment methods and countermeasures for accuracy degradation, based on existing troubleshooting documentation.</p>
+<div><p>This tool detects degraded layers (layers with large quantization errors) and identifies the causes of degradation within those layers.</p>
 </div></blockquote>
 <ul class="simple">
-<li><p>XQuant Extension Tool</p></li>
+<li><p><a class="reference external" href="https://sonysemiconductorsolutions.github.io/mct-model-optimization/docs_troubleshoot/index.html">Troubleshooting Manual</a></p></li>
 </ul>
 <blockquote>
-<div><p>A tool that connects layers identified as having degraded accuracy to the relevant improvement manual and outputs the results.</p>
+<div><p>This document describes countermeasures for accuracy degradation based on causes identified by the XQuant Extension Tool.</p>
 </div></blockquote>
 </section>
 <section id="overall-process-flow">
@@ -70,29 +73,19 @@
 <p>The overall process follows the steps below:</p>
 <ol class="arabic simple">
 <li><p>Input the float model, quantized model, and quantization log.</p></li>
-<li><p>Detect layers in which accuracy has degraded due to quantization.</p></li>
-<li><p>Judge degradation causes on the detected degraded layers.</p></li>
-<li><p>Based on the judge results, individual countermeasure procedures or general improvement measures are proposed from the troubleshooting manual.</p></li>
+<li><p>Detect layers that have large difference between float and quantized models.</p></li>
+<li><p>Judge degradation causes on the detected layers.</p></li>
+<li><p><strong>[Judgeable Troubleshoots]</strong> Based on the judge results, individual countermeasure procedures are suggested from the troubleshooting manual.</p></li>
+<li><p><strong>[General Troubleshoots]</strong> When accuracy does not improve after steps 1-4, general improvement measures are suggested from the troubleshooting manual.</p></li>
 </ol>
-<p>Additionally, in the cases highlighted in red below, general improvement measures will be suggested instead of specific countermeasures for each item judged.</p>
-<ul class="simple">
-<li><p>When no degraded layers can be found</p></li>
-<li><p>When the majority of layers are identified as degraded and the issue is judged not to be with individual layers</p></li>
-<li><p>When judging accuracy as degraded and none of the judge items apply</p></li>
-<li><p>When accuracy does not improve after applying the proposed judgment countermeasures</p></li>
-</ul>
-<p>Please refer to the attached link for the items to be judged in detail.</p>
+<p>Please refer to the <a class="reference external" href="https://sonysemiconductorsolutions.github.io/mct-model-optimization/docs_troubleshoot/index.html">Troubleshooting Manual</a> for the <strong>Judgeable Troubleshoots</strong> and <strong>General Troubleshoots</strong> in detail.</p>
 </section>
 <section id="how-to-run">
 <h2>How to Run<a class="headerlink" href="#how-to-run" title="Link to this heading">¶</a></h2>
-<div class="line-block">
-<div class="line">For instructions on how to execute, please refer to the link attached.</div>
-<div class="line">This XQuant Extension Tool was created based on xquant, as shown in the link below. In addition to the conventional xquant functions, it is linked to a troubleshooting manual and provides appropriate countermeasures for each cause of degration.</div>
-</div>
-<div class="line-block">
-<div class="line">It can suggest more specific countermeasures than conventional tools and provides manuals that are easy to understand even for users who are not familiar with quantization.</div>
-</div>
-<p>When runnnig the tool, replace <strong>xquant_report_pytorch_experimental</strong> in the code with <strong>xquant_report_troubleshoot_pytorch_experimental</strong> in the tutorial of XQuant (Explainable Quantization).</p>
+<p>This XQuant Extension Tool was created based on XQuant, as shown in the link below.
+In addition to the conventional XQuant functions, it judges degradation causes and links to the Troubleshooting Manual that provides appropriate countermeasures for each cause of degradation.
+It can suggest more specific countermeasures than conventional tools and provides manuals that are easy to understand even for users who are not familiar with quantization.</p>
+<p>Please replace <em>xquant_report_pytorch_experimental</em> in <a class="reference external" href="https://github.com/SonySemiconductorSolutions/mct-model-optimization/tree/main/tutorials/notebooks/mct_features_notebooks/pytorch/example_pytorch_xquant.ipynb">the XQuant tutorial</a> with <em>xquant_report_troubleshoot_pytorch_experimental</em>.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">model_compression_toolkit.xquant</span><span class="w"> </span><span class="kn">import</span> <span class="n">xquant_report_troubleshoot_pytorch_experimental</span>
 <span class="c1"># xquant_report_pytorch_experimental --&gt; xquant_report_troubleshoot_pytorch_experimental</span>
 <span class="n">result</span> <span class="o">=</span> <span class="n">xquant_report_troubleshoot_pytorch_experimental</span><span class="p">(</span>
@@ -104,14 +97,12 @@
         <span class="p">)</span>
 </pre></div>
 </div>
-<div class="line-block">
-<div class="line">When running XQuant, execute the steps in the following order:</div>
-</div>
+<p>To be more specific, execute the following steps:</p>
 <ol class="arabic simple">
-<li><p>mct.set_log_folder</p></li>
-<li><p>mct.ptq.pytorch_post_training_quantization</p></li>
-<li><p>XQuantConfig</p></li>
-<li><p>xquant_report_troubleshoot_pytorch_experimental</p></li>
+<li><p>Set log folder by <em>mct.set_log_folder</em></p></li>
+<li><p>Do PTQ by <em>mct.ptq.pytorch_post_training_quantization</em></p></li>
+<li><p>Define <em>XQuantConfig</em></p></li>
+<li><p>Execute XQuant Extension Tool by <em>xquant_report_troubleshoot_pytorch_experimental</em></p></li>
 </ol>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">mct</span><span class="o">.</span><span class="n">set_log_folder</span><span class="p">(</span><span class="s1">&#39;./log/dir/path&#39;</span><span class="p">)</span>
 
@@ -130,19 +121,17 @@
         <span class="p">)</span>
 </pre></div>
 </div>
-<div class="line-block">
-<div class="line">The log for TensorBoard is generated in the folder path set by <em>mct.set_log_folder</em>.</div>
-</div>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
-<p>If log for TensorBoard does not exist, the <em>Unbalanced Concatnation</em> described below will not be executed.</p>
+<p>If log of <em>mct.set_log_folder</em> does not exist, the <em>Unbalanced Concatnation</em> described below will not be executed.</p>
 </div>
 </section>
 <section id="xquantconfig-format-and-examples">
 <h2>XQuantConfig Format and Examples<a class="headerlink" href="#xquantconfig-format-and-examples" title="Link to this heading">¶</a></h2>
-<p>When running XQuant, the parameters can be set as shown in the table below.</p>
-<table class="docutils align-default" id="id1">
-<caption><span class="caption-text">XQuantConfig parameter</span><a class="headerlink" href="#id1" title="Link to this table">¶</a></caption>
+<p>When running XQuant Extension Tool, set the following parameters.</p>
+<p>For other parameters, see <a class="reference external" href="https://sonysemiconductorsolutions.github.io/mct-model-optimization/api/api_docs/classes/XQuantConfig.html#ug-xquantconfig">API Document</a>.</p>
+<table class="docutils align-default" id="id3">
+<caption><span class="caption-text">XQuantConfig parameter</span><a class="headerlink" href="#id3" title="Link to this table">¶</a></caption>
 <colgroup>
 <col style="width: 15.0%" />
 <col style="width: 15.0%" />
@@ -162,69 +151,47 @@
 <td><p>Directory where the results will be saved. <strong>[Necessary]</strong></p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">-</span></code></p></td>
 </tr>
-<tr class="row-odd"><td><p>custom_similarity_metrics</p></td>
-<td><p>dict[str, Callable]</p></td>
-<td><p>User-specified quantization error metric calculation functions. str: metric name, Callable: function to calculate the metric.</p></td>
-<td><p>None</p></td>
-</tr>
-<tr class="row-even"><td><p>quantize_reported_dir</p></td>
+<tr class="row-odd"><td><p>quantize_reported_dir</p></td>
 <td><p>str</p></td>
 <td><p>Directory where the the quantization log will be saved. If not specified, the path set with <em>mct.set_log_folder</em> will be used.</p></td>
-<td><p>Most recently set value in mct.set_log_folder</p></td>
+<td><p>Most recently set value in <em>mct.set_log_folder</em></p></td>
 </tr>
-<tr class="row-odd"><td><p>threshold_quantize_error</p></td>
+<tr class="row-even"><td><p>threshold_quantize_error</p></td>
 <td><p>dict[str, float]</p></td>
 <td><p>Threshold values for detecting degradation in accuracy.</p></td>
 <td><p>{“mse”:0.1, “cs”:0.1, “sqnr”:0.1}</p></td>
 </tr>
-<tr class="row-even"><td><p>is_detect_under_threshold_quantize_error</p></td>
-<td><p>dict[str, bool]</p></td>
-<td><p>For each threshold specified in threshold_quantize_error, True: detect the layer as degraded when the error is below the threshold.; False: detect the layer as degraded when the error is above the threshold (Not required if custom metrics are not set).</p></td>
-<td><p>{“mse”:False, “cs”:True, “sqnr”:True}</p></td>
-</tr>
-<tr class="row-odd"><td><p>threshold_degration_layer_ratio</p></td>
+<tr class="row-odd"><td><p>threshold_degrade_layer_ratio</p></td>
 <td><p>float</p></td>
-<td><p>If the number of layers detected as degraded is large, skips the judge degradation causes Specify the ratio here.</p></td>
+<td><p>If the number of layers detected as degraded is large, skips the judge degradation causes specify the ratio here.</p></td>
 <td><p>0.5</p></td>
 </tr>
 <tr class="row-even"><td><p>threshold_zscore_outlier_removal</p></td>
 <td><p>float</p></td>
-<td><p>Used in judge degradation causes (Outlier Removal). Threshold for z_score to detect outliers.</p></td>
+<td><p>Used in judgment degradation causes (Outlier Removal). Threshold for z_score to detect outliers.</p></td>
 <td><p>5.0</p></td>
 </tr>
-<tr class="row-odd"><td><p>threshold_ratio_unbalanced_concatnation</p></td>
+<tr class="row-odd"><td><p>threshold_ratio_unbalanced_concatenation</p></td>
 <td><p>float</p></td>
-<td><p>Used in judge degradation causes (unbalanced “concatnation”). Threshold for the multiplier of range width between concatenated layers.</p></td>
+<td><p>Used in judgment degradation causes (unbalanced “concatenation”). Threshold for the multiplier of range width between concatenated layers.</p></td>
 <td><p>16.0</p></td>
 </tr>
 <tr class="row-even"><td><p>threshold_bitwidth_mixed_precision
 _with_model_output_loss_objective</p></td>
 <td><p>int</p></td>
-<td><p>Used in judge degradation causes (Mixed precision with model output loss objective). Bitwidth of the final layer to judge insufficient bitwidth.</p></td>
+<td><p>Used in judgment degradation causes (Mixed precision with model output loss objective). Bitwidth of the final layer to judge insufficient bitwidth.</p></td>
 <td><p>2</p></td>
 </tr>
 </tbody>
 </table>
-<p>You can configure each parameter by calling the XQuantConfig class as shown below.</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">XQuantConfig</span><span class="p">(</span><span class="n">report_dir</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
-        <span class="n">custom_similarity_metrics</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Callable</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-        <span class="n">quantize_reported_dir</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-        <span class="n">threshold_quantize_error</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;mse&quot;</span><span class="p">:</span> <span class="mf">0.1</span><span class="p">,</span> <span class="s2">&quot;cs&quot;</span><span class="p">:</span> <span class="mf">0.1</span><span class="p">,</span> <span class="s2">&quot;sqnr&quot;</span><span class="p">:</span> <span class="mf">0.1</span><span class="p">},</span>
-        <span class="n">is_detect_under_threshold_quantize_error</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">bool</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;mse&quot;</span><span class="p">:</span> <span class="kc">False</span><span class="p">,</span> <span class="s2">&quot;cs&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span> <span class="s2">&quot;sqnr&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">},</span>
-        <span class="n">threshold_degrade_layer_ratio</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.5</span><span class="p">,</span>
-        <span class="n">threshold_zscore_outlier_removal</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">5.0</span><span class="p">,</span>
-        <span class="n">threshold_ratio_unbalanced_concatenation</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">16.0</span><span class="p">,</span>
-        <span class="n">threshold_bitwidth_mixed_precision_with_model_output_loss_objective</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">2</span>
-        <span class="p">):</span>
-</pre></div>
-</div>
 </section>
 <section id="understanding-the-quantization-error-graph">
 <h2>Understanding the Quantization Error Graph<a class="headerlink" href="#understanding-the-quantization-error-graph" title="Link to this heading">¶</a></h2>
-<div class="line-block">
-<div class="line">Quantization error graphs are generated for three calculation methods (mse, cs, sqnr) and two datasets (representative and validation), resulting in six graphs in total.</div>
-<div class="line">These graphs are saved in the directory specified by the XQuantConfig’s report_dir.</div>
-</div>
+<p>Six quantization error graphs are generated: three metrics (MSE, cosine similarity, SQNR) × two datasets (representative, validation).
+Quantization error represents the differences of layer outputs between float and quantized models. These graphs are saved in the directory specified by the XQuantConfig’s report_dir.</p>
+<p>Comparing each quantization error with <em>threshold_quantize_error</em> to identify layers with significant behavior changes after quantization.</p>
+<p>As an example, an output graph calculated using “mse” with a representative dataset is shown.
+The initial threshold value of 0.1 is set, and layers exceeding this threshold are indicated with a red circle. In addition, the corresponding layer names on the X axis are highlighted in red. With this graph, layers with accuracy degradation can be visually confirmed.</p>
 <img alt="../images/quant_loss_mse_repr.png" src="../images/quant_loss_mse_repr.png" />
 <ul class="simple">
 <li><p><strong>X-axis</strong>: Layer names (layers identified as degraded are highlighted in red)</p></li>
@@ -232,121 +199,22 @@ _with_model_output_loss_objective</p></td>
 <li><p><strong>Red dashed line</strong>: Threshold for accuracy degradation as set in XQuantConfig</p></li>
 <li><p><strong>Red circle</strong>: Layers judged to have degraded accuracy</p></li>
 </ul>
-<div class="line-block">
-<div class="line">As an example, an output graph calculated using “mse” with a representative dataset is shown.</div>
-<div class="line">The initial threshold value of 0.1 is set, and layers exceeding this threshold are indicated with a red circle. In addition, the corresponding layer names on the X axis are highlighted in red. With this graph, layers with accuracy degradation can be visually confirmed.</div>
-</div>
 </section>
-<section id="understanding-the-judgment-result">
-<h2>Understanding the judgment result<a class="headerlink" href="#understanding-the-judgment-result" title="Link to this heading">¶</a></h2>
-<section id="outlier-removal">
-<h3>Outlier Removal<a class="headerlink" href="#outlier-removal" title="Link to this heading">¶</a></h3>
-<div class="line-block">
-<div class="line">In outlier removal, values exceeding the threshold set in XQuantConfig’s threshold_zscore_outlier_removal are detected.</div>
-<div class="line">The console displays a message stating that there are output values that deviate significantly from the average, and refers you to the Troubleshooting Manual’s “Outlier Removal” section.</div>
-<div class="line">It also lists the histogram save paths for the layers containing the detected outliers.</div>
-<div class="line">The histograms are saved in a directory named “outlier_histgrams” created in the path specified by <strong>report_dir</strong> in <strong>XQuantConfig</strong>.</div>
-</div>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>WARNING:Model Compression Toolkit:There are output values ​​that deviate significantly from the average. Refer to the following images and the TroubleShooting Documentation (MCT XQuant Extension Tool) of &#39;Outlier Removal&#39;.
-WARNING:Model Compression Toolkit:./log_tensorboard_xquant/outlier_histgrams/stem_2_conv_kxk_0_conv_bn.png
-WARNING:Model Compression Toolkit:./log_tensorboard_xquant/outlier_histgrams/stages_0_blocks_0_token_mixer_mixer_conv_scale_conv_bn.png
-WARNING:Model Compression Toolkit:./log_tensorboard_xquant/outlier_histgrams/stages_0_blocks_0_token_mixer_mixer_conv_kxk_0_conv_bn.png
-・
-・
-・
-</pre></div>
-</div>
-<div class="line-block">
-<div class="line">Next, we will move on to explaining the output histogram.</div>
-</div>
-<img alt="../images/outlier.png" src="../images/outlier.png" />
+<section id="understanding-the-judgeable-troubleshoots">
+<h2>Understanding the Judgeable Troubleshoots<a class="headerlink" href="#understanding-the-judgeable-troubleshoots" title="Link to this heading">¶</a></h2>
+<p>The following items are automatically identified by the XQuant Extension Tool.</p>
+<p>Please refer to the respective Troubleshooting Manuals for details.</p>
 <ul class="simple">
-<li><p><strong>First X-axis(lower part)</strong>: Indicates bins that finely divide the range of data values.</p></li>
-<li><p><strong>Second X-axis(upper part)</strong>: Shows the z-score values corresponding to the primary X-axis.</p></li>
-<li><p><strong>Red dashed line</strong>: The z-score threshold set in XQuantConfig.</p></li>
-<li><p><strong>Black dashed line</strong></p>
-<ul>
-<li><p><strong>Lower zscore</strong>: Indicates the maximum value on the lower side of the histogram.</p></li>
-<li><p><strong>Upper zscore</strong>: Indicates the maximum value on the upper side of the histogram.</p></li>
+<li><p><a class="reference external" href="https://sonysemiconductorsolutions.github.io/mct-model-optimization/docs_troubleshoot/troubleshoots/outlier_removal.html#ug-outlier-removal">Outlier Removal</a></p></li>
+<li><p><a class="reference external" href="https://sonysemiconductorsolutions.github.io/mct-model-optimization/docs_troubleshoot/troubleshoots/shift_negative_activation.html#ug-shift-negative-activation">Shift Negative Activation</a></p></li>
+<li><p><a class="reference external" href="https://sonysemiconductorsolutions.github.io/mct-model-optimization/docs_troubleshoot/troubleshoots/unbalanced_concatenation.html#ug-unbalanced-concatenation">Unbalanced “concatenation”</a></p></li>
+<li><p><a class="reference external" href="https://sonysemiconductorsolutions.github.io/mct-model-optimization/docs_troubleshoot/troubleshoots/mixed_precision_with_model_output_loss_objective.html#ug-mixed-precision-with-model-output-loss-objective">Mixed Precision with model output loss objective</a></p></li>
 </ul>
-</li>
-</ul>
-<div class="line-block">
-<div class="line">An example of a histogram detected by Outlier Removal is shown.</div>
-<div class="line">In this example, outliers appear in the range from about 3.9 to 5.3 on the lower end of the z-score.</div>
-<div class="line">Therefore, setting the z-score threshold to 3.9 will allow these outliers to be removed.</div>
-</div>
-<div class="line-block">
-<div class="line">By setting the threshold confirmed using the XQuant extension tool as an argument when executing <strong>mct.ptq.pytorch_post_training_quantization</strong> as follows, it is possible to remove outliers.</div>
-</div>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">core_config</span> <span class="o">=</span> <span class="n">mct</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">CoreConfig</span><span class="p">(</span><span class="n">mct</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">QuantizationConfig</span><span class="p">(</span><span class="n">z_threshold</span><span class="o">=</span><span class="mf">3.9</span><span class="p">))</span>
-<span class="n">quantized_model</span><span class="p">,</span> <span class="n">quantized_info</span> <span class="o">=</span> <span class="n">mct</span><span class="o">.</span><span class="n">ptq</span><span class="o">.</span><span class="n">pytorch_post_training_quantization</span><span class="p">(</span><span class="n">in_module</span><span class="o">=</span><span class="n">float_model</span><span class="p">,</span>
-                                                                            <span class="n">representative_data_gen</span><span class="o">=</span><span class="n">random_data_gen</span><span class="p">,</span>
-                                                                            <span class="n">core_config</span><span class="o">=</span><span class="n">core_config</span><span class="p">)</span>
-</pre></div>
-</div>
 </section>
-<section id="shift-negative-activation">
-<h3>Shift Negative Activation<a class="headerlink" href="#shift-negative-activation" title="Link to this heading">¶</a></h3>
-<div class="line-block">
-<div class="line">Shift Negative Activation is detected when a default activation layer is present in the model.</div>
-<div class="line">The console will display a message indicating that such a layer has been found and recommend you consult the “Shift Negative Activation” section of the troubleshooting manual.</div>
-</div>
-<div class="line-block">
-<div class="line">The detected activation layers will also be listed.</div>
-</div>
-<div class="line-block">
-<div class="line">Please refer to the troubleshooting manual for further details.</div>
-</div>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>WARNING:Model Compression Toolkit:There are activations that contain negative values. Refer to the troubleshooting manual of &quot;Shift Negative Activation&quot;.
-WARNING:Model Compression Toolkit:stem_0_act=GELU
-WARNING:Model Compression Toolkit:stem_1_act=GELU
-WARNING:Model Compression Toolkit:stem_2_act=GELU
-・
-・
-・
-</pre></div>
-</div>
-</section>
-<section id="unbalanced-concatnation">
-<h3>Unbalanced Concatnation<a class="headerlink" href="#unbalanced-concatnation" title="Link to this heading">¶</a></h3>
-<div class="line-block">
-<div class="line">For unbalanced concatenation, the value ranges of each concatenated layer are calculated.</div>
-<div class="line">If the difference in range width exceeds the threshold set in XQuantConfig’s threshold_ratio_unbalanced_concatnation, it is considered unbalanced.</div>
-<div class="line">The console will display a message indicating detection of unbalanced concatenation and suggest consulting the “Unbalanced Concatenation” section of the troubleshooting manual.</div>
-<div class="line">Additionally, the names of the relevant layers and the recommended scaling factor are displayed.</div>
-</div>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>WARNING:Model Compression Toolkit:There are unbalanced range layers concatnated. Refer to the troubleshooting manual of &#39;Unbalanced &quot;concatenation&quot;&#39;.
-WARNING:Model Compression Toolkit:first layer:features.15.conv.2, second layer:features.15.conv.3, if you add a scaling operation, recommended scaling:first layer * 5.758747418625537
-WARNING:Model Compression Toolkit:first layer:features.16.conv.2, second layer:features.16.conv.3, if you add a scaling operation, recommended scaling:first layer * 6.228137651975462
-・
-・
-・
-</pre></div>
-</div>
-<div class="line-block">
-<div class="line">To resolve unbalanced concatenation, there are two methods: disable optimization for some graphs as shown below, or apply a multiplier to the layer before concatenation as shown in the console.</div>
-</div>
-<div class="line-block">
-<div class="line">For details, refer to the troubleshooting manual.</div>
-</div>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">core_config</span> <span class="o">=</span> <span class="n">mct</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">CoreConfig</span><span class="p">(</span><span class="n">mct</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">QuantizationConfig</span><span class="p">(</span><span class="n">linear_collapsing</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
-                                                          <span class="n">residual_collapsing</span><span class="o">=</span><span class="kc">False</span><span class="p">))</span>
-<span class="n">quantized_model</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">mct</span><span class="o">.</span><span class="n">ptq</span><span class="o">.</span><span class="n">pytorch_post_training_quantization</span><span class="p">(</span><span class="o">...</span><span class="p">,</span>
-                                                                <span class="n">core_config</span><span class="o">=</span><span class="n">core_config</span><span class="p">)</span>
-</pre></div>
-</div>
-</section>
-<section id="mixed-precision-with-model-output-loss-objective">
-<h3>Mixed Precision with model output loss objective<a class="headerlink" href="#mixed-precision-with-model-output-loss-objective" title="Link to this heading">¶</a></h3>
-<div class="line-block">
-<div class="line">In Mixed Precision with model output loss objective, output is generated when the bit width of the final layer is less than or equal to the threshold (default: 2).</div>
-<div class="line">If the quantization bit width of the last layer is unusually small, the console will display a message recommending you refer to the troubleshooting manual’s “Mixed Precision with model output loss objective” section.</div>
-</div>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">WARNING</span><span class="p">:</span><span class="n">Model</span> <span class="n">Compression</span> <span class="n">Toolkit</span><span class="p">:</span><span class="n">the</span> <span class="n">quantization</span> <span class="n">bitwidth</span> <span class="n">of</span> <span class="n">the</span> <span class="n">last</span> <span class="n">layer</span> <span class="ow">is</span> <span class="n">an</span> <span class="n">extremely</span> <span class="n">small</span> <span class="n">number</span><span class="o">.</span> <span class="n">Refer</span> <span class="n">to</span> <span class="n">the</span> <span class="n">troubleshooting</span> <span class="n">manual</span> <span class="n">of</span> <span class="s1">&#39;Mixed Precision with model output loss objective&#39;</span><span class="o">.</span>
-</pre></div>
-</div>
-</section>
+<section id="understanding-the-general-troubleshoots">
+<h2>Understanding the General Troubleshoots<a class="headerlink" href="#understanding-the-general-troubleshoots" title="Link to this heading">¶</a></h2>
+<p>If no specific degradation causes are identified in the above judgment, or if accuracy does not improve after applying the proposed countermeasures, general improvement measures are suggested.</p>
+<p>Please refer to the <strong>2. General Troubleshoots</strong> of <a class="reference external" href="https://sonysemiconductorsolutions.github.io/mct-model-optimization/docs_troubleshoot/index.html">Troubleshooting Manuals</a> for details.</p>
 </section>
 </section>
 
@@ -366,13 +234,8 @@ WARNING:Model Compression Toolkit:first layer:features.16.conv.2, second layer:f
 <li><a class="reference internal" href="#how-to-run">How to Run</a></li>
 <li><a class="reference internal" href="#xquantconfig-format-and-examples">XQuantConfig Format and Examples</a></li>
 <li><a class="reference internal" href="#understanding-the-quantization-error-graph">Understanding the Quantization Error Graph</a></li>
-<li><a class="reference internal" href="#understanding-the-judgment-result">Understanding the judgment result</a><ul>
-<li><a class="reference internal" href="#outlier-removal">Outlier Removal</a></li>
-<li><a class="reference internal" href="#shift-negative-activation">Shift Negative Activation</a></li>
-<li><a class="reference internal" href="#unbalanced-concatnation">Unbalanced Concatnation</a></li>
-<li><a class="reference internal" href="#mixed-precision-with-model-output-loss-objective">Mixed Precision with model output loss objective</a></li>
-</ul>
-</li>
+<li><a class="reference internal" href="#understanding-the-judgeable-troubleshoots">Understanding the Judgeable Troubleshoots</a></li>
+<li><a class="reference internal" href="#understanding-the-general-troubleshoots">Understanding the General Troubleshoots</a></li>
 </ul>
 </li>
 </ul>

@@ -47,7 +47,7 @@
 </section>
 <section id="trouble-situation">
 <h2>Trouble Situation<a class="headerlink" href="#trouble-situation" title="Link to this heading">¶</a></h2>
-<p>The quantization accuracy may degrade when there are outlier activations in the quantized layers of your model.</p>
+<p>The quantization accuracy may degrade when there are outliers (activation values far from the average activation of representative dataset) in the quantized layers of your model.</p>
 <p>For example, you can check if activation tensors have outliers by visualizing the histograms in TensorBoard(<strong>thresholds_selection</strong> in the below image).</p>
 <a class="reference internal image-reference" href="../images/outlier_removal.png"><img alt="../images/outlier_removal.png" src="../images/outlier_removal.png" style="width: 472.6px; height: 257.0px;" />
 </a>
@@ -60,6 +60,26 @@
 <span class="n">quantized_model</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">mct</span><span class="o">.</span><span class="n">ptq</span><span class="o">.</span><span class="n">pytorch_post_training_quantization</span><span class="p">(</span><span class="o">...</span><span class="p">,</span> <span class="n">core_config</span><span class="o">=</span><span class="n">core_config</span><span class="p">)</span>
 </pre></div>
 </div>
+</section>
+<section id="appendix-how-to-read-the-outlier-histograms">
+<h2>Appendix: How to Read the Outlier Histograms<a class="headerlink" href="#appendix-how-to-read-the-outlier-histograms" title="Link to this heading">¶</a></h2>
+<p>After execution XQuant Extension Tool, it makes the histograms for the degraded layers containing the detected outliers.
+The histograms are saved in a directory named “outlier_histgrams” created in the path specified in XQuantConfig.report_dir.</p>
+<img alt="../images/outlier.png" src="../images/outlier.png" />
+<ul class="simple">
+<li><p><strong>First X-axis(lower part)</strong>: Indicates bins that finely divide the range of data values.</p></li>
+<li><p><strong>Second X-axis(upper part)</strong>: Shows the z-score values corresponding to the primary X-axis.</p></li>
+<li><p><strong>Red dashed line</strong>: The z-score threshold set in XQuantConfig.</p></li>
+<li><p><strong>Black dashed line</strong></p>
+<ul>
+<li><p><strong>Lower zscore</strong>: Indicates the maximum value on the lower side of the histogram.</p></li>
+<li><p><strong>Upper zscore</strong>: Indicates the maximum value on the upper side of the histogram.</p></li>
+</ul>
+</li>
+</ul>
+<p>An example of a histogram detected by Outlier Removal is shown.
+In this example, outliers appear in the range from about 3.9 to 5.3 on the lower end of the z-score.
+Therefore, setting the z-score threshold to 3.9 will allow these outliers to be removed.</p>
 </section>
 </section>
 
@@ -77,6 +97,7 @@
 <li><a class="reference internal" href="#overview">Overview</a></li>
 <li><a class="reference internal" href="#trouble-situation">Trouble Situation</a></li>
 <li><a class="reference internal" href="#solution">Solution</a></li>
+<li><a class="reference internal" href="#appendix-how-to-read-the-outlier-histograms">Appendix: How to Read the Outlier Histograms</a></li>
 </ul>
 </li>
 </ul>

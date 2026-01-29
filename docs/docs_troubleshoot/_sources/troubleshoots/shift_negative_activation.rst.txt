@@ -23,12 +23,6 @@ The quantization accuracy may degrade when your model contains the following lay
 * torch.nn.SiLU / torch.nn.functional.silu
 * torch.nn.GELU / torch.nn.functional.gelu
 
-Example: `PReLU <https://docs.pytorch.org/docs/2.5/generated/torch.nn.PReLU.html>`_ [2]
-
-
-.. image:: ../images/PReLU.png
-  :scale: 40%
-
 Solution
 =================================
 Shifting negative values to positive values can improve quantization error (saving an extra 1bit).
