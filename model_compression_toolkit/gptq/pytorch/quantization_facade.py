@@ -69,8 +69,8 @@ if FOUND_TORCH:
 
         args:
             n_epochs (int): Number of epochs for running the representative dataset for fine-tuning.
-            optimizer (Optimizer): Pytorch optimizer to use for fine-tuning for auxiliry variable.
-            optimizer_rest (Optimizer): Pytorch optimizer to use for fine-tuning of the bias variable.
+            optimizer (Optimizer): Pytorch optimizer to use for fine-tuning for auxiliary variable. Default: Adam(learning rate set to 3e-2).
+            optimizer_rest (Optimizer): Pytorch optimizer to use for fine-tuning of the bias variable. Default: Adam(learning rate set to 1e-4).
             loss (Callable): loss to use during fine-tuning. See the default loss function for the exact interface.
             log_function (Callable): Function to log information about the gptq process.
             use_hessian_based_weights (bool): Whether to use Hessian-based weights for weighted average loss.

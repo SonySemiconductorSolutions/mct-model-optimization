@@ -52,183 +52,9 @@ mixed-precision quantization.</p>
 <p>The wrapper manages the complete quantization pipeline from model input to
 quantized model export, handling framework-specific configurations and
 Target Platform Capabilities (TPC) setup.</p>
-<p>Initialize MCTWrapper with default parameters.</p>
-<p>Users can update the following parameters in param_items:</p>
-<p><strong>PTQ</strong></p>
-<table class="docutils align-default">
-<colgroup>
-<col style="width: 30.0%" />
-<col style="width: 30.0%" />
-<col style="width: 40.0%" />
-</colgroup>
-<thead>
-<tr class="row-odd"><th class="head"><p>Parameter Key</p></th>
-<th class="head"><p>Default Value</p></th>
-<th class="head"><p>Description</p></th>
-</tr>
-</thead>
-<tbody>
-<tr class="row-even"><td><p>target_platform_version</p></td>
-<td><p>‘v1’</p></td>
-<td><p>Target platform version (use_internal_tpc=True)</p></td>
-</tr>
-<tr class="row-odd"><td><p>tpc_version</p></td>
-<td><p>‘5.0’</p></td>
-<td><p>TPC version (use_internal_tpc=False)</p></td>
-</tr>
-<tr class="row-even"><td><p>activation_error_method</p></td>
-<td><p>mct.core.QuantizationErrorMethod.MSE</p></td>
-<td><p>Activation quantization error method</p></td>
-</tr>
-<tr class="row-odd"><td><p>weights_bias_correction</p></td>
-<td><p>True</p></td>
-<td><p>Enable weights bias correction</p></td>
-</tr>
-<tr class="row-even"><td><p>z_threshold</p></td>
-<td><p>float(‘inf’)</p></td>
-<td><p>Z-threshold for quantization</p></td>
-</tr>
-<tr class="row-odd"><td><p>linear_collapsing</p></td>
-<td><p>True</p></td>
-<td><p>Enable linear layer collapsing</p></td>
-</tr>
-<tr class="row-even"><td><p>residual_collapsing</p></td>
-<td><p>True</p></td>
-<td><p>Enable residual connection collapsing</p></td>
-</tr>
-<tr class="row-odd"><td><p>save_model_path</p></td>
-<td><p>‘./qmodel.keras’ / ‘./qmodel.onnx’</p></td>
-<td><p>Path to save quantized model (Keras/Pytorch)</p></td>
-</tr>
-</tbody>
-</table>
-<p><strong>PTQ, mixed_precision</strong></p>
-<table class="docutils align-default">
-<colgroup>
-<col style="width: 30.0%" />
-<col style="width: 30.0%" />
-<col style="width: 40.0%" />
-</colgroup>
-<thead>
-<tr class="row-odd"><th class="head"><p>Parameter Key</p></th>
-<th class="head"><p>Default Value</p></th>
-<th class="head"><p>Description</p></th>
-</tr>
-</thead>
-<tbody>
-<tr class="row-even"><td><p>target_platform_version</p></td>
-<td><p>‘v1’</p></td>
-<td><p>Target platform version (use_internal_tpc=True)</p></td>
-</tr>
-<tr class="row-odd"><td><p>tpc_version</p></td>
-<td><p>‘5.0’</p></td>
-<td><p>TPC version (use_internal_tpc=False)</p></td>
-</tr>
-<tr class="row-even"><td><p>num_of_images</p></td>
-<td><p>5</p></td>
-<td><p>Number of images for mixed precision</p></td>
-</tr>
-<tr class="row-odd"><td><p>use_hessian_based_scores</p></td>
-<td><p>False</p></td>
-<td><p>Use Hessian-based scores for mixed precision</p></td>
-</tr>
-<tr class="row-even"><td><p>weights_compression_ratio</p></td>
-<td><p>None</p></td>
-<td><p>Weights compression ratio for resource util</p></td>
-</tr>
-<tr class="row-odd"><td><p>save_model_path</p></td>
-<td><p>‘./qmodel.keras’ / ‘./qmodel.onnx’</p></td>
-<td><p>Path to save quantized model (Keras/Pytorch)</p></td>
-</tr>
-</tbody>
-</table>
-<p><strong>GPTQ</strong></p>
-<table class="docutils align-default">
-<colgroup>
-<col style="width: 30.0%" />
-<col style="width: 30.0%" />
-<col style="width: 40.0%" />
-</colgroup>
-<thead>
-<tr class="row-odd"><th class="head"><p>Parameter Key</p></th>
-<th class="head"><p>Default Value</p></th>
-<th class="head"><p>Description</p></th>
-</tr>
-</thead>
-<tbody>
-<tr class="row-even"><td><p>target_platform_version</p></td>
-<td><p>‘v1’</p></td>
-<td><p>Target platform version (use_internal_tpc=True)</p></td>
-</tr>
-<tr class="row-odd"><td><p>tpc_version</p></td>
-<td><p>‘5.0’</p></td>
-<td><p>TPC version (use_internal_tpc=False)</p></td>
-</tr>
-<tr class="row-even"><td><p>n_epochs</p></td>
-<td><p>5</p></td>
-<td><p>Number of training epochs for GPTQ</p></td>
-</tr>
-<tr class="row-odd"><td><p>optimizer</p></td>
-<td><p>None</p></td>
-<td><p>Optimizer for GPTQ training</p></td>
-</tr>
-<tr class="row-even"><td><p>save_model_path</p></td>
-<td><p>‘./qmodel.keras’ / ‘./qmodel.onnx’</p></td>
-<td><p>Path to save quantized model (Keras/Pytorch)</p></td>
-</tr>
-</tbody>
-</table>
-<p><strong>GPTQ, mixed_precision</strong></p>
-<table class="docutils align-default">
-<colgroup>
-<col style="width: 30.0%" />
-<col style="width: 30.0%" />
-<col style="width: 40.0%" />
-</colgroup>
-<thead>
-<tr class="row-odd"><th class="head"><p>Parameter Key</p></th>
-<th class="head"><p>Default Value</p></th>
-<th class="head"><p>Description</p></th>
-</tr>
-</thead>
-<tbody>
-<tr class="row-even"><td><p>target_platform_version</p></td>
-<td><p>‘v1’</p></td>
-<td><p>Target platform version (use_internal_tpc=True)</p></td>
-</tr>
-<tr class="row-odd"><td><p>tpc_version</p></td>
-<td><p>‘5.0’</p></td>
-<td><p>TPC version (use_internal_tpc=False)</p></td>
-</tr>
-<tr class="row-even"><td><p>n_epochs</p></td>
-<td><p>5</p></td>
-<td><p>Number of training epochs for GPTQ</p></td>
-</tr>
-<tr class="row-odd"><td><p>optimizer</p></td>
-<td><p>None</p></td>
-<td><p>Optimizer for GPTQ training</p></td>
-</tr>
-<tr class="row-even"><td><p>num_of_images</p></td>
-<td><p>5</p></td>
-<td><p>Number of images for mixed precision</p></td>
-</tr>
-<tr class="row-odd"><td><p>use_hessian_based_scores</p></td>
-<td><p>False</p></td>
-<td><p>Use Hessian-based scores for mixed precision</p></td>
-</tr>
-<tr class="row-even"><td><p>weights_compression_ratio</p></td>
-<td><p>None</p></td>
-<td><p>Weights compression ratio for resource util</p></td>
-</tr>
-<tr class="row-odd"><td><p>save_model_path</p></td>
-<td><p>‘./qmodel.keras’ / ‘./qmodel.onnx’</p></td>
-<td><p>Path to save quantized model (Keras/Pytorch)</p></td>
-</tr>
-</tbody>
-</table>
 <dl class="py method">
 <dt class="sig sig-object py" id="model_compression_toolkit.wrapper.mct_wrapper.MCTWrapper.quantize_and_export">
-<span class="sig-name descname"><span class="pre">quantize_and_export</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">float_model</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">representative_dataset</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">method</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'PTQ'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">framework</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'pytorch'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">use_internal_tpc</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">use_mixed_precision</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">param_items</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#model_compression_toolkit.wrapper.mct_wrapper.MCTWrapper.quantize_and_export" title="Link to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">quantize_and_export</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">float_model</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">representative_dataset</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">framework</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'pytorch'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">method</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'PTQ'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">use_mixed_precision</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">param_items</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#model_compression_toolkit.wrapper.mct_wrapper.MCTWrapper.quantize_and_export" title="Link to this definition">¶</a></dt>
 <dd><p>Main function to perform model quantization and export.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
@@ -238,12 +64,10 @@ Target Platform Capabilities (TPC) setup.</p>
 <dd class="field-even"><ul class="simple">
 <li><p><strong>float_model</strong> – The float model to be quantized.</p></li>
 <li><p><strong>representative_dataset</strong> (<em>Callable</em><em>, </em><em>np.array</em><em>, </em><em>tf.Tensor</em>) – Representative dataset for calibration.</p></li>
-<li><p><strong>method</strong> (<em>str</em>) – Quantization method, e.g., ‘PTQ’ or ‘GPTQ’.
-Default: ‘PTQ’</p></li>
 <li><p><strong>framework</strong> (<em>str</em>) – ‘tensorflow’ or ‘pytorch’.
 Default: ‘pytorch’</p></li>
-<li><p><strong>use_internal_tpc</strong> (<em>bool</em>) – Whether to use internal_tpc.
-Default: True</p></li>
+<li><p><strong>method</strong> (<em>str</em>) – Quantization method, e.g., ‘PTQ’ or ‘GPTQ’.
+Default: ‘PTQ’</p></li>
 <li><p><strong>use_mixed_precision</strong> (<em>bool</em>) – Whether to use mixed-precision
 quantization. Default: False</p></li>
 <li><p><strong>param_items</strong> (<em>list</em>) – List of parameter settings.
@@ -255,7 +79,7 @@ quantization. Default: False</p></li>
 </dd>
 </dl>
 <p class="rubric">Examples</p>
-<p>Import MCT:</p>
+<p>Import MCT</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span><span class="w"> </span><span class="nn">model_compression_toolkit</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">mct</span>
 </pre></div>
 </div>
@@ -268,14 +92,13 @@ quantization. Default: False</p></li>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">wrapper</span> <span class="o">=</span> <span class="n">mct</span><span class="o">.</span><span class="n">MCTWrapper</span><span class="p">()</span>
 </pre></div>
 </div>
-<p>set method, framework, and other parameters</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">method</span> <span class="o">=</span> <span class="s1">&#39;PTQ&#39;</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">framework</span> <span class="o">=</span> <span class="s1">&#39;tensorflow&#39;</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">use_internal_tpc</span> <span class="o">=</span> <span class="kc">True</span>
+<p>Set framework, method, and other parameters</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">framework</span> <span class="o">=</span> <span class="s1">&#39;tensorflow&#39;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">method</span> <span class="o">=</span> <span class="s1">&#39;PTQ&#39;</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">use_mixed_precision</span> <span class="o">=</span> <span class="kc">False</span>
 </pre></div>
 </div>
-<p>set parameters if needed</p>
+<p>Set parameters if needed</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">param_items</span> <span class="o">=</span> <span class="p">[[</span><span class="n">key</span><span class="p">,</span> <span class="n">value</span><span class="p">]</span><span class="o">...</span><span class="p">]</span>
 </pre></div>
 </div>
@@ -283,14 +106,245 @@ quantization. Default: False</p></li>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">flag</span><span class="p">,</span> <span class="n">quantized_model</span> <span class="o">=</span> <span class="n">wrapper</span><span class="o">.</span><span class="n">quantize_and_export</span><span class="p">(</span>
 <span class="gp">... </span>    <span class="n">float_model</span><span class="o">=</span><span class="n">float_model</span><span class="p">,</span>
 <span class="gp">... </span>    <span class="n">representative_dataset</span><span class="o">=</span><span class="n">representative_dataset</span><span class="p">,</span>
-<span class="gp">... </span>    <span class="n">method</span><span class="o">=</span><span class="n">method</span><span class="p">,</span>
 <span class="gp">... </span>    <span class="n">framework</span><span class="o">=</span><span class="n">framework</span><span class="p">,</span>
-<span class="gp">... </span>    <span class="n">use_internal_tpc</span><span class="o">=</span><span class="n">use_internal_tpc</span><span class="p">,</span>
+<span class="gp">... </span>    <span class="n">method</span><span class="o">=</span><span class="n">method</span><span class="p">,</span>
 <span class="gp">... </span>    <span class="n">use_mixed_precision</span><span class="o">=</span><span class="n">use_mixed_precision</span><span class="p">,</span>
 <span class="gp">... </span>    <span class="n">param_items</span><span class="o">=</span><span class="n">param_items</span>
 <span class="gp">... </span><span class="p">)</span>
 </pre></div>
 </div>
+<p><strong>Parameters</strong></p>
+<p>Initialize MCTWrapper with default parameters</p>
+<p>Users can update the following parameters in param_items.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>The low priority variable can be left at its default value, so there is no need to specify it.
+Specify it as necessary, for example, if you receive a warning from the <a class="reference external" href="https://sonysemiconductorsolutions.github.io/mct-model-optimization/guidelines/XQuant_Extension_Tool.html">XQuant Extension Tool</a>.</p>
+</div>
+<p>PTQ</p>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 30.0%" />
+<col style="width: 30.0%" />
+<col style="width: 40.0%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Parameter Key</p></th>
+<th class="head"><p>Default Value</p></th>
+<th class="head"><p>Description</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>sdsp_version</p></td>
+<td><p>‘3.14’</p></td>
+<td><p>By specifying the SDSP converter version, you can select the <a class="reference external" href="https://sonysemiconductorsolutions.github.io/mct-model-optimization/api/api_docs/modules/target_platform_capabilities.html#ug-target-platform-capabilities">optimal quantization settings</a> for IMX500.</p></td>
+</tr>
+<tr class="row-odd"><td><p>save_model_path</p></td>
+<td><p>‘./qmodel.keras’ / ‘./qmodel.onnx’</p></td>
+<td><p>Path to save quantized model (Keras/Pytorch)</p></td>
+</tr>
+<tr class="row-even"><td><p>activation_error_method</p></td>
+<td><p>mct.core.QuantizationErrorMethod.MSE</p></td>
+<td><p>Activation quantization error method <strong>(low priority)</strong></p></td>
+</tr>
+<tr class="row-odd"><td><p>weights_bias_correction</p></td>
+<td><p>True</p></td>
+<td><p>Enable weights bias correction <strong>(low priority)</strong></p></td>
+</tr>
+<tr class="row-even"><td><p>z_threshold</p></td>
+<td><p>float(‘inf’)</p></td>
+<td><p>Z-threshold for quantization <strong>(low priority)</strong></p></td>
+</tr>
+<tr class="row-odd"><td><p>linear_collapsing</p></td>
+<td><p>True</p></td>
+<td><p>Enable linear layer collapsing <strong>(low priority)</strong></p></td>
+</tr>
+<tr class="row-even"><td><p>residual_collapsing</p></td>
+<td><p>True</p></td>
+<td><p>Enable residual connection collapsing <strong>(low priority)</strong></p></td>
+</tr>
+</tbody>
+</table>
+<p>PTQ, mixed_precision</p>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 30.0%" />
+<col style="width: 30.0%" />
+<col style="width: 40.0%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Parameter Key</p></th>
+<th class="head"><p>Default Value</p></th>
+<th class="head"><p>Description</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>sdsp_version</p></td>
+<td><p>‘3.14’</p></td>
+<td><p>By specifying the SDSP converter version, you can select the <a class="reference external" href="https://sonysemiconductorsolutions.github.io/mct-model-optimization/api/api_docs/modules/target_platform_capabilities.html#ug-target-platform-capabilities">optimal quantization settings</a> for IMX500.</p></td>
+</tr>
+<tr class="row-odd"><td><p>save_model_path</p></td>
+<td><p>‘./qmodel.keras’ / ‘./qmodel.onnx’</p></td>
+<td><p>Path to save quantized model (Keras/Pytorch)</p></td>
+</tr>
+<tr class="row-even"><td><p>num_of_images</p></td>
+<td><p>32</p></td>
+<td><p>Number of images for mixed precision</p></td>
+</tr>
+<tr class="row-odd"><td><p>weights_compression_ratio</p></td>
+<td><p>0.75</p></td>
+<td><p>Weights compression ratio for mixed precision for resource util (0.0～1.0)</p></td>
+</tr>
+<tr class="row-even"><td><p>activation_error_method</p></td>
+<td><p>mct.core.QuantizationErrorMethod.MSE</p></td>
+<td><p>Activation quantization error method <strong>(low priority)</strong></p></td>
+</tr>
+<tr class="row-odd"><td><p>weights_bias_correction</p></td>
+<td><p>True</p></td>
+<td><p>Enable weights bias correction <strong>(low priority)</strong></p></td>
+</tr>
+<tr class="row-even"><td><p>z_threshold</p></td>
+<td><p>float(‘inf’)</p></td>
+<td><p>Z-threshold for quantization <strong>(low priority)</strong></p></td>
+</tr>
+<tr class="row-odd"><td><p>linear_collapsing</p></td>
+<td><p>True</p></td>
+<td><p>Enable linear layer collapsing <strong>(low priority)</strong></p></td>
+</tr>
+<tr class="row-even"><td><p>residual_collapsing</p></td>
+<td><p>True</p></td>
+<td><p>Enable residual connection collapsing <strong>(low priority)</strong></p></td>
+</tr>
+<tr class="row-odd"><td><p>distance_weighting_method</p></td>
+<td><p>default of <a class="reference external" href="https://sonysemiconductorsolutions.github.io/mct-model-optimization/api/api_docs/classes/MixedPrecisionQuantizationConfig.html#mpdistanceweighting">MixedPrecisionQuantizationConfig</a></p></td>
+<td><p>Distance weighting method for mixed precision <strong>(low priority)</strong></p></td>
+</tr>
+<tr class="row-even"><td><p>use_hessian_based_scores</p></td>
+<td><p>False</p></td>
+<td><p>Use Hessian-based scores for mixed precision <strong>(low priority)</strong></p></td>
+</tr>
+</tbody>
+</table>
+<p>GPTQ</p>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 30.0%" />
+<col style="width: 30.0%" />
+<col style="width: 40.0%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Parameter Key</p></th>
+<th class="head"><p>Default Value</p></th>
+<th class="head"><p>Description</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>sdsp_version</p></td>
+<td><p>‘3.14’</p></td>
+<td><p>By specifying the SDSP converter version, you can select the <a class="reference external" href="https://sonysemiconductorsolutions.github.io/mct-model-optimization/api/api_docs/modules/target_platform_capabilities.html#ug-target-platform-capabilities">optimal quantization settings</a> for IMX500.</p></td>
+</tr>
+<tr class="row-odd"><td><p>save_model_path</p></td>
+<td><p>‘./qmodel.keras’ / ‘./qmodel.onnx’</p></td>
+<td><p>Path to save quantized model (Keras/Pytorch)</p></td>
+</tr>
+<tr class="row-even"><td><p>n_epochs</p></td>
+<td><p>5</p></td>
+<td><p>Number of training epochs for GPTQ</p></td>
+</tr>
+<tr class="row-odd"><td><p>activation_error_method</p></td>
+<td><p>mct.core.QuantizationErrorMethod.MSE</p></td>
+<td><p>Activation quantization error method <strong>(low priority)</strong></p></td>
+</tr>
+<tr class="row-even"><td><p>weights_bias_correction</p></td>
+<td><p>True</p></td>
+<td><p>Enable weights bias correction <strong>(low priority)</strong></p></td>
+</tr>
+<tr class="row-odd"><td><p>z_threshold</p></td>
+<td><p>float(‘inf’)</p></td>
+<td><p>Z-threshold for quantization <strong>(low priority)</strong></p></td>
+</tr>
+<tr class="row-even"><td><p>linear_collapsing</p></td>
+<td><p>True</p></td>
+<td><p>Enable linear layer collapsing <strong>(low priority)</strong></p></td>
+</tr>
+<tr class="row-odd"><td><p>residual_collapsing</p></td>
+<td><p>True</p></td>
+<td><p>Enable residual connection collapsing <strong>(low priority)</strong></p></td>
+</tr>
+<tr class="row-even"><td><p>optimizer</p></td>
+<td><p>default of <a class="reference external" href="https://sonysemiconductorsolutions.github.io/mct-model-optimization/api/api_docs/methods/get_keras_gptq_config.html#model_compression_toolkit.gptq.get_keras_gptq_config">get_keras_gptq_config</a> or <a class="reference external" href="https://sonysemiconductorsolutions.github.io/mct-model-optimization/api/api_docs/methods/get_pytroch_gptq_config.html#model_compression_toolkit.gptq.get_pytorch_gptq_config">get_pytorch_gptq_config</a></p></td>
+<td><p>Optimizer for GPTQ <strong>(low priority)</strong></p></td>
+</tr>
+</tbody>
+</table>
+<p>GPTQ, mixed_precision</p>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 30.0%" />
+<col style="width: 30.0%" />
+<col style="width: 40.0%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Parameter Key</p></th>
+<th class="head"><p>Default Value</p></th>
+<th class="head"><p>Description</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>sdsp_version</p></td>
+<td><p>‘3.14’</p></td>
+<td><p>By specifying the SDSP converter version, you can select the <a class="reference external" href="https://sonysemiconductorsolutions.github.io/mct-model-optimization/api/api_docs/modules/target_platform_capabilities.html#ug-target-platform-capabilities">optimal quantization settings</a> for IMX500.</p></td>
+</tr>
+<tr class="row-odd"><td><p>save_model_path</p></td>
+<td><p>‘./qmodel.keras’ / ‘./qmodel.onnx’</p></td>
+<td><p>Path to save quantized model (Keras/Pytorch)</p></td>
+</tr>
+<tr class="row-even"><td><p>num_of_images</p></td>
+<td><p>32</p></td>
+<td><p>Number of images for mixed precision</p></td>
+</tr>
+<tr class="row-odd"><td><p>weights_compression_ratio</p></td>
+<td><p>0.75</p></td>
+<td><p>Weights compression ratio for mixed precision for resource util (0.0～1.0)</p></td>
+</tr>
+<tr class="row-even"><td><p>n_epochs</p></td>
+<td><p>5</p></td>
+<td><p>Number of training epochs for GPTQ</p></td>
+</tr>
+<tr class="row-odd"><td><p>activation_error_method</p></td>
+<td><p>mct.core.QuantizationErrorMethod.MSE</p></td>
+<td><p>Activation quantization error method <strong>(low priority)</strong></p></td>
+</tr>
+<tr class="row-even"><td><p>weights_bias_correction</p></td>
+<td><p>True</p></td>
+<td><p>Enable weights bias correction <strong>(low priority)</strong></p></td>
+</tr>
+<tr class="row-odd"><td><p>z_threshold</p></td>
+<td><p>float(‘inf’)</p></td>
+<td><p>Z-threshold for quantization <strong>(low priority)</strong></p></td>
+</tr>
+<tr class="row-even"><td><p>linear_collapsing</p></td>
+<td><p>True</p></td>
+<td><p>Enable linear layer collapsing <strong>(low priority)</strong></p></td>
+</tr>
+<tr class="row-odd"><td><p>residual_collapsing</p></td>
+<td><p>True</p></td>
+<td><p>Enable residual connection collapsing <strong>(low priority)</strong></p></td>
+</tr>
+<tr class="row-even"><td><p>distance_weighting_method</p></td>
+<td><p>default of <a class="reference external" href="https://sonysemiconductorsolutions.github.io/mct-model-optimization/api/api_docs/classes/MixedPrecisionQuantizationConfig.html#mpdistanceweighting">MixedPrecisionQuantizationConfig</a></p></td>
+<td><p>Distance weighting method for mixed precision <strong>(low priority)</strong></p></td>
+</tr>
+<tr class="row-odd"><td><p>use_hessian_based_scores</p></td>
+<td><p>False</p></td>
+<td><p>Use Hessian-based scores for mixed precision <strong>(low priority)</strong></p></td>
+</tr>
+<tr class="row-even"><td><p>optimizer</p></td>
+<td><p>default of <a class="reference external" href="https://sonysemiconductorsolutions.github.io/mct-model-optimization/api/api_docs/methods/get_keras_gptq_config.html#model_compression_toolkit.gptq.get_keras_gptq_config">get_keras_gptq_config</a> or <a class="reference external" href="https://sonysemiconductorsolutions.github.io/mct-model-optimization/api/api_docs/methods/get_pytroch_gptq_config.html#model_compression_toolkit.gptq.get_pytorch_gptq_config">get_pytorch_gptq_config</a></p></td>
+<td><p>Optimizer for GPTQ <strong>(low priority)</strong></p></td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 </dd></dl>

@@ -75,8 +75,8 @@ if FOUND_TF:
 
         args:
             n_epochs (int): Number of epochs for running the representative dataset for fine-tuning.
-            optimizer (OptimizerV2): Keras optimizer to use for fine-tuning for auxiliry variable with a default learning rate set to 0.2.
-            optimizer_rest (OptimizerV2): Keras optimizer to use for fine-tuning of the bias variable.
+            optimizer (OptimizerV2): Keras optimizer to use for fine-tuning for auxiliary variable. Default: Adam(learning rate set to 3e-2).
+            optimizer_rest (OptimizerV2): Keras optimizer to use for fine-tuning of the bias variable. Default: Adam(learning rate set to 1e-4).
             loss (Callable): loss to use during fine-tuning. should accept 4 lists of tensors. 1st list of quantized tensors, the 2nd list is the float tensors, the 3rd is a list of quantized weights and the 4th is a list of float weights.
             log_function (Callable): Function to log information about the gptq process.
             use_hessian_based_weights (bool): Whether to use Hessian-based weights for weighted average loss.

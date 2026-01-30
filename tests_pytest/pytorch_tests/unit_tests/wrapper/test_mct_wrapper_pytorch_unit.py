@@ -250,7 +250,7 @@ class TestMCTWrapper:
         # Verify the method calls
         mock_mixed_precision_config.assert_called_with(
             distance_weighting_method=None,
-            num_of_images=5,
+            num_of_images=32,
             use_hessian_based_scores=False
         )
         # Verify core_config was called (exact parameters may vary due to mock setup)
@@ -349,7 +349,7 @@ class TestMCTWrapper:
         # Verify the method calls
         mock_mixed_precision_config.assert_called_with(
             distance_weighting_method=None,
-            num_of_images=5,
+            num_of_images=32,
             use_hessian_based_scores=False
         )
         # Verify quant_config was called (with standard quantization parameters)
