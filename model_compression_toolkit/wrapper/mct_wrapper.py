@@ -527,6 +527,7 @@ class MCTWrapper:
             ... )
 
         **Parameters**
+    
         Initialize MCTWrapper with default parameters
 
         Users can update the following parameters in param_items.
