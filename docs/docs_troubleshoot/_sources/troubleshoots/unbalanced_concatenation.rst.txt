@@ -46,3 +46,10 @@ When you discover the concatenation layers with inputs that have notably differe
 
 
 2. Add a scaling operation between problematic "concatenation" layers in your float model.
+
+When the Unbalanced "concatenation" layers detected, the following formula message will be displayed.
+Add a scaling operation using the displayed value to the degraded layers in your network.
+
+::
+
+    WARNING:Model Compression Toolkit:first layer:features.15.conv.2, second layer:features.15.conv.3, if you add a scaling operation, recommended scaling:first layer * 5.758747418625537

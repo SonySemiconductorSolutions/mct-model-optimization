@@ -79,6 +79,11 @@ the Add layer Collapsing(collapsing the Add layer to preceding the Convolution) 
 <ol class="arabic simple" start="2">
 <li><p>Add a scaling operation between problematic “concatenation” layers in your float model.</p></li>
 </ol>
+<p>When the Unbalanced “concatenation” layers detected, the following formula message will be displayed.
+Add a scaling operation using the displayed value to the degraded layers in your network.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">WARNING</span><span class="p">:</span><span class="n">Model</span> <span class="n">Compression</span> <span class="n">Toolkit</span><span class="p">:</span><span class="n">first</span> <span class="n">layer</span><span class="p">:</span><span class="n">features</span><span class="mf">.15</span><span class="o">.</span><span class="n">conv</span><span class="mf">.2</span><span class="p">,</span> <span class="n">second</span> <span class="n">layer</span><span class="p">:</span><span class="n">features</span><span class="mf">.15</span><span class="o">.</span><span class="n">conv</span><span class="mf">.3</span><span class="p">,</span> <span class="k">if</span> <span class="n">you</span> <span class="n">add</span> <span class="n">a</span> <span class="n">scaling</span> <span class="n">operation</span><span class="p">,</span> <span class="n">recommended</span> <span class="n">scaling</span><span class="p">:</span><span class="n">first</span> <span class="n">layer</span> <span class="o">*</span> <span class="mf">5.758747418625537</span>
+</pre></div>
+</div>
 </section>
 </section>
 
