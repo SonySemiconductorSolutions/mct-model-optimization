@@ -13,7 +13,7 @@ in some operator for its weights/activations, fusing patterns, etc.)
 ## Supported Target Platform Models 
 
 Currently, MCT contains three target-platform models
-(new models can be created and used by users as demonstrated [here](./tpc_models/imx500_tpc/v1_0/tpc.py)):
+(new models can be created and used by users as demonstrated [here](https://github.com/SonySemiconductorSolutions/mct-model-optimization/blob/main/model_compression_toolkit/target_platform_capabilities/tpc_models/imx500_tpc/v1_0/tpc.py)):
 - [IMX500](https://developer.sony.com/develop/imx500/)
 - [TFLite](https://www.tensorflow.org/lite/performance/quantization_spec)
 - [QNNPACK](https://github.com/pytorch/QNNPACK)
@@ -29,7 +29,7 @@ One may view the full default target-platform model and its parameters [here](./
 
 The simplest way to initiate a TPC and use it in MCT is by using the function [get_target_platform_capabilities](https://sonysemiconductorsolutions.github.io/mct-model-optimization/api/api_docs/methods/get_target_platform_capabilities.html#ug-get-target-platform-capabilities).
 
-This function gets a TPC object matching the tpc version and device type. Please check [here](../../README.md#supported-versions) for supported versions.
+This function gets a TPC object matching the tpc version and device type. Please check [here](https://github.com/SonySemiconductorSolutions/mct-model-optimization/blob/main/README.md#supported-versions) for supported versions.
 
 For example:
 
@@ -45,7 +45,7 @@ quantized_model, quantization_info = mct.ptq.keras_post_training_quantization(in
                                                                               target_platform_capabilities=tpc)
 ```
 
-You can also get a TPC for IMX500 using the function [get_target_platform_capabilities_sdsp](../../docs/api/api_docs/methods/get_target_platform_capabilities_sdsp.html#ug-get-target-platform-capabilities_sdsp) that specifies the sdsp converter version. Please check [here](../../README.md#supported-versions) for supported versions.
+You can also get a TPC for IMX500 using the function [get_target_platform_capabilities_sdsp](https://sonysemiconductorsolutions.github.io/mct-model-optimization/api/api_docs/methods/get_target_platform_capabilities_sdsp.html#ug-get-target-platform-capabilities_sdsp) that specifies the sdsp converter version. Please check [here](https://github.com/SonySemiconductorSolutions/mct-model-optimization/blob/main/README.md#supported-versions) for supported versions.
 
 For example:
 

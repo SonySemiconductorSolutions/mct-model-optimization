@@ -51,8 +51,8 @@
 <dt class="field-even">Parameters<span class="colon">:</span></dt>
 <dd class="field-even"><ul class="simple">
 <li><p><strong>n_epochs</strong> (<em>int</em>) – Number of epochs for running the representative dataset for fine-tuning.</p></li>
-<li><p><strong>optimizer</strong> (<em>OptimizerV2</em>) – Keras optimizer to use for fine-tuning for auxiliry variable with a default learning rate set to 0.2.</p></li>
-<li><p><strong>optimizer_rest</strong> (<em>OptimizerV2</em>) – Keras optimizer to use for fine-tuning of the bias variable.</p></li>
+<li><p><strong>optimizer</strong> (<em>OptimizerV2</em>) – Keras optimizer to use for fine-tuning for auxiliary variable. Default: Adam(learning rate set to 3e-2).</p></li>
+<li><p><strong>optimizer_rest</strong> (<em>OptimizerV2</em>) – Keras optimizer to use for fine-tuning of the bias variable. Default: Adam(learning rate set to 1e-4).</p></li>
 <li><p><strong>loss</strong> (<em>Callable</em>) – loss to use during fine-tuning. should accept 4 lists of tensors. 1st list of quantized tensors, the 2nd list is the float tensors, the 3rd is a list of quantized weights and the 4th is a list of float weights.</p></li>
 <li><p><strong>log_function</strong> (<em>Callable</em>) – Function to log information about the gptq process.</p></li>
 <li><p><strong>use_hessian_based_weights</strong> (<em>bool</em>) – Whether to use Hessian-based weights for weighted average loss.</p></li>

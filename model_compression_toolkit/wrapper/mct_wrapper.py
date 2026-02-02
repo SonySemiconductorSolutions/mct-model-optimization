@@ -17,13 +17,13 @@ from typing import Dict, Any, List, Optional, Tuple
 import model_compression_toolkit as mct
 from model_compression_toolkit.logger import Logger
 from model_compression_toolkit.wrapper.constants import (
-    REPRESENTATIVE_DATA_GEN, CORE_CONFIG, FW_NAME, SDSP_VERSION,
-    NUM_OF_IMAGES, USE_HESSIAN_BASED_SCORES, IN_MODEL, IN_MODULE, MODEL,
-    TARGET_PLATFORM_CAPABILITIES, TARGET_RESOURCE_UTILIZATION,
-    ACTIVATION_ERROR_METHOD, WEIGHTS_ERROR_METHOD, WEIGHTS_BIAS_CORRECTION,
-    Z_THRESHOLD, LINEAR_COLLAPSING, RESIDUAL_COLLAPSING, GPTQ_CONFIG,
-    WEIGHTS_COMPRESSION_RATIO, N_EPOCHS, OPTIMIZER, LEARNING_RATE,
-    CONVERTER_VER, SAVE_MODEL_PATH
+    FW_NAME, SDSP_VERSION, ACTIVATION_ERROR_METHOD, WEIGHTS_BIAS_CORRECTION,
+    Z_THRESHOLD, LINEAR_COLLAPSING, RESIDUAL_COLLAPSING, 
+    DISTANCE_WEIGHTING_METHOD, NUM_OF_IMAGES, 
+    USE_HESSIAN_BASED_SCORES, WEIGHTS_COMPRESSION_RATIO,
+    IN_MODEL, REPRESENTATIVE_DATA_GEN, CORE_CONFIG, TARGET_PLATFORM_CAPABILITIES,
+    TARGET_RESOURCE_UTILIZATION, IN_MODULE, GPTQ_CONFIG, MODEL,
+    N_EPOCHS, OPTIMIZER, LEARNING_RATE, CONVERTER_VER, SAVE_MODEL_PATH, DEFAULT_COMPRESSION_RATIO
 )
 
 
@@ -43,63 +43,6 @@ class MCTWrapper:
     """
 
     def __init__(self):
-        """
-        Initialize MCTWrapper with default parameters.
-        
-        Users can update the following parameters in param_items:
-
-        **PTQ**
-
-        .. csv-table::
-           :header: "Parameter Key", "Default Value", "Description"
-           :widths: 30, 30, 40
-
-           "sdsp_version", "'3.14'", "SDSP version for TPC"
-           "activation_error_method", "mct.core.QuantizationErrorMethod.MSE", "Activation quantization error method"
-           "weights_bias_correction", "True", "Enable weights bias correction"
-           "z_threshold", "float('inf')", "Z-threshold for quantization"
-           "linear_collapsing", "True", "Enable linear layer collapsing"
-           "residual_collapsing", "True", "Enable residual connection collapsing"
-           "save_model_path", "'./qmodel.keras' / './qmodel.onnx'", "Path to save quantized model (Keras/Pytorch)"
-
-        **PTQ, mixed_precision**
-
-        .. csv-table::
-           :header: "Parameter Key", "Default Value", "Description"
-           :widths: 30, 30, 40
-
-           "sdsp_version", "'3.14'", "SDSP version for TPC"
-           "num_of_images", "5", "Number of images for mixed precision"
-           "use_hessian_based_scores", "False", "Use Hessian-based scores for mixed precision"
-           "weights_compression_ratio", "None", "Weights compression ratio for resource util"
-           "save_model_path", "'./qmodel.keras' / './qmodel.onnx'", "Path to save quantized model (Keras/Pytorch)"
-
-        **GPTQ**
-
-        .. csv-table::
-           :header: "Parameter Key", "Default Value", "Description"
-           :widths: 30, 30, 40
-
-           "sdsp_version", "'3.14'", "SDSP version for TPC"
-           "n_epochs", "5", "Number of training epochs for GPTQ"
-           "optimizer", "None", "Optimizer for GPTQ training"
-           "save_model_path", "'./qmodel.keras' / './qmodel.onnx'", "Path to save quantized model (Keras/Pytorch)"
-
-        **GPTQ, mixed_precision**
-
-        .. csv-table::
-           :header: "Parameter Key", "Default Value", "Description"
-           :widths: 30, 30, 40
-
-           "sdsp_version", "'3.14'", "SDSP version for TPC"
-           "n_epochs", "5", "Number of training epochs for GPTQ"
-           "optimizer", "None", "Optimizer for GPTQ training"
-           "num_of_images", "5", "Number of images for mixed precision"
-           "use_hessian_based_scores", "False", "Use Hessian-based scores for mixed precision"
-           "weights_compression_ratio", "None", "Weights compression ratio for resource util"
-           "save_model_path", "'./qmodel.keras' / './qmodel.onnx'", "Path to save quantized model (Keras/Pytorch)"
-
-        """
         self.params: Dict[str, Any] = {
             # TPC
             FW_NAME: 'pytorch',
@@ -112,16 +55,17 @@ class MCTWrapper:
             LINEAR_COLLAPSING: True,
             RESIDUAL_COLLAPSING: True,
 
-            # GradientPTQConfig
-            N_EPOCHS: 5,
-            OPTIMIZER: None,
-
             # MixedPrecisionQuantizationConfig
-            NUM_OF_IMAGES: 5,
+            DISTANCE_WEIGHTING_METHOD: None,
+            NUM_OF_IMAGES: 32,
             USE_HESSIAN_BASED_SCORES: False,
 
             # ResourceUtilization
-            WEIGHTS_COMPRESSION_RATIO: None,
+            WEIGHTS_COMPRESSION_RATIO: DEFAULT_COMPRESSION_RATIO,
+
+            # GradientPTQConfig
+            N_EPOCHS: 5,
+            OPTIMIZER: None,
 
             # low_bit_quantizer_ptq
             LEARNING_RATE: 0.001,
@@ -172,16 +116,21 @@ class MCTWrapper:
                                 Z_THRESHOLD, LINEAR_COLLAPSING, RESIDUAL_COLLAPSING,
                                 SAVE_MODEL_PATH]
             else:
-                allowed_keys = [FW_NAME, SDSP_VERSION, NUM_OF_IMAGES, USE_HESSIAN_BASED_SCORES,
+                allowed_keys = [FW_NAME, SDSP_VERSION, ACTIVATION_ERROR_METHOD, WEIGHTS_BIAS_CORRECTION,
+                                Z_THRESHOLD, LINEAR_COLLAPSING, RESIDUAL_COLLAPSING,
+                                DISTANCE_WEIGHTING_METHOD, NUM_OF_IMAGES, USE_HESSIAN_BASED_SCORES,
                                 WEIGHTS_COMPRESSION_RATIO, SAVE_MODEL_PATH]
         else:
             if not use_mixed_precision:
-                allowed_keys = [FW_NAME, SDSP_VERSION, N_EPOCHS, OPTIMIZER,
-                                SAVE_MODEL_PATH]
+                allowed_keys = [FW_NAME, SDSP_VERSION, ACTIVATION_ERROR_METHOD, WEIGHTS_BIAS_CORRECTION, 
+                                Z_THRESHOLD, LINEAR_COLLAPSING, RESIDUAL_COLLAPSING,
+                                N_EPOCHS, OPTIMIZER, SAVE_MODEL_PATH]
             else:
-                allowed_keys = [FW_NAME, SDSP_VERSION, N_EPOCHS, OPTIMIZER,
+                allowed_keys = [FW_NAME, SDSP_VERSION, ACTIVATION_ERROR_METHOD, WEIGHTS_BIAS_CORRECTION, 
+                                Z_THRESHOLD, LINEAR_COLLAPSING, RESIDUAL_COLLAPSING,
+                                WEIGHTS_COMPRESSION_RATIO, N_EPOCHS, OPTIMIZER, DISTANCE_WEIGHTING_METHOD,
                                 NUM_OF_IMAGES, USE_HESSIAN_BASED_SCORES,
-                                WEIGHTS_COMPRESSION_RATIO, SAVE_MODEL_PATH]
+                                SAVE_MODEL_PATH]
                      
         self.params = { k: v for k, v in self.params.items() if k in allowed_keys }
 
@@ -320,12 +269,25 @@ class MCTWrapper:
         Returns:
             dict: Parameter dictionary for PTQ.
         """
+        params_QCfg = {
+            ACTIVATION_ERROR_METHOD: self.params[ACTIVATION_ERROR_METHOD],
+            WEIGHTS_BIAS_CORRECTION: self.params[WEIGHTS_BIAS_CORRECTION],
+            Z_THRESHOLD: self.params[Z_THRESHOLD],
+            LINEAR_COLLAPSING: self.params[LINEAR_COLLAPSING],
+            RESIDUAL_COLLAPSING: self.params[RESIDUAL_COLLAPSING]
+        }
+        q_config = mct.core.QuantizationConfig(**params_QCfg)
+        
         params_MPCfg = {
+            DISTANCE_WEIGHTING_METHOD: self.params[DISTANCE_WEIGHTING_METHOD],
             NUM_OF_IMAGES: self.params[NUM_OF_IMAGES],
             USE_HESSIAN_BASED_SCORES: self.params[USE_HESSIAN_BASED_SCORES]
         }
         mixed_precision_config = mct.core.MixedPrecisionQuantizationConfig(**params_MPCfg)
-        core_config = mct.core.CoreConfig(mixed_precision_config=mixed_precision_config)
+
+        core_config = mct.core.CoreConfig(quantization_config=q_config, 
+                                          mixed_precision_config=mixed_precision_config)
+       
         params_RUDCfg = {
             IN_MODEL: self.float_model,
             REPRESENTATIVE_DATA_GEN: self.representative_dataset,
@@ -333,9 +295,7 @@ class MCTWrapper:
             TARGET_PLATFORM_CAPABILITIES: self.tpc
         }
         ru_data = self.resource_utilization_data(**params_RUDCfg)
-        weights_compression_ratio = (
-            0.75 if self.params[WEIGHTS_COMPRESSION_RATIO] is None
-            else self.params[WEIGHTS_COMPRESSION_RATIO])
+        weights_compression_ratio = self.params[WEIGHTS_COMPRESSION_RATIO]
         resource_utilization = mct.core.ResourceUtilization(
             ru_data.weights_memory * weights_compression_ratio)
 
@@ -357,7 +317,6 @@ class MCTWrapper:
         """
         params_QCfg = {
             ACTIVATION_ERROR_METHOD: self.params[ACTIVATION_ERROR_METHOD],
-            WEIGHTS_ERROR_METHOD: mct.core.QuantizationErrorMethod.MSE,
             WEIGHTS_BIAS_CORRECTION: self.params[WEIGHTS_BIAS_CORRECTION],
             Z_THRESHOLD: self.params[Z_THRESHOLD],
             LINEAR_COLLAPSING: self.params[LINEAR_COLLAPSING],
@@ -383,6 +342,15 @@ class MCTWrapper:
         Returns:
             dict: Parameter dictionary for GPTQ.
         """
+        params_QCfg = {
+            ACTIVATION_ERROR_METHOD: self.params[ACTIVATION_ERROR_METHOD],
+            WEIGHTS_BIAS_CORRECTION: self.params[WEIGHTS_BIAS_CORRECTION],
+            Z_THRESHOLD: self.params[Z_THRESHOLD],
+            LINEAR_COLLAPSING: self.params[LINEAR_COLLAPSING],
+            RESIDUAL_COLLAPSING: self.params[RESIDUAL_COLLAPSING]
+        }
+        q_config = mct.core.QuantizationConfig(**params_QCfg)        
+         
         params_GPTQCfg = {
             N_EPOCHS: self.params[N_EPOCHS],
             OPTIMIZER: self.params[OPTIMIZER]
@@ -390,11 +358,15 @@ class MCTWrapper:
         gptq_config = self.get_gptq_config(**params_GPTQCfg)
 
         params_MPCfg = {
+            DISTANCE_WEIGHTING_METHOD: self.params[DISTANCE_WEIGHTING_METHOD],
             NUM_OF_IMAGES: self.params[NUM_OF_IMAGES],
             USE_HESSIAN_BASED_SCORES: self.params[USE_HESSIAN_BASED_SCORES],
         }
         mixed_precision_config = mct.core.MixedPrecisionQuantizationConfig(**params_MPCfg)
-        core_config = mct.core.CoreConfig(mixed_precision_config=mixed_precision_config)
+
+        core_config = mct.core.CoreConfig(quantization_config=q_config,
+                                          mixed_precision_config=mixed_precision_config)
+
         params_RUDCfg = {
             IN_MODEL: self.float_model,
             REPRESENTATIVE_DATA_GEN: self.representative_dataset,
@@ -402,16 +374,9 @@ class MCTWrapper:
             TARGET_PLATFORM_CAPABILITIES: self.tpc
         }
         ru_data = self.resource_utilization_data(**params_RUDCfg)
-        weights_compression_ratio = (
-            0.75 if self.params[WEIGHTS_COMPRESSION_RATIO] is None
-            else self.params[WEIGHTS_COMPRESSION_RATIO])
+        weights_compression_ratio = self.params[WEIGHTS_COMPRESSION_RATIO]
         resource_utilization = mct.core.ResourceUtilization(
             ru_data.weights_memory * weights_compression_ratio)
-
-        core_config = mct.core.CoreConfig(
-            mixed_precision_config = mixed_precision_config,
-            quantization_config = mct.core.QuantizationConfig()
-        )
 
         params_GPTQ = {
             self.argname_model: self.float_model,
@@ -430,6 +395,16 @@ class MCTWrapper:
         Returns:
             dict: Parameter dictionary for GPTQ.
         """
+        params_QCfg = {
+            ACTIVATION_ERROR_METHOD: self.params[ACTIVATION_ERROR_METHOD],
+            WEIGHTS_BIAS_CORRECTION: self.params[WEIGHTS_BIAS_CORRECTION],
+            Z_THRESHOLD: self.params[Z_THRESHOLD],
+            LINEAR_COLLAPSING: self.params[LINEAR_COLLAPSING],
+            RESIDUAL_COLLAPSING: self.params[RESIDUAL_COLLAPSING]
+        }
+        q_config = mct.core.QuantizationConfig(**params_QCfg)
+        core_config = mct.core.CoreConfig(quantization_config=q_config)
+
         params_GPTQCfg = {
             N_EPOCHS: self.params[N_EPOCHS],
             OPTIMIZER: self.params[OPTIMIZER]
@@ -440,6 +415,7 @@ class MCTWrapper:
             self.argname_model: self.float_model,
             REPRESENTATIVE_DATA_GEN: self.representative_dataset,
             GPTQ_CONFIG: gptq_config,
+            CORE_CONFIG: core_config,
             TARGET_PLATFORM_CAPABILITIES: self.tpc
         }
         return params_GPTQ
@@ -516,7 +492,7 @@ class MCTWrapper:
             
         Examples:
 
-            Import MCT:
+            Import MCT
 
             >>> import model_compression_toolkit as mct
             
@@ -529,13 +505,13 @@ class MCTWrapper:
 
             >>> wrapper = mct.MCTWrapper()
 
-            set framework, method, and other parameters
+            Set framework, method, and other parameters
 
             >>> framework = 'tensorflow'
             >>> method = 'PTQ'
             >>> use_mixed_precision = False
 
-            set parameters if needed
+            Set parameters if needed
 
             >>> param_items = [[key, value]...]
 
@@ -549,6 +525,84 @@ class MCTWrapper:
             ...     use_mixed_precision=use_mixed_precision,
             ...     param_items=param_items
             ... )
+
+        **Parameters**
+    
+        Initialize MCTWrapper with default parameters
+
+        Users can update the following parameters in param_items.
+    
+        .. note::
+           The low priority variable can be left at its default value, so there is no need to specify it.
+           Specify it as necessary, for example, if you receive a warning from the `XQuant Extension Tool <https://sonysemiconductorsolutions.github.io/mct-model-optimization/guidelines/XQuant_Extension_Tool.html>`_.
+    
+        PTQ
+    
+        .. csv-table::
+           :header: "Parameter Key", "Default Value", "Description"
+           :widths: 30, 30, 40
+    
+           "sdsp_version", "'3.14'", "By specifying the SDSP converter version, you can select the `optimal quantization settings <https://sonysemiconductorsolutions.github.io/mct-model-optimization/api/api_docs/modules/target_platform_capabilities.html#ug-target-platform-capabilities>`_ for IMX500."
+           "save_model_path", "'./qmodel.keras' / './qmodel.onnx'", "Path to save quantized model (Keras/Pytorch)"
+           "activation_error_method", "mct.core.QuantizationErrorMethod.MSE", "Activation quantization error method **(low priority)**"
+           "weights_bias_correction", "True", "Enable weights bias correction **(low priority)**"
+           "z_threshold", "float('inf')", "Z-threshold for quantization **(low priority)**"
+           "linear_collapsing", "True", "Enable linear layer collapsing **(low priority)**"
+           "residual_collapsing", "True", "Enable residual connection collapsing **(low priority)**"
+    
+        PTQ, mixed_precision
+    
+        .. csv-table::
+           :header: "Parameter Key", "Default Value", "Description"
+           :widths: 30, 30, 40
+    
+           "sdsp_version", "'3.14'", "By specifying the SDSP converter version, you can select the `optimal quantization settings <https://sonysemiconductorsolutions.github.io/mct-model-optimization/api/api_docs/modules/target_platform_capabilities.html#ug-target-platform-capabilities>`_ for IMX500."
+           "save_model_path", "'./qmodel.keras' / './qmodel.onnx'", "Path to save quantized model (Keras/Pytorch)"
+           "num_of_images", "32", "Number of images for mixed precision"
+           "weights_compression_ratio", "0.75", "Weights compression ratio for mixed precision for resource util (0.0～1.0)"
+           "activation_error_method", "mct.core.QuantizationErrorMethod.MSE", "Activation quantization error method **(low priority)**"
+           "weights_bias_correction", "True", "Enable weights bias correction **(low priority)**"
+           "z_threshold", "float('inf')", "Z-threshold for quantization **(low priority)**"
+           "linear_collapsing", "True", "Enable linear layer collapsing **(low priority)**"
+           "residual_collapsing", "True", "Enable residual connection collapsing **(low priority)**"
+           "distance_weighting_method", "default of `MixedPrecisionQuantizationConfig <https://sonysemiconductorsolutions.github.io/mct-model-optimization/api/api_docs/classes/MixedPrecisionQuantizationConfig.html#mpdistanceweighting>`_", "Distance weighting method for mixed precision **(low priority)**"
+           "use_hessian_based_scores", "False", "Use Hessian-based scores for mixed precision **(low priority)**"
+    
+        GPTQ
+    
+        .. csv-table::
+           :header: "Parameter Key", "Default Value", "Description"
+           :widths: 30, 30, 40
+    
+           "sdsp_version", "'3.14'", "By specifying the SDSP converter version, you can select the `optimal quantization settings <https://sonysemiconductorsolutions.github.io/mct-model-optimization/api/api_docs/modules/target_platform_capabilities.html#ug-target-platform-capabilities>`_ for IMX500."
+           "save_model_path", "'./qmodel.keras' / './qmodel.onnx'", "Path to save quantized model (Keras/Pytorch)"
+           "n_epochs", "5", "Number of training epochs for GPTQ"
+           "activation_error_method", "mct.core.QuantizationErrorMethod.MSE", "Activation quantization error method **(low priority)**"
+           "weights_bias_correction", "True", "Enable weights bias correction **(low priority)**"
+           "z_threshold", "float('inf')", "Z-threshold for quantization **(low priority)**"
+           "linear_collapsing", "True", "Enable linear layer collapsing **(low priority)**"
+           "residual_collapsing", "True", "Enable residual connection collapsing **(low priority)**"
+           "optimizer", "default of `get_keras_gptq_config <https://sonysemiconductorsolutions.github.io/mct-model-optimization/api/api_docs/methods/get_keras_gptq_config.html#model_compression_toolkit.gptq.get_keras_gptq_config>`_ or `get_pytorch_gptq_config <https://sonysemiconductorsolutions.github.io/mct-model-optimization/api/api_docs/methods/get_pytroch_gptq_config.html#model_compression_toolkit.gptq.get_pytorch_gptq_config>`_", "Optimizer for GPTQ **(low priority)**"
+    
+        GPTQ, mixed_precision
+    
+        .. csv-table::
+           :header: "Parameter Key", "Default Value", "Description"
+           :widths: 30, 30, 40
+    
+           "sdsp_version", "'3.14'", "By specifying the SDSP converter version, you can select the `optimal quantization settings <https://sonysemiconductorsolutions.github.io/mct-model-optimization/api/api_docs/modules/target_platform_capabilities.html#ug-target-platform-capabilities>`_ for IMX500."
+           "save_model_path", "'./qmodel.keras' / './qmodel.onnx'", "Path to save quantized model (Keras/Pytorch)"
+           "num_of_images", "32", "Number of images for mixed precision"
+           "weights_compression_ratio", "0.75", "Weights compression ratio for mixed precision for resource util (0.0～1.0)"
+           "n_epochs", "5", "Number of training epochs for GPTQ"
+           "activation_error_method", "mct.core.QuantizationErrorMethod.MSE", "Activation quantization error method **(low priority)**"
+           "weights_bias_correction", "True", "Enable weights bias correction **(low priority)**"
+           "z_threshold", "float('inf')", "Z-threshold for quantization **(low priority)**"
+           "linear_collapsing", "True", "Enable linear layer collapsing **(low priority)**"
+           "residual_collapsing", "True", "Enable residual connection collapsing **(low priority)**"
+           "distance_weighting_method", "default of `MixedPrecisionQuantizationConfig <https://sonysemiconductorsolutions.github.io/mct-model-optimization/api/api_docs/classes/MixedPrecisionQuantizationConfig.html#mpdistanceweighting>`_", "Distance weighting method for mixed precision **(low priority)**"
+           "use_hessian_based_scores", "False", "Use Hessian-based scores for mixed precision **(low priority)**"
+           "optimizer", "default of `get_keras_gptq_config <https://sonysemiconductorsolutions.github.io/mct-model-optimization/api/api_docs/methods/get_keras_gptq_config.html#model_compression_toolkit.gptq.get_keras_gptq_config>`_ or `get_pytorch_gptq_config <https://sonysemiconductorsolutions.github.io/mct-model-optimization/api/api_docs/methods/get_pytroch_gptq_config.html#model_compression_toolkit.gptq.get_pytorch_gptq_config>`_", "Optimizer for GPTQ **(low priority)**"
 
         """
         try:
