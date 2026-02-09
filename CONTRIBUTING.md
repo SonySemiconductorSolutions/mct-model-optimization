@@ -1,5 +1,6 @@
 # Contributing Guide
-**<span style="font-size:150%;color:red;">Sorry, pull requests from external contributors are currently closed</span>**
+> [!CAUTION]
+> Sorry, pull requests from external contributors are currently closed
 
 ## Issue Tracker
 
