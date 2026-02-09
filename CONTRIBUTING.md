@@ -1,6 +1,6 @@
 # Contributing Guide
 > [!CAUTION]
-> Sorry, pull requests from external contributors are currently closed
+> **Sorry, pull requests from external contributors are currently closed**
 
 ## Issue Tracker
 
