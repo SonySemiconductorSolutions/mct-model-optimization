@@ -46,7 +46,7 @@ class ChangeFinalWeightQCAttrTest(BaseKerasFeatureNetworkTest):
     def compare(self, quantized_model, float_model, input_x=None, quantization_info=None):
         conv_layer = get_layers_from_model_by_type(quantized_model, layers.Conv2D)[0]
         self.unit_test.assertTrue(conv_layer.layer.bias is None)  # If bias correction is enabled, a bias should be added -
-        # This asserts the editing occured
+        # This asserts the editing occurred
 
 
 class ChangeFinalActivationQCAttrTest(BaseKerasFeatureNetworkTest):
