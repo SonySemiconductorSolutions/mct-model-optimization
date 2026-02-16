@@ -256,7 +256,6 @@ class ModelCollector:
         hessian_tensors += [None for _ in range(len(activation_tensors) - len(hessian_tensors))]
 
         for activation_tensor, hessian_tensor, stats_container in zip(activation_tensors, hessian_tensors, self.stats_containers_list):
-            print('activation_tensor', activation_tensor.shape)
             if isinstance(stats_container, (list, tuple)):
                 if hessian_tensor is None:
                     hessian_tensor = [None for _ in range(len(activation_tensor))]
