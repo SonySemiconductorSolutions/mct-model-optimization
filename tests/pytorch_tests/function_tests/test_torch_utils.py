@@ -68,6 +68,12 @@ class TestTorchUtils(unittest.TestCase):
         result = torch_tensor_to_numpy(self.torch_tensor)
         np.testing.assert_array_almost_equal(result, self.numpy_array)
 
+    def test_torch_tensor_to_numpy_with_scalar_tensor(self):
+        scalar_tensor = torch.tensor(1.25)
+        result = torch_tensor_to_numpy(scalar_tensor)
+        self.assertEqual(result.shape, (1,))
+        np.testing.assert_array_almost_equal(result, np.array([1.25]))
+
     def test_torch_tensor_to_numpy_with_list(self):
         result = torch_tensor_to_numpy([self.torch_tensor, self.torch_tensor])
         self.assertEqual(len(result), 2)

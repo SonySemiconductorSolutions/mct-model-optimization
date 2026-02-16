@@ -46,9 +46,10 @@ def create_stats_collector_for_node(node: common.BaseNode,
     """
 
     if node.is_activation_quantization_enabled() or quant_node_in_fln:
+        out_channel_axis = fw_info.out_channel_axis_mapping.get(node.type)
         min_output = getattr(node.prior_info, 'min_output', None)
         max_output = getattr(node.prior_info, 'max_output', None)
-        stats_collector = common.StatsCollector(out_channel_axis=fw_info.out_channel_axis_mapping.get(node.type),
+        stats_collector = common.StatsCollector(out_channel_axis=out_channel_axis,
                                                 init_min_value=min_output,
                                                 init_max_value=max_output)
     else:
@@ -255,6 +256,7 @@ class ModelCollector:
         hessian_tensors += [None for _ in range(len(activation_tensors) - len(hessian_tensors))]
 
         for activation_tensor, hessian_tensor, stats_container in zip(activation_tensors, hessian_tensors, self.stats_containers_list):
+            print('activation_tensor', activation_tensor.shape)
             if isinstance(stats_container, (list, tuple)):
                 if hessian_tensor is None:
                     hessian_tensor = [None for _ in range(len(activation_tensor))]
