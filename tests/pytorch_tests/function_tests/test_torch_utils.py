@@ -96,6 +96,7 @@ class TestTorchUtils(unittest.TestCase):
         result = torch_tensor_to_numpy((self.scalar_torch_tensor, self.scalar_torch_tensor))
         self.assertEqual(len(result), 2)
         self.assertTrue(all(isinstance(x, np.ndarray) for x in result))
+        self.assertTrue(all(x.shape == (1,) for x in result))
 
     @patch('model_compression_toolkit.logger.Logger')
     def test_torch_tensor_to_numpy_with_unsupported_type(self, mock_logger):
