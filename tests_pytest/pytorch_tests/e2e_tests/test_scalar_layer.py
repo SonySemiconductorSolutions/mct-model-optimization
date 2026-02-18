@@ -27,7 +27,6 @@ class ScalarModel(nn.Module):
         self.scalar = nn.Parameter(2.0 * torch.ones([])) # Scalar
 
     def forward(self, x):
-
         if self.name == 'add':
             const = torch.add(self.scalar, 1)
         elif self.name == 'relu6':
