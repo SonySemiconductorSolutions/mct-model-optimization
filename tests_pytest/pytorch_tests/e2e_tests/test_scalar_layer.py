@@ -18,6 +18,8 @@ import torch
 import torch.nn as nn
 import pytest
 
+# This test checks whether an ActivationQuantizationHolder can be attached to a layer that accepts scalar input.
+# These layers were selected from operators supported by the SDSP converter.
 
 class ScalarModel(nn.Module):
 
@@ -32,9 +34,9 @@ class ScalarModel(nn.Module):
         elif self.name == 'relu6':
             const = torch.nn.functional.relu6(self.scalar)
         elif self.name == 'relu':
-            const = torch.relu(self.scalar)
+            const = torch.nn.functional.relu(self.scalar)
         elif self.name == 'sigmoid':
-            const = torch.sigmoid(self.scalar)
+            const = torch.nn.functional.sigmoid(self.scalar)
         elif self.name == 'eq':
             const = torch.eq(self.scalar, 1)
         elif self.name == 'leaky_relu':
@@ -48,7 +50,7 @@ class ScalarModel(nn.Module):
         elif self.name == 'softmax':
             const = torch.nn.functional.softmax(self.scalar)
         elif self.name == 'tanh':
-            const = torch.tanh(self.scalar)
+            const = torch.nn.functional.tanh(self.scalar)
         elif self.name == 'negative':
             const = torch.negative(self.scalar)
         elif self.name == 'abs':
@@ -80,18 +82,25 @@ class ScalarModel(nn.Module):
         return y
 
 def representative_data_gen():
-    yield [np.random.random((1, 3, 8, 8))]
+    yield [torch.randn(1, 3, 8, 8)]
 
-@pytest.mark.parametrize("layer_name", [
+@pytest.mark.parametrize("layer", [
     'add', 'relu6', 'relu', 'sigmoid', 'eq', 'leaky_relu', 'mul', 'sub', 'div', 'softmax',
     'tanh', 'negative', 'abs', 'sqrt', 'sum', 'rsqrt', 'silu', 'hardswish', 'hardsigmoid',
     'pow', 'gelu', 'cos', 'sin', 'exp'
 ])
-def test_scalar_layer(layer_name):
+def test_scalar_layer(layer):
 
-    float_model = ScalarModel(name=layer_name)
+    float_model = ScalarModel(name=layer)
 
     tpc = mct.get_target_platform_capabilities("6.0")
     quantized_model, _ = mct.ptq.pytorch_post_training_quantization(float_model,
                                                                     representative_data_gen=representative_data_gen,
                                                                     target_platform_capabilities=tpc)
+    
+    if layer in ['abs', 'sum', 'pow']:
+        activation_holder = f'{layer}_1_activation_holder_quantizer'
+    else:
+        activation_holder = f'{layer}_activation_holder_quantizer'
+
+    assert hasattr(quantized_model, activation_holder)
