@@ -44,6 +44,7 @@ def node_mock():
 
 
 class TestCreateStatsCollectorForNode:
+
     def test_create_stats_collector_for_node_conv(self, node_mock, fw_info_mock):
         node_mock.type = Conv2D
         node_mock.get_output_shapes_list.return_value = [[1, 3, 32, 32]]

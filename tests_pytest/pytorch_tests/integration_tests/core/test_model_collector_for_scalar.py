@@ -53,10 +53,10 @@ def fw_info_mock():
 class TestModelCollectorInit:
 
     def test_init(self, fw_impl_mock, fw_info_mock):
-        node0 = build_node('node0', output_shape=(1, 3, 2, 2))   # 4D tensor
-        node1 = build_node('node1', output_shape=(3, 2)) # 2D tensor
-        node2 = build_node('node2', output_shape=(4,))   # 1D tensor
-        node3 = build_node('node3', output_shape=())     # Scalar
+        node0 = build_node('node0', output_shape=[[1, 3, 2, 2]])   # 4D tensor
+        node1 = build_node('node1', output_shape=[[3, 2]]) # 2D tensor
+        node2 = build_node('node2', output_shape=[[4]])   # 1D tensor
+        node3 = build_node('node3', output_shape=[[]])     # Scalar
 
         mock_nodes_list = [node0, node1, node2, node3]
         for node in mock_nodes_list:
@@ -88,10 +88,10 @@ class TestModelCollectorInit:
 class TestModelCollectorInfer:
 
     def test_infer(self, fw_impl_mock, fw_info_mock):
-        node0 = build_node('node0', output_shape=(1, 3, 2, 2))   # 4D tensor
-        node1 = build_node('node1', output_shape=(3, 2))   # 2D tensor
-        node2 = build_node('node2', output_shape=(4,))     # 1D tensor
-        node3 = build_node('node3', output_shape=())       # scalar
+        node0 = build_node('node0', output_shape=[[1, 3, 2, 2]])   # 4D tensor
+        node1 = build_node('node1', output_shape=[[3, 2]])   # 2D tensor
+        node2 = build_node('node2', output_shape=[[4]])     # 1D tensor
+        node3 = build_node('node3', output_shape=[[]])       # scalar
 
         mock_nodes_list = [node0, node1, node2, node3]
         for node in mock_nodes_list:
