@@ -12,7 +12,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 # ==============================================================================
-import numpy as np
 import model_compression_toolkit as mct
 import torch
 import torch.nn as nn

@@ -18,13 +18,16 @@ from model_compression_toolkit.core.common.model_collector import create_stats_c
 from model_compression_toolkit.defaultdict import DefaultDict
 
 
-class Conv2d:
+class Conv2D:
     pass
 
-class Linear:
+class DepthwiseConv2D:
     pass
 
-class ConvTranspose2d:
+class Dense:
+    pass
+
+class Conv2DTranspose:
     pass
 
 class DummyLayer:
@@ -33,7 +36,7 @@ class DummyLayer:
 @pytest.fixture
 def fw_info_mock():
     fw_info = Mock()
-    fw_info.out_channel_axis_mapping = DefaultDict({Conv2d: 1, Linear: -1, ConvTranspose2d: 1}, 1)
+    fw_info.out_channel_axis_mapping = DefaultDict({Conv2D: -1, Dense: -1, Conv2DTranspose: -1, DepthwiseConv2D: -1}, -1)
     return fw_info
 
 @pytest.fixture
@@ -46,16 +49,16 @@ def node_mock():
 class TestCreateStatsCollectorForNode:
 
     def test_create_stats_collector_for_node_conv(self, node_mock, fw_info_mock):
-        node_mock.type = Conv2d
+        node_mock.type = Conv2D
         node_mock.get_output_shapes_list.return_value = [(1, 3, 32, 32)]
 
-        assert fw_info_mock.out_channel_axis_mapping.get(node_mock.type) == 1
+        assert fw_info_mock.out_channel_axis_mapping.get(node_mock.type) == -1
         collector = create_stats_collector_for_node(node_mock, fw_info_mock, quant_node_in_fln=False)
-        assert collector.mc.axis == 1
-        assert collector.mpcc.axis == 1
+        assert collector.mc.axis == -1
+        assert collector.mpcc.axis == -1
 
-    def test_create_stats_collector_for_node_linear(self, node_mock, fw_info_mock):
-        node_mock.type = Linear
+    def test_create_stats_collector_for_node_dense(self, node_mock, fw_info_mock):
+        node_mock.type = Dense
         node_mock.get_output_shapes_list.return_value = [(1, 10)]
 
         assert fw_info_mock.out_channel_axis_mapping.get(node_mock.type) == -1
@@ -67,17 +70,17 @@ class TestCreateStatsCollectorForNode:
         node_mock.type = DummyLayer
         node_mock.get_output_shapes_list.return_value = [(1, 3)] # Output shape is 2D tensor
 
-        assert fw_info_mock.out_channel_axis_mapping.get(node_mock.type) == 1
+        assert fw_info_mock.out_channel_axis_mapping.get(node_mock.type) == -1
         collector = create_stats_collector_for_node(node_mock, fw_info_mock, quant_node_in_fln=False)
-        assert collector.mc.axis == 1
-        assert collector.mpcc.axis == 1
+        assert collector.mc.axis == -1
+        assert collector.mpcc.axis == -1
 
     def test_create_stats_collector_for_node_1d_tensor(self, node_mock, fw_info_mock):
         node_mock.type = DummyLayer
         node_mock.get_output_shapes_list.return_value = [(1,)] # Output shape is 1D tensor
 
-        # Check that axis changed to -1
-        assert fw_info_mock.out_channel_axis_mapping.get(node_mock.type) == 1
+        # Check that axis remains -1
+        assert fw_info_mock.out_channel_axis_mapping.get(node_mock.type) == -1
         collector = create_stats_collector_for_node(node_mock, fw_info_mock, quant_node_in_fln=False)
         assert collector.mc.axis == -1
         assert collector.mpcc.axis == -1
@@ -86,8 +89,8 @@ class TestCreateStatsCollectorForNode:
         node_mock.type = DummyLayer
         node_mock.get_output_shapes_list.return_value = [()] # Output shape is scalar
 
-        # Check that axis changed to -1
-        assert fw_info_mock.out_channel_axis_mapping.get(node_mock.type) == 1
+        # Check that axis remains -1
+        assert fw_info_mock.out_channel_axis_mapping.get(node_mock.type) == -1
         collector = create_stats_collector_for_node(node_mock, fw_info_mock, quant_node_in_fln=False)
         assert collector.mc.axis == -1
         assert collector.mpcc.axis == -1
