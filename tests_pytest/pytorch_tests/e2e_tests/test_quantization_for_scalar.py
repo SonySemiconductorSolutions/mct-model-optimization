@@ -20,14 +20,19 @@ import pytest
 # This test checks whether an ActivationQuantizationHolder can be attached to a layer that accepts scalar input.
 # These layers were selected from operators supported by the SDSP converter.
 
-class ScalarModel(nn.Module):
+class Model(nn.Module):
 
     def __init__(self, name):
         super().__init__()
         self.name = name
+        self.conv = nn.Conv2d(3, 3, kernel_size=3, padding=1)
+        self.relu = nn.ReLU()
         self.scalar = nn.Parameter(2.0 * torch.ones([])) # Scalar
 
     def forward(self, x):
+        x = self.conv(x)
+        x = self.relu(x)
+
         if self.name == 'add':
             const = torch.add(self.scalar, 1)
         elif self.name == 'relu6':
@@ -88,14 +93,69 @@ def representative_data_gen():
     'tanh', 'negative', 'abs', 'sqrt', 'sum', 'rsqrt', 'silu', 'hardswish', 'hardsigmoid',
     'pow', 'gelu', 'cos', 'sin', 'exp'
 ])
-def test_scalar_layer(layer):
+def test_ptq_scalar(layer):
 
-    float_model = ScalarModel(name=layer)
+    float_model = Model(name=layer)
 
     tpc = mct.get_target_platform_capabilities("6.0")
     quantized_model, _ = mct.ptq.pytorch_post_training_quantization(float_model,
                                                                     representative_data_gen=representative_data_gen,
                                                                     target_platform_capabilities=tpc)
+    
+    if layer in ['abs', 'sum', 'pow']:
+        activation_holder = f'{layer}_1_activation_holder_quantizer'
+    else:
+        activation_holder = f'{layer}_activation_holder_quantizer'
+
+    assert hasattr(quantized_model, activation_holder)
+
+
+@pytest.mark.parametrize("layer", [
+    'add', 'relu6', 'relu', 'sigmoid', 'eq', 'leaky_relu', 'mul', 'sub', 'div', 'softmax',
+    'tanh', 'negative', 'abs', 'sqrt', 'sum', 'rsqrt', 'silu', 'hardswish', 'hardsigmoid',
+    'pow', 'gelu', 'cos', 'sin', 'exp'
+])
+def test_ptq_mixed_precision_scalar(layer):
+
+    float_model = Model(name=layer)
+
+    tpc = mct.get_target_platform_capabilities("6.0")
+    core_config = mct.core.CoreConfig(mixed_precision_config=mct.core.MixedPrecisionQuantizationConfig(num_of_images=1,
+                                                                                                       use_hessian_based_scores=False))
+    resource_utilization_data = mct.core.pytorch_resource_utilization_data(float_model,
+                                                                           representative_data_gen,
+                                                                           core_config,
+                                                                           target_platform_capabilities=tpc)
+    resource_utilization = mct.core.ResourceUtilization(resource_utilization_data.weights_memory * 0.9)
+    quantized_model, _ = mct.ptq.pytorch_post_training_quantization(float_model,
+                                                                    representative_data_gen,
+                                                                    target_resource_utilization=resource_utilization,
+                                                                    core_config=core_config,
+                                                                    target_platform_capabilities=tpc)
+    
+    if layer in ['abs', 'sum', 'pow']:
+        activation_holder = f'{layer}_1_activation_holder_quantizer'
+    else:
+        activation_holder = f'{layer}_activation_holder_quantizer'
+
+    assert hasattr(quantized_model, activation_holder)
+
+
+@pytest.mark.parametrize("layer", [
+    'add', 'relu6', 'relu', 'sigmoid', 'eq', 'leaky_relu', 'mul', 'sub', 'div', 'softmax',
+    'tanh', 'negative', 'abs', 'sqrt', 'sum', 'rsqrt', 'silu', 'hardswish', 'hardsigmoid',
+    'pow', 'gelu', 'cos', 'sin', 'exp'
+])
+def test_gptq_scalar(layer):
+
+    float_model = Model(name=layer)
+
+    tpc = mct.get_target_platform_capabilities("6.0")
+    gptq_config = mct.gptq.get_pytorch_gptq_config(n_epochs=5)
+    quantized_model, _ = mct.gptq.pytorch_gradient_post_training_quantization(float_model,
+                                                                              representative_data_gen,
+                                                                              gptq_config=gptq_config,
+                                                                              target_platform_capabilities=tpc)
     
     if layer in ['abs', 'sum', 'pow']:
         activation_holder = f'{layer}_1_activation_holder_quantizer'
