@@ -157,27 +157,27 @@ class TestModelCollectorInfer:
         assert max_v == 10.0
         
         # node1 (axis=1)
-        # infer1 channel means: [2, 4]
-        # infer2 channel means: [6, -2]
-        # final mean: [4, 1]
+        # infer1 channel means: [2.0, 4.0]
+        # infer2 channel means: [6.0, -2.0]
+        # final mean: [4.0, 1.0]
         np.testing.assert_allclose(sc1.get_mean(), np.array([4.0, 1.0]))
         min_v, max_v = sc1.get_min_max_values()
         assert min_v == -3.0
         assert max_v == 7.0
         
         # node2 (axis=-1)
-        # infer1 channel means: [2, 6, 8, 10]
-        # infer2 channel means: [4, 8, 12, 16]
-        # final mean: [3, 7, 10, 13]
+        # infer1 channel means: [2.0, 6.0, 8.0, 10.0]
+        # infer2 channel means: [4.0, 8.0, 12.0, 16.0]
+        # final mean: [3.0, 7.0, 10.0, 13.0]
         np.testing.assert_allclose(sc2.get_mean(), np.array([3.0, 7.0, 10.0, 13.0]))
         min_v, max_v = sc2.get_min_max_values()
         assert min_v == 2.0
         assert max_v == 16.0
         
         # node3 (axis=-1)
-        # infer1 channel means: 10
-        # infer2 channel means: -2
-        # final mean: 4
+        # infer1 channel means: 10.0
+        # infer2 channel means: -2.0
+        # final mean: 4.0
         np.testing.assert_allclose(sc3.get_mean(), np.array([4.0]))
         min_v, max_v = sc3.get_min_max_values()
         assert min_v == -2.0
