@@ -17,7 +17,7 @@ import torch
 import torch.nn as nn
 import pytest
 
-# This test checks whether an ActivationQuantizationHolder can be attached to a layer that accepts 1D tensor input.
+# This test checks whether an ActivationQuantizationHolder can be attached to a layer that produces 1D tensor output.
 # These layers were selected from operators supported by the SDSP converter.
 
 class Model(nn.Module):
@@ -27,11 +27,12 @@ class Model(nn.Module):
         self.name = name
         self.conv = nn.Conv2d(3, 3, kernel_size=3, padding=1)
         self.relu = nn.ReLU()
-        self.tensor = nn.Parameter(2.0 * torch.ones([1])) # 1D tensor
+        self.tensor = nn.Parameter(2.0 * torch.ones([192])) # 1D tensor
 
     def forward(self, x):
         x = self.conv(x)
         x = self.relu(x)
+        x = torch.reshape(x, (-1,))
 
         if self.name == 'add':
             const = torch.add(self.tensor, 1)
@@ -59,8 +60,6 @@ class Model(nn.Module):
             const = torch.abs(self.tensor)
         elif self.name == 'sqrt':
             const = torch.sqrt(self.tensor)
-        elif self.name == 'sum':
-            const = torch.sum(self.tensor)
         elif self.name == 'rsqrt':
             const = torch.rsqrt(self.tensor)
         elif self.name == 'silu':
@@ -79,6 +78,16 @@ class Model(nn.Module):
             const = torch.sin(self.tensor)
         elif self.name == 'exp':
             const = torch.exp(self.tensor)
+        elif self.name == 'mean':
+            const = torch.mean(self.tensor, dim=0, keepdim=True)
+        elif self.name == 'amax':
+            const = torch.amax(self.tensor, dim=0, keepdim=True)
+        elif self.name == 'maximum':
+            const = torch.maximum(self.tensor, torch.tensor(0.0))
+        elif self.name == 'minimum':
+            const = torch.minimum(self.tensor, torch.tensor(0.0))
+        elif self.name == 'sum':
+            const = torch.sum(self.tensor, dim=0, keepdim=True)
         
         y = x + const
         return y
@@ -88,8 +97,8 @@ def representative_data_gen():
 
 @pytest.mark.parametrize("layer", [
     'add', 'relu6', 'relu', 'sigmoid', 'leaky_relu', 'mul', 'sub', 'div', 'softmax',
-    'tanh', 'negative', 'abs', 'sqrt', 'sum', 'rsqrt', 'silu', 'hardswish', 'hardsigmoid',
-    'pow', 'gelu', 'cos', 'sin', 'exp'
+    'tanh', 'negative', 'abs', 'sqrt', 'rsqrt', 'silu', 'hardswish', 'hardsigmoid',
+    'pow', 'gelu', 'cos', 'sin', 'exp', 'mean', 'amax', 'maximum', 'minimum', 'sum'
 ])
 def test_ptq_1d_tensor(layer):
 
@@ -110,8 +119,8 @@ def test_ptq_1d_tensor(layer):
 
 @pytest.mark.parametrize("layer", [
     'add', 'relu6', 'relu', 'sigmoid', 'leaky_relu', 'mul', 'sub', 'div', 'softmax',
-    'tanh', 'negative', 'abs', 'sqrt', 'sum', 'rsqrt', 'silu', 'hardswish', 'hardsigmoid',
-    'pow', 'gelu', 'cos', 'sin', 'exp'
+    'tanh', 'negative', 'abs', 'sqrt', 'rsqrt', 'silu', 'hardswish', 'hardsigmoid',
+    'pow', 'gelu', 'cos', 'sin', 'exp', 'mean', 'amax', 'maximum', 'minimum', 'sum'
 ])
 def test_ptq_mixed_precision_1d_tensor(layer):
 
@@ -142,7 +151,7 @@ def test_ptq_mixed_precision_1d_tensor(layer):
 @pytest.mark.parametrize("layer", [
     'add', 'relu6', 'relu', 'sigmoid', 'leaky_relu', 'mul', 'sub', 'div', 'softmax',
     'tanh', 'negative', 'abs', 'sqrt', 'sum', 'rsqrt', 'silu', 'hardswish', 'hardsigmoid',
-    'pow', 'gelu', 'cos', 'sin', 'exp'
+    'pow', 'gelu', 'cos', 'sin', 'exp', 'mean', 'amax', 'maximum', 'minimum'
 ])
 def test_gptq_1d_tensor(layer):
 

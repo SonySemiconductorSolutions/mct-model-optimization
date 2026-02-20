@@ -17,7 +17,7 @@ import torch
 import torch.nn as nn
 import pytest
 
-# This test checks whether an ActivationQuantizationHolder can be attached to a layer that accepts scalar input.
+# This test checks whether an ActivationQuantizationHolder can be attached to a layer that produces scalar output.
 # These layers were selected from operators supported by the SDSP converter.
 
 class Model(nn.Module):
@@ -59,8 +59,6 @@ class Model(nn.Module):
             const = torch.abs(self.scalar)
         elif self.name == 'sqrt':
             const = torch.sqrt(self.scalar)
-        elif self.name == 'sum':
-            const = torch.sum(self.scalar)
         elif self.name == 'rsqrt':
             const = torch.rsqrt(self.scalar)
         elif self.name == 'silu':
@@ -88,7 +86,7 @@ def representative_data_gen():
 
 @pytest.mark.parametrize("layer", [
     'add', 'relu6', 'relu', 'sigmoid', 'leaky_relu', 'mul', 'sub', 'div', 'softmax',
-    'tanh', 'negative', 'abs', 'sqrt', 'sum', 'rsqrt', 'silu', 'hardswish', 'hardsigmoid',
+    'tanh', 'negative', 'abs', 'sqrt', 'rsqrt', 'silu', 'hardswish', 'hardsigmoid',
     'pow', 'gelu', 'cos', 'sin', 'exp'
 ])
 def test_ptq_scalar(layer):
@@ -110,7 +108,7 @@ def test_ptq_scalar(layer):
 
 @pytest.mark.parametrize("layer", [
     'add', 'relu6', 'relu', 'sigmoid', 'leaky_relu', 'mul', 'sub', 'div', 'softmax',
-    'tanh', 'negative', 'abs', 'sqrt', 'sum', 'rsqrt', 'silu', 'hardswish', 'hardsigmoid',
+    'tanh', 'negative', 'abs', 'sqrt', 'rsqrt', 'silu', 'hardswish', 'hardsigmoid',
     'pow', 'gelu', 'cos', 'sin', 'exp'
 ])
 def test_ptq_mixed_precision_scalar(layer):
@@ -141,7 +139,7 @@ def test_ptq_mixed_precision_scalar(layer):
 
 @pytest.mark.parametrize("layer", [
     'add', 'relu6', 'relu', 'sigmoid', 'leaky_relu', 'mul', 'sub', 'div', 'softmax',
-    'tanh', 'negative', 'abs', 'sqrt', 'sum', 'rsqrt', 'silu', 'hardswish', 'hardsigmoid',
+    'tanh', 'negative', 'abs', 'sqrt', 'rsqrt', 'silu', 'hardswish', 'hardsigmoid',
     'pow', 'gelu', 'cos', 'sin', 'exp'
 ])
 def test_gptq_scalar(layer):
