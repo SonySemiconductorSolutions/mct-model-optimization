@@ -130,3 +130,15 @@ These techniques are essential for further optimizing models and achieving super
   | [Wrapper](pytorch/example_pytorch_mct_wrapper.ipynb) | &#x2705; Wrapper    |
   
 </details>
+
+
+
+<details id="XQuant Extension Tool">
+  <summary>XQuant Extension Tool</summary>
+  
+  | Tutorial                                                                                                  | Included Features                           |
+  |-----------------------------------------------------------------------------------------------------------|---------------------------------------------|
+  | [Judgeable Troubleshooting](pytorch/example_pytorch_XQuant_Extension_Tool.ipynb)        | &#x2705; Judgeable Troubleshooting |
+  | [General Troubleshooting](pytorch/example_pytorch_XQuant_Extension_Tool_General.ipynb)           | &#x2705; General Troubleshooting |
+
+</details>
