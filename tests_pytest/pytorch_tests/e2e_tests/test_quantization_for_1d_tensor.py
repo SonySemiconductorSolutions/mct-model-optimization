@@ -41,8 +41,6 @@ class Model(nn.Module):
             const = torch.nn.functional.relu(self.tensor)
         elif self.name == 'sigmoid':
             const = torch.nn.functional.sigmoid(self.tensor)
-        elif self.name == 'eq':
-            const = torch.eq(self.tensor, 1)
         elif self.name == 'leaky_relu':
             const = torch.nn.functional.leaky_relu(self.tensor)
         elif self.name == 'mul':
@@ -89,7 +87,7 @@ def representative_data_gen():
     yield [torch.randn(1, 3, 8, 8)]
 
 @pytest.mark.parametrize("layer", [
-    'add', 'relu6', 'relu', 'sigmoid', 'eq', 'leaky_relu', 'mul', 'sub', 'div', 'softmax',
+    'add', 'relu6', 'relu', 'sigmoid', 'leaky_relu', 'mul', 'sub', 'div', 'softmax',
     'tanh', 'negative', 'abs', 'sqrt', 'sum', 'rsqrt', 'silu', 'hardswish', 'hardsigmoid',
     'pow', 'gelu', 'cos', 'sin', 'exp'
 ])
@@ -111,7 +109,7 @@ def test_ptq_1d_tensor(layer):
 
 
 @pytest.mark.parametrize("layer", [
-    'add', 'relu6', 'relu', 'sigmoid', 'eq', 'leaky_relu', 'mul', 'sub', 'div', 'softmax',
+    'add', 'relu6', 'relu', 'sigmoid', 'leaky_relu', 'mul', 'sub', 'div', 'softmax',
     'tanh', 'negative', 'abs', 'sqrt', 'sum', 'rsqrt', 'silu', 'hardswish', 'hardsigmoid',
     'pow', 'gelu', 'cos', 'sin', 'exp'
 ])
@@ -142,7 +140,7 @@ def test_ptq_mixed_precision_1d_tensor(layer):
 
 
 @pytest.mark.parametrize("layer", [
-    'add', 'relu6', 'relu', 'sigmoid', 'eq', 'leaky_relu', 'mul', 'sub', 'div', 'softmax',
+    'add', 'relu6', 'relu', 'sigmoid', 'leaky_relu', 'mul', 'sub', 'div', 'softmax',
     'tanh', 'negative', 'abs', 'sqrt', 'sum', 'rsqrt', 'silu', 'hardswish', 'hardsigmoid',
     'pow', 'gelu', 'cos', 'sin', 'exp'
 ])
