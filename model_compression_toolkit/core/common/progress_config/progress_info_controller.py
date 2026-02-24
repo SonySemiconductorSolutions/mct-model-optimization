@@ -132,15 +132,10 @@ def research_progress_total(
     """
     # Base required steps: preprocessing, statistics, weight params, post-processing
     total_steps = 4
-    
-    # Determine if Mixed Precision is enabled
-    is_mixed_precision_enabled = (
-        core_config.is_mixed_precision_enabled or
-        (target_resource_utilization is not None and target_resource_utilization.is_any_restricted())
-    )
 
     # Add MP calculation step (when Mixed Precision enabled)
-    if is_mixed_precision_enabled:
+    if target_resource_utilization is not None and \
+       target_resource_utilization.is_any_restricted():
         total_steps += 1
 
         # Add Hessian step (when Mixed Precision with Hessian enabled)

@@ -27,6 +27,7 @@ from model_compression_toolkit.core.common.progress_config.constants import \
 class CheckCallBackFunction:
     def __init__(self):
         self.history = []
+        self.count = 0
 
     def __call__(self, info):
         self.history.append({
@@ -34,6 +35,7 @@ class CheckCallBackFunction:
             TOTAL_COMPONENTS: info[TOTAL_COMPONENTS],
             CURRENT_COMPONENT: info[CURRENT_COMPONENT],
         })
+        self.count += 1
 
 
 class TestProgessInfoController:
@@ -62,6 +64,8 @@ class TestProgessInfoController:
             ### Expected value verification (ProgressInfoController)
             assert isinstance(controller, expected)
 
+            assert isinstance(controller.pbar, tqdm)
+
             ### Verify the initialization of class member variables
             assert controller.total_step == total_step
             assert controller.current_step == 0
@@ -76,15 +80,13 @@ class TestProgessInfoController:
             progress_info_callback=CheckCallBackFunction(),
         )
 
-        assert isinstance(controller.pbar, tqdm)
-
         controller.set_description("Preprocessing")
         controller.set_description("Finalization")
 
         callback = controller.progress_info_callback
 
         ### Verify callback was called 2 times
-        assert len(callback.history) == 2
+        assert callback.count == 2
 
         ### Verify first call
         assert callback.history[0][COMPLETED_COMPONENTS] == "Preprocessing"
@@ -122,4 +124,4 @@ class TestProgessInfoController:
 
         ### Verify callback was called 1 time
         callback = controller.progress_info_callback
-        assert len(callback.history) == 1
+        assert callback.count == 1
