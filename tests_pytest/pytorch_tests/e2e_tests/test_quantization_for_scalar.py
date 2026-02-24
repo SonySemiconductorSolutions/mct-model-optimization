@@ -44,7 +44,7 @@ class Model(nn.Module):
         elif self.name == 'leaky_relu':
             const = torch.nn.functional.leaky_relu(self.scalar)
         elif self.name == 'mul':
-            const = torch.mul(self.scalar, 1)
+            const = torch.mul(self.scalar, 2)
         elif self.name == 'sub':
             const = torch.sub(self.scalar, 1)
         elif self.name == 'div':
