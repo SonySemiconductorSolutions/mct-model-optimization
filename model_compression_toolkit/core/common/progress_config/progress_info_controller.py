@@ -37,9 +37,7 @@ class ProgressInfoController:
         total_step: Total number of processing steps.
         description: Description for the progress bar.
         current_step: Current step number (starts from 0, incremented by set_description()).
-        disable: Flag to disable progress bar display.
-        callback: User-defined callback function (for future extension).
-        pbar: tqdm overall progress bar object.
+        callback: User-defined callback function.
     """
     total_step: int = field(default=0)
     current_step: int = field(default=0)
