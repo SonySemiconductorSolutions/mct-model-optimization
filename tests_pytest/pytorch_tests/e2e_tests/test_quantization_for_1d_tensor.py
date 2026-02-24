@@ -27,7 +27,6 @@ class Model(nn.Module):
         self.name = name
         self.conv = nn.Conv2d(3, 3, kernel_size=3, padding=1)
         self.relu = nn.ReLU()
-        self.tensor = nn.Parameter(2.0 * torch.ones([192])) # 1D tensor
 
     def forward(self, x):
         x = self.conv(x)
@@ -35,70 +34,70 @@ class Model(nn.Module):
         x = torch.reshape(x, (-1,))
 
         if self.name == 'add':
-            const = torch.add(self.tensor, 1)
+            y = torch.add(x, 1)
         elif self.name == 'relu6':
-            const = torch.nn.functional.relu6(self.tensor)
+            y = torch.nn.functional.relu6(x)
         elif self.name == 'relu':
-            const = torch.nn.functional.relu(self.tensor)
+            y = torch.nn.functional.relu(x)
         elif self.name == 'sigmoid':
-            const = torch.nn.functional.sigmoid(self.tensor)
+            y = torch.nn.functional.sigmoid(x)
         elif self.name == 'leaky_relu':
-            const = torch.nn.functional.leaky_relu(self.tensor)
+            y = torch.nn.functional.leaky_relu(x)
         elif self.name == 'mul':
-            const = torch.mul(self.tensor, 1)
+            y = torch.mul(x, 1)
         elif self.name == 'sub':
-            const = torch.sub(self.tensor, 1)
+            y = torch.sub(x, 1)
         elif self.name == 'div':
-            const = torch.div(self.tensor, 1)
+            y = torch.div(x, 1)
         elif self.name == 'softmax':
-            const = torch.nn.functional.softmax(self.tensor)
+            y = torch.nn.functional.softmax(x)
         elif self.name == 'tanh':
-            const = torch.nn.functional.tanh(self.tensor)
+            y = torch.nn.functional.tanh(x)
         elif self.name == 'negative':
-            const = torch.negative(self.tensor)
+            y = torch.negative(x)
         elif self.name == 'abs':
-            const = torch.abs(self.tensor)
+            y = torch.abs(x)
         elif self.name == 'sqrt':
-            const = torch.sqrt(self.tensor)
+            y = torch.sqrt(torch.clamp(x, min=1e-6))
         elif self.name == 'rsqrt':
-            const = torch.rsqrt(self.tensor)
+            y = torch.rsqrt(torch.clamp(x, min=1e-6))
         elif self.name == 'silu':
-            const = torch.nn.functional.silu(self.tensor)
+            y = torch.nn.functional.silu(x)
         elif self.name == 'hardswish':
-            const = torch.nn.functional.hardswish(self.tensor)
+            y = torch.nn.functional.hardswish(x)
         elif self.name == 'hardsigmoid':
-            const = torch.nn.functional.hardsigmoid(self.tensor)
+            y = torch.nn.functional.hardsigmoid(x)
         elif self.name == 'pow':
-            const = torch.pow(self.tensor, 1)
+            y = torch.pow(x, 1)
         elif self.name == 'gelu':
-            const = torch.nn.functional.gelu(self.tensor)
+            y = torch.nn.functional.gelu(x)
         elif self.name == 'cos':
-            const = torch.cos(self.tensor)
+            y = torch.cos(x)
         elif self.name == 'sin':
-            const = torch.sin(self.tensor)
+            y = torch.sin(x)
         elif self.name == 'exp':
-            const = torch.exp(self.tensor)
+            y = torch.exp(x)
         elif self.name == 'mean':
-            const = torch.mean(self.tensor, dim=0, keepdim=True)
+            y = torch.mean(x, dim=0, keepdim=True)
         elif self.name == 'amax':
-            const = torch.amax(self.tensor, dim=0, keepdim=True)
+            y = torch.amax(x, dim=0, keepdim=True)
         elif self.name == 'maximum':
-            const = torch.maximum(self.tensor, torch.tensor(0.0))
+            y = torch.maximum(x, torch.tensor(0.0))
         elif self.name == 'minimum':
-            const = torch.minimum(self.tensor, torch.tensor(0.0))
+            y = torch.minimum(x, torch.tensor(0.0))
         elif self.name == 'sum':
-            const = torch.sum(self.tensor, dim=0, keepdim=True)
-        
-        y = x + const
+            y = torch.sum(x, dim=0, keepdim=True)
+        elif self.name == 'linalg_norm':
+            y = torch.linalg.norm(x, dim=0, keepdim=True)
         return y
 
 def representative_data_gen():
     yield [torch.randn(1, 3, 8, 8)]
 
 @pytest.mark.parametrize("layer", [
-    'add', 'relu6', 'relu', 'sigmoid', 'leaky_relu', 'mul', 'sub', 'div', 'softmax',
-    'tanh', 'negative', 'abs', 'sqrt', 'rsqrt', 'silu', 'hardswish', 'hardsigmoid',
-    'pow', 'gelu', 'cos', 'sin', 'exp', 'mean', 'amax', 'maximum', 'minimum', 'sum'
+    'add', 'relu6', 'relu', 'sigmoid', 'leaky_relu', 'mul', 'sub', 'div', 'mean', 'amax', 'softmax',
+    'tanh', 'negative', 'maximum', 'minimum', 'abs', 'sqrt', 'sum', 'rsqrt', 'silu', 'hardswish', 'hardsigmoid',
+    'linalg_norm', 'pow', 'gelu', 'cos', 'sin', 'exp', 
 ])
 def test_ptq_1d_tensor(layer):
 
@@ -118,9 +117,9 @@ def test_ptq_1d_tensor(layer):
 
 
 @pytest.mark.parametrize("layer", [
-    'add', 'relu6', 'relu', 'sigmoid', 'leaky_relu', 'mul', 'sub', 'div', 'softmax',
-    'tanh', 'negative', 'abs', 'sqrt', 'rsqrt', 'silu', 'hardswish', 'hardsigmoid',
-    'pow', 'gelu', 'cos', 'sin', 'exp', 'mean', 'amax', 'maximum', 'minimum', 'sum'
+    'add', 'relu6', 'relu', 'sigmoid', 'leaky_relu', 'mul', 'sub', 'div', 'mean', 'amax', 'softmax',
+    'tanh', 'negative', 'maximum', 'minimum', 'abs', 'sqrt', 'sum', 'rsqrt', 'silu', 'hardswish', 'hardsigmoid',
+    'linalg_norm', 'pow', 'gelu', 'cos', 'sin', 'exp', 
 ])
 def test_ptq_mixed_precision_1d_tensor(layer):
 
@@ -149,9 +148,9 @@ def test_ptq_mixed_precision_1d_tensor(layer):
 
 
 @pytest.mark.parametrize("layer", [
-    'add', 'relu6', 'relu', 'sigmoid', 'leaky_relu', 'mul', 'sub', 'div', 'softmax',
-    'tanh', 'negative', 'abs', 'sqrt', 'sum', 'rsqrt', 'silu', 'hardswish', 'hardsigmoid',
-    'pow', 'gelu', 'cos', 'sin', 'exp', 'mean', 'amax', 'maximum', 'minimum'
+    'add', 'relu6', 'relu', 'sigmoid', 'leaky_relu', 'mul', 'sub', 'div', 'mean', 'amax', 'softmax',
+    'tanh', 'negative', 'maximum', 'minimum', 'abs', 'sqrt', 'sum', 'rsqrt', 'silu', 'hardswish', 'hardsigmoid',
+    'linalg_norm', 'pow', 'gelu', 'cos', 'sin', 'exp', 
 ])
 def test_gptq_1d_tensor(layer):
 
