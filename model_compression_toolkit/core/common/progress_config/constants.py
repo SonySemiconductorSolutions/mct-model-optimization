@@ -16,3 +16,9 @@
 COMPLETED_COMPONENTS = 'completedComponents'
 TOTAL_COMPONENTS = 'totalComponents'
 CURRENT_COMPONENT = 'currentComponent'
+
+PROGRESS_INFO_CALLBACK = 'progress_info_callback'
+TOTAL_STEP = 'total_step'
+
+PROGRESS_BAR_POSITION = 2
+DEFAULT_TOTAL_STEP = 4

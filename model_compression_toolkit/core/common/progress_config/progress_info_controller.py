@@ -18,8 +18,10 @@ from typing import Optional, Callable, TYPE_CHECKING
 from dataclasses import dataclass, field
 from tqdm import tqdm
 
-from model_compression_toolkit.core.common.progress_config.constants import \
-    COMPLETED_COMPONENTS, TOTAL_COMPONENTS, CURRENT_COMPONENT
+from model_compression_toolkit.core.common.progress_config.constants import (
+    COMPLETED_COMPONENTS, TOTAL_COMPONENTS, CURRENT_COMPONENT,
+    PROGRESS_BAR_POSITION, PROGRESS_INFO_CALLBACK, TOTAL_STEP, DEFAULT_TOTAL_STEP
+)
 
 if TYPE_CHECKING:    # pragma: no cover
     from model_compression_toolkit.core import CoreConfig
@@ -49,8 +51,8 @@ class ProgressInfoController:
         Create or skip instantiation based on the enable flag.
         Returns None when progress display should be disabled.
         """
-        if kwargs.get('progress_info_callback') is None or \
-           kwargs.get('total_step') <= 0:
+        if kwargs.get(PROGRESS_INFO_CALLBACK) is None or \
+           kwargs.get(TOTAL_STEP) <= 0:
             return None
         return super().__new__(cls)
 
@@ -60,7 +62,7 @@ class ProgressInfoController:
         self.pbar = tqdm(
             total=self.total_step,
             desc=self.description,
-            position=0,
+            position=PROGRESS_BAR_POSITION,
             leave=False,
             unit='step',
             dynamic_ncols=True,
@@ -76,6 +78,7 @@ class ProgressInfoController:
         Args:
             description: New description text ("Step X/Y: " is automatically added).
         """
+        self.description = description
         self.current_step += 1
         formatted_description = f"Step {self.current_step}/{self.total_step}: {description}"
         
@@ -129,7 +132,7 @@ def research_progress_total(
         Total number of processing steps.
     """
     # Base required steps: preprocessing, statistics, weight params, post-processing
-    total_steps = 4
+    total_steps = DEFAULT_TOTAL_STEP
 
     # Add MP calculation step (when Mixed Precision enabled)
     if target_resource_utilization is not None and \

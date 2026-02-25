@@ -63,7 +63,6 @@ class TestProgessInfoController:
         else:
             ### Expected value verification (ProgressInfoController)
             assert isinstance(controller, expected)
-
             assert isinstance(controller.pbar, tqdm)
 
             ### Verify the initialization of class member variables
