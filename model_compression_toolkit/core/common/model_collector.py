@@ -46,9 +46,17 @@ def create_stats_collector_for_node(node: common.BaseNode,
     """
 
     if node.is_activation_quantization_enabled() or quant_node_in_fln:
+        out_channel_axis = fw_info.out_channel_axis_mapping.get(node.type)
+
+        if node.type not in fw_info.out_channel_axis_mapping.keys() and len(node.get_output_shapes_list()[0]) < 2:
+            # In case of PyTorch, the output channel axis is set to 1 for layers other than conv and linear. 
+            # If the output shape of node is 1D or scalar, change to -1.
+            # In case of Keras, the output channel axis is set to -1, so it is already set to -1 by default.
+            out_channel_axis = -1
+
         min_output = getattr(node.prior_info, 'min_output', None)
         max_output = getattr(node.prior_info, 'max_output', None)
-        stats_collector = common.StatsCollector(out_channel_axis=fw_info.out_channel_axis_mapping.get(node.type),
+        stats_collector = common.StatsCollector(out_channel_axis=out_channel_axis,
                                                 init_min_value=min_output,
                                                 init_max_value=max_output)
     else:
