@@ -120,8 +120,8 @@ These techniques are essential for further optimizing models and achieving super
   | Tutorial                                                                                       | Included Features |
   |------------------------------------------------------------------------------------------------|-------------------|
   | [Quantization Troubleshooting using the Xquant Feature](pytorch/example_pytorch_xquant.ipynb) | &#x2705; Debug    |
-  | [Judgeable Troubleshooting](pytorch/example_pytorch_XQuant_Extension_Tool.ipynb) | &#x2705; Judgeable Troubleshooting |
-  | [General Troubleshooting](pytorch/example_pytorch_XQuant_Extension_Tool_General.ipynb) | &#x2705; General Troubleshooting |
+  | [XQuant Extension Tool(Judgeable Troubleshooting)](pytorch/example_pytorch_XQuant_Extension_Tool.ipynb) | &#x2705; Judgeable Troubleshooting |
+  | [XQuant Extension Tool(General Troubleshooting)](pytorch/example_pytorch_XQuant_Extension_Tool_General.ipynb) | &#x2705; General Troubleshooting |
 
 </details>
 <details id="pytorch-wrapper">
