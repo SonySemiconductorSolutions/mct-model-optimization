@@ -14,7 +14,7 @@
 # ==============================================================================
 
 from dataclasses import dataclass, field
-from typing import List
+from typing import List, Callable
 
 from model_compression_toolkit.core.common.network_editors.edit_network import EditRule
 
@@ -36,3 +36,4 @@ class DebugConfig:
     network_editor: List[EditRule] = field(default_factory=list)
     simulate_scheduler: bool = False
     bypass: bool = False
+    progress_info_callback: Callable = None

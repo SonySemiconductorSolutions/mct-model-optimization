@@ -26,6 +26,8 @@ from model_compression_toolkit.core.common.mixed_precision.resource_utilization_
 from model_compression_toolkit.core import CoreConfig
 from model_compression_toolkit.core.common.mixed_precision.mixed_precision_quantization_config import \
     MixedPrecisionQuantizationConfig
+from model_compression_toolkit.core.common.progress_config.progress_info_controller import \
+    ProgressInfoController, research_progress_total
 from model_compression_toolkit.core.runner import core_runner
 from model_compression_toolkit.ptq.runner import ptq_runner
 from model_compression_toolkit.core.analyzer import analyzer_model_quantization
@@ -119,6 +121,12 @@ if FOUND_TORCH:
         framework_platform_capabilities = attach2pytorch.attach(target_platform_capabilities,
                                                              core_config.quantization_config.custom_tpc_opset_to_layer)
 
+        progress_info_controller = ProgressInfoController(
+            total_step=research_progress_total(core_config, target_resource_utilization),
+            description="MCT PyTorch PTQ Progress",
+            progress_info_callback=core_config.debug_config.progress_info_callback
+        )
+
         # Ignore hessian info service as it is not used here yet.
         tg, bit_widths_config, _, scheduling_info = core_runner(in_model=in_module,
                                                                 representative_data_gen=representative_data_gen,
@@ -127,7 +135,8 @@ if FOUND_TORCH:
                                                                 fw_impl=fw_impl,
                                                                 fqc=framework_platform_capabilities,
                                                                 target_resource_utilization=target_resource_utilization,
-                                                                tb_w=tb_w)
+                                                                tb_w=tb_w,
+                                                                progress_info_controller=progress_info_controller)
 
         # At this point, tg is a graph that went through substitutions (such as BN folding) and is
         # ready for quantization (namely, it holds quantization params, etc.) but the weights are
@@ -143,6 +152,9 @@ if FOUND_TORCH:
                                                  fw_impl,
                                                  tb_w)
 
+        if progress_info_controller is not None:
+            progress_info_controller.set_description("MCT Graph Finalization")
+
         if core_config.debug_config.analyze_similarity:
             quantized_graph = quantize_graph_weights(graph_with_stats_correction)
             analyzer_model_quantization(representative_data_gen,
@@ -157,6 +169,10 @@ if FOUND_TORCH:
             exportable_model = add_metadata(exportable_model,
                                             create_model_metadata(fqc=framework_platform_capabilities,
                                                                   scheduling_info=scheduling_info))
+
+        if progress_info_controller is not None:
+            progress_info_controller.close()
+
         return exportable_model, user_info
 
 

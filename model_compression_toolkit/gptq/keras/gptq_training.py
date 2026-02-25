@@ -54,6 +54,9 @@ import numpy as np
 import copy
 from model_compression_toolkit.core.keras.constants import BIAS, USE_BIAS
 from model_compression_toolkit.gptq.keras.quantizer.soft_rounding.soft_quantizer_reg import SoftQuantizerRegularization
+from model_compression_toolkit.core.common.progress_config.progress_info_controller import \
+    ProgressInfoController
+
 
 class KerasGPTQTrainer(GPTQTrainer):
     """
@@ -67,7 +70,8 @@ class KerasGPTQTrainer(GPTQTrainer):
                  fw_impl: FrameworkImplementation,
                  fw_info: FrameworkInfo,
                  representative_data_gen: Callable,
-                 hessian_info_service: HessianInfoService = None):
+                 hessian_info_service: HessianInfoService = None,
+                 progress_info_controller: ProgressInfoController = None):
         """
         Build two models from a graph: A teacher network (float model) and a student network (quantized model).
         Use the dataset generator to pass images through the teacher and student networks to get intermediate
@@ -82,6 +86,7 @@ class KerasGPTQTrainer(GPTQTrainer):
             fw_info: Framework information.
             representative_data_gen: Dataset to use for inputs of the models.
             hessian_info_service: HessianScoresService for fetching and computing Hessian's approximation scores.
+            progress_info_controller: ProgressInfoController to display and manage overall progress information.
 
         """
 
@@ -96,7 +101,8 @@ class KerasGPTQTrainer(GPTQTrainer):
                          fw_impl,
                          fw_info,
                          representative_data_gen_fn=representative_data_gen,
-                         hessian_info_service=hessian_info_service)
+                         hessian_info_service=hessian_info_service,
+                         progress_info_controller=progress_info_controller)
 
 
     def _prepare_train_dataloader_sla(self, data_gen_fn: Callable[[], Generator]) -> tf.data.Dataset:

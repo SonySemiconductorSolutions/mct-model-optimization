@@ -22,6 +22,8 @@ from model_compression_toolkit.core.common.hessian import HessianInfoService, He
 from model_compression_toolkit.core.common.model_builder_mode import ModelBuilderMode
 from model_compression_toolkit.core.common.similarity_analyzer import compute_kl_divergence
 from model_compression_toolkit.logger import Logger
+from model_compression_toolkit.core.common.progress_config.progress_info_controller import \
+    ProgressInfoController
 
 
 @runtime_checkable
@@ -64,7 +66,8 @@ class DistanceMetricCalculator(MetricCalculator):
                  representative_data_gen: Callable,
                  fw_info: FrameworkInfo,
                  fw_impl: Any,
-                 hessian_info_service: HessianInfoService = None):
+                 hessian_info_service: HessianInfoService = None,
+                 progress_info_controller: ProgressInfoController = None):
         """
         Args:
             graph: Graph to search for its MP configuration.
@@ -74,6 +77,7 @@ class DistanceMetricCalculator(MetricCalculator):
             fw_impl: FrameworkImplementation object with a specific framework methods implementation.
             representative_data_gen: Dataset used for getting batches for inference.
             hessian_info_service: HessianInfoService to fetch Hessian approximation information.
+            progress_info_controller: ProgressInfoController to display and manage overall progress information.
         """
         self.graph = graph
         self.mp_config = mp_config
@@ -121,7 +125,7 @@ class DistanceMetricCalculator(MetricCalculator):
         # Hessian-based scores for weighted average distance metric computation
         self.interest_points_hessians = None
         if self.mp_config.distance_weighting_method == MpDistanceWeighting.HESSIAN:
-            self.interest_points_hessians = self._compute_hessian_based_scores(hessian_info_service)
+            self.interest_points_hessians = self._compute_hessian_based_scores(hessian_info_service, progress_info_controller)
 
     def compute(self, mp_model) -> float:
         """
@@ -168,16 +172,20 @@ class DistanceMetricCalculator(MetricCalculator):
         return [self.fw_impl.to_numpy(self.fw_impl.sensitivity_eval_inference(self.ref_model, images))
                 for images in self.images_batches]
 
-    def _compute_hessian_based_scores(self, hessian_info_service: HessianInfoService) -> np.ndarray:
+    def _compute_hessian_based_scores(self, hessian_info_service: HessianInfoService, progress_info_controller: ProgressInfoController) -> np.ndarray:
         """
         Compute Hessian-based scores for each interest point.
         Args:
             hessian_info_service: Hessian service.
+            progress_info_controller: Progress infomation controller. 
 
         Returns:
             A vector of scores, one for each interest point, to be used for the distance metric weighted average computation.
 
         """
+        if progress_info_controller is not None:
+            progress_info_controller.set_description('Compute Hessian for Mixed Precision')
+
         # Create a request for Hessian approximation scores with specific configurations
         # (here we use per-tensor approximation of the Hessian's trace w.r.t the node's activations)
         fw_dataloader = self.fw_impl.convert_data_gen_to_dataloader(self.representative_data_gen,

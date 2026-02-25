@@ -33,6 +33,8 @@ from model_compression_toolkit.gptq.common.gptq_config import GradientPTQConfig,
 from model_compression_toolkit.core.common.mixed_precision.resource_utilization_tools.resource_utilization import ResourceUtilization
 from model_compression_toolkit.core.common.mixed_precision.mixed_precision_quantization_config import MixedPrecisionQuantizationConfig
 from model_compression_toolkit.core import CoreConfig
+from model_compression_toolkit.core.common.progress_config.progress_info_controller import \
+    ProgressInfoController, research_progress_total
 from model_compression_toolkit.core.runner import core_runner
 from model_compression_toolkit.gptq.runner import gptq_runner
 from model_compression_toolkit.core.analyzer import analyzer_model_quantization
@@ -253,6 +255,12 @@ if FOUND_TF:
             target_platform_capabilities,
             custom_opset2layer=core_config.quantization_config.custom_tpc_opset_to_layer)
 
+        progress_info_controller = ProgressInfoController(
+            total_step=research_progress_total(core_config, target_resource_utilization, gptq_config),
+            description="MCT Keras GPTQ Progress",
+            progress_info_callback=core_config.debug_config.progress_info_callback
+        )
+
         tg, bit_widths_config, hessian_info_service, scheduling_info = core_runner(in_model=in_model,
                                                                                    representative_data_gen=representative_data_gen,
                                                                                    core_config=core_config,
@@ -261,7 +269,8 @@ if FOUND_TF:
                                                                                    fqc=framework_platform_capabilities,
                                                                                    target_resource_utilization=target_resource_utilization,
                                                                                    tb_w=tb_w,
-                                                                                   running_gptq=True)
+                                                                                   running_gptq=True,
+                                                                                   progress_info_controller=progress_info_controller)
 
         float_graph = copy.deepcopy(tg)
 
@@ -273,9 +282,13 @@ if FOUND_TF:
                               DEFAULT_KERAS_INFO,
                               fw_impl,
                               tb_w,
-                              hessian_info_service=hessian_info_service)
+                              hessian_info_service=hessian_info_service,
+                              progress_info_controller=progress_info_controller)
 
         del hessian_info_service
+
+        if progress_info_controller is not None:
+            progress_info_controller.set_description("MCT Graph Finalization")
 
         if core_config.debug_config.analyze_similarity:
             analyzer_model_quantization(representative_data_gen,
@@ -290,6 +303,10 @@ if FOUND_TF:
             exportable_model = add_metadata(exportable_model,
                                             create_model_metadata(fqc=framework_platform_capabilities,
                                                                   scheduling_info=scheduling_info))
+
+        if progress_info_controller is not None:
+            progress_info_controller.close()
+
         return exportable_model, user_info
 
 else:

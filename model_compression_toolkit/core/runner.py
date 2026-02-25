@@ -36,6 +36,8 @@ from model_compression_toolkit.core.common.network_editors.edit_network import e
 from model_compression_toolkit.core.common.quantization.core_config import CoreConfig
 from model_compression_toolkit.core.common.visualization.tensorboard_writer import TensorboardWriter, \
     finalize_bitwidth_in_tb
+from model_compression_toolkit.core.common.progress_config.progress_info_controller import \
+    ProgressInfoController
 from model_compression_toolkit.core.graph_prep_runner import graph_preparation_runner
 from model_compression_toolkit.core.quantization_prep_runner import quantization_preparation_runner
 from model_compression_toolkit.logger import Logger
@@ -51,7 +53,8 @@ def core_runner(in_model: Any,
                 fqc: FrameworkQuantizationCapabilities,
                 target_resource_utilization: ResourceUtilization = None,
                 running_gptq: bool = False,
-                tb_w: TensorboardWriter = None):
+                tb_w: TensorboardWriter = None,
+                progress_info_controller: ProgressInfoController = None):
     """
     Quantize a trained model using post-training quantization.
     First, the model graph is optimized using several transformations (e.g. folding BatchNormalization to preceding
@@ -72,11 +75,14 @@ def core_runner(in_model: Any,
                                               the attached framework operator's information.
         target_resource_utilization: ResourceUtilization to constraint the search of the mixed-precision configuration for the model.
         tb_w: TensorboardWriter object for logging
+        progress_info_controller: ProgressInfoController to display and manage overall progress information.
 
     Returns:
         An internal graph representation of the input model.
 
     """
+    if progress_info_controller is not None:
+        progress_info_controller.set_description('MCT Graph Preprocessing')
 
     # Warn is representative dataset has batch-size == 1
     batch_data = next(iter(representative_data_gen()))
@@ -115,7 +121,8 @@ def core_runner(in_model: Any,
                                          fw_info=fw_info,
                                          fw_impl=fw_impl,
                                          tb_w=tb_w,
-                                         hessian_info_service=hessian_info_service)
+                                         hessian_info_service=hessian_info_service,
+                                         progress_info_controller=progress_info_controller)
 
     ######################################
     # Finalize bit widths
@@ -130,7 +137,8 @@ def core_runner(in_model: Any,
                                                  target_resource_utilization,
                                                  core_config.mixed_precision_config,
                                                  representative_data_gen,
-                                                 hessian_info_service=hessian_info_service)
+                                                 hessian_info_service=hessian_info_service,
+                                                 progress_info_controller=progress_info_controller)
         else:
             Logger.warning(
                 f'Mixed Precision has overwrite bit-width configuration{core_config.mixed_precision_config.configuration_overwrite}')

@@ -44,6 +44,8 @@ from model_compression_toolkit.core.common.substitutions.apply_substitutions imp
 from model_compression_toolkit.logger import Logger
 from model_compression_toolkit.core.common.mixed_precision.mixed_precision_quantization_config import \
     MixedPrecisionQuantizationConfig, MpMetricNormalization
+from model_compression_toolkit.core.common.progress_config.progress_info_controller import \
+    ProgressInfoController
 
 
 class MixedPrecisionSearchManager:
@@ -57,7 +59,8 @@ class MixedPrecisionSearchManager:
                  fw_impl: FrameworkImplementation,
                  sensitivity_evaluator: SensitivityEvaluation,
                  target_resource_utilization: ResourceUtilization,
-                 mp_config: MixedPrecisionQuantizationConfig):
+                 mp_config: MixedPrecisionQuantizationConfig,
+                 progress_info_controller: ProgressInfoController = None):
         """
 
         Args:
@@ -67,10 +70,13 @@ class MixedPrecisionSearchManager:
             sensitivity_evaluator: A SensitivityEvaluation which provides a function that evaluates the sensitivity of
                 a bit-width configuration for the MP model.
             target_resource_utilization: Target Resource Utilization to bound our feasible solution space s.t the configuration does not violate it.
+            progress_info_controller: ProgressInfoController to display and manage overall progress information.
         """
 
         self.fw_info = fw_info
         self.fw_impl = fw_impl
+
+        self.progress_info_controller = progress_info_controller
 
         self.original_graph = graph
         # graph for mp search
@@ -182,6 +188,10 @@ class MixedPrecisionSearchManager:
             metrics = np.maximum(node_candidates_metrics, max_val + eps)
             metrics[max_ind] = max_val
             return metrics
+
+        position = int(self.progress_info_controller is not None)
+        if self.progress_info_controller is not None:
+            self.progress_info_controller.set_description('Research Mixed Precision')
 
         layer_to_metrics_mapping = {}
         debug_mapping = {}

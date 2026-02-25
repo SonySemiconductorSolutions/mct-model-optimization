@@ -42,6 +42,8 @@ from model_compression_toolkit.trainable_infrastructure.pytorch.annealing_schedu
 from model_compression_toolkit.gptq.pytorch.quantizer.soft_rounding.soft_quantizer_reg import SoftQuantizerRegularization as PytorchSoftQuantizerRegularization
 
 from model_compression_toolkit.logger import Logger
+from model_compression_toolkit.core.common.progress_config.progress_info_controller import \
+    ProgressInfoController
 
 
 class PytorchGPTQTrainer(GPTQTrainer):
@@ -56,7 +58,8 @@ class PytorchGPTQTrainer(GPTQTrainer):
                  fw_impl: FrameworkImplementation,
                  fw_info: FrameworkInfo,
                  representative_data_gen: Callable,
-                 hessian_info_service: HessianInfoService = None):
+                 hessian_info_service: HessianInfoService = None,
+                 progress_info_controller: ProgressInfoController = None):
         """
         Build two models from a graph: A teacher network (float model) and a student network (quantized model).
         Use the dataset generator to pass images through the teacher and student networks to get intermediate
@@ -71,6 +74,7 @@ class PytorchGPTQTrainer(GPTQTrainer):
             fw_info: Framework information
             representative_data_gen: Dataset to use for inputs of the models.
             hessian_info_service: HessianInfoService to fetch info based on the hessian approximation of the float model.
+            progress_info_controller: ProgressInfoController to display and manage overall progress information.
         """
         self.fw_soft_quantizer_regularization = PytorchSoftQuantizerRegularization
         self.fw_linear_annealing_scheduler = PytorchLinearAnnealingScheduler
@@ -83,7 +87,8 @@ class PytorchGPTQTrainer(GPTQTrainer):
                          fw_impl,
                          fw_info,
                          representative_data_gen_fn=representative_data_gen,
-                         hessian_info_service=hessian_info_service)
+                         hessian_info_service=hessian_info_service,
+                         progress_info_controller=progress_info_controller)
 
 
     def _prepare_train_dataloader_sla(self, data_gen_fn: Callable[[], Generator]) -> DataLoader:
