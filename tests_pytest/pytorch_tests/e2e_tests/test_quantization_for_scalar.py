@@ -98,7 +98,7 @@ def test_ptq_scalar(layer):
                                                                     representative_data_gen=representative_data_gen,
                                                                     target_platform_capabilities=tpc)
     
-    if layer in ['abs', 'sum', 'pow']:
+    if layer in ['abs', 'pow']:
         activation_holder = f'{layer}_1_activation_holder_quantizer'
     else:
         activation_holder = f'{layer}_activation_holder_quantizer'
@@ -129,7 +129,7 @@ def test_ptq_mixed_precision_scalar(layer):
                                                                     core_config=core_config,
                                                                     target_platform_capabilities=tpc)
     
-    if layer in ['abs', 'sum', 'pow']:
+    if layer in ['abs', 'pow']:
         activation_holder = f'{layer}_1_activation_holder_quantizer'
     else:
         activation_holder = f'{layer}_activation_holder_quantizer'
@@ -153,7 +153,7 @@ def test_gptq_scalar(layer):
                                                                               gptq_config=gptq_config,
                                                                               target_platform_capabilities=tpc)
     
-    if layer in ['abs', 'sum', 'pow']:
+    if layer in ['abs', 'pow']:
         activation_holder = f'{layer}_1_activation_holder_quantizer'
     else:
         activation_holder = f'{layer}_activation_holder_quantizer'

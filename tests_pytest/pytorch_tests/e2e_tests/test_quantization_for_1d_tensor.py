@@ -27,68 +27,70 @@ class Model(nn.Module):
         self.name = name
         self.conv = nn.Conv2d(3, 3, kernel_size=3, padding=1)
         self.relu = nn.ReLU()
+        self.tensor = nn.Parameter(2.0 * torch.ones([1])) # 1D tensor
 
     def forward(self, x):
         x = self.conv(x)
         x = self.relu(x)
-        x = torch.reshape(x, (-1,))
 
         if self.name == 'add':
-            y = torch.add(x, 1)
+            const = torch.add(self.tensor, 1)
         elif self.name == 'relu6':
-            y = torch.nn.functional.relu6(x)
+            const = torch.nn.functional.relu6(self.tensor)
         elif self.name == 'relu':
-            y = torch.nn.functional.relu(x)
+            const = torch.nn.functional.relu(self.tensor)
         elif self.name == 'sigmoid':
-            y = torch.nn.functional.sigmoid(x)
+            const = torch.nn.functional.sigmoid(self.tensor)
         elif self.name == 'leaky_relu':
-            y = torch.nn.functional.leaky_relu(x)
+            const = torch.nn.functional.leaky_relu(self.tensor)
         elif self.name == 'mul':
-            y = torch.mul(x, 1)
+            const = torch.mul(self.tensor, 2)
         elif self.name == 'sub':
-            y = torch.sub(x, 1)
+            const = torch.sub(self.tensor, 1)
         elif self.name == 'div':
-            y = torch.div(x, 1)
+            const = torch.div(self.tensor, 1)
         elif self.name == 'softmax':
-            y = torch.nn.functional.softmax(x)
+            const = torch.nn.functional.softmax(self.tensor)
         elif self.name == 'tanh':
-            y = torch.nn.functional.tanh(x)
+            const = torch.nn.functional.tanh(self.tensor)
         elif self.name == 'negative':
-            y = torch.negative(x)
+            const = torch.negative(self.tensor)
         elif self.name == 'abs':
-            y = torch.abs(x)
+            const = torch.abs(self.tensor)
         elif self.name == 'sqrt':
-            y = torch.sqrt(torch.clamp(x, min=1e-6))
+            const = torch.sqrt(torch.clamp(self.tensor, min=1e-6))
         elif self.name == 'rsqrt':
-            y = torch.rsqrt(torch.clamp(x, min=1e-6))
+            const = torch.rsqrt(torch.clamp(self.tensor, min=1e-6))
         elif self.name == 'silu':
-            y = torch.nn.functional.silu(x)
+            const = torch.nn.functional.silu(self.tensor)
         elif self.name == 'hardswish':
-            y = torch.nn.functional.hardswish(x)
+            const = torch.nn.functional.hardswish(self.tensor)
         elif self.name == 'hardsigmoid':
-            y = torch.nn.functional.hardsigmoid(x)
+            const = torch.nn.functional.hardsigmoid(self.tensor)
         elif self.name == 'pow':
-            y = torch.pow(x, 1)
+            const = torch.pow(self.tensor, 1)
         elif self.name == 'gelu':
-            y = torch.nn.functional.gelu(x)
+            const = torch.nn.functional.gelu(self.tensor)
         elif self.name == 'cos':
-            y = torch.cos(x)
+            const = torch.cos(self.tensor)
         elif self.name == 'sin':
-            y = torch.sin(x)
+            const = torch.sin(self.tensor)
         elif self.name == 'exp':
-            y = torch.exp(x)
+            const = torch.exp(self.tensor)
         elif self.name == 'mean':
-            y = torch.mean(x, dim=0, keepdim=True)
+            const = torch.mean(self.tensor, dim=0, keepdim=True)
         elif self.name == 'amax':
-            y = torch.amax(x, dim=0, keepdim=True)
+            const = torch.amax(self.tensor, dim=0, keepdim=True)
         elif self.name == 'maximum':
-            y = torch.maximum(x, torch.tensor(0.0))
+            const = torch.maximum(self.tensor, torch.tensor(0.0))
         elif self.name == 'minimum':
-            y = torch.minimum(x, torch.tensor(0.0))
+            const = torch.minimum(self.tensor, torch.tensor(0.0))
         elif self.name == 'sum':
-            y = torch.sum(x, dim=0, keepdim=True)
+            const = torch.sum(self.tensor, dim=0, keepdim=True)
         elif self.name == 'linalg_norm':
-            y = torch.linalg.norm(x, dim=0, keepdim=True)
+            const = torch.linalg.norm(self.tensor, dim=0, keepdim=True)
+
+        y = x + const
         return y
 
 def representative_data_gen():
