@@ -51,9 +51,15 @@ class ProgressInfoController:
         Create or skip instantiation based on the enable flag.
         Returns None when progress display should be disabled.
         """
-        if kwargs.get(PROGRESS_INFO_CALLBACK) is None or \
-           kwargs.get(TOTAL_STEP) <= 0:
+        progress_info_callback = kwargs.get(PROGRESS_INFO_CALLBACK)
+        total_step = kwargs.get(TOTAL_STEP)
+
+        if progress_info_callback is None or total_step <= 0:
             return None
+
+        if not callable(progress_info_callback):
+            raise TypeError(f"{PROGRESS_INFO_CALLBACK} must be a callable (function or callable instance).")
+        
         return super().__new__(cls)
 
     def __post_init__(self):

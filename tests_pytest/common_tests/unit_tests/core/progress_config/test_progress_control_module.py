@@ -16,12 +16,18 @@
 import pytest
 from unittest.mock import Mock
 
+from typing import Callable
 from tqdm import tqdm
 
+from model_compression_toolkit.core.common.quantization.debug_config import DebugConfig
 from model_compression_toolkit.core.common.progress_config.progress_info_controller import \
     ProgressInfoController
 from model_compression_toolkit.core.common.progress_config.constants import \
     COMPLETED_COMPONENTS, TOTAL_COMPONENTS, CURRENT_COMPONENT
+
+
+def check_callback_function(info):
+    pass
 
 
 class CheckCallBackFunction:
@@ -48,6 +54,7 @@ class TestProgessInfoController:
             pytest.param(1,  None, None, id="no_callback_with_steps"),
             pytest.param(0,  CheckCallBackFunction(), None, id="with_callback_no_steps"),
             pytest.param(2,  CheckCallBackFunction(), ProgressInfoController, id="with_callback_and_steps"),
+            pytest.param(2,  check_callback_function, ProgressInfoController, id="with_callback_function_and_steps"),
         ],
     )
     def test_progress_info_controller_initalize(self, total_step, callback_function, expected):
@@ -69,8 +76,28 @@ class TestProgessInfoController:
             assert controller.total_step == total_step
             assert controller.current_step == 0
             assert controller.description == 'Unit Test'
-            assert isinstance(controller.progress_info_callback, \
-                              CheckCallBackFunction)
+            assert callable(controller.progress_info_callback)
+
+    ### Initialization Invalid Test
+    @pytest.mark.parametrize(
+        "callback_function",
+        [
+            pytest.param(30, id="set_type_is_int"),
+            pytest.param('callback', id="set_type_is_str"),
+            pytest.param([check_callback_function], id="set_type_is_list"),
+        ],
+    )
+    def test_progress_info_controller_initalize_invalid(self, callback_function):
+        with pytest.raises(TypeError) as err_msg:
+            controller = ProgressInfoController(
+                total_step=1,
+                progress_info_callback=callback_function,
+                description='Initialization Invalid Test'
+            )
+        
+        ### Verify assertion error message
+        assert str(err_msg.value) == \
+                f"progress_info_callback must be a callable (function or callable instance)."
 
     ### Normal Test
     def test_progress_info_controller_update_description(self):
@@ -124,3 +151,20 @@ class TestProgessInfoController:
         ### Verify callback was called 1 time
         callback = controller.progress_info_callback
         assert callback.count == 1
+
+    ### DebugConfig Variable Test
+    @pytest.mark.parametrize(
+        "callback_function, expected",
+        [
+            pytest.param(None, None, id="not_set_callback"),
+            pytest.param(check_callback_function, Callable, id="set_callback_of_function"),
+            pytest.param(CheckCallBackFunction(), CheckCallBackFunction, id="set_callback_of_class"),
+        ],
+    )
+    def test_adding_debug_config_menber_variable(self, callback_function, expected):
+        debug_config = DebugConfig(progress_info_callback=callback_function)
+
+        if expected is None:
+            assert debug_config.progress_info_callback == expected
+        else:
+            assert callable(debug_config.progress_info_callback)
