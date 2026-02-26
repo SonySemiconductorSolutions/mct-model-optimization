@@ -29,6 +29,9 @@ class TestTorchUtils(unittest.TestCase):
         self.list_of_numbers = [1, 2, 3]
         self.tuple_of_numbers = (1, 2, 3)
 
+        self.scalar_numpy_array = np.array([1.25])
+        self.scalar_torch_tensor = torch.tensor(1.25)
+
     @patch('model_compression_toolkit.core.pytorch.pytorch_device_config.get_working_device')
     def test_to_torch_tensor_with_numpy_array(self, mock_get_device):
         mock_get_device.return_value = 'cpu'
@@ -68,15 +71,32 @@ class TestTorchUtils(unittest.TestCase):
         result = torch_tensor_to_numpy(self.torch_tensor)
         np.testing.assert_array_almost_equal(result, self.numpy_array)
 
+    def test_torch_tensor_to_numpy_with_scalar_tensor(self):
+        result = torch_tensor_to_numpy(self.scalar_torch_tensor)
+        self.assertEqual(result.shape, (1,))
+        np.testing.assert_array_almost_equal(result, self.scalar_numpy_array)
+
     def test_torch_tensor_to_numpy_with_list(self):
         result = torch_tensor_to_numpy([self.torch_tensor, self.torch_tensor])
         self.assertEqual(len(result), 2)
         self.assertTrue(all(isinstance(x, np.ndarray) for x in result))
 
+    def test_torch_tensor_to_numpy_with_scalar_list(self):
+        result = torch_tensor_to_numpy([self.scalar_torch_tensor, self.scalar_torch_tensor])
+        self.assertEqual(len(result), 2)
+        self.assertTrue(all(isinstance(x, np.ndarray) for x in result))
+        self.assertTrue(all(x.shape == (1,) for x in result))
+
     def test_torch_tensor_to_numpy_with_tuple(self):
         result = torch_tensor_to_numpy((self.torch_tensor, self.torch_tensor))
         self.assertEqual(len(result), 2)
         self.assertTrue(all(isinstance(x, np.ndarray) for x in result))
+
+    def test_torch_tensor_to_numpy_with_scalar_tuple(self):
+        result = torch_tensor_to_numpy((self.scalar_torch_tensor, self.scalar_torch_tensor))
+        self.assertEqual(len(result), 2)
+        self.assertTrue(all(isinstance(x, np.ndarray) for x in result))
+        self.assertTrue(all(x.shape == (1,) for x in result))
 
     @patch('model_compression_toolkit.logger.Logger')
     def test_torch_tensor_to_numpy_with_unsupported_type(self, mock_logger):

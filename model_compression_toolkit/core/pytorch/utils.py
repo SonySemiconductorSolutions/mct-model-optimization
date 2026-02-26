@@ -86,7 +86,9 @@ def torch_tensor_to_numpy(tensor: Union[torch.Tensor, list, tuple]) -> Union[np.
     elif isinstance(tensor, tuple):
         return tuple([torch_tensor_to_numpy(t) for t in tensor])
     elif isinstance(tensor, torch.Tensor):
-        return tensor.cpu().detach().contiguous().numpy()
+        np_tensor = tensor.cpu().detach().contiguous().numpy()
+        # For scalar tensors, return a 1D array with a single element.
+        return np.array([np_tensor]) if np_tensor.ndim == 0 else np_tensor
     else:
         Logger.critical(f'Unsupported type for conversion to Numpy array: {type(tensor)}.')
 
