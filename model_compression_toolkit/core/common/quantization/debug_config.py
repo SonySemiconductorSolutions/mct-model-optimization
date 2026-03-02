@@ -30,6 +30,7 @@ class DebugConfig:
         network_editor (List[EditRule]): A list of rules and actions to edit the network for quantization.
         simulate_scheduler (bool): Simulate scheduler behavior to compute operators' order and cuts.
         bypass (bool): A flag to enable MCT bypass, which skips MCT runner and returns the input model unchanged.
+        progress_info_callback (Callable): A user-defined callback function for retrieving progress information.
     """
 
     analyze_similarity: bool = False

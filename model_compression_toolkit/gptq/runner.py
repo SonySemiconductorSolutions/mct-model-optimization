@@ -58,6 +58,7 @@ def _apply_gptq(gptq_config: GradientPTQConfig,
         fw_info: Information needed for quantization about the specific framework (e.g., kernel channels indices, groups of layers by how they should be quantized, etc.).
         fw_impl: Framework implementation per framework
         hessian_info_service: HessianInfoService to fetch information based on the hessian approximation for the float model.
+        progress_info_controller: ProgressInfoController to display and manage overall progress information.
     Returns:
 
     """
@@ -100,6 +101,7 @@ def gptq_runner(tg: Graph,
         fw_impl: FrameworkImplementation object with a specific framework methods implementation.
         tb_w: A TensorBoardWriter object initialized with the logger dir path if it was set, or None otherwise.
         hessian_info_service: HessianScoresService to fetch approximations of the hessian scores for the float model.
+        progress_info_controller: ProgressInfoController to display and manage overall progress information.
 
     Returns:
         A graph after model weights GPTQ fine-tuning.

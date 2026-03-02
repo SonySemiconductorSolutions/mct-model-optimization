@@ -189,7 +189,6 @@ class MixedPrecisionSearchManager:
             metrics[max_ind] = max_val
             return metrics
 
-        position = int(self.progress_info_controller is not None)
         if self.progress_info_controller is not None:
             self.progress_info_controller.set_description('Research Mixed Precision')
 

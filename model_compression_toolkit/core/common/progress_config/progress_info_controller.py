@@ -64,7 +64,7 @@ class ProgressInfoController:
 
     def __post_init__(self):
         """Create progress bar after initialization."""
-        # Initial single bar mode (position=0, top of screen)
+        # Initial single bar mode
         self.pbar = tqdm(
             total=self.total_step,
             desc=self.description,
@@ -112,11 +112,9 @@ class ProgressInfoController:
             self.pbar = None
 
 
-def research_progress_total(
-    core_config: 'CoreConfig',
-    target_resource_utilization: 'ResourceUtilization' = None,
-    gptq_config: 'GradientPTQConfig' = None,
-) -> int:
+def research_progress_total(core_config: 'CoreConfig',
+                            target_resource_utilization: 'ResourceUtilization' = None,
+                            gptq_config: 'GradientPTQConfig' = None) -> int:
     """
     Check whether specific processing will be executed based on input arguments
     and calculate the total number of processing steps.
