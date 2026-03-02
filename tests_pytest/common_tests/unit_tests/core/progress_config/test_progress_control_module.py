@@ -50,11 +50,11 @@ class TestProgessInfoController:
     @pytest.mark.parametrize(
         "total_step, callback_function, expected",
         [
-            pytest.param(-1, None, None, id="no_callback_no_steps"),
-            pytest.param(1,  None, None, id="no_callback_with_steps"),
-            pytest.param(0,  CheckCallBackFunction(), None, id="with_callback_no_steps"),
-            pytest.param(2,  CheckCallBackFunction(), ProgressInfoController, id="with_callback_and_steps"),
-            pytest.param(2,  check_callback_function, ProgressInfoController, id="with_callback_function_and_steps"),
+            pytest.param(-1, None, None, id="unset_callback_and_no_steps"),
+            pytest.param(1,  None, None, id="unset_callback_and_with_steps"),
+            pytest.param(0,  CheckCallBackFunction(), None, id="set_callback_and_no_steps"),
+            pytest.param(2,  CheckCallBackFunction(), ProgressInfoController, id="set_callback_and_steps"),
+            pytest.param(2,  check_callback_function, ProgressInfoController, id="set_callback_function_and_steps"),
         ],
     )
     def test_progress_info_controller_initalize(self, total_step, callback_function, expected):
@@ -156,7 +156,7 @@ class TestProgessInfoController:
     @pytest.mark.parametrize(
         "callback_function, expected",
         [
-            pytest.param(None, None, id="not_set_callback"),
+            pytest.param(None, None, id="unset_callback"),
             pytest.param(check_callback_function, Callable, id="set_callback_of_function"),
             pytest.param(CheckCallBackFunction(), CheckCallBackFunction, id="set_callback_of_class"),
         ],
