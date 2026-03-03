@@ -14,7 +14,6 @@
 #  ==============================================================================
 
 import pytest
-from unittest.mock import Mock
 
 from typing import Callable
 from tqdm import tqdm

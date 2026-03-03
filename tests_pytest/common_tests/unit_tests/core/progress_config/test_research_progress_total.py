@@ -16,7 +16,6 @@
 import pytest
 from unittest.mock import Mock
 
-from dataclasses import dataclass
 from model_compression_toolkit.core.common.progress_config.progress_info_controller import \
     research_progress_total
 
