@@ -15,8 +15,6 @@
 import pytest
 
 import model_compression_toolkit as mct
-from model_compression_toolkit.gptq import pytorch_gradient_post_training_quantization
-from model_compression_toolkit.ptq import pytorch_post_training_quantization
 
 import torch
 from torch import nn

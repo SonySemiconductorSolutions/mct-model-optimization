@@ -15,8 +15,6 @@
 import pytest
 
 import model_compression_toolkit as mct
-from model_compression_toolkit.gptq import keras_gradient_post_training_quantization
-from model_compression_toolkit.ptq import keras_post_training_quantization
 
 import tensorflow as tf
 import tensorflow.keras as keras
