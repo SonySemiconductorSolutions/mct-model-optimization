@@ -22,6 +22,8 @@ from model_compression_toolkit.core.common.mixed_precision.mixed_precision_quant
     MixedPrecisionQuantizationConfig
 from model_compression_toolkit.core.common.mixed_precision.resource_utilization_tools.resource_utilization import \
     ResourceUtilization
+from model_compression_toolkit.core.common.progress_config.progress_info_controller import \
+    ProgressInfoController, research_progress_total
 from model_compression_toolkit.core.common.user_info import UserInformation
 from model_compression_toolkit.core.common.visualization.tensorboard_writer import init_tensorboard_writer
 from model_compression_toolkit.core.runner import core_runner
@@ -226,6 +228,12 @@ if FOUND_TORCH:
         framework_quantization_capabilities = attach2pytorch.attach(target_platform_capabilities,
                                                              core_config.quantization_config.custom_tpc_opset_to_layer)
 
+        progress_info_controller = ProgressInfoController(
+            total_step=research_progress_total(core_config, target_resource_utilization, gptq_config),
+            description="MCT PyTorch GPTQ Progress",
+            progress_info_callback=core_config.debug_config.progress_info_callback
+        )
+
         # ---------------------- #
         # Core Runner
         # ---------------------- #
@@ -237,7 +245,8 @@ if FOUND_TORCH:
                                                                                       fqc=framework_quantization_capabilities,
                                                                                       target_resource_utilization=target_resource_utilization,
                                                                                       tb_w=tb_w,
-                                                                                      running_gptq=True)
+                                                                                      running_gptq=True,
+                                                                                      progress_info_controller=progress_info_controller)
 
         float_graph = copy.deepcopy(graph)
 
@@ -252,7 +261,11 @@ if FOUND_TORCH:
                                  DEFAULT_PYTORCH_INFO,
                                  fw_impl,
                                  tb_w,
-                                 hessian_info_service=hessian_info_service)
+                                 hessian_info_service=hessian_info_service,
+                                 progress_info_controller=progress_info_controller)
+
+        if progress_info_controller is not None:
+            progress_info_controller.set_description("MCT Graph Finalization")
 
         if core_config.debug_config.analyze_similarity:
             analyzer_model_quantization(representative_data_gen,
@@ -267,6 +280,10 @@ if FOUND_TORCH:
             exportable_model = add_metadata(exportable_model,
                                             create_model_metadata(fqc=framework_quantization_capabilities,
                                                                   scheduling_info=scheduling_info))
+
+        if progress_info_controller is not None:
+            progress_info_controller.close()
+
         return exportable_model, user_info
 
 

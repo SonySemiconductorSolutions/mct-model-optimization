@@ -30,6 +30,8 @@ from model_compression_toolkit.core.common.visualization.tensorboard_writer impo
 from model_compression_toolkit.core.common.statistics_correction.apply_bias_correction_to_graph import \
     apply_bias_correction_to_graph
 from model_compression_toolkit.logger import Logger
+from model_compression_toolkit.core.common.progress_config.progress_info_controller import \
+    ProgressInfoController
 
 
 def _apply_gptq(gptq_config: GradientPTQConfig,
@@ -39,7 +41,8 @@ def _apply_gptq(gptq_config: GradientPTQConfig,
                 tg_bias: Graph,
                 fw_info: FrameworkInfo,
                 fw_impl: FrameworkImplementation,
-                hessian_info_service: HessianInfoService = None) -> Graph:
+                hessian_info_service: HessianInfoService = None,
+                progress_info_controller: ProgressInfoController = None) -> Graph:
     """
     Apply GPTQ to improve accuracy of quantized model.
     Build two models from a graph: A teacher network (float model) and a student network (quantized model).
@@ -55,6 +58,7 @@ def _apply_gptq(gptq_config: GradientPTQConfig,
         fw_info: Information needed for quantization about the specific framework (e.g., kernel channels indices, groups of layers by how they should be quantized, etc.).
         fw_impl: Framework implementation per framework
         hessian_info_service: HessianInfoService to fetch information based on the hessian approximation for the float model.
+        progress_info_controller: ProgressInfoController to display and manage overall progress information.
     Returns:
 
     """
@@ -65,7 +69,8 @@ def _apply_gptq(gptq_config: GradientPTQConfig,
                                 representative_data_gen,
                                 fw_impl,
                                 fw_info,
-                                hessian_info_service=hessian_info_service)
+                                hessian_info_service=hessian_info_service,
+                                progress_info_controller=progress_info_controller)
 
         if tb_w is not None:
             tb_w.add_graph(tg_bias, 'after_gptq')
@@ -80,7 +85,8 @@ def gptq_runner(tg: Graph,
                 fw_info: FrameworkInfo,
                 fw_impl: FrameworkImplementation,
                 tb_w: TensorboardWriter,
-                hessian_info_service: HessianInfoService = None) -> Graph:
+                hessian_info_service: HessianInfoService = None,
+                progress_info_controller: ProgressInfoController = None) -> Graph:
     """
     Quantize a graph that has final weights candidates quantization configurations.
     Before we quantize the graph weights, we apply GPTQ to get an improved graph.
@@ -95,6 +101,7 @@ def gptq_runner(tg: Graph,
         fw_impl: FrameworkImplementation object with a specific framework methods implementation.
         tb_w: A TensorBoardWriter object initialized with the logger dir path if it was set, or None otherwise.
         hessian_info_service: HessianScoresService to fetch approximations of the hessian scores for the float model.
+        progress_info_controller: ProgressInfoController to display and manage overall progress information.
 
     Returns:
         A graph after model weights GPTQ fine-tuning.
@@ -119,6 +126,7 @@ def gptq_runner(tg: Graph,
                           tg_bias,
                           fw_info,
                           fw_impl,
-                          hessian_info_service=hessian_info_service)
+                          hessian_info_service=hessian_info_service,
+                          progress_info_controller=progress_info_controller)
 
     return tg_gptq
