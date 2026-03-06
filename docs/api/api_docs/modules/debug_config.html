@@ -7,7 +7,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
     <title>debug_config Module &#8212; MCT Documentation: ver 2.6.0</title>
-    <link rel="stylesheet" type="text/css" href="../../../static/pygments.css?v=03e43079" />
+    <link rel="stylesheet" type="text/css" href="../../../static/pygments.css?v=fa44fd50" />
     <link rel="stylesheet" type="text/css" href="../../../static/bizstyle.css?v=5283bb3d" />
     <link rel="stylesheet" type="text/css" href="../../../static/css/custom.css?v=01243f34" />
     
@@ -45,7 +45,7 @@
 <p><strong>Class to configure params for debugging purposes:</strong></p>
 <dl class="py class">
 <dt class="sig sig-object py" id="model_compression_toolkit.core.DebugConfig">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">model_compression_toolkit.core.</span></span><span class="sig-name descname"><span class="pre">DebugConfig</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">analyze_similarity=False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">network_editor=&lt;factory&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">simulate_scheduler=False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bypass=False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#model_compression_toolkit.core.DebugConfig" title="Link to this definition">¶</a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">model_compression_toolkit.core.</span></span><span class="sig-name descname"><span class="pre">DebugConfig</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">analyze_similarity=False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">network_editor=&lt;factory&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">simulate_scheduler=False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bypass=False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">progress_info_callback=None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#model_compression_toolkit.core.DebugConfig" title="Link to this definition">¶</a></dt>
 <dd><p>A dataclass for MCT core debug information.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -55,9 +55,85 @@ enabled) or not. Can be used to pinpoint problematic layers in the quantization 
 <li><p><strong>network_editor</strong> (<em>List</em><em>[</em><a class="reference internal" href="network_editor.html#model_compression_toolkit.core.network_editor.EditRule" title="model_compression_toolkit.core.network_editor.EditRule"><em>EditRule</em></a><em>]</em>) – A list of rules and actions to edit the network for quantization.</p></li>
 <li><p><strong>simulate_scheduler</strong> (<em>bool</em>) – Simulate scheduler behavior to compute operators’ order and cuts.</p></li>
 <li><p><strong>bypass</strong> (<em>bool</em>) – A flag to enable MCT bypass, which skips MCT runner and returns the input model unchanged.</p></li>
+<li><p><strong>progress_info_callback</strong> (<em>Callable</em>) – A user-defined callback function for retrieving progress information.</p></li>
 </ul>
 </dd>
 </dl>
+<p>About progress_info_callback</p>
+<blockquote>
+<div><p>The <cite>progress_info_callback</cite> parameter in <cite>DebugConfig</cite> enables the following features and allows users to retrieve progress information when a callback function is configured:</p>
+<ul class="simple">
+<li><p>The callback function can receive MCT progress information.</p></li>
+<li><p>A progress bar is displayed in the CUI, allowing users to visualize how much processing has been completed while MCT is running.</p></li>
+</ul>
+<p>If no callback function is set, these features are disabled and the behavior and output remain unchanged.
+Examples of how to create a callback function to enable these features are provided in the Examples section.</p>
+</div></blockquote>
+<p class="rubric">Examples</p>
+<p>Create a callable callback function.
+When defining the callback, make sure it accepts a dictionary representing the current processing state as an argument.</p>
+<p>Example 1: Use a class to keep track of the processing history.</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="k">class</span> <span class="nc">ProgressInfoCallback</span><span class="p">:</span>
+<span class="gp">... </span>   <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="gp">... </span>       <span class="bp">self</span><span class="o">.</span><span class="n">history</span> <span class="o">=</span> <span class="p">[]</span>
+<span class="gp">...</span>
+<span class="gp">... </span>   <span class="k">def</span> <span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">info</span><span class="p">):</span>
+<span class="gp">... </span>       <span class="n">current</span> <span class="o">=</span> <span class="n">info</span><span class="p">[</span><span class="s2">&quot;currentComponent&quot;</span><span class="p">]</span>
+<span class="gp">... </span>       <span class="n">total</span> <span class="o">=</span> <span class="n">info</span><span class="p">[</span><span class="s2">&quot;totalComponents&quot;</span><span class="p">]</span>
+<span class="gp">... </span>       <span class="n">process_name</span> <span class="o">=</span> <span class="n">info</span><span class="p">[</span><span class="s2">&quot;completedComponents&quot;</span><span class="p">]</span>
+<span class="gp">...</span>
+<span class="gp">... </span>       <span class="bp">self</span><span class="o">.</span><span class="n">history</span><span class="o">.</span><span class="n">append</span><span class="p">({</span>
+<span class="gp">... </span>           <span class="s2">&quot;process_name&quot;</span><span class="p">:</span> <span class="n">process_name</span><span class="p">,</span>
+<span class="gp">... </span>           <span class="s2">&quot;current&quot;</span><span class="p">:</span> <span class="n">current</span><span class="p">,</span>
+<span class="gp">... </span>           <span class="s2">&quot;total&quot;</span><span class="p">:</span> <span class="n">total</span>
+<span class="gp">... </span>       <span class="p">})</span>
+<span class="gp">...</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">progress_info_callback</span> <span class="o">=</span> <span class="n">ProgressInfoCallback</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>Example 2: Use a function to output the progress percentage and processing name to standard error (stderr).</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="k">def</span> <span class="nf">progress_info_callback</span><span class="p">(</span><span class="n">info</span><span class="p">):</span>
+<span class="gp">... </span>   <span class="n">current</span> <span class="o">=</span> <span class="n">info</span><span class="p">[</span><span class="s2">&quot;currentComponent&quot;</span><span class="p">]</span>
+<span class="gp">... </span>   <span class="n">total</span> <span class="o">=</span> <span class="n">info</span><span class="p">[</span><span class="s2">&quot;totalComponents&quot;</span><span class="p">]</span>
+<span class="gp">... </span>   <span class="n">process_name</span> <span class="o">=</span> <span class="n">info</span><span class="p">[</span><span class="s2">&quot;completedComponents&quot;</span><span class="p">]</span>
+<span class="gp">...</span>
+<span class="gp">... </span>   <span class="n">progress_percent</span> <span class="o">=</span> <span class="p">(</span><span class="n">current</span> <span class="o">/</span> <span class="n">total</span> <span class="o">*</span> <span class="mf">100.0</span><span class="p">)</span>
+<span class="gp">...</span>
+<span class="gp">... </span>   <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;[</span><span class="si">{</span><span class="n">current</span><span class="si">}</span><span class="s2">/</span><span class="si">{</span><span class="n">total</span><span class="si">}</span><span class="s2">] </span><span class="si">{</span><span class="n">progress_percent</span><span class="si">:</span><span class="s2">6.2f</span><span class="si">}</span><span class="s2">% </span><span class="si">{</span><span class="n">process_name</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span>
+<span class="gp">... </span>         <span class="n">file</span><span class="o">=</span><span class="nb">__import__</span><span class="p">(</span><span class="s1">&#39;sys&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">stderr</span><span class="p">,</span> <span class="n">flush</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>From the processing state dictionary, you can retrieve information using the following keys:</p>
+<table class="docutils align-default" id="id1">
+<caption><span class="caption-text">Keys in the processing state dictionary</span><a class="headerlink" href="#id1" title="Link to this table">¶</a></caption>
+<thead>
+<tr class="row-odd"><th class="head"><p>Parameter Key</p></th>
+<th class="head"><p>Value Type</p></th>
+<th class="head"><p>Description</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>“currentComponent”</p></td>
+<td><p>int</p></td>
+<td><p>Current processing step</p></td>
+</tr>
+<tr class="row-odd"><td><p>“totalComponents”</p></td>
+<td><p>int</p></td>
+<td><p>Total number of processing steps</p></td>
+</tr>
+<tr class="row-even"><td><p>“completedComponents”</p></td>
+<td><p>str</p></td>
+<td><p>Name of the component currently being processed</p></td>
+</tr>
+</tbody>
+</table>
+<p>Import MCT and configure DebugConfig with the callback function you created.
+Configure CoreConfig with this DebugConfig and use it.</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">model_compression_toolkit</span> <span class="k">as</span> <span class="nn">mct</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">debug_config</span> <span class="o">=</span> <span class="n">mct</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">DebugConfig</span><span class="p">(</span><span class="n">progress_info_callback</span><span class="o">=</span><span class="n">progress_info_callback</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">core_config</span> <span class="o">=</span> <span class="n">mct</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">CoreConfig</span><span class="p">(</span><span class="n">debug_config</span><span class="o">=</span><span class="n">debug_config</span><span class="p">)</span>
+</pre></div>
+</div>
 </dd></dl>
 
 </section>

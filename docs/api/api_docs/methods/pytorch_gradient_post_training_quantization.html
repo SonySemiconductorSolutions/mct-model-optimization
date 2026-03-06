@@ -7,7 +7,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
     <title>Pytorch Gradient Based Post Training Quantization &#8212; MCT Documentation: ver 2.6.0</title>
-    <link rel="stylesheet" type="text/css" href="../../../static/pygments.css?v=03e43079" />
+    <link rel="stylesheet" type="text/css" href="../../../static/pygments.css?v=fa44fd50" />
     <link rel="stylesheet" type="text/css" href="../../../static/bizstyle.css?v=5283bb3d" />
     <link rel="stylesheet" type="text/css" href="../../../static/css/custom.css?v=01243f34" />
     
@@ -58,11 +58,8 @@ Then, the quantized weights are optimized using gradient based post
 training quantization by comparing points between the float and quantized models, and minimizing the observed
 loss.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-data docutils literal notranslate"><span class="pre">Tuple</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Module</span></code>, <code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">UserInformation</span></code>]]</span></p>
-</dd>
-<dt class="field-even">Parameters<span class="colon">:</span></dt>
-<dd class="field-even"><ul class="simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
 <li><p><strong>model</strong> (<em>Module</em>) – Pytorch model to quantize.</p></li>
 <li><p><strong>representative_data_gen</strong> (<em>Callable</em>) – Dataset used for calibration.</p></li>
 <li><p><strong>target_resource_utilization</strong> (<a class="reference internal" href="../classes/ResourceUtilization.html#model_compression_toolkit.core.ResourceUtilization" title="model_compression_toolkit.core.ResourceUtilization"><em>ResourceUtilization</em></a>) – ResourceUtilization object to limit the search of the mixed-precision configuration as desired.</p></li>
@@ -72,25 +69,25 @@ loss.</p>
 <li><p><strong>target_platform_capabilities</strong> (<em>Union</em><em>[</em><a class="reference internal" href="../modules/target_platform_capabilities.html#model_compression_toolkit.target_platform_capabilities.schema.mct_current_schema.TargetPlatformCapabilities" title="model_compression_toolkit.target_platform_capabilities.schema.mct_current_schema.TargetPlatformCapabilities"><em>TargetPlatformCapabilities</em></a><em>, </em><em>str</em><em>]</em>) – TargetPlatformCapabilities to optimize the PyTorch model according to.</p></li>
 </ul>
 </dd>
-<dt class="field-odd">Returns<span class="colon">:</span></dt>
-<dd class="field-odd"><p>A quantized module and information the user may need to handle the quantized module.</p>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>A quantized module and information the user may need to handle the quantized module.</p>
 </dd>
 </dl>
 <p class="rubric">Examples</p>
 <p>Import Model Compression Toolkit:</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span><span class="w"> </span><span class="nn">model_compression_toolkit</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">mct</span>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">model_compression_toolkit</span> <span class="k">as</span> <span class="nn">mct</span>
 </pre></div>
 </div>
 <p>Import a Pytorch module:</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">torchvision</span><span class="w"> </span><span class="kn">import</span> <span class="n">models</span>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">torchvision</span> <span class="kn">import</span> <span class="n">models</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">module</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">mobilenet_v2</span><span class="p">()</span>
 </pre></div>
 </div>
 <p>Create a random dataset generator, for required number of calibration iterations (num_calibration_batches):
 In this example a random dataset of 10 batches each containing 4 images is used.</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">num_calibration_batches</span> <span class="o">=</span> <span class="mi">10</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="k">def</span><span class="w"> </span><span class="nf">repr_datagen</span><span class="p">():</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">def</span> <span class="nf">repr_datagen</span><span class="p">():</span>
 <span class="gp">&gt;&gt;&gt; </span>    <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">num_calibration_batches</span><span class="p">):</span>
 <span class="gp">&gt;&gt;&gt; </span>        <span class="k">yield</span> <span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">random</span><span class="p">((</span><span class="mi">4</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">224</span><span class="p">,</span> <span class="mi">224</span><span class="p">))]</span>
 </pre></div>
@@ -103,6 +100,11 @@ In this example a random dataset of 10 batches each containing 4 images is used.
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">quantized_module</span><span class="p">,</span> <span class="n">quantization_info</span> <span class="o">=</span> <span class="n">mct</span><span class="o">.</span><span class="n">gptq</span><span class="o">.</span><span class="n">pytorch_gradient_post_training_quantization</span><span class="p">(</span><span class="n">module</span><span class="p">,</span> <span class="n">repr_datagen</span><span class="p">,</span> <span class="n">core_config</span><span class="o">=</span><span class="n">config</span><span class="p">,</span> <span class="n">gptq_config</span><span class="o">=</span><span class="n">gptq_conf</span><span class="p">)</span>
 </pre></div>
 </div>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><code class="xref py py-data docutils literal notranslate"><span class="pre">Tuple</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Module</span></code>, <code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">UserInformation</span></code>]]</p>
+</dd>
+</dl>
 </dd></dl>
 
 </section>

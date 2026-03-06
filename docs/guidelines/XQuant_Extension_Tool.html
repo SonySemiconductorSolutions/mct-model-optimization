@@ -7,7 +7,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
     <title>XQuant Extension Tool &#8212; MCT Documentation: ver 2.6.0</title>
-    <link rel="stylesheet" type="text/css" href="../static/pygments.css?v=03e43079" />
+    <link rel="stylesheet" type="text/css" href="../static/pygments.css?v=fa44fd50" />
     <link rel="stylesheet" type="text/css" href="../static/bizstyle.css?v=5283bb3d" />
     <link rel="stylesheet" type="text/css" href="../static/css/custom.css?v=01243f34" />
     
@@ -86,7 +86,7 @@ Finally, the results are presented in reports.</p>
 In addition to the conventional XQuant functions, it judges degradation causes and links to the Troubleshooting Manual that provides appropriate countermeasures for each cause of degradation.
 It can suggest more specific countermeasures than conventional tools and provides manuals that are easy to understand even for users who are not familiar with quantization.</p>
 <p>Please replace <em>xquant_report_pytorch_experimental</em> in <a class="reference external" href="https://github.com/SonySemiconductorSolutions/mct-model-optimization/tree/main/tutorials/notebooks/mct_features_notebooks/pytorch/example_pytorch_xquant.ipynb">the XQuant tutorial</a> with <em>xquant_report_troubleshoot_pytorch_experimental</em>.</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">model_compression_toolkit.xquant</span><span class="w"> </span><span class="kn">import</span> <span class="n">xquant_report_troubleshoot_pytorch_experimental</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">model_compression_toolkit.xquant</span> <span class="kn">import</span> <span class="n">xquant_report_troubleshoot_pytorch_experimental</span>
 <span class="c1"># xquant_report_pytorch_experimental --&gt; xquant_report_troubleshoot_pytorch_experimental</span>
 <span class="n">result</span> <span class="o">=</span> <span class="n">xquant_report_troubleshoot_pytorch_experimental</span><span class="p">(</span>
             <span class="n">float_model</span><span class="p">,</span>
@@ -111,7 +111,7 @@ It can suggest more specific countermeasures than conventional tools and provide
 
 <span class="n">xquant_config</span> <span class="o">=</span> <span class="n">XQuantConfig</span><span class="p">(</span><span class="n">report_dir</span><span class="o">=</span><span class="s1">&#39;./log_tensorboard_xquant&#39;</span><span class="p">)</span>
 
-<span class="kn">from</span><span class="w"> </span><span class="nn">model_compression_toolkit.xquant</span><span class="w"> </span><span class="kn">import</span> <span class="n">xquant_report_troubleshoot_pytorch_experimental</span>
+<span class="kn">from</span> <span class="nn">model_compression_toolkit.xquant</span> <span class="kn">import</span> <span class="n">xquant_report_troubleshoot_pytorch_experimental</span>
 <span class="n">result</span> <span class="o">=</span> <span class="n">xquant_report_troubleshoot_pytorch_experimental</span><span class="p">(</span>
             <span class="n">float_model</span><span class="p">,</span>
             <span class="n">quantized_model</span><span class="p">,</span>
@@ -208,7 +208,7 @@ Please refer to the respective Troubleshooting Manuals and change the configurat
 <ul class="simple">
 <li><p><a class="reference external" href="https://sonysemiconductorsolutions.github.io/mct-model-optimization/docs_troubleshoot/troubleshoots/outlier_removal.html#ug-outlier-removal">Outlier Removal</a></p></li>
 </ul>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">WARNING</span><span class="p">:</span><span class="n">Model</span> <span class="n">Compression</span> <span class="n">Toolkit</span><span class="p">:</span><span class="n">There</span> <span class="n">are</span> <span class="n">output</span> <span class="n">values</span> <span class="n">that</span> <span class="n">deviate</span> <span class="n">significantly</span> <span class="kn">from</span><span class="w"> </span><span class="nn">the</span> <span class="n">average</span><span class="o">.</span> <span class="n">Refer</span> <span class="n">to</span> <span class="n">the</span> <span class="n">following</span> <span class="n">images</span> <span class="ow">and</span> <span class="n">the</span> <span class="n">TroubleShooting</span> <span class="n">Documentation</span> <span class="p">(</span><span class="n">MCT</span> <span class="n">XQuant</span> <span class="n">Extension</span> <span class="n">Tool</span><span class="p">)</span> <span class="n">of</span> <span class="s1">&#39;Outlier Removal&#39;</span><span class="o">.</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">WARNING</span><span class="p">:</span><span class="n">Model</span> <span class="n">Compression</span> <span class="n">Toolkit</span><span class="p">:</span><span class="n">There</span> <span class="n">are</span> <span class="n">output</span> <span class="n">values</span> <span class="n">that</span> <span class="n">deviate</span> <span class="n">significantly</span> <span class="kn">from</span> <span class="nn">the</span> <span class="n">average</span><span class="o">.</span> <span class="n">Refer</span> <span class="n">to</span> <span class="n">the</span> <span class="n">following</span> <span class="n">images</span> <span class="ow">and</span> <span class="n">the</span> <span class="n">TroubleShooting</span> <span class="n">Documentation</span> <span class="p">(</span><span class="n">MCT</span> <span class="n">XQuant</span> <span class="n">Extension</span> <span class="n">Tool</span><span class="p">)</span> <span class="n">of</span> <span class="s1">&#39;Outlier Removal&#39;</span><span class="o">.</span>
 </pre></div>
 </div>
 <ul class="simple">
