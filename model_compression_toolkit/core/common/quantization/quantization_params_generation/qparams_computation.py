@@ -28,6 +28,8 @@ from model_compression_toolkit.core.common.quantization.quantization_params_gene
 from model_compression_toolkit.core.common.quantization.quantization_params_generation.qparams_weights_computation import \
     get_weights_qparams
 from model_compression_toolkit.logger import Logger
+from model_compression_toolkit.core.common.progress_config.progress_info_controller import \
+    ProgressInfoController
 
 
 def _collect_nodes_for_hmse(nodes_list: List[BaseNode], graph: Graph) -> List[BaseNode]:
@@ -60,7 +62,8 @@ def calculate_quantization_params(graph: Graph,
                                   repr_data_gen_fn: Callable[[], Generator],
                                   nodes: List[BaseNode] = None,
                                   hessian_info_service: HessianInfoService = None,
-                                  num_hessian_samples: int = NUM_QPARAM_HESSIAN_SAMPLES):
+                                  num_hessian_samples: int = NUM_QPARAM_HESSIAN_SAMPLES,
+                                  progress_info_controller: ProgressInfoController = None):
     """
     For a graph, go over its nodes, compute quantization params (for both weights and activations according
     to the given framework info), and create and attach a NodeQuantizationConfig to each node (containing the
@@ -75,6 +78,7 @@ def calculate_quantization_params(graph: Graph,
         nodes: List of nodes to compute their thresholds instead of computing it for all nodes in the graph.
         hessian_info_service: HessianInfoService object for retrieving Hessian-based scores (used only with HMSE error method).
         num_hessian_samples: Number of samples to approximate Hessian-based scores on (used only with HMSE error method).
+        progress_info_controller: ProgressInfoController to display and manage overall progress information.
     """
 
     Logger.info(f"\nRunning quantization parameters search. "
@@ -96,6 +100,9 @@ def calculate_quantization_params(graph: Graph,
                                        n_samples=num_hessian_samples,
                                        target_nodes=nodes_for_hmse)
         hessian_info_service.fetch_hessian(request)
+
+    if progress_info_controller is not None:
+        progress_info_controller.set_description('Calculate Quantization Parameters')
 
     for n in tqdm(nodes_list, "Calculating quantization parameters"):  # iterate only nodes that we should compute their thresholds
         for candidate_qc in n.candidates_quantization_cfg:

@@ -31,6 +31,8 @@ from model_compression_toolkit.gptq.common.gradual_activation_quantization impor
     get_gradual_activation_quantizer_wrapper_factory
 from model_compression_toolkit.gptq.common.regularization_factory import get_regularization
 from model_compression_toolkit.logger import Logger
+from model_compression_toolkit.core.common.progress_config.progress_info_controller import \
+    ProgressInfoController
 from model_compression_toolkit.trainable_infrastructure.common.util import get_total_grad_steps
 
 
@@ -46,7 +48,8 @@ class GPTQTrainer(ABC):
                  fw_impl: GPTQFrameworkImplemantation,
                  fw_info: FrameworkInfo,
                  representative_data_gen_fn: Callable[[], Generator],
-                 hessian_info_service: HessianInfoService = None):
+                 hessian_info_service: HessianInfoService = None,
+                 progress_info_controller: ProgressInfoController = None):
         """
         Build two models from a graph: A teacher network (float model) and a student network (quantized model).
         Use the dataset generator to pass images through the teacher and student networks to get intermediate
@@ -61,6 +64,7 @@ class GPTQTrainer(ABC):
             fw_info: Framework information
             representative_data_gen_fn: factory for representative data generator.
             hessian_info_service: HessianInfoService for fetching and computing Hessian-approximation information.
+            progress_info_controller: ProgressInfoController to display and manage overall progress information.
         """
         self.graph_float = copy.deepcopy(graph_float)
         self.graph_quant = copy.deepcopy(graph_quant)
@@ -68,6 +72,7 @@ class GPTQTrainer(ABC):
         self.fw_impl = fw_impl
         self.fw_info = fw_info
         self.representative_data_gen_fn = representative_data_gen_fn
+        self.progress_info_controller = progress_info_controller
 
         def _get_total_grad_steps():
             return get_total_grad_steps(representative_data_gen_fn) * gptq_config.n_epochs
@@ -130,6 +135,10 @@ class GPTQTrainer(ABC):
         self.has_params_to_train = np.sum(
             [len(optimizer_params_tuple[1]) for optimizer_params_tuple in self.optimizer_with_param]) > 0
         self.use_sample_layer_attention = hessian_cfg and hessian_cfg.per_sample
+
+        if hessian_cfg:
+            if self.progress_info_controller is not None:
+                self.progress_info_controller.set_description('Compute Hessian for GPTQ')
 
         if self.use_sample_layer_attention:
             # normalization is currently not supported, make sure the config reflects it.
@@ -289,7 +298,8 @@ def gptq_training(graph_float: Graph,
                   representative_data_gen: Callable,
                   fw_impl: GPTQFrameworkImplemantation,
                   fw_info: FrameworkInfo,
-                  hessian_info_service: HessianInfoService = None) -> Graph:
+                  hessian_info_service: HessianInfoService = None,
+                  progress_info_controller: ProgressInfoController = None) -> Graph:
     """
     GPTQ training process using knowledge distillation with a teacher network (float model) and a student network (quantized model).
     Args:
@@ -300,6 +310,7 @@ def gptq_training(graph_float: Graph,
         fw_impl: Framework implementation
         fw_info: Framework information
         hessian_info_service: HessianInfoService to fetch information based on the Hessian approximation.
+        progress_info_controller: ProgressInfoController to display and manage overall progress information.
 
     Returns:
         Quantized graph for export
@@ -314,9 +325,12 @@ def gptq_training(graph_float: Graph,
                                     fw_impl,
                                     fw_info,
                                     representative_data_gen,
-                                    hessian_info_service=hessian_info_service)
+                                    hessian_info_service=hessian_info_service,
+                                    progress_info_controller=progress_info_controller)
 
     # Training process
+    if progress_info_controller is not None:
+        progress_info_controller.set_description('Train with GPTQ')
     gptq_trainer.train()
 
     # Update graph

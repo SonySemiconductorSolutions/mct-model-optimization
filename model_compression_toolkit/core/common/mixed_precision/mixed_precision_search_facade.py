@@ -28,6 +28,8 @@ from model_compression_toolkit.core.common.mixed_precision.resource_utilization_
 from model_compression_toolkit.core.common.mixed_precision.sensitivity_eval.sensitivity_evaluation import SensitivityEvaluation
 from model_compression_toolkit.core.common.mixed_precision.solution_refinement_procedure import \
     greedy_solution_refinement_procedure
+from model_compression_toolkit.core.common.progress_config.progress_info_controller import \
+    ProgressInfoController
 
 
 class BitWidthSearchMethod(Enum):
@@ -41,7 +43,8 @@ def search_bit_width(graph: Graph,
                      mp_config: MixedPrecisionQuantizationConfig,
                      representative_data_gen: Callable,
                      search_method: BitWidthSearchMethod = BitWidthSearchMethod.INTEGER_PROGRAMMING,
-                     hessian_info_service: HessianInfoService = None) -> List[int]:
+                     hessian_info_service: HessianInfoService = None,
+                     progress_info_controller: ProgressInfoController = None) -> List[int]:
     """
     Search for an MP configuration for a given graph. Given a search_method method (by default, it's linear
     programming), we use the sensitivity_evaluator object that provides a function to compute an
@@ -59,6 +62,7 @@ def search_bit_width(graph: Graph,
         representative_data_gen: Dataset to use for retrieving images for the models inputs.
         search_method: BitWidthSearchMethod to define which searching method to use.
         hessian_info_service: HessianInfoService to fetch Hessian-approximation information.
+        progress_info_controller: ProgressInfoController to display and manage overall progress information.
 
     Returns:
         A MP configuration for the graph (list of integers, where the index in the list, is the node's
@@ -81,7 +85,8 @@ def search_bit_width(graph: Graph,
     # even if a virtual graph was created (and is used only for BOPS utilization computation purposes)
     se = SensitivityEvaluation(graph, mp_config, representative_data_gen=representative_data_gen, fw_info=fw_info,
                                fw_impl=fw_impl, disable_activation_for_metric=disable_activation_for_metric,
-                               hessian_info_service=hessian_info_service)
+                               hessian_info_service=hessian_info_service,
+                               progress_info_controller=progress_info_controller)
 
     if search_method != BitWidthSearchMethod.INTEGER_PROGRAMMING:
         raise NotImplementedError()
@@ -97,7 +102,8 @@ def search_bit_width(graph: Graph,
                                                  fw_impl=fw_impl,
                                                  sensitivity_evaluator=se,
                                                  target_resource_utilization=target_resource_utilization,
-                                                 mp_config=mp_config)
+                                                 mp_config=mp_config,
+                                                 progress_info_controller=progress_info_controller)
     nodes_bit_cfg = search_manager.search()
 
     graph.skip_validation_check = False

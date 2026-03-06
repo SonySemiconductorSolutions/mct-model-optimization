@@ -27,6 +27,8 @@ from model_compression_toolkit.core.common.mixed_precision.sensitivity_eval.set_
 from model_compression_toolkit.core.common.quantization.node_quantization_config import ActivationQuantizationMode
 from model_compression_toolkit.core.common.model_builder_mode import ModelBuilderMode
 from model_compression_toolkit.core.common.hessian import HessianInfoService
+from model_compression_toolkit.core.common.progress_config.progress_info_controller import \
+    ProgressInfoController
 
 
 class SensitivityEvaluation:
@@ -41,7 +43,8 @@ class SensitivityEvaluation:
                  fw_info: FrameworkInfo,
                  fw_impl: Any,
                  disable_activation_for_metric: bool = False,
-                 hessian_info_service: HessianInfoService = None
+                 hessian_info_service: HessianInfoService = None,
+                 progress_info_controller: ProgressInfoController = None
                  ):
         """
         Args:
@@ -53,7 +56,7 @@ class SensitivityEvaluation:
             fw_impl: FrameworkImplementation object with a specific framework methods implementation.
             disable_activation_for_metric: Whether to disable activation quantization when computing the MP metric.
             hessian_info_service: HessianInfoService to fetch Hessian approximation information.
-
+            progress_info_controller: ProgressInfoController to display and manage overall progress information.
         """
         self.mp_config = mp_config
         self.representative_data_gen = representative_data_gen
@@ -65,7 +68,8 @@ class SensitivityEvaluation:
         else:
             self.metric_calculator = DistanceMetricCalculator(graph, mp_config, representative_data_gen,
                                                               fw_info=fw_info, fw_impl=fw_impl,
-                                                              hessian_info_service=hessian_info_service)
+                                                              hessian_info_service=hessian_info_service,
+                                                              progress_info_controller=progress_info_controller)
 
         # Build a mixed-precision model which can be configured to use different bitwidth in different layers.
         # Also, returns a mapping between a configurable graph's node and its matching layer(s) in the built MP model.

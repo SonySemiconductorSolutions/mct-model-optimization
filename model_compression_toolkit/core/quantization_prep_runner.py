@@ -32,6 +32,8 @@ from model_compression_toolkit.core.common.statistics_correction.statistics_corr
 from model_compression_toolkit.core.common.substitutions.apply_substitutions import substitute
 
 from model_compression_toolkit.core.common.visualization.tensorboard_writer import TensorboardWriter
+from model_compression_toolkit.core.common.progress_config.progress_info_controller import \
+    ProgressInfoController
 
 
 def quantization_preparation_runner(graph: Graph,
@@ -40,7 +42,8 @@ def quantization_preparation_runner(graph: Graph,
                                     fw_info: FrameworkInfo,
                                     fw_impl: FrameworkImplementation,
                                     tb_w: TensorboardWriter = None,
-                                    hessian_info_service: HessianInfoService = None, ) -> Graph:
+                                    hessian_info_service: HessianInfoService = None,
+                                    progress_info_controller: ProgressInfoController = None) -> Graph:
     """
     Prepares a trained model for post-training quantization.
     First, the model graph is optimized using several transformations (e.g. folding BatchNormalization to preceding layers).
@@ -58,6 +61,7 @@ def quantization_preparation_runner(graph: Graph,
         fw_impl: FrameworkImplementation object with a specific framework methods implementation.
         tb_w: TensorboardWriter object for logging
         hessian_info_service: HessianInfoService object for retrieving Hessian-based scores.
+        progress_info_controller: ProgressInfoController to display and manage overall progress information.
 
     Returns:
         Graph object that represents the model, contains thresholds, and ready for quantization.
@@ -66,6 +70,9 @@ def quantization_preparation_runner(graph: Graph,
     ######################################
     # Statistic collection
     ######################################
+    if progress_info_controller is not None:
+        progress_info_controller.set_description('Statistics Collection')
+
     mi = ModelCollector(graph,
                         fw_impl,
                         fw_info,
@@ -92,7 +99,8 @@ def quantization_preparation_runner(graph: Graph,
     ######################################
 
     calculate_quantization_params(graph, fw_impl=fw_impl, repr_data_gen_fn=representative_data_gen,
-                                  hessian_info_service=hessian_info_service)
+                                  hessian_info_service=hessian_info_service,
+                                  progress_info_controller=progress_info_controller)
 
     if tb_w is not None:
         tb_w.add_graph(graph, 'thresholds_selection')
