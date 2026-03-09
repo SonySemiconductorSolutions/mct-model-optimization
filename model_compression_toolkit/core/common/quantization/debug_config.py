@@ -56,10 +56,10 @@ class DebugConfig:
         ...    def __call__(self, info):
         ...        current = info["currentComponent"]
         ...        total = info["totalComponents"]
-        ...        process_name = info["completedComponents"]
+        ...        component_name = info["completedComponents"]
         ...
         ...        self.history.append({
-        ...            "process_name": process_name,
+        ...            "component_name": component_name,
         ...            "current": current,
         ...            "total": total
         ...        })
@@ -72,11 +72,11 @@ class DebugConfig:
         >>> def progress_info_callback(info):
         ...    current = info["currentComponent"]
         ...    total = info["totalComponents"]
-        ...    process_name = info["completedComponents"]
+        ...    component_name = info["completedComponents"]
         ...
         ...    progress_percent = (current / total * 100.0)
         ...
-        ...    print(f"[{current}/{total}] {progress_percent:6.2f}% {process_name}",
+        ...    print(f"[{current}/{total}] {progress_percent:6.2f}% {component_name}",
         ...          file=__import__('sys').stderr, flush=True)
 
         From the processing state dictionary, you can retrieve information using the following keys:
