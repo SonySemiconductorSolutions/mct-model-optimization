@@ -7,7 +7,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
     <title>Keras Data Generation &#8212; MCT Documentation: ver 2.6.0</title>
-    <link rel="stylesheet" type="text/css" href="../../../static/pygments.css?v=03e43079" />
+    <link rel="stylesheet" type="text/css" href="../../../static/pygments.css?v=fa44fd50" />
     <link rel="stylesheet" type="text/css" href="../../../static/bizstyle.css?v=5283bb3d" />
     <link rel="stylesheet" type="text/css" href="../../../static/css/custom.css?v=01243f34" />
     
@@ -45,30 +45,27 @@
 <span class="sig-prename descclassname"><span class="pre">model_compression_toolkit.data_generation.</span></span><span class="sig-name descname"><span class="pre">keras_data_generation_experimental</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">model</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_images</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">output_image_size</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data_generation_config</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#model_compression_toolkit.data_generation.keras_data_generation_experimental" title="Link to this definition">¶</a></dt>
 <dd><p>Function to perform data generation using the provided Keras model and data generation configuration.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">Tensor</span></code></span></p>
-</dd>
-<dt class="field-even">Parameters<span class="colon">:</span></dt>
-<dd class="field-even"><ul class="simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
 <li><p><strong>model</strong> (<em>Model</em>) – Keras model to generate data for.</p></li>
 <li><p><strong>n_images</strong> (<em>int</em>) – Number of images to generate.</p></li>
 <li><p><strong>output_image_size</strong> (<em>Union</em><em>[</em><em>int</em><em>, </em><em>Tuple</em><em>[</em><em>int</em><em>, </em><em>int</em><em>]</em><em>]</em>) – Size of the output images.</p></li>
 <li><p><strong>data_generation_config</strong> (<a class="reference internal" href="../classes/DataGenerationConfig.html#model_compression_toolkit.data_generation.DataGenerationConfig" title="model_compression_toolkit.data_generation.DataGenerationConfig"><em>DataGenerationConfig</em></a>) – Configuration for data generation.</p></li>
 </ul>
 </dd>
-<dt class="field-odd">Returns<span class="colon">:</span></dt>
-<dd class="field-odd"><p>Finalized list containing generated images.</p>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Finalized list containing generated images.</p>
 </dd>
-<dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p>List[tf.Tensor]</p>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>List[tf.Tensor]</p>
 </dd>
 </dl>
 <p class="rubric">Examples</p>
 <p>In this example, we’ll walk through generating images using a simple Keras model and a data generation configuration. The process involves creating a model, setting up a data generation configuration, and finally generating images with specified parameters.</p>
 <p>Start by importing the Model Compression Toolkit (MCT), TensorFlow, and some layers from <cite>tensorflow.keras</cite>:</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span><span class="w"> </span><span class="nn">model_compression_toolkit</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">mct</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">tensorflow.keras.models</span><span class="w"> </span><span class="kn">import</span> <span class="n">Sequential</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">tensorflow.keras.layers</span><span class="w"> </span><span class="kn">import</span> <span class="n">Conv2D</span><span class="p">,</span> <span class="n">BatchNormalization</span><span class="p">,</span> <span class="n">Flatten</span><span class="p">,</span> <span class="n">Dense</span><span class="p">,</span> <span class="n">Reshape</span>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">model_compression_toolkit</span> <span class="k">as</span> <span class="nn">mct</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">tensorflow.keras.models</span> <span class="kn">import</span> <span class="n">Sequential</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">tensorflow.keras.layers</span> <span class="kn">import</span> <span class="n">Conv2D</span><span class="p">,</span> <span class="n">BatchNormalization</span><span class="p">,</span> <span class="n">Flatten</span><span class="p">,</span> <span class="n">Dense</span><span class="p">,</span> <span class="n">Reshape</span>
 </pre></div>
 </div>
 <p>Next, define a simple Keras model:</p>
@@ -86,6 +83,11 @@ The <cite>n_images</cite> parameter specifies the number of images to generate, 
 </pre></div>
 </div>
 <p>The generated images can then be used for various purposes, such as data-free quantization.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">Tensor</span></code></p>
+</dd>
+</dl>
 </dd></dl>
 
 </section>
