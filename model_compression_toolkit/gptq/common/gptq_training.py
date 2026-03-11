@@ -73,6 +73,7 @@ class GPTQTrainer(ABC):
         self.fw_info = fw_info
         self.representative_data_gen_fn = representative_data_gen_fn
         self.progress_info_controller = progress_info_controller
+        self.disable_iter_pbar = progress_info_controller is not None
 
         def _get_total_grad_steps():
             return get_total_grad_steps(representative_data_gen_fn) * gptq_config.n_epochs

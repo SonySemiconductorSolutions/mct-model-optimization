@@ -103,6 +103,10 @@ class DebugConfig:
         >>> import model_compression_toolkit as mct
         >>> debug_config = mct.core.DebugConfig(progress_info_callback=progress_info_callback)
         >>> core_config = mct.core.CoreConfig(debug_config=debug_config)
+
+        .. important::
+            If a callback function is configured, the GPTQ iteration progress bar is disabled and not displayed.
+
     """
 
     analyze_similarity: bool = False
