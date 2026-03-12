@@ -14,6 +14,7 @@
 # ==============================================================================
 import copy
 from typing import Callable, Union, Optional, Tuple
+from tqdm.contrib.logging import logging_redirect_tqdm
 
 from model_compression_toolkit.constants import ACT_HESSIAN_DEFAULT_BATCH_SIZE, GPTQ_HESSIAN_NUM_SAMPLES
 from model_compression_toolkit.core import CoreConfig
@@ -37,7 +38,6 @@ from model_compression_toolkit.metadata import create_model_metadata
 from model_compression_toolkit.target_platform_capabilities.schema.mct_current_schema import TargetPlatformCapabilities
 from model_compression_toolkit.target_platform_capabilities.tpc_io_handler import load_target_platform_capabilities
 from model_compression_toolkit.verify_packages import FOUND_TORCH
-
 
 
 if FOUND_TORCH:
@@ -209,82 +209,84 @@ if FOUND_TORCH:
 
         """
 
-        if core_config.debug_config.bypass:
-            return model, None
+        with logging_redirect_tqdm():
 
-        if core_config.is_mixed_precision_enabled:    # pragma: no cover
-            if not isinstance(core_config.mixed_precision_config, MixedPrecisionQuantizationConfig):
-                Logger.critical("Given quantization config for mixed-precision is not of type 'MixedPrecisionQuantizationConfig'. "
-                                "Ensure usage of the correct API for 'pytorch_gradient_post_training_quantization' "
-                                "or provide a valid mixed-precision configuration.")
+            if core_config.debug_config.bypass:
+                return model, None
 
-        tb_w = init_tensorboard_writer(DEFAULT_PYTORCH_INFO)
+            if core_config.is_mixed_precision_enabled:    # pragma: no cover
+                if not isinstance(core_config.mixed_precision_config, MixedPrecisionQuantizationConfig):
+                    Logger.critical("Given quantization config for mixed-precision is not of type 'MixedPrecisionQuantizationConfig'. "
+                                    "Ensure usage of the correct API for 'pytorch_gradient_post_training_quantization' "
+                                    "or provide a valid mixed-precision configuration.")
 
-        fw_impl = GPTQPytorchImplemantation()
+            tb_w = init_tensorboard_writer(DEFAULT_PYTORCH_INFO)
 
-        target_platform_capabilities = load_target_platform_capabilities(target_platform_capabilities)
-        # Attach tpc model to framework
-        attach2pytorch = AttachTpcToPytorch()
-        framework_quantization_capabilities = attach2pytorch.attach(target_platform_capabilities,
-                                                             core_config.quantization_config.custom_tpc_opset_to_layer)
+            fw_impl = GPTQPytorchImplemantation()
 
-        progress_info_controller = ProgressInfoController(
-            total_step=research_progress_total(core_config, target_resource_utilization, gptq_config),
-            description="MCT PyTorch GPTQ Progress",
-            progress_info_callback=core_config.debug_config.progress_info_callback
-        )
+            target_platform_capabilities = load_target_platform_capabilities(target_platform_capabilities)
+            # Attach tpc model to framework
+            attach2pytorch = AttachTpcToPytorch()
+            framework_quantization_capabilities = attach2pytorch.attach(target_platform_capabilities,
+                                                                core_config.quantization_config.custom_tpc_opset_to_layer)
 
-        # ---------------------- #
-        # Core Runner
-        # ---------------------- #
-        graph, bit_widths_config, hessian_info_service, scheduling_info = core_runner(in_model=model,
-                                                                                      representative_data_gen=representative_data_gen,
-                                                                                      core_config=core_config,
-                                                                                      fw_info=DEFAULT_PYTORCH_INFO,
-                                                                                      fw_impl=fw_impl,
-                                                                                      fqc=framework_quantization_capabilities,
-                                                                                      target_resource_utilization=target_resource_utilization,
-                                                                                      tb_w=tb_w,
-                                                                                      running_gptq=True,
-                                                                                      progress_info_controller=progress_info_controller)
+            progress_info_controller = ProgressInfoController(
+                total_step=research_progress_total(core_config, target_resource_utilization, gptq_config),
+                description="MCT PyTorch GPTQ Progress",
+                progress_info_callback=core_config.debug_config.progress_info_callback
+            )
 
-        float_graph = copy.deepcopy(graph)
+            # ---------------------- #
+            # Core Runner
+            # ---------------------- #
+            graph, bit_widths_config, hessian_info_service, scheduling_info = core_runner(in_model=model,
+                                                                                        representative_data_gen=representative_data_gen,
+                                                                                        core_config=core_config,
+                                                                                        fw_info=DEFAULT_PYTORCH_INFO,
+                                                                                        fw_impl=fw_impl,
+                                                                                        fqc=framework_quantization_capabilities,
+                                                                                        target_resource_utilization=target_resource_utilization,
+                                                                                        tb_w=tb_w,
+                                                                                        running_gptq=True,
+                                                                                        progress_info_controller=progress_info_controller)
 
-        # ---------------------- #
-        # GPTQ Runner
-        # ---------------------- #
-        graph_gptq = gptq_runner(graph,
-                                 core_config,
-                                 gptq_config,
-                                 representative_data_gen,
-                                 gptq_representative_data_gen if gptq_representative_data_gen else representative_data_gen,
-                                 DEFAULT_PYTORCH_INFO,
-                                 fw_impl,
-                                 tb_w,
-                                 hessian_info_service=hessian_info_service,
-                                 progress_info_controller=progress_info_controller)
+            float_graph = copy.deepcopy(graph)
 
-        if progress_info_controller is not None:
-            progress_info_controller.set_description("MCT Graph Finalization")
+            # ---------------------- #
+            # GPTQ Runner
+            # ---------------------- #
+            graph_gptq = gptq_runner(graph,
+                                    core_config,
+                                    gptq_config,
+                                    representative_data_gen,
+                                    gptq_representative_data_gen if gptq_representative_data_gen else representative_data_gen,
+                                    DEFAULT_PYTORCH_INFO,
+                                    fw_impl,
+                                    tb_w,
+                                    hessian_info_service=hessian_info_service,
+                                    progress_info_controller=progress_info_controller)
 
-        if core_config.debug_config.analyze_similarity:
-            analyzer_model_quantization(representative_data_gen,
-                                        tb_w,
-                                        float_graph,
-                                        graph_gptq,
-                                        fw_impl,
-                                        DEFAULT_PYTORCH_INFO)
+            if progress_info_controller is not None:
+                progress_info_controller.set_description("MCT Graph Finalization")
 
-        exportable_model, user_info = get_exportable_pytorch_model(graph_gptq)
-        if framework_quantization_capabilities.tpc.add_metadata:
-            exportable_model = add_metadata(exportable_model,
-                                            create_model_metadata(fqc=framework_quantization_capabilities,
-                                                                  scheduling_info=scheduling_info))
+            if core_config.debug_config.analyze_similarity:
+                analyzer_model_quantization(representative_data_gen,
+                                            tb_w,
+                                            float_graph,
+                                            graph_gptq,
+                                            fw_impl,
+                                            DEFAULT_PYTORCH_INFO)
 
-        if progress_info_controller is not None:
-            progress_info_controller.close()
+            exportable_model, user_info = get_exportable_pytorch_model(graph_gptq)
+            if framework_quantization_capabilities.tpc.add_metadata:
+                exportable_model = add_metadata(exportable_model,
+                                                create_model_metadata(fqc=framework_quantization_capabilities,
+                                                                    scheduling_info=scheduling_info))
 
-        return exportable_model, user_info
+            if progress_info_controller is not None:
+                progress_info_controller.close()
+
+            return exportable_model, user_info
 
 
 else:
