@@ -21,10 +21,6 @@ from model_compression_toolkit.gptq.common.gptq_config import GradientPTQConfig
 from model_compression_toolkit.gptq.keras.gptq_training import KerasGPTQTrainer
 
 
-
-
-
-
 class TestTraininPbarControllKeras:
     def _build_trainer(self, progress_info_controller):
 
