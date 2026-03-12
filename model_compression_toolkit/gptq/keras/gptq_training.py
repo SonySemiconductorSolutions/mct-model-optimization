@@ -396,7 +396,7 @@ class KerasGPTQTrainer(GPTQTrainer):
         """
         with tqdm(range(n_epochs), "Running GPTQ optimization") as epochs_pbar:
             for _ in epochs_pbar:
-                with tqdm(self.train_dataloader, position=1, leave=False, disable=self.disable_iter_pbar) as data_pbar:
+                with tqdm(self.train_dataloader, position=1, leave=False, disable=self.disable_data_pbar) as data_pbar:
                     for data in data_pbar:
 
                         input_data, distill_loss_weights, reg_weight = data

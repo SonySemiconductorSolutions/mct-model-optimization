@@ -310,7 +310,7 @@ class PytorchGPTQTrainer(GPTQTrainer):
         """
         with tqdm(range(n_epochs), "Running GPTQ optimization") as epochs_pbar:
             for _ in epochs_pbar:
-                with tqdm(self.train_dataloader, position=1, leave=False, disable=self.disable_iter_pbar) as data_pbar:
+                with tqdm(self.train_dataloader, position=1, leave=False, disable=self.disable_data_pbar) as data_pbar:
                     for sample in data_pbar:
                         data, loss_weight, reg_weight = to_torch_tensor(sample)
                         input_data = [d * self.input_scale for d in data]

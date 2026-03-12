@@ -79,20 +79,20 @@ class TestTrainingPbarControllPytorch:
         return epochs_pbar, data_pbar
 
     @pytest.mark.parametrize(
-        'progress_info_controller, expected_disable_iter_pbar',
+        'progress_info_controller, expected_disable_data_pbar',
         [
             pytest.param(Mock(), True,  id='disable_data_pbar'),
             pytest.param(None,   False, id='enable_data_pbar'),
         ],
     )
-    def test_training_pbar_controll_pytorch(self, progress_info_controller, expected_disable_iter_pbar):
+    def test_training_pbar_controll_pytorch(self, progress_info_controller, expected_disable_data_pbar):
         trainer = self._build_trainer(progress_info_controller)
         epochs_pbar, data_pbar = self._build_tqdm_contexts(trainer.train_dataloader)
 
-        assert trainer.disable_iter_pbar == expected_disable_iter_pbar  ### check setting disable_iter_pbar flag
+        assert trainer.disable_data_pbar == expected_disable_data_pbar  ### check setting disable_data_pbar flag
 
         with patch('model_compression_toolkit.gptq.pytorch.gptq_training.tqdm', side_effect=[epochs_pbar, data_pbar]) as tqdm_mock:
             trainer.micro_training_loop(2)
 
-        assert tqdm_mock.call_count == 2    ### check calling pbar count (epoch, iter -> 2 times)
-        assert tqdm_mock.call_args_list[1].kwargs['disable'] is expected_disable_iter_pbar  ### chceck setting disable flag
+        assert tqdm_mock.call_count == 2    ### check calling pbar count (epoch, data -> 2 times)
+        assert tqdm_mock.call_args_list[1].kwargs['disable'] is expected_disable_data_pbar  ### chceck setting disable flag

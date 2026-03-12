@@ -105,7 +105,7 @@ class DebugConfig:
         >>> core_config = mct.core.CoreConfig(debug_config=debug_config)
 
         .. important::
-            If a callback function is configured, the GPTQ iteration progress bar is disabled and not displayed.
+            If a callback function is configured, the GPTQ data iteration progress bar is disabled and not displayed.
 
     """
 
