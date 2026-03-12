@@ -69,7 +69,7 @@ class ProgressInfoController:
             total=self.total_step,
             desc=self.description,
             position=PROGRESS_BAR_POSITION,
-            leave=True,
+            leave=False,
             unit='step',
             dynamic_ncols=True,
             bar_format='{l_bar}{bar:}|'
