@@ -15,6 +15,7 @@
 import copy
 
 from typing import Callable, Union, Tuple, Optional
+from tqdm.contrib.logging import logging_redirect_tqdm
 
 from model_compression_toolkit.core.common.user_info import UserInformation
 from model_compression_toolkit.core.common.visualization.tensorboard_writer import init_tensorboard_writer
@@ -99,81 +100,83 @@ if FOUND_TORCH:
 
         """
 
-        if core_config.debug_config.bypass:
-            return in_module, None
+        with logging_redirect_tqdm():
 
-        fw_info = DEFAULT_PYTORCH_INFO
+            if core_config.debug_config.bypass:
+                return in_module, None
 
-        if core_config.is_mixed_precision_enabled:
-            if not isinstance(core_config.mixed_precision_config, MixedPrecisionQuantizationConfig):
-                Logger.critical("Given quantization config to mixed-precision facade is not of type "
-                                "MixedPrecisionQuantizationConfig. Please use "
-                                "pytorch_post_training_quantization API, or pass a valid mixed precision "
-                                "configuration.")  # pragma: no cover
+            fw_info = DEFAULT_PYTORCH_INFO
 
-        tb_w = init_tensorboard_writer(fw_info)
+            if core_config.is_mixed_precision_enabled:
+                if not isinstance(core_config.mixed_precision_config, MixedPrecisionQuantizationConfig):
+                    Logger.critical("Given quantization config to mixed-precision facade is not of type "
+                                    "MixedPrecisionQuantizationConfig. Please use "
+                                    "pytorch_post_training_quantization API, or pass a valid mixed precision "
+                                    "configuration.")  # pragma: no cover
 
-        fw_impl = PytorchImplementation()
+            tb_w = init_tensorboard_writer(fw_info)
 
-        target_platform_capabilities = load_target_platform_capabilities(target_platform_capabilities)
-        # Attach tpc model to framework
-        attach2pytorch = AttachTpcToPytorch()
-        framework_platform_capabilities = attach2pytorch.attach(target_platform_capabilities,
-                                                             core_config.quantization_config.custom_tpc_opset_to_layer)
+            fw_impl = PytorchImplementation()
 
-        progress_info_controller = ProgressInfoController(
-            total_step=research_progress_total(core_config, target_resource_utilization),
-            description="MCT PyTorch PTQ Progress",
-            progress_info_callback=core_config.debug_config.progress_info_callback
-        )
+            target_platform_capabilities = load_target_platform_capabilities(target_platform_capabilities)
+            # Attach tpc model to framework
+            attach2pytorch = AttachTpcToPytorch()
+            framework_platform_capabilities = attach2pytorch.attach(target_platform_capabilities,
+                                                                core_config.quantization_config.custom_tpc_opset_to_layer)
 
-        # Ignore hessian info service as it is not used here yet.
-        tg, bit_widths_config, _, scheduling_info = core_runner(in_model=in_module,
-                                                                representative_data_gen=representative_data_gen,
-                                                                core_config=core_config,
-                                                                fw_info=fw_info,
-                                                                fw_impl=fw_impl,
-                                                                fqc=framework_platform_capabilities,
-                                                                target_resource_utilization=target_resource_utilization,
-                                                                tb_w=tb_w,
-                                                                progress_info_controller=progress_info_controller)
+            progress_info_controller = ProgressInfoController(
+                total_step=research_progress_total(core_config, target_resource_utilization),
+                description="MCT PyTorch PTQ Progress",
+                progress_info_callback=core_config.debug_config.progress_info_callback
+            )
 
-        # At this point, tg is a graph that went through substitutions (such as BN folding) and is
-        # ready for quantization (namely, it holds quantization params, etc.) but the weights are
-        # not quantized yet. For this reason, we use it to create a graph that acts as a "float" graph
-        # for things like similarity analyzer (because the quantized and float graph should have the same
-        # architecture to find the appropriate compare points for similarity computation).
-        similarity_baseline_graph = copy.deepcopy(tg)
+            # Ignore hessian info service as it is not used here yet.
+            tg, bit_widths_config, _, scheduling_info = core_runner(in_model=in_module,
+                                                                    representative_data_gen=representative_data_gen,
+                                                                    core_config=core_config,
+                                                                    fw_info=fw_info,
+                                                                    fw_impl=fw_impl,
+                                                                    fqc=framework_platform_capabilities,
+                                                                    target_resource_utilization=target_resource_utilization,
+                                                                    tb_w=tb_w,
+                                                                    progress_info_controller=progress_info_controller)
 
-        graph_with_stats_correction = ptq_runner(tg,
-                                                 representative_data_gen,
-                                                 core_config,
-                                                 fw_info,
-                                                 fw_impl,
-                                                 tb_w)
+            # At this point, tg is a graph that went through substitutions (such as BN folding) and is
+            # ready for quantization (namely, it holds quantization params, etc.) but the weights are
+            # not quantized yet. For this reason, we use it to create a graph that acts as a "float" graph
+            # for things like similarity analyzer (because the quantized and float graph should have the same
+            # architecture to find the appropriate compare points for similarity computation).
+            similarity_baseline_graph = copy.deepcopy(tg)
 
-        if progress_info_controller is not None:
-            progress_info_controller.set_description("MCT Graph Finalization")
+            graph_with_stats_correction = ptq_runner(tg,
+                                                    representative_data_gen,
+                                                    core_config,
+                                                    fw_info,
+                                                    fw_impl,
+                                                    tb_w)
 
-        if core_config.debug_config.analyze_similarity:
-            quantized_graph = quantize_graph_weights(graph_with_stats_correction)
-            analyzer_model_quantization(representative_data_gen,
-                                        tb_w,
-                                        similarity_baseline_graph,
-                                        quantized_graph,
-                                        fw_impl,
-                                        fw_info)
+            if progress_info_controller is not None:
+                progress_info_controller.set_description("MCT Graph Finalization")
 
-        exportable_model, user_info = get_exportable_pytorch_model(graph_with_stats_correction)
-        if framework_platform_capabilities.tpc.add_metadata:
-            exportable_model = add_metadata(exportable_model,
-                                            create_model_metadata(fqc=framework_platform_capabilities,
-                                                                  scheduling_info=scheduling_info))
+            if core_config.debug_config.analyze_similarity:
+                quantized_graph = quantize_graph_weights(graph_with_stats_correction)
+                analyzer_model_quantization(representative_data_gen,
+                                            tb_w,
+                                            similarity_baseline_graph,
+                                            quantized_graph,
+                                            fw_impl,
+                                            fw_info)
 
-        if progress_info_controller is not None:
-            progress_info_controller.close()
+            exportable_model, user_info = get_exportable_pytorch_model(graph_with_stats_correction)
+            if framework_platform_capabilities.tpc.add_metadata:
+                exportable_model = add_metadata(exportable_model,
+                                                create_model_metadata(fqc=framework_platform_capabilities,
+                                                                    scheduling_info=scheduling_info))
 
-        return exportable_model, user_info
+            if progress_info_controller is not None:
+                progress_info_controller.close()
+
+            return exportable_model, user_info
 
 
 else:

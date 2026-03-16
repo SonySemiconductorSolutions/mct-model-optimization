@@ -95,8 +95,8 @@ class ProgressInfoController:
             self.close()
             raise
 
-        self.pbar.set_description(formatted_description, refresh=False)
-        self.pbar.update()
+        self.pbar.n += 1
+        self.pbar.set_description(formatted_description, refresh=True)
 
         progress_info = {
             COMPLETED_COMPONENTS: description,

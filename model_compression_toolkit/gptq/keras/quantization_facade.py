@@ -16,6 +16,7 @@ import copy
 
 from typing import Callable, Tuple, Union, Optional
 from packaging import version
+from tqdm.contrib.logging import logging_redirect_tqdm
 
 from model_compression_toolkit.core.common.visualization.tensorboard_writer import init_tensorboard_writer
 from model_compression_toolkit.gptq.common.gptq_constants import REG_DEFAULT, LR_DEFAULT, LR_REST_DEFAULT, \
@@ -232,82 +233,84 @@ if FOUND_TF:
 
         """
 
-        if core_config.debug_config.bypass:
-            return in_model, None
+        with logging_redirect_tqdm():
 
-        KerasModelValidation(model=in_model,
-                             fw_info=DEFAULT_KERAS_INFO).validate()
+            if core_config.debug_config.bypass:
+                return in_model, None
 
-        if core_config.is_mixed_precision_enabled:
-            if not isinstance(core_config.mixed_precision_config, MixedPrecisionQuantizationConfig):
-                Logger.critical("Given quantization config for mixed-precision is not of type 'MixedPrecisionQuantizationConfig'. "
-                                "Ensure usage of the correct API for keras_post_training_quantization "
-                                "or provide a valid mixed-precision configuration.")  # pragma: no cover
+            KerasModelValidation(model=in_model,
+                                fw_info=DEFAULT_KERAS_INFO).validate()
 
-        tb_w = init_tensorboard_writer(DEFAULT_KERAS_INFO)
+            if core_config.is_mixed_precision_enabled:
+                if not isinstance(core_config.mixed_precision_config, MixedPrecisionQuantizationConfig):
+                    Logger.critical("Given quantization config for mixed-precision is not of type 'MixedPrecisionQuantizationConfig'. "
+                                    "Ensure usage of the correct API for keras_post_training_quantization "
+                                    "or provide a valid mixed-precision configuration.")  # pragma: no cover
 
-        fw_impl = GPTQKerasImplemantation()
+            tb_w = init_tensorboard_writer(DEFAULT_KERAS_INFO)
 
-        target_platform_capabilities = load_target_platform_capabilities(target_platform_capabilities)
-        # Attach tpc model to framework
-        attach2keras = AttachTpcToKeras()
-        framework_platform_capabilities = attach2keras.attach(
-            target_platform_capabilities,
-            custom_opset2layer=core_config.quantization_config.custom_tpc_opset_to_layer)
+            fw_impl = GPTQKerasImplemantation()
 
-        progress_info_controller = ProgressInfoController(
-            total_step=research_progress_total(core_config, target_resource_utilization, gptq_config),
-            description="MCT Keras GPTQ Progress",
-            progress_info_callback=core_config.debug_config.progress_info_callback
-        )
+            target_platform_capabilities = load_target_platform_capabilities(target_platform_capabilities)
+            # Attach tpc model to framework
+            attach2keras = AttachTpcToKeras()
+            framework_platform_capabilities = attach2keras.attach(
+                target_platform_capabilities,
+                custom_opset2layer=core_config.quantization_config.custom_tpc_opset_to_layer)
 
-        tg, bit_widths_config, hessian_info_service, scheduling_info = core_runner(in_model=in_model,
-                                                                                   representative_data_gen=representative_data_gen,
-                                                                                   core_config=core_config,
-                                                                                   fw_info=DEFAULT_KERAS_INFO,
-                                                                                   fw_impl=fw_impl,
-                                                                                   fqc=framework_platform_capabilities,
-                                                                                   target_resource_utilization=target_resource_utilization,
-                                                                                   tb_w=tb_w,
-                                                                                   running_gptq=True,
-                                                                                   progress_info_controller=progress_info_controller)
+            progress_info_controller = ProgressInfoController(
+                total_step=research_progress_total(core_config, target_resource_utilization, gptq_config),
+                description="MCT Keras GPTQ Progress",
+                progress_info_callback=core_config.debug_config.progress_info_callback
+            )
 
-        float_graph = copy.deepcopy(tg)
+            tg, bit_widths_config, hessian_info_service, scheduling_info = core_runner(in_model=in_model,
+                                                                                    representative_data_gen=representative_data_gen,
+                                                                                    core_config=core_config,
+                                                                                    fw_info=DEFAULT_KERAS_INFO,
+                                                                                    fw_impl=fw_impl,
+                                                                                    fqc=framework_platform_capabilities,
+                                                                                    target_resource_utilization=target_resource_utilization,
+                                                                                    tb_w=tb_w,
+                                                                                    running_gptq=True,
+                                                                                    progress_info_controller=progress_info_controller)
 
-        tg_gptq = gptq_runner(tg,
-                              core_config,
-                              gptq_config,
-                              representative_data_gen,
-                              gptq_representative_data_gen if gptq_representative_data_gen else representative_data_gen,
-                              DEFAULT_KERAS_INFO,
-                              fw_impl,
-                              tb_w,
-                              hessian_info_service=hessian_info_service,
-                              progress_info_controller=progress_info_controller)
+            float_graph = copy.deepcopy(tg)
 
-        del hessian_info_service
+            tg_gptq = gptq_runner(tg,
+                                core_config,
+                                gptq_config,
+                                representative_data_gen,
+                                gptq_representative_data_gen if gptq_representative_data_gen else representative_data_gen,
+                                DEFAULT_KERAS_INFO,
+                                fw_impl,
+                                tb_w,
+                                hessian_info_service=hessian_info_service,
+                                progress_info_controller=progress_info_controller)
 
-        if progress_info_controller is not None:
-            progress_info_controller.set_description("MCT Graph Finalization")
+            del hessian_info_service
 
-        if core_config.debug_config.analyze_similarity:
-            analyzer_model_quantization(representative_data_gen,
-                                        tb_w,
-                                        float_graph,
-                                        tg_gptq,
-                                        fw_impl,
-                                        DEFAULT_KERAS_INFO)
+            if progress_info_controller is not None:
+                progress_info_controller.set_description("MCT Graph Finalization")
 
-        exportable_model, user_info = get_exportable_keras_model(tg_gptq)
-        if framework_platform_capabilities.tpc.add_metadata:
-            exportable_model = add_metadata(exportable_model,
-                                            create_model_metadata(fqc=framework_platform_capabilities,
-                                                                  scheduling_info=scheduling_info))
+            if core_config.debug_config.analyze_similarity:
+                analyzer_model_quantization(representative_data_gen,
+                                            tb_w,
+                                            float_graph,
+                                            tg_gptq,
+                                            fw_impl,
+                                            DEFAULT_KERAS_INFO)
 
-        if progress_info_controller is not None:
-            progress_info_controller.close()
+            exportable_model, user_info = get_exportable_keras_model(tg_gptq)
+            if framework_platform_capabilities.tpc.add_metadata:
+                exportable_model = add_metadata(exportable_model,
+                                                create_model_metadata(fqc=framework_platform_capabilities,
+                                                                    scheduling_info=scheduling_info))
 
-        return exportable_model, user_info
+            if progress_info_controller is not None:
+                progress_info_controller.close()
+
+            return exportable_model, user_info
 
 else:
     # If tensorflow is not installed,
