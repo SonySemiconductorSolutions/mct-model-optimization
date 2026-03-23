@@ -58,7 +58,6 @@ Check the `torch.fx` error, and search for an identical replacement. Some exampl
 ### 4. Does MCT support both per-tensor and per-channel quantization?
 
 MCT supports both per-tensor and per-channel quantization, as [defined in TPC](https://sonysemiconductorsolutions.github.io/mct-model-optimization/api/api_docs/modules/target_platform_capabilities.html#ug-target-platform-capabilities)
-9
     
 #model_compression_toolkit.target_platform_capabilities.schema.mct_current_schema.AttributeQuantizationConfig.weights_per_channel_threshold).
 To change this, please set the following parameters.

@@ -7,7 +7,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
     <title>debug_config Module &#8212; MCT Documentation: ver 2.6.0</title>
-    <link rel="stylesheet" type="text/css" href="../../../static/pygments.css?v=fa44fd50" />
+    <link rel="stylesheet" type="text/css" href="../../../static/pygments.css?v=03e43079" />
     <link rel="stylesheet" type="text/css" href="../../../static/bizstyle.css?v=5283bb3d" />
     <link rel="stylesheet" type="text/css" href="../../../static/css/custom.css?v=01243f34" />
     
@@ -73,11 +73,11 @@ Examples of how to create a callback function to enable these features are provi
 <p>Create a callable callback function.
 When defining the callback, make sure it accepts a dictionary representing the current processing state as an argument.</p>
 <p>Example 1: Use a class to keep track of the processing history.</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="k">class</span> <span class="nc">ProgressInfoCallback</span><span class="p">:</span>
-<span class="gp">... </span>   <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="k">class</span><span class="w"> </span><span class="nc">ProgressInfoCallback</span><span class="p">:</span>
+<span class="gp">... </span>   <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="gp">... </span>       <span class="bp">self</span><span class="o">.</span><span class="n">history</span> <span class="o">=</span> <span class="p">[]</span>
 <span class="gp">...</span>
-<span class="gp">... </span>   <span class="k">def</span> <span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">info</span><span class="p">):</span>
+<span class="gp">... </span>   <span class="k">def</span><span class="w"> </span><span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">info</span><span class="p">):</span>
 <span class="gp">... </span>       <span class="n">current</span> <span class="o">=</span> <span class="n">info</span><span class="p">[</span><span class="s2">&quot;currentComponent&quot;</span><span class="p">]</span>
 <span class="gp">... </span>       <span class="n">total</span> <span class="o">=</span> <span class="n">info</span><span class="p">[</span><span class="s2">&quot;totalComponents&quot;</span><span class="p">]</span>
 <span class="gp">... </span>       <span class="n">component_name</span> <span class="o">=</span> <span class="n">info</span><span class="p">[</span><span class="s2">&quot;completedComponents&quot;</span><span class="p">]</span>
@@ -92,7 +92,7 @@ When defining the callback, make sure it accepts a dictionary representing the c
 </pre></div>
 </div>
 <p>Example 2: Use a function to output the progress percentage and processing name to standard error (stderr).</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="k">def</span> <span class="nf">progress_info_callback</span><span class="p">(</span><span class="n">info</span><span class="p">):</span>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="k">def</span><span class="w"> </span><span class="nf">progress_info_callback</span><span class="p">(</span><span class="n">info</span><span class="p">):</span>
 <span class="gp">... </span>   <span class="n">current</span> <span class="o">=</span> <span class="n">info</span><span class="p">[</span><span class="s2">&quot;currentComponent&quot;</span><span class="p">]</span>
 <span class="gp">... </span>   <span class="n">total</span> <span class="o">=</span> <span class="n">info</span><span class="p">[</span><span class="s2">&quot;totalComponents&quot;</span><span class="p">]</span>
 <span class="gp">... </span>   <span class="n">component_name</span> <span class="o">=</span> <span class="n">info</span><span class="p">[</span><span class="s2">&quot;completedComponents&quot;</span><span class="p">]</span>
@@ -129,7 +129,7 @@ When defining the callback, make sure it accepts a dictionary representing the c
 </table>
 <p>Import MCT and configure DebugConfig with the callback function you created.
 Configure CoreConfig with this DebugConfig and use it.</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">model_compression_toolkit</span> <span class="k">as</span> <span class="nn">mct</span>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span><span class="w"> </span><span class="nn">model_compression_toolkit</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">mct</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">debug_config</span> <span class="o">=</span> <span class="n">mct</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">DebugConfig</span><span class="p">(</span><span class="n">progress_info_callback</span><span class="o">=</span><span class="n">progress_info_callback</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">core_config</span> <span class="o">=</span> <span class="n">mct</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">CoreConfig</span><span class="p">(</span><span class="n">debug_config</span><span class="o">=</span><span class="n">debug_config</span><span class="p">)</span>
 </pre></div>

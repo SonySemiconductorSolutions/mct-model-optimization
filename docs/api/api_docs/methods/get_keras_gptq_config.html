@@ -7,7 +7,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
     <title>Get GradientPTQConfig for Keras Models &#8212; MCT Documentation: ver 2.6.0</title>
-    <link rel="stylesheet" type="text/css" href="../../../static/pygments.css?v=fa44fd50" />
+    <link rel="stylesheet" type="text/css" href="../../../static/pygments.css?v=03e43079" />
     <link rel="stylesheet" type="text/css" href="../../../static/bizstyle.css?v=5283bb3d" />
     <link rel="stylesheet" type="text/css" href="../../../static/css/custom.css?v=01243f34" />
     
@@ -45,8 +45,11 @@
 <span class="sig-prename descclassname"><span class="pre">model_compression_toolkit.gptq.</span></span><span class="sig-name descname"><span class="pre">get_keras_gptq_config</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">n_epochs</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">optimizer</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">optimizer_rest</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">loss</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">log_function</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">use_hessian_based_weights</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">regularization_factor</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">hessian_batch_size</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">ACT_HESSIAN_DEFAULT_BATCH_SIZE</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">use_hessian_sample_attention</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">gradual_activation_quantization</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#model_compression_toolkit.gptq.get_keras_gptq_config" title="Link to this definition">¶</a></dt>
 <dd><p>Create a GradientPTQConfig instance for Keras models.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><a class="reference internal" href="../classes/GradientPTQConfig.html#model_compression_toolkit.gptq.GradientPTQConfig" title="model_compression_toolkit.gptq.common.gptq_config.GradientPTQConfig"><code class="xref py py-class docutils literal notranslate"><span class="pre">GradientPTQConfig</span></code></a></span></p>
+</dd>
+<dt class="field-even">Parameters<span class="colon">:</span></dt>
+<dd class="field-even"><ul class="simple">
 <li><p><strong>n_epochs</strong> (<em>int</em>) – Number of epochs for running the representative dataset for fine-tuning.</p></li>
 <li><p><strong>optimizer</strong> (<em>OptimizerV2</em>) – Keras optimizer to use for fine-tuning for auxiliary variable. Default: Adam(learning rate set to 3e-2).</p></li>
 <li><p><strong>optimizer_rest</strong> (<em>OptimizerV2</em>) – Keras optimizer to use for fine-tuning of the bias variable. Default: Adam(learning rate set to 1e-4).</p></li>
@@ -59,14 +62,14 @@
 <li><p><strong>gradual_activation_quantization</strong> (<em>bool</em><em>, </em><a class="reference internal" href="../classes/GradientPTQConfig.html#model_compression_toolkit.gptq.GradualActivationQuantizationConfig" title="model_compression_toolkit.gptq.GradualActivationQuantizationConfig"><em>GradualActivationQuantizationConfig</em></a>) – If False, GradualActivationQuantization is disabled. If True, GradualActivationQuantization is enabled with the default settings. GradualActivationQuantizationConfig object can be passed to use non-default settings.</p></li>
 </ul>
 </dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>a GradientPTQConfig object to use when fine-tuning the quantized model using gptq.</p>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>a GradientPTQConfig object to use when fine-tuning the quantized model using gptq.</p>
 </dd>
 </dl>
 <p class="rubric">Examples</p>
 <p>Import MCT and TensorFlow:</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">model_compression_toolkit</span> <span class="k">as</span> <span class="nn">mct</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">tensorflow</span> <span class="k">as</span> <span class="nn">tf</span>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span><span class="w"> </span><span class="nn">model_compression_toolkit</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">mct</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span><span class="w"> </span><span class="nn">tensorflow</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">tf</span>
 </pre></div>
 </div>
 <p>Create a GradientPTQConfig to run for 5 epochs:</p>
@@ -78,11 +81,6 @@
 </pre></div>
 </div>
 <p>The configuration can be passed to <code class="xref py py-func docutils literal notranslate"><span class="pre">keras_gradient_post_training_quantization()</span></code> in order to quantize a keras model using gptq.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><a class="reference internal" href="../classes/GradientPTQConfig.html#model_compression_toolkit.gptq.GradientPTQConfig" title="model_compression_toolkit.gptq.common.gptq_config.GradientPTQConfig"><code class="xref py py-class docutils literal notranslate"><span class="pre">GradientPTQConfig</span></code></a></p>
-</dd>
-</dl>
 </dd></dl>
 
 </section>
