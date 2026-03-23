@@ -54,3 +54,27 @@ Despite these limitations, some adjustments can be made to facilitate MCT quanti
 Check the `torch.fx` error, and search for an identical replacement. Some examples:
 * An `if` statement in a module's `forward` method might can be easily skipped.
 * The `list()` Python method can be replaced with a concatenation operation [A, B, C].
+
+### 4. Does MCT support both per-tensor and per-channel quantization?
+
+MCT supports both per-tensor and per-channel quantization, as [defined in TPC](https://sonysemiconductorsolutions.github.io/mct-model-optimization/api/api_docs/modules/target_platform_capabilities.html#ug-target-platform-capabilities)
+9
+    
+#model_compression_toolkit.target_platform_capabilities.schema.mct_current_schema.AttributeQuantizationConfig.weights_per_channel_threshold).
+To change this, please set the following parameters.
+
+Solution:
+You can switch between per-tensor quantization and per-channel quantization by switching the parameter (weights_per_channel_threshold) as shown below.
+
+In the object that configures the quantizer below:
+・model_compression_toolkit.target_platform_capabilities.schema.mct_current_schema.AttributeQuantizationConfig()
+Set the following parameters:
+・weights_per_channel_threshold(bool) - Indicates whether to quantize the weights per-channel or per-tensor.
+For more details, please refer to [this](https://sonysemiconductorsolutions.github.io/mct-model-optimization/api/api_docs/modules/target_platform_capabilities.html#model_compression_toolkit.target_platform_capabilities.schema.mct_current_schema.AttributeQuantizationConfig.weights_per_channel_threshold) page.
+
+
+In QAT, the following object is used to set up a weight-learnable quantizer:
+・model_compression_toolkit.trainable_infrastructure.TrainableQuantizerWeightsConfig()
+Set the following parameters:
+・weights_per_channel_threshold (bool) – Whether to quantize the weights per-channel or not (per-tensor).
+For more details, please refer to [this](https://sonysemiconductorsolutions.github.io/mct-model-optimization/api/api_docs/modules/trainable_infrastructure.html#trainablequantizerweightsconfig) page.
