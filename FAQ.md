@@ -64,13 +64,17 @@ MCT supports both per-tensor and per-channel quantization, as [defined in TPC](h
 
 In the object that configures the quantizer below:  
 * model_compression_toolkit.target_platform_capabilities.schema.mct_current_schema.AttributeQuantizationConfig()  
+
 Set the following parameter:  
 * weights_per_channel_threshold(bool) - Indicates whether to quantize the weights per-channel or per-tensor.  
+
 For more details, please refer to [this page](https://sonysemiconductorsolutions.github.io/mct-model-optimization/api/api_docs/modules/target_platform_capabilities.html#model_compression_toolkit.target_platform_capabilities.schema.mct_current_schema.AttributeQuantizationConfig.weights_per_channel_threshold).
 
 
 In QAT, the following object is used to set up a weight-learnable quantizer:  
 * model_compression_toolkit.trainable_infrastructure.TrainableQuantizerWeightsConfig()  
+
 Set the following parameter:  
 * weights_per_channel_threshold (bool) – Whether to quantize the weights per-channel or not (per-tensor).  
+
 For more details, please refer to [this page](https://sonysemiconductorsolutions.github.io/mct-model-optimization/api/api_docs/modules/trainable_infrastructure.html#trainablequantizerweightsconfig).
