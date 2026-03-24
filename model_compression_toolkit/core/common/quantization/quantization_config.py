@@ -39,7 +39,7 @@ class CustomOpsetLayers(NamedTuple):
 
 class QuantizationErrorMethod(Enum):
     """
-     Method for quantization threshold selection:
+    Method for quantization threshold selection:
 
     NOCLIPPING - Use min/max values as thresholds. This avoids clipping bias but reduces quantization resolution.
 
