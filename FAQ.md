@@ -7,6 +7,7 @@
 3. [Why am I getting a torch.fx error?](#3-why-am-i-getting-a-torchfx-error)
 4. [Does MCT support both per-tensor and per-channel quantization?](#4-does-mct-support-both-per-tensor-and-per-channel-quantization)
 
+
 ### 1. Why does the size of the quantized model remain the same as the original model size?
 
 MCT performs a process known as *fake quantization*, wherein the model's weights and activations are still represented in a floating-point
