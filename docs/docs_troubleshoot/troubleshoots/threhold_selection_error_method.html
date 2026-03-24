@@ -7,7 +7,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
     <title>Threshold selection error method &#8212; TroubleShooting Documentation (MCT XQuant Extension Tool): ver 1.0</title>
-    <link rel="stylesheet" type="text/css" href="../static/pygments.css?v=fa44fd50" />
+    <link rel="stylesheet" type="text/css" href="../static/pygments.css?v=03e43079" />
     <link rel="stylesheet" type="text/css" href="../static/bizstyle.css?v=5283bb3d" />
     <link rel="stylesheet" type="text/css" href="../static/css/custom.css?v=01243f34" />
     
@@ -52,13 +52,46 @@
 <h2>Solution<a class="headerlink" href="#solution" title="Link to this heading">¶</a></h2>
 <p>Use a different error method for activations.  You can set the following values:</p>
 <blockquote>
-<div><ul class="simple">
-<li><p>NOCLIPPING          - Use min/max values</p></li>
-<li><p>MSE (default)       - Use mean square error</p></li>
-<li><p>MAE                 - Use mean absolute error</p></li>
-<li><p>KL                  - Use KL-divergence</p></li>
-<li><p>Lp                  - Use Lp-norm</p></li>
-<li><p>HMSE                - Use Hessian-based mean squared error</p></li>
+<div><ul>
+<li><p>NOCLIPPING          - Use min/max values as thresholds. This avoids clipping bias but reduces quantization resolution.</p></li>
+<li><p>MSE                 - <strong>(default)</strong> Use mean square error for minimizing quantization noise.</p></li>
+<li><p>MAE                 - Use mean absolute error for minimizing quantization noise.</p></li>
+<li><p>KL                  - Use KL-divergence to make signals distributions to be similar as possible.</p></li>
+<li><p>Lp                  - Use Lp-norm to minimizing quantization noise. The parameter p is specified by QuantizationConfig.l_p_value (default: 2; integer only). It equals MAE when p = 1 and MSE when p = 2. If you want to use p≧3, please use this method.</p></li>
+<li><p>HMSE                - Use Hessian-based mean squared error for minimizing quantization noise. This method is using Hessian scores to factorize more valuable parameters when computing the error induced by quantization.</p>
+<p><strong>How to select QuantizationErrorMethod</strong></p>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 20.0%" />
+<col style="width: 80.0%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Method</p></th>
+<th class="head"><p>Recommended Situations</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>NOCLIPPING</p></td>
+<td><p>Research and debugging phases where you want to observe behavior across the entire range. This is effective when you want to maintain the entire range, especially when the data is biased (for example, when there is an extremely small amount of data on the minimum side).</p></td>
+</tr>
+<tr class="row-odd"><td><p>MSE</p></td>
+<td><p><strong>Basically, you should use this method.</strong> This method is effective when the data distribution is close to normal and there are few outliers. Effective when you want stable results, such as in regression tasks.</p></td>
+</tr>
+<tr class="row-even"><td><p>MAE</p></td>
+<td><p>Effective for data with a lot of noise and outliers.</p></td>
+</tr>
+<tr class="row-odd"><td><p>KL</p></td>
+<td><p>Useful for tasks where output distribution is important (such as Anomaly Detection).</p></td>
+</tr>
+<tr class="row-even"><td><p>LP</p></td>
+<td><p>p≧3 is effective when you want to be more sensitive to outliers than MSE. (such as Sparse Data).</p></td>
+</tr>
+<tr class="row-odd"><td><p>HMSE</p></td>
+<td><p>Recommended when using GPTQ. This is effective for models where specific layers strongly influence the overall accuracy. (such as Transformers).</p></td>
+</tr>
+</tbody>
+</table>
+</li>
 </ul>
 </div></blockquote>
 <p>For example, set NOCLIPPING to the <code class="docutils literal notranslate"><span class="pre">activation_error_method</span></code> attribute of the <code class="docutils literal notranslate"><span class="pre">QuantizationConfig</span></code> in <code class="docutils literal notranslate"><span class="pre">CoreConfig</span></code>.</p>

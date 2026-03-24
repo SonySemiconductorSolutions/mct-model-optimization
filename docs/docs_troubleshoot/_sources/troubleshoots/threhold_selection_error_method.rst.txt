@@ -23,12 +23,28 @@ Solution
 =================================
 Use a different error method for activations.  You can set the following values:
 
-  * NOCLIPPING          - Use min/max values
-  * MSE (default)       - Use mean square error 
-  * MAE                 - Use mean absolute error
-  * KL                  - Use KL-divergence
-  * Lp                  - Use Lp-norm
-  * HMSE                - Use Hessian-based mean squared error
+  * NOCLIPPING          - Use min/max values as thresholds. This avoids clipping bias but reduces quantization resolution.
+  * MSE                 - **(default)** Use mean square error for minimizing quantization noise.
+  * MAE                 - Use mean absolute error for minimizing quantization noise.
+  * KL                  - Use KL-divergence to make signals distributions to be similar as possible.
+  * Lp                  - Use Lp-norm to minimizing quantization noise. The parameter p is specified by QuantizationConfig.l_p_value (default: 2; integer only). It equals MAE when p = 1 and MSE when p = 2. If you want to use p≧3, please use this method.
+  * HMSE                - Use Hessian-based mean squared error for minimizing quantization noise. This method is using Hessian scores to factorize more valuable parameters when computing the error induced by quantization.
+
+    **How to select QuantizationErrorMethod**
+
+    .. csv-table::
+        :header: "Method", "Recommended Situations"
+        :widths: 20, 80
+
+        "NOCLIPPING", "Research and debugging phases where you want to observe behavior across the entire range. This is effective when you want to maintain the entire range, especially when the data is biased (for example, when there is an extremely small amount of data on the minimum side)."
+        "MSE", "**Basically, you should use this method.** This method is effective when the data distribution is close to normal and there are few outliers. Effective when you want stable results, such as in regression tasks."
+        "MAE", "Effective for data with a lot of noise and outliers."
+        "KL", "Useful for tasks where output distribution is important (such as Anomaly Detection)."
+        "LP", "p≧3 is effective when you want to be more sensitive to outliers than MSE. (such as Sparse Data)."
+        "HMSE", "Recommended when using GPTQ. This is effective for models where specific layers strongly influence the overall accuracy. (such as Transformers)."
+
+
+
 
 For example, set NOCLIPPING to the ``activation_error_method`` attribute of the ``QuantizationConfig`` in ``CoreConfig``.
 

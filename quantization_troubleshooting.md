@@ -114,6 +114,8 @@ Some error methods (specifically, the KL-Divergence method) may suffer from exte
 Opting for a different error metric could enhance threshold selection for one layer while potentially compromising another.
 Therefore, thorough investigation and consideration are necessary.
 
+Read more about them in the [QuantizationErrorMethod](https://sonysemiconductorsolutions.github.io/mct-model-optimization/api/api_docs/classes/QuantizationErrorMethod.html#model_compression_toolkit.core.QuantizationErrorMethod) class description. 
+
 ___
 ## Model Structure Quantization Issues
 

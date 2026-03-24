@@ -7,7 +7,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
     <title>Mixed Precision with model output loss objective &#8212; TroubleShooting Documentation (MCT XQuant Extension Tool): ver 1.0</title>
-    <link rel="stylesheet" type="text/css" href="../static/pygments.css?v=fa44fd50" />
+    <link rel="stylesheet" type="text/css" href="../static/pygments.css?v=03e43079" />
     <link rel="stylesheet" type="text/css" href="../static/bizstyle.css?v=5283bb3d" />
     <link rel="stylesheet" type="text/css" href="../static/css/custom.css?v=01243f34" />
     
@@ -62,7 +62,7 @@
 <p>MCT offers an API to adjust the Mixed Precision objective method (<code class="docutils literal notranslate"><span class="pre">MpDistanceWeighting</span></code>).</p>
 <p>Set the <code class="docutils literal notranslate"><span class="pre">distance_weighting_method</span></code> attribute to <code class="docutils literal notranslate"><span class="pre">MpDistanceWeighting.LAST_LAYER</span></code> in the <code class="docutils literal notranslate"><span class="pre">MixedPrecisionQuantizationConfig</span></code> of the <code class="docutils literal notranslate"><span class="pre">CoreConfig</span></code>.</p>
 <p>By emphasizing a loss function that places greater importance on enhancing the model’s quantized output, users can mitigate the risk of detrimental precision reductions in the last layer.</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">model_compression_toolkit.core.common.mixed_precision</span> <span class="kn">import</span> <span class="n">MpDistanceWeighting</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">model_compression_toolkit.core.common.mixed_precision</span><span class="w"> </span><span class="kn">import</span> <span class="n">MpDistanceWeighting</span>
 
 <span class="n">mixed_precision_config</span> <span class="o">=</span> <span class="n">mct</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">MixedPrecisionQuantizationConfig</span><span class="p">(</span><span class="n">distance_weighting_method</span><span class="o">=</span><span class="n">MpDistanceWeighting</span><span class="o">.</span><span class="n">LAST_LAYER</span><span class="p">)</span>
 <span class="n">core_config</span> <span class="o">=</span> <span class="n">mct</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">CoreConfig</span><span class="p">(</span><span class="n">mixed_precision_config</span><span class="o">=</span><span class="n">mixed_precision_config</span><span class="p">)</span>
