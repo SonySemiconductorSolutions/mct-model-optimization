@@ -24,7 +24,7 @@ Solution
 Use a different error method for activations.  You can set the following values:
 
   * NOCLIPPING          - Use min/max values as thresholds. This avoids clipping bias but reduces quantization resolution.
-  * MSE (default)       - **(default)** Use mean square error for minimizing quantization noise.
+  * MSE                 - **(default)** Use mean square error for minimizing quantization noise.
   * MAE                 - Use mean absolute error for minimizing quantization noise.
   * KL                  - Use KL-divergence to make signals distributions to be similar as possible.
   * Lp                  - Use Lp-norm to minimizing quantization noise. The parameter p is specified by QuantizationConfig.l_p_value (default: 2; integer only). It equals MAE when p = 1 and MSE when p = 2. If you want to use p≧3, please use this method.
