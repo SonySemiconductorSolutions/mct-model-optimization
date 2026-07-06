@@ -112,6 +112,7 @@ These techniques are essential for further optimizing models and achieving super
   | Tutorial                                                                              | Included Features         |
   |---------------------------------------------------------------------------------------|-----------------|
   | [Exporter Usage](pytorch/example_pytorch_export.ipynb) | &#x2705; Export |
+  | [ONNX Inference Usage](pytorch/example_pytorch_onnx_inference.ipynb) | &#x2705; ONNX Inference |
   
 </details>
 <details id="pytorch-xquant">
