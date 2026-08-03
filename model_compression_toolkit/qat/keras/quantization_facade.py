@@ -89,8 +89,9 @@ if FOUND_TF:
                                                             target_platform_capabilities: Union[TargetPlatformCapabilities, str] = DEFAULT_KERAS_TPC):
         """
          Prepare a trained Keras model for quantization aware training. First the model quantization is optimized
-         with post-training quantization, then the model layers are wrapped with QuantizeWrappers. The model is
-         quantized using a symmetric quantization thresholds (power of two).
+         with post-training quantization, then the model layers are wrapped with QuantizeWrappers. The model is 
+         quantized according to the target platform capabilities (TPC), using symmetric quantization for kernel weights 
+         and power-of-two thresholds for activations by default.
          The model is first optimized using several transformations (e.g. BatchNormalization folding to
          preceding layers). Then, using a given dataset, statistics (e.g. min/max, histogram, etc.) are
          being collected for each layer's output (and input, depends on the quantization configuration).

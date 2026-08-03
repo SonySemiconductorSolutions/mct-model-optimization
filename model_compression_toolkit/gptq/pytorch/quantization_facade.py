@@ -152,9 +152,9 @@ if FOUND_TORCH:
                                                     target_platform_capabilities: Union[TargetPlatformCapabilities, str] = DEFAULT_PYTORCH_TPC
                                                     ) -> Tuple[Module, Optional[UserInformation]]:
         """
-        Quantize a trained Pytorch module using post-training quantization.
-        By default, the module is quantized using a symmetric constraint quantization thresholds
-        (power of two) as defined in the default FrameworkQuantizationCapabilities.
+        Quantize a trained Pytorch module using post-training quantization. The model is quantized according
+        to the target platform capabilities (TPC), using symmetric quantization for kernel weights and
+        power-of-two thresholds for activations by default.
         The module is first optimized using several transformations (e.g. BatchNormalization folding to
         preceding layers). Then, using a given dataset, statistics (e.g. min/max, histogram, etc.) are
         being collected for each layer's output (and input, depends on the quantization configuration).
