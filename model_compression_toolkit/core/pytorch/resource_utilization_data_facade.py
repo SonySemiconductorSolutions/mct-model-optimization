@@ -44,6 +44,7 @@ if FOUND_TORCH:
         """
         Computes resource utilization data that can be used to calculate the desired target resource utilization for mixed-precision quantization.
         Builds the computation graph from the given model and target platform capabilities, and uses it to compute the resource utilization data.
+        (This resource utilization data is an estimate and not an exact value.)
 
         Args:
             in_model (Model): PyTorch model to quantize.
