@@ -163,7 +163,7 @@ if FOUND_TF:
                                                   = DEFAULT_KERAS_TPC) -> Tuple[Model, Optional[UserInformation]]:
         """
         Quantize a trained Keras model using post-training quantization. The model is quantized according
-        to the target platform capabilities (TPC), using symmetric quantization for kernel weights and 
+        to the target platform capabilities (TPC), using symmetric quantization for kernel weights and
         power-of-two thresholds for activations by default.
         The model is first optimized using several transformations (e.g. BatchNormalization folding to
         preceding layers). Then, using a given dataset, statistics (e.g. min/max, histogram, etc.) are
