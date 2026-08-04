@@ -43,8 +43,9 @@
 <dl class="py function">
 <dt class="sig sig-object py" id="model_compression_toolkit.ptq.keras_post_training_quantization">
 <span class="sig-prename descclassname"><span class="pre">model_compression_toolkit.ptq.</span></span><span class="sig-name descname"><span class="pre">keras_post_training_quantization</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">in_model</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">representative_data_gen</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">target_resource_utilization</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">core_config</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">CoreConfig()</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">target_platform_capabilities</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">DEFAULT_KERAS_TPC</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#model_compression_toolkit.ptq.keras_post_training_quantization" title="Link to this definition">¶</a></dt>
-<dd><p>Quantize a trained Keras model using post-training quantization. The model is quantized using a
-symmetric constraint quantization thresholds (power of two).
+<dd><p>Quantize a trained Keras model using post-training quantization. The model is quantized according
+to the target platform capabilities (TPC), using symmetric quantization for kernel weights and
+power-of-two thresholds for activations by default.
 The model is first optimized using several transformations (e.g. BatchNormalization folding to
 preceding layers). Then, using a given dataset, statistics (e.g. min/max, histogram, etc.) are
 being collected for each layer’s output (and input, depends on the quantization configuration).
