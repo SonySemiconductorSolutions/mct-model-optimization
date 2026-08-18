@@ -14,11 +14,11 @@ in some operator for its weights/activations, fusing patterns, etc.)
 
 Currently, MCT contains three target-platform models
 (new models can be created and used by users as demonstrated [here](https://github.com/SonySemiconductorSolutions/mct-model-optimization/blob/main/model_compression_toolkit/target_platform_capabilities/tpc_models/imx500_tpc/v1_0/tpc.py)):
-- [IMX500](https://developer.sony.com/develop/imx500/)
+- [IMX500](https://www.aitrios.sony-semicon.com/)
 - [TFLite](https://www.tensorflow.org/lite/performance/quantization_spec)
 - [QNNPACK](https://github.com/pytorch/QNNPACK)
 
-The default target-platform model is [IMX500](https://developer.sony.com/develop/imx500/), quantizes activations using 8 bits with power-of-two thresholds for 
+The default target-platform model is [IMX500](https://www.aitrios.sony-semicon.com/), quantizes activations using 8 bits with power-of-two thresholds for 
 activations and symmetric threshold for weights.
 For mixed-precision quantization it uses either 2, 4, or 8 bits for quantizing the operators.
 One may view the full default target-platform model and its parameters [here](./tpc_models/imx500_tpc/v1_0/tpc.py).
