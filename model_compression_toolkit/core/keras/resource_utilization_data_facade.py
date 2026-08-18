@@ -44,6 +44,7 @@ if FOUND_TF:
         for mixed-precision quantization.
         Builds the computation graph from the given model and hw modeling, and uses it to compute the
         resource utilization data.
+        (This resource utilization data is an estimate and not an exact value.)
 
         Args:
             in_model (Model): Keras model to quantize.
