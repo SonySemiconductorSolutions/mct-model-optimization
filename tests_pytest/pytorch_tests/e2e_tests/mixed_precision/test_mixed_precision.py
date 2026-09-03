@@ -14,7 +14,6 @@
 # ==============================================================================
 from typing import Callable, Union
 
-import numpy as np
 import pytest
 import torch
 
