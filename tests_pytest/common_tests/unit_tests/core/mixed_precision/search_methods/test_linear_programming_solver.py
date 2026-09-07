@@ -19,6 +19,7 @@ from model_compression_toolkit.core.common.mixed_precision.resource_utilization_
     RUTarget
 from model_compression_toolkit.core.common.mixed_precision.search_methods.linear_programming import \
     MixedPrecisionIntegerLPSolver
+from model_compression_toolkit.logger import Logger
 
 
 class TestMixedPrecisionIntegerLPSolver:
@@ -125,6 +126,118 @@ class TestMixedPrecisionIntegerLPSolver:
         # in addition, increase bops for the optimal candidate of 2nd layer above constraint
         ru[RUTarget.BOPS][4, 0] += 0.1
         self._run_test(sensitivity, ru, ru_constraints, {'n1': 2, 'n2': 0, 'n3': 0})
+
+    def test_filter_all_finite_candidates(self, mocker):
+        """Test that finite candidates are not modified or logged."""
+        sensitivity = {'n1': [0.1, 0.2], 'n2': [0.3]}
+        ru = {
+            RUTarget.WEIGHTS: np.array([[10], [11], [12]]),
+            RUTarget.ACTIVATION: np.array([[20, 21], [22, 23], [24, 25]]),
+            RUTarget.TOTAL: np.array([[30, 31], [32, 33], [34, 35]]),
+            RUTarget.BOPS: np.array([[40], [41], [42]]),
+        }
+        warning_mock = mocker.patch.object(Logger, 'warning')
+
+        filtered_sensitivity, filtered_ru, candidate_index_mapping = \
+            MixedPrecisionIntegerLPSolver._filter_non_finite_candidates(sensitivity, ru)
+
+        assert filtered_sensitivity == sensitivity
+        for ru_target, ru_matrix in ru.items():
+            assert np.array_equal(filtered_ru[ru_target], ru_matrix)
+        assert candidate_index_mapping == {'n1': [0, 1], 'n2': [0]}
+        warning_mock.assert_not_called()
+
+    @pytest.mark.parametrize('non_finite_values', [
+        (np.nan, np.inf, -np.inf),
+        (float('nan'), float('inf'), float('-inf')),
+    ])
+    def test_filter_non_finite_candidates(self, non_finite_values):
+        """Test that non-finite candidates are removed from sensitivity and all RU targets."""
+        nan_value, positive_inf, negative_inf = non_finite_values
+        sensitivity = {
+            'n1': [0.1, nan_value, 0.3],
+            'n2': [positive_inf, 0.2, negative_inf],
+        }
+        ru = {
+            RUTarget.WEIGHTS: np.array([[10], [11], [12], [13], [14], [15]]),
+            RUTarget.ACTIVATION: np.array([[20, 21], [22, 23], [24, 25],
+                                           [26, 27], [28, 29], [30, 31]]),
+            RUTarget.TOTAL: np.array([[40, 41], [42, 43], [44, 45],
+                                      [46, 47], [48, 49], [50, 51]]),
+            RUTarget.BOPS: np.array([[60], [61], [62], [63], [64], [65]]),
+        }
+
+        filtered_sensitivity, filtered_ru, candidate_index_mapping = \
+            MixedPrecisionIntegerLPSolver._filter_non_finite_candidates(sensitivity, ru)
+
+        assert filtered_sensitivity == {'n1': [0.1, 0.3], 'n2': [0.2]}
+        assert np.array_equal(filtered_ru[RUTarget.WEIGHTS], np.array([[10], [12], [14]]))
+        assert np.array_equal(filtered_ru[RUTarget.ACTIVATION], np.array([[20, 21], [24, 25], [28, 29]]))
+        assert np.array_equal(filtered_ru[RUTarget.TOTAL], np.array([[40, 41], [44, 45], [48, 49]]))
+        assert np.array_equal(filtered_ru[RUTarget.BOPS], np.array([[60], [62], [64]]))
+        assert candidate_index_mapping == {'n1': [0, 2], 'n2': [1]}
+
+    def test_warn_on_non_finite_candidates(self, mocker):
+        """Test that the warning identifies the layer, original indices, and non-finite values."""
+        warning_mock = mocker.patch.object(Logger, 'warning')
+
+        MixedPrecisionIntegerLPSolver._filter_non_finite_candidates(
+            {'n1': [np.nan, 0.1, np.inf, -np.inf]},
+            {RUTarget.WEIGHTS: np.array([[10], [11], [12], [13]])},
+        )
+
+        warning_mock.assert_called_once_with(
+            'Ignoring mixed-precision candidates with non-finite sensitivity for layer n1: '
+            'indices=[0, 2, 3], values=[nan, inf, -inf]')
+
+    def test_raise_error_when_all_candidates_are_non_finite(self):
+        """Test that a layer with no finite candidate raises an informative error."""
+        with pytest.raises(ValueError, match='All mixed-precision candidates have non-finite sensitivity for layer n1'):
+            MixedPrecisionIntegerLPSolver._filter_non_finite_candidates(
+                {
+                    'n1': [np.nan, np.inf, -np.inf],
+                    'n2': [0.1, 0.2],
+                },
+                {RUTarget.WEIGHTS: np.array([[10], [11], [12], [13], [14]])},
+            )
+
+    @pytest.mark.parametrize('ru_matrix', [np.array([10, 11]), np.array([[10]])])
+    def test_raise_error_for_invalid_ru_matrix(self, ru_matrix):
+        """Test that invalid RU dimensions or candidate row counts raise an error."""
+        with pytest.raises(ValueError, match='Resource utilization matrix'):
+            MixedPrecisionIntegerLPSolver._filter_non_finite_candidates(
+                {'n1': [0.1, 0.2]},
+                {RUTarget.WEIGHTS: ru_matrix},
+            )
+
+    @pytest.mark.parametrize('ru_target', [RUTarget.WEIGHTS, RUTarget.BOPS])
+    def test_run_with_non_finite_sensitivity(self, ru_target):
+        """Test scalar RU targets return original indices after filtering non-finite sensitivities."""
+        sensitivity = {
+            'n1': [np.nan, 0.2, 0.1],
+            'n2': [0.3, np.inf],
+        }
+        ru = {ru_target: np.array([[10], [2], [1], [3], [10]])}
+        ru_constraints = {ru_target: np.array([4])}
+
+        self._run_test(sensitivity, ru, ru_constraints, {'n1': 2, 'n2': 0})
+
+    def test_run_with_non_finite_sensitivity_for_multi_column_ru(self):
+        """Test that filtering preserves ACTIVATION and TOTAL constraints simultaneously."""
+        sensitivity = {
+            'n1': [np.nan, 0.2, 0.1],
+            'n2': [0.3, np.inf],
+        }
+        ru = {
+            RUTarget.ACTIVATION: np.array([[10, 10], [2, 2], [1, 1], [3, 3], [10, 10]]),
+            RUTarget.TOTAL: np.array([[20, 20], [4, 4], [2, 2], [6, 6], [20, 20]]),
+        }
+        ru_constraints = {
+            RUTarget.ACTIVATION: np.array([4, 4]),
+            RUTarget.TOTAL: np.array([8, 8]),
+        }
+
+        self._run_test(sensitivity, ru, ru_constraints, {'n1': 2, 'n2': 0})
 
     def _run_test(self, sensitivity, ru, ru_constraints, exp_res):
         solver = MixedPrecisionIntegerLPSolver(sensitivity, ru, ru_constraints)

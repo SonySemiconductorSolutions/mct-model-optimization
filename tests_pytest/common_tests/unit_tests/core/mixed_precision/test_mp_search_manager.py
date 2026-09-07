@@ -224,6 +224,31 @@ class TestMixedPrecisionSearchManager:
         with pytest.raises(ValueError, match='model cannot be quantized to meet the specified resource utilization'):
             run(w_mem=42*2/8+142*4/8-1, sensitivity={n2: [1, 1, 1], n3: [1, 1, 1]}, exp_cfg=None)
 
+    def test_search_with_non_finite_sensitivity(self, fw_info_mock, fw_impl_mock):
+        """Test that search excludes non-finite candidates and returns original candidate indices."""
+        g, [n1, n2, n3, n4, n5] = build_graph(fw_info_mock, w_mp=True, a_mp=False)
+
+        self._run_search_test(
+            g,
+            ResourceUtilization(weights_memory=42 * 8 / 8 + 142 * 12 / 8),
+            {n3: [np.nan, 1, 3], n4: [6, np.inf, 4]},
+            {n3: 1, n4: 2},
+            fw_impl_mock,
+        )
+
+    def test_search_raises_error_when_all_candidates_are_non_finite(self, fw_info_mock, fw_impl_mock):
+        """Test that search propagates an error for a layer without a finite candidate."""
+        g, [n1, n2, n3, n4, n5] = build_graph(fw_info_mock, w_mp=True, a_mp=False)
+
+        with pytest.raises(ValueError, match='All mixed-precision candidates have non-finite sensitivity'):
+            self._run_search_test(
+                g,
+                ResourceUtilization(weights_memory=42 * 8 / 8 + 142 * 12 / 8),
+                {n3: [np.nan, np.inf, -np.inf], n4: [4, 5, 6]},
+                None,
+                fw_impl_mock,
+            )
+
     def test_search_activation(self, fw_info_mock, fw_impl_mock):
         """ Tests mp search with activation ru constraint.  """
         g, [n1, n2, n3, n4, n5] = build_graph(fw_info_mock, w_mp=False, a_mp=True)
