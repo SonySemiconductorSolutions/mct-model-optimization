@@ -176,7 +176,11 @@ class MixedPrecisionSearchManager:
                 ref_ind = node.find_min_candidate_index()
             else:  # pragma: no cover
                 raise ValueError(f'Unexpected MpMetricNormalization mode {norm_method}')
-            normalized_metrics = node_candidates_metrics / node_candidates_metrics[ref_ind]
+            reference_metric = node_candidates_metrics[ref_ind]
+            # Exclude non-finite reference metrics from normalization.
+            if not np.isfinite(reference_metric) or reference_metric == 0:
+                return node_candidates_metrics
+            normalized_metrics = node_candidates_metrics / reference_metric
             return normalized_metrics
 
         def ensure_maxbit_minimal_metric(node_candidates_metrics, max_ind):
@@ -185,6 +189,9 @@ class MixedPrecisionSearchManager:
             # We want maxbit configuration to have the minimal distance metric (so that optimization objective
             # doesn't prefer lower bits). If we got a smaller metric for non-maxbit, we update it to metric(maxbit)+eps.
             max_val = node_candidates_metrics[max_ind]
+            # Exclude non-finite max-bit metrics from correction.
+            if not np.isfinite(max_val):
+                return node_candidates_metrics
             metrics = np.maximum(node_candidates_metrics, max_val + eps)
             metrics[max_ind] = max_val
             return metrics
@@ -332,7 +339,12 @@ class MixedPrecisionSearchManager:
 
         """
         # normalize metric for numerical stability
-        max_dist = max(itertools.chain.from_iterable(layer_to_metrics_mapping.values()))
+        # Exclude non-finite metrics from scaling.
+        finite_metrics = [metric for metric in itertools.chain.from_iterable(layer_to_metrics_mapping.values())
+                          if np.isfinite(metric)]
+        if not finite_metrics:
+            return
+        max_dist = max(finite_metrics)
 
         if max_dist >= self.mp_config.metric_normalization_threshold:
             Logger.warning(f"The mixed precision distance metric values indicate a large error in the quantized model."

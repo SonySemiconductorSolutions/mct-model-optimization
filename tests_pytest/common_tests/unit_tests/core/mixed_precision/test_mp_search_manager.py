@@ -510,6 +510,95 @@ class TestMixedPrecisionSearchManager:
         assert np.allclose(res[n2], np.array(exp2))
         mgr._finalize_distance_metric.assert_called_with(res)
 
+    @pytest.mark.parametrize('norm, metrics', [
+        (MpMetricNormalization.MAXBIT, [0.1, 0.3, np.nan]),
+        (MpMetricNormalization.MINBIT, [0.0, 0.1, 0.2]),
+    ])
+    def test_build_sensitivity_mapping_skips_invalid_normalization_reference(self,
+                                                                             fw_impl_mock,
+                                                                             fw_info_mock,
+                                                                             norm,
+                                                                             metrics):
+        """Tests that an invalid normalization reference does not change finite candidate metrics."""
+        ph = build_node('ph', qcs=[build_nbits_qc()])
+        node = build_node('node', qcs=[build_nbits_qc(nb) for nb in (4, 8, 16)])
+        graph = Graph(name='graph', input_nodes=[ph], nodes=[node], output_nodes=[node],
+                      edge_list=[Edge(ph, node, 0, 0)])
+        sensitivity_evaluator = Mock(spec_set=SensitivityEvaluation)
+        sensitivity_evaluator.compute_metric.side_effect = metrics
+
+        fw_info_mock.get_kernel_op_attributes = lambda nt: DEFAULT_KERNEL_ATTRIBUTES
+        fw_info_mock.is_kernel_op = lambda nt: False
+
+        mp_config = MixedPrecisionQuantizationConfig(metric_normalization=norm,
+                                                      metric_epsilon=None,
+                                                      metric_normalization_threshold=10)
+        manager = MixedPrecisionSearchManager(graph, fw_info=fw_info_mock, fw_impl=fw_impl_mock,
+                                              sensitivity_evaluator=sensitivity_evaluator,
+                                              target_resource_utilization=ResourceUtilization(activation_memory=100),
+                                              mp_config=mp_config)
+
+        result = manager._build_sensitivity_mapping()
+
+        assert np.allclose(result[node], np.array(metrics), equal_nan=True)
+
+    def test_build_sensitivity_mapping_skips_epsilon_for_non_finite_maxbit(self,
+                                                                            fw_impl_mock,
+                                                                            fw_info_mock):
+        """Tests that a non-finite max-bit metric does not affect finite candidate metrics."""
+        ph = build_node('ph', qcs=[build_nbits_qc()])
+        node = build_node('node', qcs=[build_nbits_qc(nb) for nb in (4, 8, 16)])
+        graph = Graph(name='graph', input_nodes=[ph], nodes=[node], output_nodes=[node],
+                      edge_list=[Edge(ph, node, 0, 0)])
+        sensitivity_evaluator = Mock(spec_set=SensitivityEvaluation)
+        sensitivity_evaluator.compute_metric.side_effect = [0.1, 0.3, np.nan]
+
+        fw_info_mock.get_kernel_op_attributes = lambda nt: DEFAULT_KERNEL_ATTRIBUTES
+        fw_info_mock.is_kernel_op = lambda nt: False
+
+        mp_config = MixedPrecisionQuantizationConfig(metric_normalization=MpMetricNormalization.NONE,
+                                                      metric_normalization_threshold=10)
+        manager = MixedPrecisionSearchManager(graph, fw_info=fw_info_mock, fw_impl=fw_impl_mock,
+                                              sensitivity_evaluator=sensitivity_evaluator,
+                                              target_resource_utilization=ResourceUtilization(activation_memory=100),
+                                              mp_config=mp_config)
+
+        result = manager._build_sensitivity_mapping()
+
+        assert np.allclose(result[node], np.array([0.1, 0.3, np.nan]), equal_nan=True)
+
+    def test_finalize_distance_metric_ignores_non_finite_metrics(self, fw_info_mock, fw_impl_mock):
+        """Tests that final scaling preserves finite candidate metric order with non-finite metrics."""
+        graph, [node1, node2, _, _, _] = build_graph(fw_info_mock, w_mp=False, a_mp=True)
+        mp_config = MixedPrecisionQuantizationConfig(metric_normalization_threshold=0.5)
+        manager = MixedPrecisionSearchManager(graph, fw_info=fw_info_mock, fw_impl=fw_impl_mock,
+                                              sensitivity_evaluator=Mock(),
+                                              target_resource_utilization=ResourceUtilization(activation_memory=100),
+                                              mp_config=mp_config)
+        metrics_mapping = {node1: [0.1, 0.2], node2: [np.inf, 0.5]}
+
+        manager._finalize_distance_metric(metrics_mapping)
+
+        assert metrics_mapping[node1] == [0.2, 0.4]
+        assert np.allclose(metrics_mapping[node2], [np.inf, 1.0])
+
+    def test_finalize_distance_metric_skips_all_non_finite_metrics(self, fw_info_mock, fw_impl_mock, mocker):
+        """Tests that final scaling skips mappings without finite metrics."""
+        graph, [node1, node2, _, _, _] = build_graph(fw_info_mock, w_mp=False, a_mp=True)
+        mp_config = MixedPrecisionQuantizationConfig(metric_normalization_threshold=0.5)
+        manager = MixedPrecisionSearchManager(graph, fw_info=fw_info_mock, fw_impl=fw_impl_mock,
+                                              sensitivity_evaluator=Mock(),
+                                              target_resource_utilization=ResourceUtilization(activation_memory=100),
+                                              mp_config=mp_config)
+        metrics_mapping = {node1: [np.nan, np.inf], node2: [-np.inf]}
+        warning_mock = mocker.patch('model_compression_toolkit.logger.Logger.warning')
+
+        manager._finalize_distance_metric(metrics_mapping)
+
+        assert np.allclose(metrics_mapping[node1], [np.nan, np.inf], equal_nan=True)
+        assert metrics_mapping[node2] == [-np.inf]
+        warning_mock.assert_not_called()
+
     def _assert_dict_allclose(self, res, exp_res, sort_axis=None):
         assert len(exp_res) == len(res)
         for k in exp_res:

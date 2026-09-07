@@ -19,6 +19,9 @@ import torch
 
 from model_compression_toolkit.core import ResourceUtilization, MpDistanceWeighting, MixedPrecisionQuantizationConfig, \
     CoreConfig
+from model_compression_toolkit.core.common.mixed_precision.sensitivity_eval.sensitivity_evaluation import \
+    SensitivityEvaluation
+from model_compression_toolkit.logger import Logger
 from model_compression_toolkit.ptq import pytorch_post_training_quantization
 from model_compression_toolkit.target_platform_capabilities import QuantizationMethod, AttributeQuantizationConfig, \
     OpQuantizationConfig, QuantizationConfigOptions, Signedness, OperatorSetNames, \
@@ -129,6 +132,34 @@ class TestMixedPrecisionPTQ(BaseTorchIntegrationTest):
             self._validate_activation_nbits(qmodel, layer, 4)
         for layer_name, exp_nbit in exp_res.items():
             self._validate_weight_nbits(qmodel, layer_name, exp_nbit)
+
+    def test_mixed_precision_with_non_finite_sensitivity(self, model, datagen, mocker):
+        """Test that PTQ completes after excluding non-finite sensitivity candidates."""
+        tpc = build_tpc(default_a_bit=4, conv_a_bits=[2, 4, 8, 16], conv_w_bits=[16, 8, 4, 2],
+                        fc_a_bits=[2, 4, 8, 16], fc_w_bits=[4, 8], bn_a_bits=[2, 4, 8, 16])
+        original_compute_metric = SensitivityEvaluation.compute_metric
+
+        def compute_metric_with_non_finite_candidate(sensitivity_evaluator, mp_a_cfg, mp_w_cfg):
+            for node_name, candidate_index in {**mp_a_cfg, **mp_w_cfg}.items():
+                if node_name == 'conv1' and candidate_index == 0:
+                    return float('nan')
+            return original_compute_metric(sensitivity_evaluator, mp_a_cfg, mp_w_cfg)
+
+        mocker.patch.object(SensitivityEvaluation,
+                            'compute_metric',
+                            compute_metric_with_non_finite_candidate)
+        warning_mock = mocker.patch.object(Logger, 'warning')
+
+        qmodel, user_info = self._run(model,
+                                      datagen,
+                                      tpc,
+                                      ResourceUtilization(weights_memory=100000),
+                                      4,
+                                      eq_ru=False)
+
+        assert user_info.mixed_precision_cfg is not None
+        assert any('Ignoring mixed-precision candidates with non-finite sensitivity' in call.args[0] for call in warning_mock.call_args_list)
+        assert qmodel(torch.randn(*self.shape, device=next(qmodel.parameters()).device)) is not None
 
     @pytest.mark.parametrize('bops, exp_res, eq_ru', [
         (196*216*8*4 + 100*3200*8*4 + 160*200*8*2, {'conv1': 4, 'conv2': 4, 'fc': 2}, True),  # min
