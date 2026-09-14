@@ -19,6 +19,7 @@ from pulp import *
 from typing import Dict, Tuple, Any, List
 
 from model_compression_toolkit.core.common.mixed_precision.resource_utilization_tools.resource_utilization import RUTarget
+from model_compression_toolkit.logger import Logger
 
 # Limit ILP solver runtime in seconds
 SOLVER_TIME_LIMIT = 60
@@ -37,11 +38,11 @@ class MixedPrecisionIntegerLPSolver:
                  candidates_ru: Dict[RUTarget, np.ndarray],
                  ru_constraints: Dict[RUTarget, np.ndarray]):
 
-        self.layer_to_sensitivity_mapping = layer_to_sensitivity_mapping
-        self.candidates_ru = candidates_ru
+        self.layer_to_sensitivity_mapping, self.candidates_ru, self.solver_to_original_candidate_indices \
+                                    = self._filter_non_finite_candidates(layer_to_sensitivity_mapping, candidates_ru)
         self.ru_constraints = ru_constraints
 
-        self.layer_to_indicator_vars, self.objective_vars = self._init_problem_vars(layer_to_sensitivity_mapping)
+        self.layer_to_indicator_vars, self.objective_vars = self._init_problem_vars(self.layer_to_sensitivity_mapping)
 
     def run(self) -> Dict[Any, int]:
         """
@@ -61,10 +62,71 @@ class MixedPrecisionIntegerLPSolver:
             raise RuntimeError(f'No solution was found for the LP problem, with status {lp_problem.status}')
 
         # Take the bitwidth index only if its corresponding indicator is one.
-        mp_config = {
+        solver_mp_config = {
             layer: [v.varValue for v in vars].index(1.) for layer, vars in self.layer_to_indicator_vars.items()
         }
+
+        # Restore the original candidate indices after filtering non-finite sensitivity candidates.
+        mp_config = {
+            layer: self.solver_to_original_candidate_indices[layer][solver_candidate_index]
+            for layer, solver_candidate_index in solver_mp_config.items()
+        }
         return mp_config
+
+    @staticmethod
+    def _filter_non_finite_candidates(
+            layer_to_sensitivity_mapping: Dict[Any, List[float]],
+            candidates_ru: Dict[RUTarget, np.ndarray],
+    ) -> Tuple[Dict[Any, List[float]], Dict[RUTarget, np.ndarray], Dict[Any, List[int]]]:
+        """
+        Remove candidates with non-finite sensitivity scores.
+
+        Args:
+            layer_to_sensitivity_mapping: Sensitivity per candidate per layer.
+            candidates_ru: Resource utilization per candidate.
+
+        Returns:
+            Filtered sensitivity scores, filtered resource utilization matrices, and a mapping from solver candidate
+            indices to original candidate indices.
+
+        Raises:
+            ValueError: If a resource utilization matrix does not match the candidates or
+            a layer has no finite sensitivity candidates.
+        """
+        candidate_count = sum(len(sensitivities) for sensitivities in layer_to_sensitivity_mapping.values())
+        for target, ru_matrix in candidates_ru.items():
+            if ru_matrix.ndim != 2 or ru_matrix.shape[0] != candidate_count:
+                raise ValueError(f'Resource utilization matrix for {target} must be a 2-dimensional array '
+                                 f'with {candidate_count} rows; got shape {ru_matrix.shape}.')
+
+        filtered_sensitivity = {}
+        solver_to_original_candidate_indices = {}
+        candidate_masks = []
+
+        for layer, sensitivities in layer_to_sensitivity_mapping.items():
+            sensitivity_array = np.asarray(sensitivities, dtype=float)
+            finite_mask = np.isfinite(sensitivity_array)
+            valid_indices = np.flatnonzero(finite_mask)
+            invalid_indices = np.flatnonzero(~finite_mask)
+
+            if not len(valid_indices):
+                raise ValueError(f'All mixed-precision candidates have non-finite sensitivity for layer {layer}: '
+                                 f'{sensitivities}')
+            if len(invalid_indices):
+                Logger.warning(f'Ignoring mixed-precision candidates with non-finite sensitivity for layer {layer}: '
+                               f'indices={invalid_indices.tolist()}, '
+                               f'values={sensitivity_array[invalid_indices].tolist()}')
+
+            filtered_sensitivity[layer] = sensitivity_array[finite_mask].tolist()
+            solver_to_original_candidate_indices[layer] = valid_indices.tolist()
+            candidate_masks.append(finite_mask)
+
+        candidate_mask = np.concatenate(candidate_masks)
+        filtered_candidates_ru = {
+            target: ru_matrix[candidate_mask] for target, ru_matrix in candidates_ru.items()
+        }
+
+        return filtered_sensitivity, filtered_candidates_ru, solver_to_original_candidate_indices
 
     @staticmethod
     def _init_problem_vars(layer_to_metrics_mapping: Dict[Any, List[float]]) -> Tuple[Dict[Any, List[LpVariable]],
