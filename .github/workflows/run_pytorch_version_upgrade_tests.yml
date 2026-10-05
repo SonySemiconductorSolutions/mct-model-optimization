@@ -38,6 +38,10 @@ jobs:
           python -m pip install --upgrade pip
           pip install -r requirements.txt
           pip install "torch==$TORCH_VERSION" torchvision onnx onnxruntime "onnxruntime-extensions<0.14"
+          IFS=. read -r torch_major torch_minor torch_patch <<< "$TORCH_VERSION"
+          if (( torch_major > 2 || (torch_major == 2 && torch_minor >= 9) )); then
+            pip install "onnxscript==0.7.2"
+          fi
           if [ "$NUMPY_VERSION" = "2.4" ]; then
             pip install "numpy==2.4.*"
           else
