@@ -57,6 +57,7 @@ def get_target_platform_capabilities_sdsp(sdsp_version: str = SDSP_V3_14) -> Tar
         SDSP_V3_16: TPC_V4_0,
         SDSP_V3_17: TPC_V5_0,
         SDSP_V3_18: TPC_V5_0,
+        SDSP_V3_19: TPC_V6_0,
     }
 
     msg = (f"Error: The specified sdsp converter version '{sdsp_version}' is not valid. "
