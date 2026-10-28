@@ -12,8 +12,8 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 # ==============================================================================
-from model_compression_toolkit.target_platform_capabilities.constants import IMX500_TP_MODEL, TPC_V1_0, TPC_V4_0, TPC_V5_0, \
-    SDSP_V3_14, SDSP_V3_16, SDSP_V3_17, SDSP_V3_18
+from model_compression_toolkit.target_platform_capabilities.constants import IMX500_TP_MODEL, TPC_V1_0, TPC_V4_0, TPC_V5_0, TPC_V6_0,\
+    SDSP_V3_14, SDSP_V3_16, SDSP_V3_17, SDSP_V3_18, SDSP_V3_19
 from model_compression_toolkit.target_platform_capabilities.schema.mct_current_schema import TargetPlatformCapabilities
 from model_compression_toolkit.target_platform_capabilities.tpc_models import generate_tpc_func
 
@@ -57,6 +57,7 @@ def get_target_platform_capabilities_sdsp(sdsp_version: str = SDSP_V3_14) -> Tar
         SDSP_V3_16: TPC_V4_0,
         SDSP_V3_17: TPC_V5_0,
         SDSP_V3_18: TPC_V5_0,
+        SDSP_V3_19: TPC_V6_0,
     }
 
     msg = (f"Error: The specified sdsp converter version '{sdsp_version}' is not valid. "
