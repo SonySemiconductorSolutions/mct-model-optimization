@@ -25,7 +25,7 @@ class FunctionalNode(BaseNode):
                  functional_op: Any = None,
                  inputs_as_list: bool = False,
                  has_activation: bool = True,
-                 tensor_input_allocs: List[Union[int, str]] = None):
+                 tensor_input_allocs: List[Union[int, str, Tuple[int, int]]] = None):
         """
         Init a FunctionalNode object.
 
@@ -44,7 +44,9 @@ class FunctionalNode(BaseNode):
             functional_op: The op the node implements.
             inputs_as_list: Whether to pass the node its input tensors as a list or not when calling the layer.
             has_activation: Whether the node has activations that we might want to quantize.
-            tensor_input_allocs: A list of indices and strings for allocations input tensors in the node's args and kwargs.
+            tensor_input_allocs: A list of indices, strings, or tuples for allocating input tensors
+                                 in the node's args and kwargs. Tuples specify (argument index, tuple index)
+                                 for getitem index tuples.
         """
 
         super().__init__(name,

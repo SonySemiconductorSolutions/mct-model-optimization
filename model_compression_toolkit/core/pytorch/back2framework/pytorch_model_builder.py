@@ -15,6 +15,7 @@
 import copy
 from abc import abstractmethod
 from functools import partial
+from operator import getitem
 from typing import Tuple, Any, Dict, List, Callable
 
 import torch
@@ -89,13 +90,20 @@ def _merge_inputs(_node: BaseNode, input_tensors: List, op_call_args: List, op_c
         if len(tensor_input_allocs) != len(input_tensors):
             Logger.error(f'Mismatch between input tensors ({len(tensor_input_allocs)}) '
                          f'and indices {len(input_tensors)} in node {_node.name}.')  # pragma: no cover
+        tuple_inputs = []
         for i, t in zip(tensor_input_allocs, input_tensors):
             # insert input tensors in either args or kwargs, according to tensor_input_allocs
             if isinstance(i, str):
                 assert i not in op_call_kwargs
                 op_call_kwargs.update({i: t})
+            elif _node.functional_op is getitem and isinstance(i, tuple):
+                tuple_inputs.append((i, t))
             else:
                 _input_list.insert(i, t)
+        for (arg_index, tuple_index), tensor in tuple_inputs:
+            index_args = list(_input_list[arg_index])
+            index_args[tuple_index] = tensor
+            _input_list[arg_index] = tuple(index_args)
     else:
         _input_list = input_tensors + op_call_args
 

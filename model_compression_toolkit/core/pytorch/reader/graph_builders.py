@@ -89,6 +89,14 @@ def _build_input_alloc_and_call_args(n: Node, input_tensors_in_node_kwargs: Dict
         for i, arg in enumerate(_args):
             if arg == in_node:
                 tensor_input_alloc.append(i)
+            elif n.target is getitem and i == 1 and isinstance(arg, tuple):
+                # Record direct index-tuple node positions and leave placeholders for runtime restoration.
+                for index, index_arg in enumerate(arg):
+                    if index_arg is in_node:
+                        tensor_input_alloc.append((i, index))
+                        index_args = list(op_call_args[i])
+                        index_args[index] = None
+                        op_call_args[i] = tuple(index_args)
         for k, arg in input_tensors_in_node_kwargs.items():
             if arg == in_node:
                 tensor_input_alloc.append(k)

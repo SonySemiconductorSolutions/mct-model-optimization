@@ -12,6 +12,10 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 # ==============================================================================
+from math import prod
+from operator import getitem
+from typing import Any
+
 import pytest
 from unittest.mock import Mock
 from typing import List
@@ -22,6 +26,7 @@ from mct_quantizers import PytorchActivationQuantizationHolder, PytorchPreservin
 from model_compression_toolkit.core.common import Graph
 from model_compression_toolkit.core.common.graph.edge import Edge
 from model_compression_toolkit.core.common import BaseNode
+from model_compression_toolkit.core.common.graph.functional_node import FunctionalNode
 from tests_pytest._test_util.graph_builder_utils import DummyLayer
 from model_compression_toolkit.core.common.quantization.candidate_node_quantization_config import \
     CandidateNodeQuantizationConfig
@@ -31,7 +36,7 @@ from model_compression_toolkit.target_platform_capabilities import AttributeQuan
     Signedness
 from model_compression_toolkit.core import QuantizationConfig
 from mct_quantizers import QuantizationMethod
-from model_compression_toolkit.core.pytorch.back2framework.pytorch_model_builder import PyTorchModelBuilder
+from model_compression_toolkit.core.pytorch.back2framework.pytorch_model_builder import PyTorchModelBuilder, _merge_inputs
 from model_compression_toolkit.target_platform_capabilities.targetplatform2framework.framework_quantization_capabilities import \
     FrameworkQuantizationCapabilities
 import model_compression_toolkit.target_platform_capabilities.schema.mct_current_schema as schema
@@ -161,7 +166,143 @@ def get_inferable_quantizers_mock(node):
     
     return {}, [activation_quantizers]
 
+def build_getitem_functional_node(
+    allocations: list[int | tuple[int, int]],
+    call_args: list[Any],
+) -> FunctionalNode:
+    """Build an operator.getitem node for index-tuple reconstruction tests."""
+    return FunctionalNode(
+        name="operation",
+        framework_attr={},
+        input_shape=(),
+        output_shape=(),
+        weights={},
+        layer_class=type(getitem),
+        op_call_args=tuple(call_args),
+        op_call_kwargs={},
+        functional_op=getitem,
+        tensor_input_allocs=allocations,
+    )
+
+
 class TestPyTorchModelBuilder():
+    @pytest.mark.parametrize(
+        "shape, saved_index, allocations, index_values, expected_values",
+        [
+            pytest.param((2, 3), (slice(None), None), [0, (1, 1)],
+                         [[2, 0]], [[2, 0], [5, 3]], id="column"),
+            pytest.param((2, 3), (None, slice(None)), [0, (1, 0)],
+                         [[1, 0]], [[3, 4, 5], [0, 1, 2]], id="row"),
+            pytest.param(
+                (2, 3, 4), (slice(None), None, slice(None)), [0, (1, 1)],
+                [[2, 0]],
+                [[[8, 9, 10, 11], [0, 1, 2, 3]],
+                 [[20, 21, 22, 23], [12, 13, 14, 15]]], id="middle",
+            ),
+            pytest.param(
+                (2, 3, 4), (Ellipsis, None), [0, (1, 1)], [[2, 0]],
+                [[[2, 0], [6, 4], [10, 8]],
+                 [[14, 12], [18, 16], [22, 20]]], id="ellipsis",
+            ),
+            pytest.param((2, 3), (None, None), [0, (1, 0), (1, 1)],
+                         [[1, 0], [2, 0]], [5, 0], id="pair"),
+            pytest.param((2, 3), (None,), [0, (1, 0)],
+                         [[1, 0]], [[3, 4, 5], [0, 1, 2]], id="singleton"),
+            pytest.param((2, 3), (slice(None), 0), [0], [],
+                         [0, 3], id="fixed_tuple"),
+            pytest.param((2, 3), (None, slice(None), None), [0, (1, 2)],
+                         [[2, 0]], [[[2, 0], [5, 3]]], id="newaxis"),
+        ],
+    )
+    def test_merge_getitem_indices(
+        self,
+        shape: tuple[int, ...],
+        saved_index: tuple[Any, ...],
+        allocations: list[int | tuple[int, int]],
+        index_values: list[list[int]],
+        expected_values: list[Any],
+    ) -> None:
+        """Restore operator.getitem index tuples and verify exact outputs."""
+        x = torch.arange(prod(shape), dtype=torch.float32).reshape(shape)
+        indices = [torch.tensor(values, dtype=torch.long)
+                   for values in index_values]
+        node = build_getitem_functional_node(allocations, [saved_index])
+        saved_args = node.op_call_args.copy()
+        saved_allocations = node.tensor_input_allocs.copy()
+
+        merged, kwargs = _merge_inputs(
+            node, [x, *indices], node.op_call_args, {}
+        )
+
+        assert merged[0] is x
+        assert kwargs == {}
+        for allocation, tensor in zip(allocations[1:], indices):
+            if isinstance(allocation, tuple):
+                assert isinstance(merged[allocation[0]], tuple)
+                assert merged[allocation[0]][allocation[1]] is tensor
+            else:
+                assert merged[allocation] is tensor
+        for position, fixed_value in enumerate(saved_index):
+            if (1, position) not in allocations:
+                assert merged[1][position] == fixed_value
+        expected = torch.tensor(expected_values, dtype=torch.float32)
+        result = getitem(*merged)
+        assert result.shape == expected.shape
+        torch.testing.assert_close(result, expected, rtol=0, atol=0)
+        assert node.op_call_args == saved_args
+        assert node.tensor_input_allocs == saved_allocations
+
+    def test_getitem_deferred_tuple_restore(self) -> None:
+        """Restore operator.getitem index tuples after top-level insertion."""
+        x = torch.arange(6, dtype=torch.float32).reshape(2, 3)
+        cols = torch.tensor([2, 0], dtype=torch.long)
+        node = build_getitem_functional_node([0, (1, 1)], [(slice(None), None)])
+
+        merged, kwargs = _merge_inputs(
+            node, [cols, x], node.op_call_args, {},
+            tensor_input_allocs=[(1, 1), 0],
+        )
+
+        assert merged[0] is x
+        assert merged[1][0] == slice(None)
+        assert merged[1][1] is cols
+        assert kwargs == {}
+        torch.testing.assert_close(
+            getitem(*merged), torch.tensor([[2., 0.], [5., 3.]]),
+            rtol=0, atol=0,
+        )
+
+    def test_getitem_saved_args_reused(self) -> None:
+        """Reuse saved operator.getitem index tuples with fresh tensors."""
+        node = build_getitem_functional_node([0, (1, 1)], [(slice(None), None)])
+        original_index = node.op_call_args[0]
+        first_x = torch.arange(6, dtype=torch.float32).reshape(2, 3)
+        first_cols = torch.tensor([2, 0], dtype=torch.long)
+        second_x = first_x + 10
+        second_cols = torch.tensor([1, 2], dtype=torch.long)
+
+        first, _ = _merge_inputs(
+            node, [first_x, first_cols], node.op_call_args, {}
+        )
+        second, _ = _merge_inputs(
+            node, [second_x, second_cols], node.op_call_args, {}
+        )
+
+        assert first[0] is first_x
+        assert first[1][1] is first_cols
+        assert second[0] is second_x
+        assert second[1][1] is second_cols
+        assert node.op_call_args == [(slice(None), None)]
+        assert node.op_call_args[0] is original_index
+        assert node.tensor_input_allocs == [0, (1, 1)]
+        torch.testing.assert_close(
+            getitem(*first), torch.tensor([[2., 0.], [5., 3.]]),
+            rtol=0, atol=0,
+        )
+        torch.testing.assert_close(
+            getitem(*second), torch.tensor([[11., 12.], [14., 15.]]),
+            rtol=0, atol=0,
+        )
 
     # test case for PyTorchModelBuilder
     def test_pytorch_model(self, fw_impl_mock):
