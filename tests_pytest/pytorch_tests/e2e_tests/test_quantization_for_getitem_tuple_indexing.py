@@ -34,7 +34,6 @@ from model_compression_toolkit.core.pytorch.pytorch_device_config import (
     get_working_device,
 )
 from model_compression_toolkit.core.pytorch.utils import set_model
-from tests_pytest._test_util.tpc_util import minimal_tpc
 
 
 class ConstantTensorIndexingModel(nn.Module):
@@ -172,10 +171,11 @@ class TestQuantizationForGetitemTupleIndexing:
                     model(tensor), expected, rtol=0, atol=0
                 )
 
+        tpc = mct.get_target_platform_capabilities()
         quantized_model, _ = mct.ptq.pytorch_post_training_quantization(
             in_module=model,
             representative_data_gen=data_gen,
-            target_platform_capabilities=minimal_tpc(),
+            target_platform_capabilities=tpc,
         )
         assert isinstance(quantized_model, pytorch_model_builder.PytorchModel)
         graph = quantized_model.graph
