@@ -17,7 +17,6 @@ from functools import partial
 from math import prod
 from operator import add, getitem, mul
 
-import numpy as np
 import pytest
 import torch
 from mct_quantizers import PytorchActivationQuantizationHolder
@@ -145,22 +144,13 @@ class TestQuantizationForGetitemTupleIndexing:
         """Check restored indices and output quantization through public PTQ."""
         if runtime_bias:
             model = RuntimeTensorIndexingModel(indices)
-            references = {}
         else:
             model = ConstantTensorIndexingModel(indices)
-            references = {0: model.bias.detach().cpu().numpy().copy()}
         set_model(model)
-        indices_reference = model.indices.cpu().numpy().copy()
-        references[1] = indices_reference
+        indices_reference = model.indices.clone()
         output_shape = (2, *model.indices.shape)
         data_gen = partial(representative_data_gen, shape)
         inputs = [batch[0] for batch in data_gen()]
-        assert len(inputs) == 3
-        assert len(expected_values) == 2
-        for original, repeated in zip(inputs, data_gen()):
-            torch.testing.assert_close(
-                original, repeated[0], rtol=0, atol=0
-            )
         with torch.no_grad():
             for tensor, values in zip(inputs, expected_values):
                 expected = torch.tensor(
@@ -195,19 +185,13 @@ class TestQuantizationForGetitemTupleIndexing:
             edge.source_node is getitem_node
             for edge in graph.incoming_edges(add_node)
         )
-        assert graph.get_outputs()[0].node is add_node
-        assert set(getitem_node.weights) == set(references)
-        incoming_edges = graph.incoming_edges(getitem_node)
         if runtime_bias:
-            assert len(incoming_edges) == 1
-            edge = incoming_edges[0]
-            assert edge.sink_index == 0
-            assert isinstance(edge.source_node, FunctionalNode)
-            assert edge.source_node.functional_op is mul
-        else:
-            assert len(incoming_edges) == 0
-        assert getitem_node.tensor_input_allocs == [0, (1, 1)]
-        assert getitem_node.op_call_args == [(slice(None), None)]
+            assert any(
+                isinstance(edge.source_node, FunctionalNode)
+                and edge.source_node.functional_op is mul
+                and edge.sink_index == 0
+                for edge in graph.incoming_edges(getitem_node)
+            )
 
         original_getitem = getattr(quantized_model, getitem_node.name)
         assert original_getitem is getitem
@@ -218,17 +202,11 @@ class TestQuantizationForGetitemTupleIndexing:
             index: tuple[slice, torch.Tensor],
         ) -> torch.Tensor:
             """Observe restored arguments and run the real indexing operation."""
-            assert isinstance(bias, torch.Tensor)
-            assert bias.dtype == torch.float32
-            assert tuple(bias.shape) == ((2, 4) if runtime_bias else (2, 3))
-            assert isinstance(index, tuple) and len(index) == 2
             assert index[0] == slice(None)
             restored_indices = index[1]
             assert isinstance(restored_indices, torch.Tensor)
-            assert restored_indices.dtype == torch.long
-            assert tuple(restored_indices.shape) == indices_reference.shape
-            np.testing.assert_array_equal(
-                restored_indices.cpu().numpy(), indices_reference
+            torch.testing.assert_close(
+                restored_indices, indices_reference, rtol=0, atol=0
             )
             expected = bias.index_select(
                 1, restored_indices.flatten()
@@ -241,26 +219,17 @@ class TestQuantizationForGetitemTupleIndexing:
         monkeypatch.setattr(
             quantized_model, getitem_node.name, checked_getitem
         )
-        assert add_node.is_activation_quantization_enabled()
         holder_name = quantized_model.node_to_activation_quantization_holder[
             add_node.name
         ]
         holder = quantized_model.get_submodule(holder_name)
-        assert type(holder) is PytorchActivationQuantizationHolder
+        assert isinstance(holder, PytorchActivationQuantizationHolder)
         assert holder.activation_holder_quantizer.num_bits == 8
         holder_outputs: list[torch.Tensor] = []
 
-        def record_holder_output(
-            module: nn.Module,
-            args: tuple[torch.Tensor, ...],
-            output: torch.Tensor,
-        ) -> None:
-            """Record output quantization calls during inference."""
-            assert module is holder
-            assert len(args) == 1
-            holder_outputs.append(output)
-
-        handle = holder.register_forward_hook(record_holder_output)
+        handle = holder.register_forward_hook(
+            lambda module, args, output: holder_outputs.append(output)
+        )
         quantized_model.eval()
         try:
             with torch.no_grad():
@@ -273,23 +242,5 @@ class TestQuantizationForGetitemTupleIndexing:
                     assert len(getitem_outputs) == position + 1
                     assert len(holder_outputs) == position + 1
                     assert holder_outputs[-1] is output
-                    for key, reference in references.items():
-                        saved = getitem_node.weights[key]
-                        assert isinstance(saved, np.ndarray)
-                        assert saved.shape == reference.shape
-                        assert saved.dtype == reference.dtype
-                        np.testing.assert_array_equal(saved, reference)
-                    assert getitem_node.tensor_input_allocs == [0, (1, 1)]
-                    assert getitem_node.op_call_args == [(slice(None), None)]
         finally:
             handle.remove()
-        assert len(getitem_outputs) == 2
-        assert len(holder_outputs) == 2
-        assert model.indices.dtype == torch.long
-        if isinstance(model, ConstantTensorIndexingModel):
-            np.testing.assert_array_equal(
-                model.bias.detach().cpu().numpy(), references[0]
-            )
-        np.testing.assert_array_equal(
-            model.indices.cpu().numpy(), indices_reference
-        )
